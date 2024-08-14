@@ -2,9 +2,9 @@ import Image from "./Image";
 
 const SignIn = () => {
   return (
-    <div className="flex items-center">
-      <div className="bg-black w-1/2 h-[100vh] flex justify-center items-center">
-        <div className="p-10 w-[30vw] flex flex-col gap-7">
+    <div className="md:flex block items-center">
+      <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
+        <div className="p-10 w-[85vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-7">
           <div className="text-center text-white font-bold">
             <h1 className="text-4xl">Instant</h1>
             <p className="text-[#C9C9CA]">Welcome back</p>
@@ -43,8 +43,9 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-      <div className="w-[1px] h-[85vh] bg-[#737373] transform scale-x-50 origin-left"></div>
+      <div className="w-[1px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
       <Image
+        message={true}
         accountMessage={`Don't have an account?`}
         loginText={"Sign up"}
         forgetPass={true}
