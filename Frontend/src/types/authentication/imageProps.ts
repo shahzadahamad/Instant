@@ -1,4 +1,5 @@
 export interface ImageProps {
   accountMessage: string,
-  loginText: string
+  loginText: string,
+  forgetPass: boolean
 }

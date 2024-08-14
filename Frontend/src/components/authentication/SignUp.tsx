@@ -62,7 +62,11 @@ const SignUp = () => {
         </div>
       </div>
       <div className="w-[1px] h-[85vh] bg-[#737373] transform scale-x-50 origin-left"></div>
-      <Image accountMessage={"Have an account?"} loginText={"Log in"} />
+      <Image
+        accountMessage={"Have an account?"}
+        loginText={"Log in"}
+        forgetPass={false}
+      />
     </div>
   );
 };
