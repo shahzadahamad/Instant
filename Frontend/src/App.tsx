@@ -1,14 +1,11 @@
-import './App.css'
+import SignUp from "./components/authentication/Signup";
 
 function App() {
-
   return (
     <>
-      <div>
-        Hello
-      </div>
+      <SignUp />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
