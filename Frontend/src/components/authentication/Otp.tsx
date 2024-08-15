@@ -6,7 +6,7 @@ const Otp = () => {
   return (
     <div className="md:flex block items-center">
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
-        <div className="p-10 w-[85vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-7">
+        <div className="p-10 w-[85vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-6">
           <div className="text-center text-white font-bold">
             <h1 className="text-4xl mb-6">Instant</h1>
             <FontAwesomeIcon
@@ -40,7 +40,7 @@ const Otp = () => {
           </div>
         </div>
       </div>
-      <div className="w-[1px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
+      <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
       <Image
         message={false}
         accountMessage={"Have an account?"}
