@@ -1,8 +1,8 @@
 import Image from "./Image";
 
-const SignUp = () => {
+const SignUpForm = () => {
   return (
-    <div className="md:flex block items-center">
+    <>
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
         <div className="p-10 w-[100vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-6">
           <div className="text-center text-white font-bold">
@@ -68,8 +68,8 @@ const SignUp = () => {
         loginText={"Log in"}
         forgetPass={false}
       />
-    </div>
+    </>
   );
 };
 
-export default SignUp;
+export default SignUpForm;

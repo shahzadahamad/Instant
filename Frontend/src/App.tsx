@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignIn from "./components/authentication/Signin";
-import SignUp from "./components/authentication/Signup";
-import Otp from "./components/authentication/Otp";
-import ForgotPassword from "./components/authentication/ForgotPassword";
-import Home from './components/home/Home';
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Otp from "./pages/Otp";
+import ForgotPassword from "./pages/ForgetPassword";
+import Home from './pages/Home';
 
 function App() {
   return (

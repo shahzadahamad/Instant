@@ -1,5 +1,5 @@
-import Sidebar from "./Sidebar";
-import Stories from "./Stories";
+import Sidebar from '../components/home/Sidebar';
+import Stories from '../components/home/Stories'
 
 const Home = () => {
   return (
