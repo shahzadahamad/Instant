@@ -7,7 +7,7 @@ const Stories = () => {
   );
 
   return (
-    <div className="w-full border-b-[1px] border-[#333232] h-[120px] p-3 flex justify-start items-center">
+    <div className="border-b-[1px] border-[#333232] h-[120px] p-3 flex justify-start items-center">
       <div className="flex space-x-4 overflow-x-auto scrollbar-hidden">
         <div className="relative flex-shrink-0 w-[70px] h-[70px]">
           <div className="p-[2.5px] bg-gradient-to-r from-[#b5347c] via-[#eb1c25] to-[#fdcd23] rounded-full relative">

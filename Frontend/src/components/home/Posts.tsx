@@ -6,7 +6,7 @@ const Posts = () => {
   );
 
   return (
-    <div className="w-[89vw] h-[80vh] overflow-auto scrollbar-hidden">
+    <div className="w-full h-[80vh] overflow-auto scrollbar-hidden">
       <div className="flex flex-col items-center justify-start gap-4 p-4">
         {defaultArray.map((item, index) => (
           <div

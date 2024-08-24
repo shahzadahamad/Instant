@@ -1,5 +1,5 @@
 import Posts from "../components/home/Posts";
-import Sidebar from "../components/home/Sidebar";
+import Sidebar from "../components/common/Sidebar";
 import Stories from "../components/home/Stories";
 
 const Home = () => {
