@@ -10,14 +10,14 @@ import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 
 const Sidebar = () => {
   return (
-    <div className="w-[170px] h-[100vh] flex flex-col items-center border-r-[1px] border-[#333232]">
-      <h1 className="text-white font-bold text-4xl pt-6 mx-auto text-center">
+    <div className="w-[170px] h-full flex flex-col items-center border-r-[1px] border-[#333232]">
+      <h1 className="text-white font-bold text-3xl pt-6 mx-auto text-center">
         Instant
       </h1>
-      <div className="relative p-9 text-[#787878] flex gap-8 text-3xl flex-col">
+      <div className="flex flex-col items-center gap-8 mt-9 text-[#787878] text-3xl">
         <FontAwesomeIcon
           icon={faHouse}
-          className="text-white hover-text-white"
+          className="text-white hover:text-white"
         />
         <FontAwesomeIcon icon={faSearch} className="hover:text-white" />
         <FontAwesomeIcon icon={faClapperboard} className="hover:text-white" />
@@ -25,7 +25,7 @@ const Sidebar = () => {
         <FontAwesomeIcon icon={faHeart} className="hover:text-white" />
         <FontAwesomeIcon
           icon={faPlus}
-          className="border-[2.5px] rounded hover:text-white hover:border-white border-[#787878] text-[15px] py-1 mx-[1.5px]"
+          className="border-[2.5px] rounded hover:text-white hover:border-white border-[#787878] text-[15px] py-1 px-[6.5px]"
         />
         <img src="./avatar.png" alt="image" className="w-[30px] h-auto" />
         <FontAwesomeIcon icon={faBars} className="hover:text-white" />

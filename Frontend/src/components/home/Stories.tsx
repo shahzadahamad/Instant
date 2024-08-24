@@ -2,37 +2,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
 const Stories = () => {
-
   const defaultArray: string[] = Array.from({ length: 15 }, (_, index) =>
     (index + 1).toString()
   );
 
   return (
-    <div className="w-screen relative border-b-[1px] border-[#333232] overflow-x-auto h-[120px] text-nowrap scrollbar-hidden content-center p-3">
-      <div className="inline-block mx-3 w-[70px]  p-[2.5px] bg-gradient-to-r  from-[#b5347c] via-[#eb1c25] to-[#fdcd23] rounded-full relative">
-        <div className="rounded-full border-2 border-black">
-          <img
-            src="./avatar1.jpg"
-            alt="image"
-            className="w-[70px] h-auto rounded-full"
-          />
-          <FontAwesomeIcon
-            icon={faCirclePlus}
-            className="text-[#0095F6] rounded-full bg-white absolute bottom-0 right-0 w-6 h-6"
-          />
-        </div>
-      </div>
-      {defaultArray.map(() => (
-        <div className="inline-block mx-2 w-[70px]  p-[2.5px] bg-gradient-to-r from-[#b5347c] via-[#eb1c25] to-[#fdcd23] rounded-full">
-          <div className="rounded-full border-2 border-black">
-            <img
-              src="./avatar.png"
-              alt="image"
-              className="w-[70px] h-auto rounded-full"
+    <div className="w-full border-b-[1px] border-[#333232] h-[120px] p-3 flex justify-start items-center">
+      <div className="flex space-x-4 overflow-x-auto scrollbar-hidden">
+        <div className="relative flex-shrink-0 w-[70px] h-[70px]">
+          <div className="p-[2.5px] bg-gradient-to-r from-[#b5347c] via-[#eb1c25] to-[#fdcd23] rounded-full relative">
+            <div className="w-full h-full rounded-full border-2 border-black overflow-hidden">
+              <img
+                src="./avatar1.jpg"
+                alt="image"
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <FontAwesomeIcon
+              icon={faCirclePlus}
+              className="text-[#0095F6] rounded-full bg-white absolute bottom-0 right-0 w-6 h-6"
             />
           </div>
         </div>
-      ))}
+        {defaultArray.map((_, index) => (
+          <div key={index} className="relative flex-shrink-0 w-[70px] h-[70px]">
+            <div className="p-[2.5px] bg-gradient-to-r from-[#b5347c] via-[#eb1c25] to-[#fdcd23] rounded-full relative">
+              <div className="w-full h-full rounded-full border-2 border-black overflow-hidden">
+                <img
+                  src="./avatar.png"
+                  alt="image"
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </div>  
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
