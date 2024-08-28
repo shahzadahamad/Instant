@@ -13,12 +13,6 @@ const SignUpForm = () => {
             <input
               type="text"
               className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="email"
-              placeholder="Email address"
-            />
-            <input
-              type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
               name="fullname"
               placeholder="Fullname"
             />
@@ -29,13 +23,19 @@ const SignUpForm = () => {
               placeholder="Username"
             />
             <input
-              type="text"
+              type="email"
+              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
+              name="email"
+              placeholder="Email address"
+            />
+            <input
+              type="password"
               className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
               name="password"
               placeholder="Password"
             />
             <input
-              type="text"
+              type="password"
               className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
               name="cpassword"
               placeholder="Confirm password"

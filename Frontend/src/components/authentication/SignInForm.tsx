@@ -17,7 +17,7 @@ const SignIn = () => {
               placeholder="Email address or username"
             />
             <input
-              type="text"
+              type="password"
               className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
               name="password"
               placeholder="Password"
