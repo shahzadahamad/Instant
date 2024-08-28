@@ -14,7 +14,6 @@ const transporter: Transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (emailOptions: EmailOptions) => {
-  
   try {
     const { to, otp, fullname } = emailOptions;
 

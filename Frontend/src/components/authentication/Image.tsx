@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ImageProps } from "../../types/authentication/imageProps";
+import { ImageProps } from "../../types/authentication/authenticationTypes";
 
 const Image = ({
   accountMessage,

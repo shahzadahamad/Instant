@@ -17,9 +17,7 @@ export default class CreateUserController {
     try {
       await createUser.execute(fullname, username, email, password, id, otp);
 
-      return res
-        .status(200)
-        .json({ message: "New user created successfully!" });
+      return res.status(200).json({ message: "Registration successful!" });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });

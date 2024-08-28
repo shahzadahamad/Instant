@@ -1,6 +1,65 @@
+import React, { useState } from "react";
 import Image from "./Image";
+import { SignUpFormData } from "../../types/authentication/authenticationTypes";
+import { signUpSchema } from "../../validations/authValidations";
+import toast from "react-hot-toast";
+import apiClient from "../../apis/apiClient";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<SignUpFormData>({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const parsed = signUpSchema.safeParse(formData);
+    if (!parsed.success) {
+      const errorMessages = parsed.error.issues.map((err) => err.message);
+      toast.error(errorMessages[0]);
+      setLoading(false);
+      return;
+    }
+    toast.dismiss();
+    try {
+      const response = await apiClient.post(
+        `/auth/register/otp-verification`,
+        formData
+      );
+      const updatedData = {
+        ...formData,
+        id: response.data.id,
+      };
+      localStorage.setItem("signUpFormData", JSON.stringify(updatedData));
+      toast.success(response.data.message);
+      navigate("/otp");
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
@@ -9,42 +68,55 @@ const SignUpForm = () => {
             <h1 className="text-4xl">Instant</h1>
             <p className="text-[#C9C9CA]">Sign up to get started</p>
           </div>
-          <form className="flex flex-col gap-3">
+          <form
+            className="flex flex-col gap-3 text-white"
+            onSubmit={handleFormSubmit}
+          >
             <input
               type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="fullname"
+              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              id="fullname"
               placeholder="Fullname"
+              onChange={handleInputChanges}
             />
             <input
               type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="username"
+              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              id="username"
               placeholder="Username"
+              onChange={handleInputChanges}
             />
             <input
               type="email"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="email"
+              className="border border-[#515152] bg-[#252627] text-white p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              id="email"
               placeholder="Email address"
+              onChange={handleInputChanges}
             />
             <input
               type="password"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="password"
+              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              id="password"
               placeholder="Password"
+              onChange={handleInputChanges}
             />
             <input
               type="password"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="cpassword"
+              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              id="confirmPassword"
               placeholder="Confirm password"
+              onChange={handleInputChanges}
             />
             <button
-              type="button"
-              className="w-full h-[2.583rem] font-bold text-white border border-[#737373] rounded bg-[#0095F6]"
+              type="submit"
+              disabled={loading}
+              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+                loading
+                  ? "opacity-60 cursor-not-allowed"
+                  : "opacity-100 cursor-pointer"
+              }`}
             >
-              Sign Up
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
           <div className="flex items-center gap-2">
@@ -53,7 +125,7 @@ const SignUpForm = () => {
             <hr className="flex-grow border-[#737373]" />
           </div>
           <div>
-            <button className="w-full h-[2.583rem] rounded font-bold bg-[#DD4B39]  flex items-center justify-center text-white border-[#737373]">
+            <button className="w-full h-[2.583rem] outline-none rounded font-bold bg-[#DD4B39]  flex items-center justify-center text-white border-[#737373]">
               <img src="./google.png" className="w-[25px] h-auto" alt="" />
               &nbsp;&nbsp;
               <span>Continue with google</span>
