@@ -4,6 +4,7 @@ import OtpRepository from "../../../application/repositories/otpRepository";
 import PasswordHasher from "../../../application/providers/passwordHasher";
 import UserRepository from "../../../application/repositories/userRepository";
 import { GenerateOTP } from "../../../application/providers/otpGenerate";
+import { EmailService } from "../../../application/providers/nodeMailer";
 
 export default class UserOtpVerification {
   public async handle(req: Request, res: Response): Promise<Response> {
@@ -13,7 +14,8 @@ export default class UserOtpVerification {
       new OtpRepository(),
       new UserRepository(),
       new PasswordHasher(),
-      new GenerateOTP()
+      new GenerateOTP(),
+      new EmailService(),
     );
 
     try {

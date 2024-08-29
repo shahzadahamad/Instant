@@ -1,6 +1,6 @@
 import { IOtp } from "../../../infrastructure/database/models/otpVerificationModel";
 import { EmailOptions } from "../../interface/emailInterface";
-import { sendEmail } from "../../providers/nodeMailer";
+import { EmailService } from "../../providers/nodeMailer";
 import { GenerateOTP } from "../../providers/otpGenerate";
 import PasswordHasher from "../../providers/passwordHasher";
 import OtpRepository from "../../repositories/otpRepository";
@@ -11,17 +11,20 @@ export default class OtpSend {
   private userRepository: UserRepository;
   private passwordHasher: PasswordHasher;
   private generateOTP: GenerateOTP;
+  private emailService: EmailService;
 
   constructor(
     otpRepository: OtpRepository,
     userRepository: UserRepository,
     passwordHasher: PasswordHasher,
-    generateOTP: GenerateOTP
+    generateOTP: GenerateOTP,
+    emailService: EmailService
   ) {
     this.otpRepository = otpRepository;
     this.userRepository = userRepository;
     this.passwordHasher = passwordHasher;
     this.generateOTP = generateOTP;
+    this.emailService = emailService;
   }
 
   public async execute(
@@ -51,7 +54,7 @@ export default class OtpSend {
     }
 
     const newOtp = await this.otpRepository.createOtp(hashedOtp);
-    await sendEmail(emailOptions);
+    await this.emailService.sendEmail(emailOptions);
 
     return newOtp;
   }
