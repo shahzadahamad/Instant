@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "npx tsc && nodemon build/presentation/server.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon build/presentation/settings/server.js\""

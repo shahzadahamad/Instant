@@ -1,6 +1,6 @@
 import nodemailer, { Transporter } from "nodemailer";
-import { EmailOptions } from "../../types/authentication/authenticationTypes";
 import dotenv from "dotenv";
+import { EmailOptions } from "../interface/emailInterface";
 dotenv.config();
 
 const transporter: Transporter = nodemailer.createTransport({

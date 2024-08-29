@@ -3,6 +3,7 @@ import OtpSend from "../../../application/useCases/user/otpSend";
 import OtpRepository from "../../../application/repositories/otpRepository";
 import PasswordHasher from "../../../application/providers/passwordHasher";
 import UserRepository from "../../../application/repositories/userRepository";
+import { GenerateOTP } from "../../../application/providers/otpGenerate";
 
 export default class UserOtpVerification {
   public async handle(req: Request, res: Response): Promise<Response> {
@@ -11,7 +12,8 @@ export default class UserOtpVerification {
     const otpSend = new OtpSend(
       new OtpRepository(),
       new UserRepository(),
-      new PasswordHasher()
+      new PasswordHasher(),
+      new GenerateOTP()
     );
 
     try {

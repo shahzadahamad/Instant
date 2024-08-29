@@ -1,7 +1,7 @@
 import { IOtp } from "../../../infrastructure/database/models/otpVerificationModel";
-import { EmailOptions } from "../../../types/authentication/authenticationTypes";
+import { EmailOptions } from "../../interface/emailInterface";
 import { sendEmail } from "../../providers/nodeMailer";
-import { generateOtp } from "../../providers/otpGenerate";
+import { GenerateOTP } from "../../providers/otpGenerate";
 import PasswordHasher from "../../providers/passwordHasher";
 import OtpRepository from "../../repositories/otpRepository";
 import UserRepository from "../../repositories/userRepository";
@@ -10,19 +10,26 @@ export default class OtpSend {
   private otpRepository: OtpRepository;
   private userRepository: UserRepository;
   private passwordHasher: PasswordHasher;
+  private generateOTP: GenerateOTP;
 
   constructor(
     otpRepository: OtpRepository,
     userRepository: UserRepository,
-    passwordHasher: PasswordHasher
+    passwordHasher: PasswordHasher,
+    generateOTP: GenerateOTP
   ) {
     this.otpRepository = otpRepository;
     this.userRepository = userRepository;
     this.passwordHasher = passwordHasher;
+    this.generateOTP = generateOTP;
   }
 
-  public async execute(email: string, fullname: string, username: string): Promise<IOtp> {
-    const otp = await generateOtp();
+  public async execute(
+    email: string,
+    fullname: string,
+    username: string
+  ): Promise<IOtp> {
+    const otp = await this.generateOTP.generate();
 
     const hashedOtp = await this.passwordHasher.hash(otp);
 
@@ -39,7 +46,7 @@ export default class OtpSend {
       throw new Error("User already exists");
     }
 
-    if(isUsernameExist) {
+    if (isUsernameExist) {
       throw new Error("Username already exists");
     }
 
