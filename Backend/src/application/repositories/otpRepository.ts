@@ -17,9 +17,9 @@ export default class OtpRepository {
     }
   }
 
-  public async findByOptId(id: string) {
+  public async findByOptId(id: string[]) {
     try {
-      const otp = await OtpModel.findOne({ _id: id });
+      const otp = await OtpModel.find({ _id: { $in: id } });
       return await otp;
     } catch (error) {
       if (error instanceof Error) {
@@ -31,9 +31,9 @@ export default class OtpRepository {
     }
   }
 
-  public async removeOtp(id: string) {
+  public async removeOtp(id: string[]) {
     try {
-      await OtpModel.deleteOne({ _id: id });
+      await OtpModel.deleteMany({ _id: { $in: id } });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error remove otp: ${error.message}`);

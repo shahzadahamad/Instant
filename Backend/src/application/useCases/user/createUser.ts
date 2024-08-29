@@ -23,20 +23,25 @@ export default class CreateUser {
     username: string,
     email: string,
     password: string,
-    id: string,
+    id: string[],
     otp: number
   ): Promise<IUser | null> {
     const isOtpExist = await this.otpRepository.findByOptId(id);
     if (isOtpExist) {
-      const verifyOtp = await this.passwordHasher.compare(
-        String(otp),
-        isOtpExist.otp
+      const compareOtp = isOtpExist.map(async (element) => {
+        return this.passwordHasher.compare(String(otp), element.otp);
+      });
+      const results = await Promise.allSettled(compareOtp);
+
+      const isOtpValid = results.some(
+        (result) => result.status === "fulfilled" && result.value === true
       );
-      if (!verifyOtp) {
-        throw new Error("Invalid otp");
+
+      if (!isOtpValid) {
+        throw new Error("Invalid OTP");
       }
     } else {
-      throw new Error("Invalid otp");
+      throw new Error("Invalid OTP");
     }
 
     const hashedPassword = await this.passwordHasher.hash(password);

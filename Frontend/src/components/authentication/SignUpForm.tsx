@@ -41,7 +41,7 @@ const SignUpForm = () => {
       );
       const updatedData = {
         ...formData,
-        id: response.data.id,
+        id: [response.data.id],
       };
       localStorage.setItem("signUpFormData", JSON.stringify(updatedData));
       toast.success(response.data.message);
@@ -116,7 +116,7 @@ const SignUpForm = () => {
                   : "opacity-100 cursor-pointer"
               }`}
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? <div className="spinner"></div> : "Sign Up"}
             </button>
           </form>
           <div className="flex items-center gap-2">

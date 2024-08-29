@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import Image from "./Image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { otpSchema } from "../../validations/authValidations";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
@@ -14,10 +14,32 @@ const Otp = () => {
   const parsedData = storedData ? JSON.parse(storedData) : null;
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [time, setTime] = useState(120);
+  useEffect(() => {
+    if (time > 0) {
+      const timer = setInterval(() => {
+        setTime((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [time]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    if (!parsedData) {
+      toast.error("Unauthorized");
+      setLoading(false);
+      return;
+    }
     const parsed = otpSchema.safeParse({ otp });
     if (!parsed.success) {
       const errorMessages = parsed.error.issues.map((err) => err.message);
@@ -32,11 +54,43 @@ const Otp = () => {
         ...parsedData,
         otp,
       });
-      localStorage.removeItem("signUpFormData");
-      toast.success(response.data.message, {
-        icon: "👏",
-      });
-      navigate("/sign-in");
+      setTimeout(() => {
+        navigate("/sign-in");
+        localStorage.removeItem("signUpFormData");
+        toast.success(response.data.message);
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+      setLoading(false);
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    try {
+      if (!parsedData) {
+        toast.error("Unauthorized");
+        setResendLoading(false);
+        return;
+      }
+      setTime(120);
+      const response = await apiClient.post(
+        `/auth/register/otp-verification`,
+        parsedData
+      );
+      parsedData.id.push(response.data.id);
+      localStorage.setItem("signUpFormData", JSON.stringify(parsedData));
+      toast.success("OTP resend successfully");
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -47,6 +101,7 @@ const Otp = () => {
         toast.error("An unexpected error occurred");
       }
     } finally {
+      setResendLoading(false);
       setLoading(false);
     }
   };
@@ -63,7 +118,7 @@ const Otp = () => {
             />
             <p className="text-[#C9C9CA] text-xs w-61 mx-auto">
               Enter the code that we sent to your email address : &nbsp;
-              {parsedData.email}
+              {parsedData ? parsedData.email : ""}
             </p>
           </div>
           <form className="flex flex-col gap-3" onSubmit={handleFormSubmit}>
@@ -83,13 +138,30 @@ const Otp = () => {
                   : "opacity-100 cursor-pointer"
               }`}
             >
-              {loading ? "Verifying..." : "Confirm"}
+              {loading ? <div className="spinner"></div> : "Confirm"}
             </button>
           </form>
           <div className="text-center">
-            <p className="text-white font-bold text-lg hover:cursor-pointer">
+            <p className="text-white text-lg font-bold">
               Didn't get a security code?&nbsp;
-              <span className="text-[#52C2FB]">Resend</span>
+              <span
+                className={`${
+                  time === 0 && parsedData
+                    ? "text-[#52C2FB] hover:underline cursor-pointer"
+                    : "text-gray-500 cursor-not-allowed"
+                }`}
+                onClick={time === 0 ? handleResend : undefined}
+              >
+                {resendLoading ? <div className="spinner"></div> : "Resend"}
+              </span>
+              &nbsp;
+              {time && parsedData ? (
+                <span className="text-white font-normal">
+                  in {formatTime(time)}
+                </span>
+              ) : (
+                ""
+              )}
             </p>
           </div>
         </div>

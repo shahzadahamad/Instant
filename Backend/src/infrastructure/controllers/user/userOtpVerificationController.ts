@@ -18,7 +18,7 @@ export default class UserOtpVerification {
       const otp = await otpSend.execute(email, fullname, username);
 
       return res.status(200).json({
-        message: "OTP sent successfully",
+        message: "OTP send successfully",
         id: otp._id,
       });
     } catch (error) {
