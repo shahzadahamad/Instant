@@ -6,7 +6,7 @@ import UserRepository from "../../../application/repositories/user/userRepositor
 import { GenerateOTP } from "../../../application/providers/otpGenerate";
 import { EmailService } from "../../../application/providers/nodeMailer";
 
-export default class UserOtpVerification {
+export default class UserOtpVerificationController {
   public async handle(req: Request, res: Response): Promise<Response> {
     const { email, fullname, username } = req.body;
 

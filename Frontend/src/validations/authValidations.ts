@@ -14,8 +14,8 @@ export const signUpSchema = z
       .min(6, "Username must be at least 6 characters")
       .max(20, "Username must be at most 20 characters")
       .regex(
-        /^[a-zA-Z_]+$/,
-        "Username should only contain characters and should not contain spaces or special characters"
+        /^[a-z0-9_]+$/,
+        "Username should only contain lowercase letters, numbers, and underscores and should not contain spaces or uppercase letters"
       ),
     email: z
       .string()

@@ -6,6 +6,7 @@ import { signInSchema } from "../../validations/authValidations";
 import toast from "react-hot-toast";
 import apiClient from "../../apis/apiClient";
 import { AxiosError } from "axios";
+import GoogleAuth from "./GoogleAuth";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -94,13 +95,7 @@ const SignIn = () => {
             <span className="text-[#737373] font-bold mb-1">OR</span>
             <hr className="flex-grow border-[#737373]" />
           </div>
-          <div>
-            <button className="w-full h-[2.583rem] rounded font-bold bg-[#DD4B39]  flex items-center justify-center text-white border-[#737373]">
-              <img src="./google.png" className="w-[25px] h-auto" alt="" />
-              &nbsp;&nbsp;
-              <span>Continue with google</span>
-            </button>
-          </div>
+          <GoogleAuth />
         </div>
       </div>
       <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
