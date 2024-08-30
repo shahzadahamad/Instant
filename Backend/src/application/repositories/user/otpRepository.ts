@@ -1,6 +1,6 @@
 import OtpModel, {
   IOtp,
-} from "../../infrastructure/database/models/otpVerificationModel";
+} from "../../../infrastructure/database/models/otpVerificationModel";
 
 export default class OtpRepository {
   public async createOtp(otp: string): Promise<IOtp> {

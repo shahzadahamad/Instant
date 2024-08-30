@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
+  _id: string;
   fullname: string;
   username: string;
   email: string;
@@ -15,6 +16,7 @@ export interface IUser extends Document {
   followers?: string[];
   following?: string[];
   blockedUser?: string[];
+  role?: string
 }
 
 const userSchema: Schema = new Schema(

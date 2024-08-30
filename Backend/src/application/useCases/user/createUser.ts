@@ -1,7 +1,8 @@
 import { IUser } from "../../../infrastructure/database/models/userModel";
 import PasswordHasher from "../../providers/passwordHasher";
-import OtpRepository from "../../repositories/otpRepository";
-import UserRepository from "../../repositories/userRepository";
+import OtpRepository from "../../repositories/user/otpRepository";
+import UserRepository from "../../repositories/user/userRepository";
+
 
 export default class CreateUser {
   private userRepository: UserRepository;

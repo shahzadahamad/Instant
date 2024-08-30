@@ -1,11 +1,28 @@
 import UserModel, {
   IUser,
-} from "../../infrastructure/database/models/userModel";
+} from "../../../infrastructure/database/models/userModel";
 
 export default class UserRepository {
   public async findByEmail(email: string): Promise<IUser | null> {
     try {
       return await UserModel.findOne({ email });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findByUsernameAndEmail(
+    usernameOrEmail: string
+  ): Promise<IUser | null> {
+    try {
+      return await UserModel.findOne({
+        $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+      });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);
