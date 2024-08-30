@@ -54,9 +54,9 @@ const Otp = () => {
         ...parsedData,
         otp,
       });
+      localStorage.removeItem("signUpFormData");
       setTimeout(() => {
         navigate("/sign-in");
-        localStorage.removeItem("signUpFormData");
         toast.success(response.data.message);
         setLoading(false);
       }, 1000);

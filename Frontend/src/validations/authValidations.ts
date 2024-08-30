@@ -53,3 +53,19 @@ export const otpSchema = z.object({
     .max(6, "Otp must be at most 6 numbers")
     .regex(/^[0-9]+$/, "Code must be integers"),
 });
+
+export const signInSchema = z.object({
+  usernameOrEmail: z
+    .string()
+    .min(1, "Username or email is required")
+    .regex(
+      /^[a-zA-Z_]+$/,
+      "Username should only contain characters and should not contain spaces or special characters"
+    ),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be at most 32 characters")
+    .regex(/^\S+$/, "Password should not contain spaces"),
+});

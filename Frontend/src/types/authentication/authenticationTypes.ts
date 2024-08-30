@@ -8,3 +8,7 @@ export interface ImageProps {
 export interface SignUpFormData {
   [key: string]: string;
 }
+
+export interface SignInFormData {
+  [key: string]: string;
+}
