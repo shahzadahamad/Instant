@@ -1,10 +1,10 @@
-import { IOtp } from "../../../infrastructure/database/models/otpVerificationModel";
-import { EmailOptions } from "../../interface/emailInterface";
-import { EmailService } from "../../providers/nodeMailer";
-import { GenerateOTP } from "../../providers/otpGenerate";
-import PasswordHasher from "../../providers/passwordHasher";
-import OtpRepository from "../../repositories/user/otpRepository";
-import UserRepository from "../../repositories/user/userRepository";
+import { IOtp } from "../../../../infrastructure/database/models/otpVerificationModel";
+import { EmailOptionsOtp } from "../../../interface/emailInterface";
+import { EmailService } from "../../../providers/nodeMailer";
+import { GenerateOTP } from "../../../providers/otpGenerate";
+import PasswordHasher from "../../../providers/passwordHasher";
+import OtpRepository from "../../../repositories/user/otpRepository";
+import UserRepository from "../../../repositories/user/userRepository";
 
 export default class OtpSend {
   private otpRepository: OtpRepository;
@@ -36,12 +36,6 @@ export default class OtpSend {
 
     const hashedOtp = await this.passwordHasher.hash(otp);
 
-    const emailOptions: EmailOptions = {
-      to: email,
-      otp: otp,
-      fullname: fullname,
-    };
-
     const isEmailExist = await this.userRepository.findByEmail(email);
     const isUsernameExist = await this.userRepository.findByUsername(username);
 
@@ -54,7 +48,13 @@ export default class OtpSend {
     }
 
     const newOtp = await this.otpRepository.createOtp(hashedOtp);
-    await this.emailService.sendEmail(emailOptions);
+    
+    const emailOptions: EmailOptionsOtp = {
+      to: email,
+      otp: otp,
+      fullname: fullname,
+    };
+    await this.emailService.sendEmailOtp(emailOptions);
 
     return newOtp;
   }

@@ -36,7 +36,7 @@ const Otp = () => {
     e.preventDefault();
     setLoading(true);
     if (!parsedData) {
-      toast.error("Unauthorized");
+      toast.error("Verification failed!");
       setLoading(false);
       return;
     }
@@ -142,7 +142,7 @@ const Otp = () => {
             </button>
           </form>
           <div className="text-center">
-            <p className="text-white text-lg font-bold">
+            <p className="text-white md:text-lg font-bold">
               Didn't get a security code?&nbsp;
               <span
                 className={`${

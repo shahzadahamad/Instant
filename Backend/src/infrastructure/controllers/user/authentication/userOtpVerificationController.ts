@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import OtpSend from "../../../application/useCases/user/otpSend";
-import OtpRepository from "../../../application/repositories/user/otpRepository";
-import PasswordHasher from "../../../application/providers/passwordHasher";
-import UserRepository from "../../../application/repositories/user/userRepository";
-import { GenerateOTP } from "../../../application/providers/otpGenerate";
-import { EmailService } from "../../../application/providers/nodeMailer";
+import OtpSend from "../../../../application/useCases/user/authentication/otpSend";
+import OtpRepository from "../../../../application/repositories/user/otpRepository";
+import UserRepository from "../../../../application/repositories/user/userRepository";
+import PasswordHasher from "../../../../application/providers/passwordHasher";
+import { GenerateOTP } from "../../../../application/providers/otpGenerate";
+import { EmailService } from "../../../../application/providers/nodeMailer";
+
 
 export default class UserOtpVerificationController {
   public async handle(req: Request, res: Response): Promise<Response> {

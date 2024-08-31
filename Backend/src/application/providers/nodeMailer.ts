@@ -1,5 +1,8 @@
 import nodemailer, { Transporter } from "nodemailer";
-import { EmailOptions } from "../interface/emailInterface";
+import {
+  EmailOptionsOtp,
+  EmailOptionsResetPassword,
+} from "../interface/emailInterface";
 import { emailConfig } from "../../infrastructure/configs/nodeEmailerConfig";
 import dotenv from "dotenv";
 dotenv.config();
@@ -11,7 +14,7 @@ export class EmailService {
     this.transporter = nodemailer.createTransport(emailConfig);
   }
 
-  async sendEmail(emailOptions: EmailOptions): Promise<boolean> {
+  async sendEmailOtp(emailOptions: EmailOptionsOtp): Promise<boolean> {
     try {
       const { to, otp, fullname } = emailOptions;
 
@@ -30,6 +33,39 @@ export class EmailService {
             <p>Enter this OTP in the app to complete your registration.</p>
             <p>If you have any questions or need support, we’re here to help.</p>
             <p>Enjoy your time on Instant!</p>
+            <br>
+            <p>Best regards,</p>
+            <p>The Instant Team</p>
+          </div>
+        `,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error sending email:", error);
+      throw new Error("Failed to send mail");
+    }
+  }
+
+  async sendEmailResetPassword(
+    emailOptions: EmailOptionsResetPassword
+  ): Promise<boolean> {
+    try {
+      const { to, fullname, userId, token } = emailOptions;
+
+      const resetLink = `http://localhost:5173/reset-password/${userId}/${token}`;
+
+      await this.transporter.sendMail({
+        from: process.env.MAILER_EMAIL,
+        to,
+        subject: "Instant - Reset Your Password",
+        text: `Hi ${fullname},\n\nIt seems like you requested to reset your password. You can reset it by clicking the link below:\n\n${resetLink}\n\nIf you didn't request a password reset, please ignore this email.\n\nBest regards,\nThe Instant Team`,
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #333;">
+            <h2>Hello, ${fullname}</h2>
+            <p>It seems like you requested to reset your password. You can reset it by clicking the link below:</p>
+            <a href="${resetLink}" style="background-color: #ff6600; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Your Password</a>
+            <p>If you didn't request a password reset, please ignore this email.</p>
             <br>
             <p>Best regards,</p>
             <p>The Instant Team</p>

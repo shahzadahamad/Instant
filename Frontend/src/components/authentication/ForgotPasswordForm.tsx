@@ -14,7 +14,7 @@ const ForgotPassword = () => {
               icon={faShieldHalved}
             />
             <p className="text-white text-sm mb-1">Trouble with logging in?</p>
-            <p className="text-[#C9C9CA] text-xs w-60 mx-auto">
+            <p className="text-[#C9C9CA] text-xs md:w-72  mx-auto">
               Enter your email address or username, and we'll send you a link to
               get back into your account.
             </p>
@@ -22,9 +22,9 @@ const ForgotPassword = () => {
           <form className="flex flex-col gap-3">
             <input
               type="text"
-              className="border border-[#252545] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
+              className="border border-[#252545] text-white outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
               name="email"
-              placeholder="Email address or password"
+              placeholder="Email address or username"
             />
             <button
               type="button"
@@ -33,12 +33,6 @@ const ForgotPassword = () => {
               Confirm
             </button>
           </form>
-          <div className="text-center">
-            <p className="text-white font-bold text-lg hover:cursor-pointer">
-              Didn't get a security code?&nbsp;
-              <span className="text-[#52C2FB]">Resend</span>
-            </p>
-          </div>
         </div>
       </div>
       <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>

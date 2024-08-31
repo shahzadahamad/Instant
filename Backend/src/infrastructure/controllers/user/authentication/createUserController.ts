@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../application/repositories/user/userRepository";
-import PasswordHasher from "../../../application/providers/passwordHasher";
-import CreateUser from "../../../application/useCases/user/createUser";
-import OtpRepository from "../../../application/repositories/user/otpRepository";
+import CreateUser from "../../../../application/useCases/user/authentication/createUser";
+import UserRepository from "../../../../application/repositories/user/userRepository";
+import OtpRepository from "../../../../application/repositories/user/otpRepository";
+import PasswordHasher from "../../../../application/providers/passwordHasher";
+
 
 export default class CreateUserController {
   public async handle(req: Request, res: Response): Promise<Response | void> {
