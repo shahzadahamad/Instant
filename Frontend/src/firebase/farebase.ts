@@ -1,12 +1,12 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
 
 const firebaseConfig: FirebaseOptions = {
-  apiKey: "AIzaSyCh9B5eMqmqKd8f80z569_P_NqGwSNTUKA",
-  authDomain: "instant-socialmedia.firebaseapp.com",
-  projectId: "instant-socialmedia",
-  storageBucket: "instant-socialmedia.appspot.com",
-  messagingSenderId: "292297547500",
-  appId: "1:292297547500:web:acd771a3d1bd986cfe0fc9",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 export const app = initializeApp(firebaseConfig);
