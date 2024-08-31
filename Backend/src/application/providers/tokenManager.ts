@@ -6,7 +6,7 @@ export default class TokenManager {
     role: string;
   }): string {
     return jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "15m",
+      expiresIn: "5m",
     });
   }
 
@@ -17,8 +17,9 @@ export default class TokenManager {
   }
 
   public generatePasswordResetToken(userId: string, password: string) {
-    const secret = process.env.JWT_SECRET + password;
-    return jwt.sign({ userId }, secret!, { expiresIn: "10m" });
+    return jwt.sign({ userId }, process.env.JWT_SECRET_2! + password, {
+      expiresIn: "10m",
+    });
   }
 
   public verifyAccessToken(token: string): string | object {
@@ -29,11 +30,7 @@ export default class TokenManager {
     return jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
   }
 
-  public verifyPasswordResetToken(
-    token: string,
-    password: string
-  ): string | object {
-    const secret = process.env.JWT_SECRET + password;
-    return jwt.verify(token, secret);
+  public verifyPasswordResetToken(token: string,password:string): string | object {
+    return jwt.verify(token, process.env.JWT_SECRET_2! + password);
   }
 }

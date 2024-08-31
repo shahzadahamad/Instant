@@ -28,10 +28,7 @@ export default class VerifyAndSendMail {
       throw new Error("User not found!");
     }
 
-    const token = await this.tokenManager.generatePasswordResetToken(
-      user._id,
-      user.password
-    );
+    const token = await this.tokenManager.generatePasswordResetToken(user._id,user.password);
 
     const emailOptions: EmailOptionsResetPassword = {
       to: user.email,
@@ -42,6 +39,6 @@ export default class VerifyAndSendMail {
 
     await this.emailService.sendEmailResetPassword(emailOptions);
 
-    return "Email send successful!"
+    return "Email send successful!";
   }
 }

@@ -45,9 +45,11 @@ const SignIn = () => {
         console.log(error);
         const errorMsg = error.response.data?.error || "An error occurred";
         toast.error(errorMsg);
+        setLoading(false);
       } else {
         console.error("Unexpected error:", error);
         toast.error("An unexpected error occurred");
+        setLoading(false);
       }
     }
   };
