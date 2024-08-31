@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/ForgetPassword";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/reset-password/:_id/:token" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

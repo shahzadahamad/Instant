@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ImageProps } from "../../types/authentication/authenticationTypes";
+import formImage from '../../../public/form-image.png';
 
 const Image = ({
   accountMessage,
@@ -10,7 +11,7 @@ const Image = ({
   return (
     <div className="bg-black w-1/2 h-[100vh] hidden md:flex flex-col justify-center items-center">
       <img
-        src="./form-image.png"
+        src={formImage}
         className="w-3/5 md:w-3/4 lg:w-3/5 h-auto"
         alt=""
       />
