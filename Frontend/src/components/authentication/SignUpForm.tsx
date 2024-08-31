@@ -44,7 +44,7 @@ const SignUpForm = () => {
         ...formData,
         id: [response.data.id],
       };
-      localStorage.setItem("signUpFormData", JSON.stringify(updatedData));
+      sessionStorage.setItem("signUpFormData", JSON.stringify(updatedData));
       toast.success(response.data.message);
       navigate("/otp");
     } catch (error) {

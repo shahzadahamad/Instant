@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const Otp = () => {
   const navigate = useNavigate();
-  const storedData = localStorage.getItem("signUpFormData");
+  const storedData = sessionStorage.getItem("signUpFormData");
   const parsedData = storedData ? JSON.parse(storedData) : null;
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const Otp = () => {
       });
       setTimeout(() => {
         navigate("/sign-in");
-        localStorage.removeItem("signUpFormData");
+        sessionStorage.removeItem("signUpFormData");
         toast.success(response.data.message);
         setLoading(false);
       }, 1000);
@@ -89,7 +89,7 @@ const Otp = () => {
         parsedData
       );
       parsedData.id.push(response.data.id);
-      localStorage.setItem("signUpFormData", JSON.stringify(parsedData));
+      sessionStorage.setItem("signUpFormData", JSON.stringify(parsedData));
       toast.success("OTP resend successfully");
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
