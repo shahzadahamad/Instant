@@ -24,7 +24,7 @@ const Image = ({
             </Link>
           </p>
           {forgetPass ? (
-            <Link to={'/forget-password'}>
+            <Link to={'/forgot-password'}>
               <p className="text-[#0070B8] font-bold text-base">
                 Forgotten your password?
               </p>
