@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ImageProps } from "../../types/authentication/authenticationTypes";
-import formImage from '../../../public/form-image.png';
+import formImage from '/form-image.png';
 
 const Image = ({
   accountMessage,

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserState } from "../../types/redux/userSlicetypes";
+import { User, UserState } from "../../types/redux/userSlicetypes";
 const initialState: UserState = {
   currentUser: null,
 };
@@ -8,8 +8,8 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loginSuccess(state, action: PayloadAction<UserState>) {
-      state.currentUser = action.payload.currentUser;
+    loginSuccess(state, action: PayloadAction<User>) {
+      state.currentUser = action.payload;
     },
     logout(state) {
       state.currentUser = null;

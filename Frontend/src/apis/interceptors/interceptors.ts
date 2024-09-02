@@ -1,7 +1,7 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import store from "../../redux/store/store";
 import apiClient from "../apiClient";
 import { logout } from "../../redux/slice/userSlice";
+import store from "../../redux/store/store";
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
