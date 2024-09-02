@@ -29,7 +29,7 @@ export default class ResetPassword {
     }
 
     try {
-      await this.tokenManager.verifyPasswordResetToken(token,user.password);
+      await this.tokenManager.verifyPasswordResetToken(token, user.password);
     } catch (error) {
       throw new Error("Invalid Access!");
     }

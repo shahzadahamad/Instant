@@ -1,8 +1,49 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved";
 import Image from "./Image";
+import { useState } from "react";
+import { forgotPassSchema } from "../../validations/authValidations";
+import toast from "react-hot-toast";
+import apiClient from "../../apis/apiClient";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 const ForgotPassword = () => {
+  const [emailOrUsername, setUsernameOrEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const parsed = forgotPassSchema.safeParse({ emailOrUsername });
+    if (!parsed.success) {
+      const errorMessages = parsed.error.issues.map((err) => err.message);
+      toast.error(errorMessages[0]);
+      setLoading(false);
+      return;
+    }
+    toast.dismiss();
+    try {
+      const response = await apiClient.post(`/auth/forgot-password`, {
+        emailOrUsername,
+      });
+      navigate("/sign-in");
+      toast.success(response.data.message);
+      setLoading(false);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+        setLoading(false);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+        setLoading(false);
+      }
+    }
+  };
   return (
     <>
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
@@ -19,18 +60,24 @@ const ForgotPassword = () => {
               get back into your account.
             </p>
           </div>
-          <form className="flex flex-col gap-3">
+          <form onSubmit={handleFormSubmit} className="flex flex-col gap-3">
             <input
               type="text"
               className="border border-[#252545] text-white outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              name="email"
+              name="usernameOrEmail"
+              value={emailOrUsername}
               placeholder="Email address or username"
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
             />
             <button
-              type="button"
-              className="w-full h-[2.583rem] font-bold text-white border border-[#737373] rounded bg-[#0095F6]"
+              type="submit"
+              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+                loading
+                  ? "opacity-60 cursor-not-allowed"
+                  : "opacity-100 cursor-pointer"
+              }`}
             >
-              Confirm
+              {loading ? <div className="spinner"></div> : "Confirm"}
             </button>
           </form>
         </div>
