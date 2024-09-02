@@ -28,7 +28,7 @@ export default class GoogleAuthenticateUser {
   public async execute(
     fullname: string,
     email: string
-  ): Promise<{ token: string; refreshToken: string }> {
+  ): Promise<{ token: string; refreshToken: string; user: Object }> {
     const userExist = await this.userRepository.findByEmail(email);
 
     if (userExist) {
@@ -39,8 +39,18 @@ export default class GoogleAuthenticateUser {
       const refreshToken = await this.tokenManager.generateRefreshToken(
         userExist._id
       );
-
-      return { token, refreshToken };
+      const { _id, fullname, username, email, profilePicture } = userExist;
+      return {
+        token,
+        refreshToken,
+        user: {
+          _id,
+          fullname,
+          username,
+          email,
+          profilePicture,
+        },
+      };
     }
 
     const generatedPassword = this.generatePassword.generate();
@@ -71,6 +81,18 @@ export default class GoogleAuthenticateUser {
       newUser._id
     );
 
-    return { token, refreshToken };
+    const { _id, username, profilePicture } = newUser;
+
+    return {
+      token,
+      refreshToken,
+      user: {
+        _id,
+        fullname: newUser.fullname,
+        username,
+        email: newUser.email,
+        profilePicture,
+      },
+    };
   }
 }

@@ -15,14 +15,12 @@ export default class LoginWithGoogleAuth {
       new PasswordHasher(),
       new TokenManager(),
       new GeneratePassword(),
-      new GenerateUsername(),
+      new GenerateUsername()
     );
 
     try {
-      const { token, refreshToken } = await googleAuthenticateUser.execute(
-        fullname,
-        email
-      );
+      const { token, refreshToken, user } =
+        await googleAuthenticateUser.execute(fullname, email);
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,
@@ -30,7 +28,7 @@ export default class LoginWithGoogleAuth {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res.json({ token });
+      return res.json({ token, user });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });

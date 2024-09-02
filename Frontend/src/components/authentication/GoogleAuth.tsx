@@ -5,10 +5,13 @@ import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/slice/userSlice";
 
 const GoogleAuth = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleGoogleClick = async () => {
     try {
@@ -25,7 +28,9 @@ const GoogleAuth = () => {
         data
       );
       const token = response.data.token;
+      const currentUser = response.data.user;
       localStorage.setItem("token", token);
+      dispatch(loginSuccess(currentUser));
       setTimeout(() => {
         navigate("/");
         toast.success("Login successful!");

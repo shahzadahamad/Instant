@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import apiClient from "../../apis/apiClient";
 import { AxiosError } from "axios";
 import GoogleAuth from "./GoogleAuth";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/slice/userSlice";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const SignIn = () => {
     usernameOrEmail: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -34,7 +37,9 @@ const SignIn = () => {
     try {
       const response = await apiClient.post(`/auth/login`, formData);
       const token = response.data.token;
+      const currentUser = response.data.user;
       localStorage.setItem("token", token);
+      dispatch(loginSuccess(currentUser));
       setTimeout(() => {
         navigate("/");
         toast.success("Login successful!");

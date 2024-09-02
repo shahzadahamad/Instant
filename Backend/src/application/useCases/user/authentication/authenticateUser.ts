@@ -1,3 +1,4 @@
+import { IUser } from "../../../../infrastructure/database/models/userModel";
 import PasswordHasher from "../../../providers/passwordHasher";
 import TokenManager from "../../../providers/tokenManager";
 import UserRepository from "../../../repositories/user/userRepository";
@@ -19,11 +20,10 @@ export default class AuthenticateUser {
   public async execute(
     usernameOrEmail: string,
     password: string
-  ): Promise<{token:string,refreshToken:string}> {
-    const userExist =
-      await this.userRepository.findByUsernameAndEmail(
-        usernameOrEmail
-      );
+  ): Promise<{ token: string; refreshToken: string; user: Object }> {
+    const userExist = await this.userRepository.findByUsernameAndEmail(
+      usernameOrEmail
+    );
     if (!userExist) {
       throw new Error("User not found!");
     }
@@ -36,9 +36,25 @@ export default class AuthenticateUser {
       throw new Error("Invalid credentials");
     }
 
-    const token = await this.tokenManager.generateAccessToken({userId:userExist._id,role:"user"});
-    const refreshToken = await this.tokenManager.generateRefreshToken(userExist._id);
+    const token = await this.tokenManager.generateAccessToken({
+      userId: userExist._id,
+      role: "user",
+    });
+    const refreshToken = await this.tokenManager.generateRefreshToken(
+      userExist._id
+    );
+    const { _id, fullname, username, email, profilePicture } = userExist;
 
-    return {token, refreshToken}
+    return {
+      token,
+      refreshToken,
+      user: {
+        _id,
+        fullname,
+        username,
+        email,
+        profilePicture,
+      },
+    };
   }
 }

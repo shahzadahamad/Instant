@@ -15,7 +15,7 @@ export default class LoginUserController {
     );
 
     try {
-      const { token, refreshToken } = await authenticateUser.execute(
+      const { token, refreshToken, user } = await authenticateUser.execute(
         usernameOrEmail,
         password
       );
@@ -26,7 +26,7 @@ export default class LoginUserController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res.json({ token });
+      return res.json({ token, user });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });

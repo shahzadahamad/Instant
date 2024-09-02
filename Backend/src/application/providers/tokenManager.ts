@@ -6,7 +6,7 @@ export default class TokenManager {
     role: string;
   }): string {
     return jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "5m",
+      expiresIn: "60",
     });
   }
 
