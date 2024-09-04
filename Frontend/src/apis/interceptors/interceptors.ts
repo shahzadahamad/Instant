@@ -23,24 +23,21 @@ export const responseInterceptor = (response: AxiosResponse) => {
 
 export const errorInterceptor = async (error: AxiosError) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
-
   if (
     originalRequest &&
     error.response?.status === 401 &&
-    error.response?.data === "Unauthorized" &&
     !originalRequest._retry
   ) {
     originalRequest._retry = true;
     try {
       const response = await apiClient.get("/auth/refresh-token");
       const token = response.data.token;
-      if (response.data.token) {
+      if (token) {
         localStorage.setItem("token", token);
       }
       if (originalRequest.headers) {
         originalRequest.headers["Authorization"] = `Bearer ${token}`;
       }
-      console.log("inininininininin");
       return apiClient(originalRequest);
     } catch (refreshError) {
       console.log("out out out");

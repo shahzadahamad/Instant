@@ -51,8 +51,8 @@ const Sidebar = () => {
         />
         <img
           src={currentUser?.profilePicture}
-          alt="image"
-          className="w-[30px] rounded-full h-auto cursor-pointer"
+          alt="avatar"
+          className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
           onClick={() => navigate("/profile")}
         />
         <FontAwesomeIcon

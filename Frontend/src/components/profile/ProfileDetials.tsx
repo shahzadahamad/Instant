@@ -12,7 +12,7 @@ const ProfileDetials = () => {
         <img
           src={currentUser?.profilePicture}
           alt="avatar"
-          className="w-28 rounded-full h-auto"
+          className="w-28 h-28 rounded-full object-cover"
         />
         <div className="flex flex-col gap-3 font-bold text-white">
           <div className="flex gap-5">
