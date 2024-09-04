@@ -20,7 +20,7 @@ export default class RefreshTokenController {
           .status(403)
           .json({ error: "Invalid refresh token" });
       }
-      return res.status(200).json({token:status.token });
+      return res.status(200).json({ token: status.token });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });

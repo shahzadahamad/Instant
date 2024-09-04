@@ -15,7 +15,28 @@ export default class GetUserData {
       throw new Error("Invalid Access!");
     }
 
-    const { password, ...userWithoutSensitiveInfo } = user.toObject();
-    return userWithoutSensitiveInfo as IUser;
+    const {
+      fullname,
+      username,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      profilePicture,
+      gender,
+      bio,
+      isPrivateAccount,
+      ...userWithoutSensitiveInfo
+    } = user.toObject();
+    return {
+      fullname,
+      username,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      profilePicture,
+      gender,
+      bio,
+      isPrivateAccount,
+    } as IUser;
   }
 }

@@ -16,6 +16,7 @@ export default class HandleRefreshToken {
       throw new Error("No refresh token");
     }
 
+
     try {
       const decoded = (await this.tokenManager.verifyRefreshToken(
         refreshToken

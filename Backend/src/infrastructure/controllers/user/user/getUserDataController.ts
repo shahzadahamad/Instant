@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import CreateUser from "../../../../application/useCases/user/authentication/createUser";
 import UserRepository from "../../../../application/repositories/user/userRepository";
-import OtpRepository from "../../../../application/repositories/user/otpRepository";
-import PasswordHasher from "../../../../application/providers/passwordHasher";
 import GetUserData from "../../../../application/useCases/user/user/getUserData";
 
 export default class GetUserDataController {

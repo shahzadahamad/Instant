@@ -6,17 +6,17 @@ export interface IUser extends Document {
   username: string;
   email: string;
   phoneNumber?: number;
-  password?: string;
+  password: string;
   profilePicture?: string;
   gender?: string;
   dateOfBirth?: string;
   bio?: string;
-  isPrivate?: Boolean;
+  isPrivateAccount?: Boolean;
   isBlock?: Boolean;
   followers?: string[];
   following?: string[];
   blockedUser?: string[];
-  role?: string
+  role?: string;
 }
 
 const userSchema: Schema = new Schema(
@@ -36,9 +36,8 @@ const userSchema: Schema = new Schema(
       unique: true,
     },
     phoneNumber: {
-      type: Number,
-      required: true,
-      default: 0,
+      type: String,
+      default: "",
     },
     password: {
       type: String,

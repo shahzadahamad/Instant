@@ -1,11 +1,24 @@
 import { Router } from "express";
-import UserOtpVerificationController from "../../infrastructure/controllers/user/authentication/userOtpVerificationController";
 import GetUserDataController from "../../infrastructure/controllers/user/user/getUserDataController";
+import EditUserDataController from "../../infrastructure/controllers/user/user/editUserDataController";
+import { upload } from "../../infrastructure/configs/multer";
+import authMiddleware from "../../infrastructure/middlewares/authMiddleware";
 
 const userRoute = Router();
 
 const getUserDataController = new GetUserDataController();
+const editUserDataController = new EditUserDataController();
 
-userRoute.get("/get-data/:_id", getUserDataController.handle);
+userRoute.get(
+  "/edit-profile/get-data/:_id",
+  authMiddleware,
+  getUserDataController.handle
+);
+userRoute.post(
+  "/edit-profile/:_id",
+  authMiddleware,
+  upload.single("profilePicture"),
+  editUserDataController.handle
+);
 
 export default userRoute;

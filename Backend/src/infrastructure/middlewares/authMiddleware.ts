@@ -3,7 +3,7 @@ import TokenManager from "../../application/providers/tokenManager";
 
 const tokenManager = new TokenManager();
 
-const authMiddleware = (req: any, res: Response, next: NextFunction) => {
+const authMiddleware = async (req: any, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ message: "No token provided" });
@@ -16,9 +16,8 @@ const authMiddleware = (req: any, res: Response, next: NextFunction) => {
   }
 
   const token = parts[1];
-
   try {
-    const decoded = tokenManager.verifyRefreshToken(token);
+    const decoded = tokenManager.verifyAccessToken(token);
     req.user = decoded;
     if (req.user.role == "user") {
       next();

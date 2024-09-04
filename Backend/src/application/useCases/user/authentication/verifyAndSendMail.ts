@@ -1,6 +1,5 @@
 import { EmailOptionsResetPassword } from "../../../interface/emailInterface";
 import { EmailService } from "../../../providers/nodeMailer";
-import PasswordHasher from "../../../providers/passwordHasher";
 import TokenManager from "../../../providers/tokenManager";
 import UserRepository from "../../../repositories/user/userRepository";
 

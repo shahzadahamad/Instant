@@ -59,6 +59,22 @@ export default class UserRepository {
     }
   }
 
+  public async findByUsernameEdit(
+    username: string,
+    userId: string
+  ): Promise<IUser | null> {
+    try {
+      return await UserModel.findOne({ username, _id: { $ne: userId } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async createUser(user: Partial<IUser>): Promise<IUser | null> {
     try {
       const newUser = await new UserModel(user);
@@ -84,10 +100,52 @@ export default class UserRepository {
       );
     } catch (error) {
       if (error instanceof Error) {
-        console.error(`Error creating user: ${error.message}`);
-        throw new Error("Failed to create user");
+        console.error(`Error updating password user: ${error.message}`);
+        throw new Error("Failed to update password user");
       }
-      console.error("Unknown error creating user");
+      console.error("Unknown error updating password user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async updateUser(
+    userId: string,
+    fullname: string,
+    username: string,
+    email: string,
+    phoneNumber: string,
+    gender: string,
+    dateOfBirth: string,
+    isPrivateAccount: boolean,
+    bio: string,
+    fileUrl?: string
+  ): Promise<IUser | null> {
+    try {
+      return await UserModel.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            fullname,
+            username,
+            email,
+            phoneNumber,
+            gender,
+            dateOfBirth,
+            isPrivateAccount,
+            profilePicture: fileUrl,
+            bio: bio.trim(),
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error update user: ${error.message}`);
+        throw new Error("Failed to update user");
+      }
+      console.error("Unknown error update user");
       throw new Error("Unknown error");
     }
   }

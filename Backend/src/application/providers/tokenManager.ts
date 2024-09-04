@@ -6,7 +6,7 @@ export default class TokenManager {
     role: string;
   }): string {
     return jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "60",
+      expiresIn: "5m",
     });
   }
 
@@ -30,7 +30,10 @@ export default class TokenManager {
     return jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
   }
 
-  public verifyPasswordResetToken(token: string,password:string): string | object {
+  public verifyPasswordResetToken(
+    token: string,
+    password: string
+  ): string | object {
     return jwt.verify(token, process.env.JWT_SECRET_2! + password);
   }
 }
