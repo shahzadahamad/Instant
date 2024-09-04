@@ -10,6 +10,15 @@ import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -24,41 +33,92 @@ const Sidebar = () => {
         Instant
       </h1>
       <div className="flex flex-col items-center gap-8 mt-9 text-[#787878] text-3xl">
-        <FontAwesomeIcon
-          icon={faHouse}
-          onClick={() => navigate("/")}
-          className="text-white hover:text-white cursor-pointer"
-        />
-        <FontAwesomeIcon
-          icon={faSearch}
-          className="hover:text-white cursor-pointer"
-        />
-        <FontAwesomeIcon
-          icon={faClapperboard}
-          className="hover:text-white cursor-pointer"
-        />
-        <FontAwesomeIcon
-          icon={faComment}
-          className="hover:text-white cursor-pointer"
-        />
-        <FontAwesomeIcon
-          icon={faHeart}
-          className="hover:text-white cursor-pointer"
-        />
-        <FontAwesomeIcon
-          icon={faPlus}
-          className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[15px] py-1 px-[6.5px]"
-        />
-        <img
-          src={currentUser?.profilePicture}
-          alt="avatar"
-          className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
-          onClick={() => navigate("/profile")}
-        />
-        <FontAwesomeIcon
-          icon={faBars}
-          className="hover:text-white cursor-pointer"
-        />
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faHouse}
+            onClick={() => navigate("/")}
+            className="text-white hover:text-white cursor-pointer"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Home
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="hover:text-white cursor-pointer"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Search
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faClapperboard}
+            className="hover:text-white cursor-pointer"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Reel
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faComment}
+            className="hover:text-white cursor-pointer"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Message
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faHeart}
+            className="hover:text-white cursor-pointer"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Notification
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faPlus}
+            className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[15px] py-1 px-[6.5px]"
+          />
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Create
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <img
+            src={currentUser?.profilePicture}
+            alt="avatar"
+            className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
+            onClick={() => navigate("/profile")}
+          />
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Profile
+          </div>
+        </div>
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger>
+              <FontAwesomeIcon
+                icon={faBars}
+                className="hover:text-white cursor-pointer"
+              />
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>New Window</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Share</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Print</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
       </div>
     </div>
   );
