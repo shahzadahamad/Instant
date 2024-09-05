@@ -16,9 +16,9 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { LogOut, Moon, Settings } from "lucide-react";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -109,13 +109,20 @@ const Sidebar = () => {
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem>
-                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
               </MenubarItem>
-              <MenubarItem>New Window</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>Share</MenubarItem>
+              <MenubarItem>
+                <Moon className="mr-2 h-4 w-4" />
+                {/* <Sun className="mr-2 h-4 w-4" /> */}
+                Dark mode
+              </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>Print</MenubarItem>
+              <MenubarItem>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

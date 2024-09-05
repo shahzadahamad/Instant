@@ -7,9 +7,11 @@ import toast from "react-hot-toast";
 import { editProfileSchema } from "../../validations/authValidations";
 import { AxiosError } from "axios";
 import { loginSuccess } from "../../redux/slice/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const EditProfileForm = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [image, setImage] = useState("");
@@ -113,6 +115,7 @@ const EditProfileForm = () => {
       const updatedUser = response.data.user;
       dispatch(loginSuccess(updatedUser));
       setTimeout(() => {
+        navigate("/profile");
         toast.success(response.data.message);
         setLoading(false);
       }, 1000);
