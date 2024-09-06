@@ -54,11 +54,11 @@ const GoogleAuth = () => {
     <div>
       <button
         onClick={handleGoogleClick}
-        className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm hover:bg-white hover:text-black transition-colors flex justify-center items-center w-full 
+        className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm transition-colors flex justify-center items-center w-full 
         ${
           loading
             ? "opacity-60 cursor-not-allowed"
-            : "opacity-100 cursor-pointer"
+            : "opacity-100 cursor-pointer hover:bg-white hover:text-black"
         }`}
       >
         {loading ? (

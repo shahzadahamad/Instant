@@ -22,7 +22,7 @@ const logoutController = new LogoutController();
 authRouter.post("/register/otp-verification", userOtpVerificationController.handle);
 authRouter.post("/register/create-user", createUserController.handle);
 authRouter.post("/login", loginUserController.handle);
-authRouter.post('logout', logoutController.handle);
+authRouter.post('/logout', logoutController.handle);
 authRouter.post("/login/google-authentication", loginWithGoogleAuth.handle);
 authRouter.post("/forgot-password", forgotPasswordController.handle);
 authRouter.post('/reset-password/:_id/:token', resetPasswordController.handle);

@@ -146,10 +146,10 @@ const SignUpForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full h-[2.583rem] outline-none font-bold border rounded-md bg-transparent hover:bg-white hover:text-black transition-colors ${
+              className={`w-full h-[2.583rem] outline-none font-bold border rounded-md bg-transparent transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
-                  : "opacity-100 cursor-pointer"
+                  : "opacity-100 cursor-pointer hover:bg-white hover:text-black"
               }`}
             >
               {loading ? <div className="spinner"></div> : "Sign Up"}

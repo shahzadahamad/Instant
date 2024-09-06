@@ -162,7 +162,7 @@ const EditProfileForm = () => {
           />
           <label
             htmlFor="file-upload"
-            className="cursor-pointer bg-transparent border text-sm p-2 rounded-md hover:bg-[#0095F6] transition-colors text-center"
+            className="cursor-pointer bg-transparent border text-sm p-2 rounded-md hover:bg-white hover:text-black transition-colors text-center"
           >
             Change Photo
           </label>
@@ -313,10 +313,10 @@ const EditProfileForm = () => {
           </button>
           <button
             type="submit"
-            className={` w-44 bg-transparent hover:bg-[#0095F6] transition-colors p-2 border text-sm rounded-md ${
+            className={` w-44 bg-transparent transition-colors p-2 border text-sm rounded-md ${
               loading
                 ? "opacity-60 cursor-not-allowed"
-                : "opacity-100 cursor-pointer"
+                : "opacity-100 cursor-pointer hover:bg-white hover:text-black"
             }`}
           >
             {loading ? <div className="spinner"></div> : "Confirm"}

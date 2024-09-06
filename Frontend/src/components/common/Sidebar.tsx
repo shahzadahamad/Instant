@@ -8,21 +8,64 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import {
   Menubar,
   MenubarContent,
-  MenubarItem,
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { LogOut, Moon, Settings } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import apiClient from "../../apis/apiClient";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { logout } from "@/redux/slice/userSlice";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await apiClient.post("/auth/logout");
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        dispatch(logout());
+        navigate("/");
+        toast.success(response.data.message);
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+        setLoading(false);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232]">
@@ -108,21 +151,49 @@ const Sidebar = () => {
               />
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
+              <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
-              </MenubarItem>
+              </div>
               <MenubarSeparator />
-              <MenubarItem>
+              <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
                 <Moon className="mr-2 h-4 w-4" />
                 {/* <Sun className="mr-2 h-4 w-4" /> */}
                 Dark mode
-              </MenubarItem>
+              </div>
               <MenubarSeparator />
-              <MenubarItem>
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </MenubarItem>
+              <AlertDialog>
+                <AlertDialogTrigger asChild className="w-full">
+                  <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you sure you want to logout ?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Logging out will end your current session. You will need
+                      to log in again to access your account.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="w-24">Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleLogout}
+                      className={`bg-[#09090b] transition-colors w-24 text-white border ${
+                        loading
+                          ? "opacity-60 cursor-not-allowed"
+                          : "opacity-100 cursor-pointer hover:bg-[#B22222]"
+                      }`}
+                    >
+                      {loading ? <div className="spinner "></div> : "Logout"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
