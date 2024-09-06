@@ -9,10 +9,12 @@ import { AxiosError } from "axios";
 import GoogleAuth from "./GoogleAuth";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/userSlice";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<SignInFormData>({
     usernameOrEmail: "",
     password: "",
@@ -73,22 +75,38 @@ const SignIn = () => {
           >
             <input
               type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              className="p-3 border outline-none bg-transparent shadow text-sm rounded-md"
               id="usernameOrEmail"
               placeholder="Email address or username"
               onChange={handleInputChanges}
             />
-            <input
-              type="password"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
-              id="password"
-              placeholder="Password"
-              onChange={handleInputChanges}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="p-3 border w-full outline-none bg-transparent shadow text-sm rounded-md"
+                id="password"
+                placeholder="Password"
+                onChange={handleInputChanges}
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {formData.password ? (
+                  showPassword ? (
+                    <Eye className="text-[#65656b] text-xs" size={20} />
+                  ) : (
+                    <EyeOff className="text-[#65656b] text-xs" size={20} />
+                  )
+                ) : (
+                  ""
+                )}
+              </span>
+            </div>
             <button
               type="submit"
               disabled={loading}
-              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+              className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm hover:bg-white hover:text-black transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
                   : "opacity-100 cursor-pointer"
@@ -98,14 +116,14 @@ const SignIn = () => {
             </button>
           </form>
           <div className="flex items-center gap-2">
-            <hr className="flex-grow border-[#737373] " />
-            <span className="text-[#737373] font-bold mb-1">OR</span>
-            <hr className="flex-grow border-[#737373]" />
+            <hr className="flex-grow border-[#101013] " />
+            <span className="text-[#65656b] mb-1">Or continue with</span>
+            <hr className="flex-grow border-[#101013]" />
           </div>
           <GoogleAuth />
         </div>
       </div>
-      <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
+      <hr className="w-[.9px] h-[85vh] md:block bg-[#1b1b1d]"></hr>
       <Image
         message={true}
         accountMessage={`Don't have an account ?`}

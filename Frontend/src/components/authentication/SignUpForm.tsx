@@ -7,9 +7,12 @@ import apiClient from "../../apis/apiClient";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import GoogleAuth from "./GoogleAuth";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState<SignUpFormData>({
     fullname: "",
@@ -64,7 +67,7 @@ const SignUpForm = () => {
   return (
     <>
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
-        <div className="p-10 w-[100vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-6">
+        <div className="px-10 py-8 w-[100vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-6">
           <div className="text-center text-white font-bold">
             <h1 className="text-4xl">Instant</h1>
             <p className="text-[#C9C9CA]">Sign up to get started</p>
@@ -75,43 +78,75 @@ const SignUpForm = () => {
           >
             <input
               type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              className="p-3 border outline-none bg-transparent shadow text-sm rounded-md"
               id="fullname"
               placeholder="Fullname"
               onChange={handleInputChanges}
             />
             <input
               type="text"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              className="p-3 border outline-none bg-transparent shadow text-sm rounded-md"
               id="username"
               placeholder="Username"
               onChange={handleInputChanges}
             />
             <input
               type="email"
-              className="border border-[#515152] bg-[#252627] text-white p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
+              className="p-3 border outline-none bg-transparent shadow text-sm rounded-md"
               id="email"
               placeholder="Email address"
               onChange={handleInputChanges}
             />
-            <input
-              type="password"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
-              id="password"
-              placeholder="Password"
-              onChange={handleInputChanges}
-            />
-            <input
-              type="password"
-              className="border border-[#515152] bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold outline-none"
-              id="confirmPassword"
-              placeholder="Confirm password"
-              onChange={handleInputChanges}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="p-3 w-full border outline-none bg-transparent shadow text-sm rounded-md"
+                id="password"
+                placeholder="Password"
+                onChange={handleInputChanges}
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {formData.password ? (
+                  showPassword ? (
+                    <Eye className="text-[#65656b] text-xs" size={20} />
+                  ) : (
+                    <EyeOff className="text-[#65656b] text-xs" size={20} />
+                  )
+                ) : (
+                  ""
+                )}
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                className="p-3 w-full border outline-none bg-transparent shadow text-sm rounded-md"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                onChange={handleInputChanges}
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {formData.confirmPassword ? (
+                  showConfirmPassword ? (
+                    <Eye className="text-[#65656b] text-xs" size={20} />
+                  ) : (
+                    <EyeOff className="text-[#65656b] text-xs" size={20} />
+                  )
+                ) : (
+                  ""
+                )}
+              </span>
+            </div>
             <button
               type="submit"
               disabled={loading}
-              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+              className={`w-full h-[2.583rem] outline-none font-bold border rounded-md bg-transparent hover:bg-white hover:text-black transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
                   : "opacity-100 cursor-pointer"
@@ -121,14 +156,14 @@ const SignUpForm = () => {
             </button>
           </form>
           <div className="flex items-center gap-2">
-            <hr className="flex-grow border-[#737373] " />
-            <span className="text-[#737373] font-bold mb-1">OR</span>
-            <hr className="flex-grow border-[#737373]" />
+            <hr className="flex-grow border-[#101013] " />
+            <span className="text-[#65656b] mb-1">Or continue with</span>
+            <hr className="flex-grow border-[#101013]" />
           </div>
           <GoogleAuth />
         </div>
       </div>
-      <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
+      <hr className="w-[.9px] h-[85vh] md:block bg-[#1b1b1d]"></hr>
       <Image
         message={true}
         accountMessage={"Have an account ?"}

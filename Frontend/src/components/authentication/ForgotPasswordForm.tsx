@@ -48,13 +48,13 @@ const ForgotPassword = () => {
     <>
       <div className="bg-black w-full md:w-1/2 h-[100vh] flex justify-center items-center">
         <div className="p-10 w-[85vw] sm:w-[455px] md:w-[353px] lg:w-[428px] flex flex-col gap-6">
-          <div className="text-center text-white font-bold">
-            <h1 className="text-4xl mb-6">Instant</h1>
+          <div className="text-center text-white">
+            <h1 className="text-4xl mb-6 font-bold">Instant</h1>
             <FontAwesomeIcon
               className="text-[#0095F6] text-8xl mb-6"
               icon={faShieldHalved}
             />
-            <p className="text-white text-sm mb-1">Trouble with logging in?</p>
+            <p className="text-white font-bold text-sm mb-1">Trouble with logging in?</p>
             <p className="text-[#C9C9CA] text-xs md:w-72  mx-auto">
               Enter your email address or username, and we'll send you a link to
               get back into your account.
@@ -63,7 +63,7 @@ const ForgotPassword = () => {
           <form onSubmit={handleFormSubmit} className="flex flex-col gap-3">
             <input
               type="text"
-              className="border border-[#252545] text-white outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
+              className="p-3 w-full border outline-none bg-transparent shadow text-sm rounded-md"
               name="usernameOrEmail"
               value={emailOrUsername}
               placeholder="Email address or username"
@@ -71,7 +71,7 @@ const ForgotPassword = () => {
             />
             <button
               type="submit"
-              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+              className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm hover:bg-white hover:text-black transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
                   : "opacity-100 cursor-pointer"

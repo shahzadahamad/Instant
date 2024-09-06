@@ -17,15 +17,15 @@ const Image = ({
       />
       {message ? (
         <div className="text-center">
-          <p className="text-white font-bold text-lg hover:cursor-pointer">
+          <p className="text-white text-lg hover:cursor-pointer">
             {accountMessage}&nbsp;
             <Link to={forgetPass ? "/sign-up" : "/sign-in"}>
-              <span className="text-[#52C2FB]">{loginText}</span>
+              <span className="text-[#52C2FB] hover:underline">{loginText}</span>
             </Link>
           </p>
           {forgetPass ? (
             <Link to={'/forgot-password'}>
-              <p className="text-[#0070B8] font-bold text-base">
+              <p className="text-[#0070B8] hover:underline text-base">
                 Forgotten your password?
               </p>
             </Link>

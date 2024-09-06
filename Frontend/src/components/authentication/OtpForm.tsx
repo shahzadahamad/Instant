@@ -116,7 +116,7 @@ const Otp = () => {
               className="text-[#0095F6] text-8xl mb-6"
               icon={faShieldHalved}
             />
-            <p className="text-[#C9C9CA] text-xs w-61 mx-auto">
+            <p className="text-[#C9C9CA] font-normal text-xs w-61 mx-auto">
               Enter the code that we sent to your email address : &nbsp;
               {parsedData ? parsedData.email : ""}
             </p>
@@ -124,7 +124,7 @@ const Otp = () => {
           <form className="flex flex-col gap-3" onSubmit={handleFormSubmit}>
             <input
               type="number"
-              className="border border-[#252545] text-white hide-arrows outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
+              className="p-3 w-full border outline-none bg-transparent shadow text-sm rounded-md hide-arrows"
               name="email"
               value={otp}
               placeholder="Security Code"
@@ -132,7 +132,7 @@ const Otp = () => {
             />
             <button
               type="submit"
-              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+              className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm hover:bg-white hover:text-black transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
                   : "opacity-100 cursor-pointer"
@@ -142,7 +142,7 @@ const Otp = () => {
             </button>
           </form>
           <div className="text-center">
-            <p className="text-white md:text-lg font-bold">
+            <p className="text-white md:text-lg">
               Didn't get a security code?&nbsp;
               <span
                 className={`${

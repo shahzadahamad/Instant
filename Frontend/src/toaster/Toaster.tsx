@@ -7,6 +7,11 @@ const Toaster = () => {
       reverseOrder={false}
       toastOptions={{
         duration: 4000,
+        style: {
+           background: "transparent",
+           borderWidth: "1px",
+           color: "white",
+        }
       }}
     />
   );

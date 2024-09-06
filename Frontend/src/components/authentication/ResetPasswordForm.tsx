@@ -7,11 +7,14 @@ import { resetPassSchema } from "../../validations/authValidations";
 import toast from "react-hot-toast";
 import apiClient from "../../apis/apiClient";
 import { AxiosError } from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 const ResetPasswordForm = () => {
   const { _id, token } = useParams();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     password: "",
@@ -70,23 +73,55 @@ const ResetPasswordForm = () => {
             <h1 className="text-white text-base mb-1">Reset your password</h1>
           </div>
           <form onSubmit={handleFormSubmit} className="flex flex-col gap-3">
-            <input
-              type="password"
-              onChange={handleInputChanges}
-              className="border border-[#252545] text-white outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              id="password"
-              placeholder="Password"
-            />
-            <input
-              type="password"
-              onChange={handleInputChanges}
-              className="border border-[#252545] text-white outline-none bg-[#252627] p-2 rounded placeholder-[#737373] placeholder-bold"
-              id="confirmPassword"
-              placeholder="Confirm Password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                onChange={handleInputChanges}
+                className="p-3 border outline-none bg-transparent shadow text-sm rounded-md w-full"
+                id="password"
+                placeholder="Password"
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {formData.password ? (
+                  showPassword ? (
+                    <Eye className="text-[#65656b] text-xs" size={20} />
+                  ) : (
+                    <EyeOff className="text-[#65656b] text-xs" size={20} />
+                  )
+                ) : (
+                  ""
+                )}
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                className="p-3 w-full border outline-none bg-transparent shadow text-sm rounded-md"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                onChange={handleInputChanges}
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {formData.confirmPassword ? (
+                  showConfirmPassword ? (
+                    <Eye className="text-[#65656b] text-xs" size={20} />
+                  ) : (
+                    <EyeOff className="text-[#65656b] text-xs" size={20} />
+                  )
+                ) : (
+                  ""
+                )}
+              </span>
+            </div>
             <button
               type="submit"
-              className={`w-full h-[2.583rem] outline-none font-bold text-white border border-[#737373] rounded bg-[#0095F6] ${
+              className={`h-[2.583rem] outline-none font-bold border rounded-md bg-transparent text-sm hover:bg-white hover:text-black transition-colors ${
                 loading
                   ? "opacity-60 cursor-not-allowed"
                   : "opacity-100 cursor-pointer"

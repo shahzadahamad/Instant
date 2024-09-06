@@ -8,6 +8,15 @@ import { editProfileSchema } from "../../validations/authValidations";
 import { AxiosError } from "axios";
 import { loginSuccess } from "../../redux/slice/userSlice";
 import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const EditProfileForm = () => {
   const [loading, setLoading] = useState(false);
@@ -135,7 +144,7 @@ const EditProfileForm = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between bg-[#262626] w-3/4 rounded-3xl p-4">
+      <div className="flex items-center justify-between bg-transparent border w-3/4 rounded-md p-4">
         <div className="w-20 h-20 rounded-full border overflow-hidden">
           <img
             src={image || currentUser?.profilePicture}
@@ -153,7 +162,7 @@ const EditProfileForm = () => {
           />
           <label
             htmlFor="file-upload"
-            className="cursor-pointer bg-[#346688] text-white text-sm p-2 rounded-xl font-bold hover:bg-[#0095F6] transition-colors text-center"
+            className="cursor-pointer bg-transparent border text-sm p-2 rounded-md hover:bg-[#0095F6] transition-colors text-center"
           >
             Change Photo
           </label>
@@ -171,7 +180,7 @@ const EditProfileForm = () => {
               }));
             }}
             htmlFor=""
-            className="cursor-pointer bg-red-950 text-white text-sm p-2 rounded-xl font-bold hover:bg-red-900 transition-colors text-center"
+            className="cursor-pointer bg-transparent border text-sm p-2 rounded-md hover:bg-[#B22222] transition-colors text-center"
           >
             Remove Photo
           </label>
@@ -188,7 +197,7 @@ const EditProfileForm = () => {
             onChange={handleInputChange}
             defaultValue={userData.fullname}
             placeholder="Fullname"
-            className="bg-[#262626] p-3 w-[407px] placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl"
+            className="p-3 border outline-none bg-transparent w-[407px] shadow text-sm rounded-md"
           />
           <input
             type="text"
@@ -196,7 +205,7 @@ const EditProfileForm = () => {
             onChange={handleInputChange}
             defaultValue={userData.username}
             placeholder="Username"
-            className="bg-[#262626] p-3 w-[407px] placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl"
+            className="p-3 border outline-none bg-transparent w-[407px] shadow text-sm rounded-md"
           />
         </div>
         <div className="flex gap-10">
@@ -204,9 +213,10 @@ const EditProfileForm = () => {
             type="email"
             id="email"
             onChange={handleInputChange}
+            disabled
             defaultValue={userData.email}
             placeholder="Email"
-            className="bg-[#262626] p-3 w-[407px] placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl"
+            className="p-3 border outline-none bg-transparent w-[407px] shadow text-sm rounded-md"
           />
           <input
             type="number"
@@ -214,7 +224,7 @@ const EditProfileForm = () => {
             onChange={handleInputChange}
             defaultValue={userData.phoneNumber || ""}
             placeholder="Phone number"
-            className="bg-[#262626] p-3 w-[407px] placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl hide-arrows"
+            className="p-3 border outline-none hide-arrows bg-transparent w-[407px] shadow text-sm rounded-md"
           />
         </div>
         <div className="flex gap-10">
@@ -224,33 +234,32 @@ const EditProfileForm = () => {
             onChange={handleInputChange}
             defaultValue={userData.dateOfBirth || ""}
             placeholder="Date of birth"
-            className="bg-[#262626] p-3 w-[407px] placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl"
+            className="p-3 border outline-none bg-transparent w-[407px] shadow text-sm rounded-md"
           />
-          <select
+          <Select
             value={userData.gender}
-            onChange={(e) => {
+            onValueChange={(value) => {
               setUserData((prev) => ({
                 ...prev,
-                gender: e.target.value,
+                gender: value,
               }));
             }}
-            className={`bg-[#262626] p-3 w-[407px] placeholder-bold ${
-              userData.gender ? "text-white" : "text-[#737373]"
-            } text-[#737373] outline-none rounded-xl`}
           >
-            <option value="" disabled>
-              Gender
-            </option>
-            <option className="text-white" value="Male">
-              Male
-            </option>
-            <option className="text-white" value="Female">
-              Female
-            </option>
-            <option className="text-white" value="Other">
-              Other
-            </option>
-          </select>
+            <SelectTrigger
+              value={userData.gender}
+              className="w-[407px] no-outline py-6 border bg-transparent shadow text-sm rounded-md"
+            >
+              <SelectValue placeholder="Select a gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Genders</SelectLabel>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex gap-10">
           <textarea
@@ -263,7 +272,7 @@ const EditProfileForm = () => {
               }));
             }}
             defaultValue={userData.bio || ""}
-            className="bg-[#262626] scrollbar-hidden resize-none p-3 w-[407px] h-12 placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl"
+            className="bg-transparent border shadow scrollbar-hidden resize-none text-sm p-3 w-[407px] h-12 outline-none rounded-md"
           />
           <div className="relative w-[407px]">
             <input
@@ -271,7 +280,7 @@ const EditProfileForm = () => {
               id="privateAccount"
               placeholder="Private Account"
               disabled
-              className="bg-[#262626] p-3 placeholder-bold placeholder-[#737373] text-white outline-none rounded-xl w-full"
+              className={`bg-transparent p-3 placeholder:text-white border text-sm shadow w-[407px] outline-none rounded-md`}
             />
             <label
               htmlFor="switch"
@@ -298,13 +307,13 @@ const EditProfileForm = () => {
         <div className="flex w-[850px] justify-between gap-10">
           <button
             type="button"
-            className="text-white w-44 font-bold bg-red-950 hover:bg-red-900 transition-colors py-2 px-5 rounded-xl"
+            className="w-44 bg-transparent hover:bg-[#B22222] border transition-colors p-2 text-sm rounded-md"
           >
             Change Password
           </button>
           <button
             type="submit"
-            className={`text-white w-44 font-bold bg-[#346688] hover:bg-[#0095F6] transition-colors py-2 px-14 rounded-xl ${
+            className={` w-44 bg-transparent hover:bg-[#0095F6] transition-colors p-2 border text-sm rounded-md ${
               loading
                 ? "opacity-60 cursor-not-allowed"
                 : "opacity-100 cursor-pointer"

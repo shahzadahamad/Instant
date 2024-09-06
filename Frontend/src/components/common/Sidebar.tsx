@@ -99,9 +99,9 @@ const Sidebar = () => {
             Profile
           </div>
         </div>
-        <Menubar>
+        <Menubar className="cursor-pointer">
           <MenubarMenu>
-            <MenubarTrigger>
+            <MenubarTrigger className="cursor-pointer">
               <FontAwesomeIcon
                 icon={faBars}
                 className="hover:text-white cursor-pointer"

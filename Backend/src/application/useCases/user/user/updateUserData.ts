@@ -39,7 +39,7 @@ export default class UpdateUserData {
     }
 
     let fileUrl;
-    if (user.profilePicture) {
+    if (file && user.profilePicture) {
       await this.awsS3Storage.deleteFile(user.profilePicture);
     }
     if (file) {
