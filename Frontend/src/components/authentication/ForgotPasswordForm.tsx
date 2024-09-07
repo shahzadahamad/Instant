@@ -54,7 +54,9 @@ const ForgotPassword = () => {
               className="text-[#0095F6] text-8xl mb-6"
               icon={faShieldHalved}
             />
-            <p className="text-white font-bold text-sm mb-1">Trouble with logging in?</p>
+            <p className="text-white font-bold text-sm mb-1">
+              Trouble with logging in?
+            </p>
             <p className="text-[#C9C9CA] text-xs md:w-72  mx-auto">
               Enter your email address or username, and we'll send you a link to
               get back into your account.
@@ -82,7 +84,7 @@ const ForgotPassword = () => {
           </form>
         </div>
       </div>
-      <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
+      <hr className="w-[.9px] h-[85vh] hidden md:block bg-[#1b1b1d]"></hr>
       <Image
         message={false}
         accountMessage={"Have an account?"}

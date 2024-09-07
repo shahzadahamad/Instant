@@ -280,7 +280,7 @@ const EditProfileForm = () => {
               id="privateAccount"
               placeholder="Private Account"
               disabled
-              className={`bg-transparent p-3 placeholder:text-white border text-sm shadow w-[407px] outline-none rounded-md`}
+              className={`bg-transparent p-3 border text-sm shadow w-[407px] outline-none rounded-md`}
             />
             <label
               htmlFor="switch"

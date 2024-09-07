@@ -116,14 +116,14 @@ const SignIn = () => {
             </button>
           </form>
           <div className="flex items-center gap-2">
-            <hr className="flex-grow border-[#101013] " />
+            <hr className="flex-grow border-[#1b1b1d] " />
             <span className="text-[#65656b] mb-1">Or continue with</span>
-            <hr className="flex-grow border-[#101013]" />
+            <hr className="flex-grow border-[#1b1b1d]" />
           </div>
           <GoogleAuth />
         </div>
       </div>
-      <hr className="w-[.9px] h-[85vh] md:block bg-[#1b1b1d]"></hr>
+      <hr className="w-[.9px] h-[85vh] hidden md:block bg-[#1b1b1d]"></hr>
       <Image
         message={true}
         accountMessage={`Don't have an account ?`}

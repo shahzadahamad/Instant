@@ -166,7 +166,7 @@ const Otp = () => {
           </div>
         </div>
       </div>
-      <div className="w-[.9px] h-[85vh] hidden md:block bg-[#737373] transform scale-x-50 origin-left"></div>
+      <hr className="w-[.9px] h-[85vh] hidden md:block bg-[#1b1b1d]"></hr>
       <Image
         message={false}
         accountMessage={"Have an account?"}

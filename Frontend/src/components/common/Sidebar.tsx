@@ -17,7 +17,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { LogOut, Moon, Settings } from "lucide-react";
+import { LogOut, Moon, Settings, Sun } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,9 +34,11 @@ import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { logout } from "@/redux/slice/userSlice";
+import { useTheme } from "../ui/theme-provider";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
@@ -151,15 +153,24 @@ const Sidebar = () => {
               />
             </MenubarTrigger>
             <MenubarContent>
-              <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
+              <div
+                className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
+                onClick={() => navigate("/edit-profile")}
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </div>
               <MenubarSeparator />
-              <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
-                <Moon className="mr-2 h-4 w-4" />
-                {/* <Sun className="mr-2 h-4 w-4" /> */}
-                Dark mode
+              <div
+                className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? (
+                  <Moon className="mr-2 h-4 w-4" />
+                ) : (
+                  <Sun className="mr-2 h-4 w-4" />
+                )}
+                {theme === "dark" ? "Dark mode" : "Light mode"}
               </div>
               <MenubarSeparator />
               <AlertDialog>
@@ -180,7 +191,9 @@ const Sidebar = () => {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="w-24">Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="w-24">
+                      Cancel
+                    </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleLogout}
                       className={`bg-[#09090b] transition-colors w-24 text-white border ${
