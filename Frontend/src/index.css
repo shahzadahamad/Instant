@@ -19,6 +19,22 @@
   scrollbar-width: none;
 }
 
+.scrollbar-style::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 10px;
+}
+
+.scrollbar-style::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: rgba(107, 109, 112, 0.5); 
+}
+
+.scrollbar-style::-webkit-scrollbar-thumb {
+  background-color: rgb(133, 139, 139);
+  border-radius: 10px;
+  border: 3px solid rgb(133, 139, 139);
+}
+
 .hide-arrows::-webkit-inner-spin-button,
 .hide-arrows::-webkit-outer-spin-button {
   -webkit-appearance: none;

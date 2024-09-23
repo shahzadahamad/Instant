@@ -17,7 +17,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { LogOut, Moon, Settings, Sun } from "lucide-react";
+import { Image, LogOut, Moon, Settings, Sun, VideoIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,8 +35,16 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { logout } from "@/redux/slice/userSlice";
 import { useTheme } from "../ui/theme-provider";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@nextui-org/modal";
 
 const Sidebar = () => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const dispatch = useDispatch();
@@ -72,7 +80,7 @@ const Sidebar = () => {
   return (
     <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232]">
       <h1
-        className="text-white font-bold text-3xl pt-6 mx-auto text-center cursor-pointer"
+        className="font-bold text-3xl pt-6 mx-auto text-center cursor-pointer"
         onClick={() => navigate("/")}
       >
         Instant
@@ -124,11 +132,38 @@ const Sidebar = () => {
             Notification
           </div>
         </div>
-        <div className="relative group flex items-center justify-center">
+        <div
+          className="relative group flex items-center justify-center"
+          onClick={onOpen}
+        >
           <FontAwesomeIcon
             icon={faPlus}
             className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[15px] py-1 px-[6.5px]"
           />
+          <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
+            <ModalContent>
+              {() => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1 text-center border-1">
+                    Create new post
+                  </ModalHeader>
+                  <ModalBody className="!p-0 border-1 w-full h-full">
+                    <div className="text-center p-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 justify-center">
+                      <div onClick={() => navigate('/create-post')} className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer">
+                        <Image className="w-10 h-10 mb-2" />
+                        <span className="text-base font-semibold">Post</span>
+                      </div>
+                      <div className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer">
+                        <VideoIcon className="w-10 h-10 mb-2" />
+                        <span className="text-base font-semibold">Live</span>
+                      </div>
+                    </div>
+                  </ModalBody>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Create
           </div>
@@ -165,12 +200,12 @@ const Sidebar = () => {
                 className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
-                {theme === "dark" ? (
+                {theme === "light" ? (
                   <Moon className="mr-2 h-4 w-4" />
                 ) : (
                   <Sun className="mr-2 h-4 w-4" />
                 )}
-                {theme === "dark" ? "Dark mode" : "Light mode"}
+                {theme === "light" ? "Dark mode" : "Light mode"}
               </div>
               <MenubarSeparator />
               <AlertDialog>

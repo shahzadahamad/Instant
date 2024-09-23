@@ -9,6 +9,11 @@ import EditProfile from "./pages/EditProfile";
 import ResetPassword from "./pages/ResetPassword";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store/store";
+import CreatePost from "./pages/CreatePost";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 function App() {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -21,7 +26,8 @@ function App() {
     { path: "/sign-up", element: currentUser ?  <Navigate to="/" replace /> : <SignUp /> },
     { path: "/otp", element: currentUser ?  <Navigate to="/" replace /> : <Otp/> },
     { path: "/forgot-password", element: currentUser ?  <Navigate to="/" replace /> : <ForgotPassword /> },
-    { path: "/reset-password/:_id/:token", element: currentUser ?  <Navigate to="/" replace /> : <ResetPassword /> },
+    { path: "/reset-password/:_id/:token", element: currentUser ? <Navigate to="/" replace /> : <ResetPassword /> },
+    { path: "/create-post" , element: currentUser ? <CreatePost/> : <Navigate to="/sign-in" replace />},
   ]
 
   return (

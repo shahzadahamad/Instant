@@ -14,12 +14,12 @@ const ProfileDetials = () => {
           alt="avatar"
           className="w-28 h-28 rounded-full object-cover"
         />
-        <div className="flex flex-col gap-3 font-bold text-white">
+        <div className="flex flex-col gap-3 ">
           <div className="flex gap-5">
-            <h1 className="text-3xl font-extrabold">inexposable</h1>
+            <h1 className="text-3xl font-extrabold">{currentUser?.username}</h1>
             <button
               onClick={() => navigate("/edit-profile")}
-              className="px-4 font-bold text-white bg-[#363636] rounded-[10px] cursor-pointer"
+              className="cursor-pointer font-bold bg-transparent border text-sm p-2 rounded-md hover:bg-white hover:text-black transition-colors text-center"
             >
               Edit Profile
             </button>
@@ -32,8 +32,8 @@ const ProfileDetials = () => {
         </div>
       </div>
       <div className="flex flex-col gap-1 ps-[115px]">
-        <h1 className="font-bold text-white">Shahzad Ahamad P</h1>
-        <p className="text-white">&gt; Software Developer (MERN)</p>
+        <h1 className="font-bold">{currentUser?.fullname}</h1>
+        <p>&gt; Software Developer (MERN)</p>
       </div>
     </div>
   );

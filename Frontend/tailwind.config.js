@@ -1,9 +1,20 @@
+const {nextui} = require('@nextui-org/react');
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+		"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+  ],
   theme: {
   	extend: {
+			aspectRatio: {
+        'original': 'auto',
+        '1:1': '1 / 1',
+        '4:5': '4 / 5',
+        '16:9': '16 / 9',
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -53,5 +64,5 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),require('@tailwindcss/aspect-ratio'),nextui()],
 };
