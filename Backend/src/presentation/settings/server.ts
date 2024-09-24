@@ -1,9 +1,10 @@
 import express from "express";
-import authRouter from "../routes/auth";
+import authRouter from "../routes/user/auth";
 import cors from "cors";
 import connectDb from "../../infrastructure/configs/dbConfig";
-import userRoute from "../routes/user";
+import userRoute from "../routes/user/user";
 import cookieParser from "cookie-parser";
+import adminAuthRouter from "../routes/admin/auth";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRoute);
+app.use("/api/admin/auth", adminAuthRouter)
 
 const port: number | string = process.env.PORT || 3000;
 app.listen(port, () => {

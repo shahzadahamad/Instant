@@ -1,4 +1,3 @@
-import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -36,6 +35,10 @@ export default class UpdateUserData {
 
     if (!user) {
       throw new Error("Invalied Access!");
+    }
+
+    if(email && email !== user.email) {
+      throw new Error("connot change email!");
     }
 
     let fileUrl;
