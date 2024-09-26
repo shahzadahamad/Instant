@@ -1,6 +1,6 @@
-import Sidebar from "../components/common/Sidebar";
-import ProfileDetials from "../components/profile/ProfileDetials";
-import ProfilePostSection from "../components/profile/ProfilePostSection";
+import Sidebar from "@/components/common/Sidebar";
+import ProfileDetials from "@/components/profile/ProfileDetials";
+import ProfilePostSection from "@/components/profile/ProfilePostSection";
 
 const Profile = () => {
   return (

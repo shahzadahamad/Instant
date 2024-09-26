@@ -1,7 +1,6 @@
 import { useState } from "react";
-import Image from "./Image";
+import Image from "../common/Image";
 import { useNavigate } from "react-router-dom";
-import { SignInFormData } from "../../types/authentication/authenticationTypes";
 import { signInSchema } from "../../validations/authValidations";
 import toast from "react-hot-toast";
 import apiClient from "../../apis/apiClient";
@@ -10,12 +9,13 @@ import GoogleAuth from "./GoogleAuth";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/userSlice";
 import { Eye, EyeOff } from "lucide-react";
+import { FormData } from "@/types/authentication/authenticationTypes";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState<SignInFormData>({
+  const [formData, setFormData] = useState<FormData>({
     usernameOrEmail: "",
     password: "",
   });

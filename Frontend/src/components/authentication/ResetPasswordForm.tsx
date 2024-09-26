@@ -1,6 +1,6 @@
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "./Image";
+import Image from "../common/Image";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { resetPassSchema } from "../../validations/authValidations";

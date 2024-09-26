@@ -1,4 +1,4 @@
-import OtpForm from "../components/authentication/OtpForm";
+import OtpForm from "@/components/authentication/OtpForm";
 
 const Otp = () => {
   return (

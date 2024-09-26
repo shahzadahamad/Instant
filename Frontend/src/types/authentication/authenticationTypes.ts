@@ -5,10 +5,6 @@ export interface ImageProps {
   message: boolean;
 }
 
-export interface SignUpFormData {
-  [key: string]: string;
-}
-
-export interface SignInFormData {
+export interface FormData {
   [key: string]: string;
 }

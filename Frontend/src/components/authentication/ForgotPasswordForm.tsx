@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved";
-import Image from "./Image";
+import Image from "../common/Image";
 import { useState } from "react";
 import { forgotPassSchema } from "../../validations/authValidations";
 import toast from "react-hot-toast";

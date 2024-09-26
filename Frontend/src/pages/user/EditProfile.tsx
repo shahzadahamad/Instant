@@ -1,6 +1,6 @@
-import Sidebar from "../components/common/Sidebar";
-import EditProfileForm from "../components/profile/EditProfileForm";
-import EditProfileHeader from "../components/profile/EditProfileHeader";
+import Sidebar from "@/components/common/Sidebar";
+import EditProfileForm from "@/components/profile/EditProfileForm";
+import EditProfileHeader from "@/components/profile/EditProfileHeader";
 
 const EditProfile = () => {
   return (

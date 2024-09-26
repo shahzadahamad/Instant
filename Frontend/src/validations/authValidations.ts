@@ -140,3 +140,16 @@ export const editProfileSchema = z.object({
     errorMap: () => ({ message: "Invalid gender" }),
   }),
 });
+
+export const AdminSignInSchema = z.object({
+  usernameOrEmail: z
+    .string()
+    .min(1, "Username or email is required")
+    .min(6, "Username or email must be at least 6 characters"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be at most 32 characters")
+    .regex(/^\S+$/, "Password should not contain spaces"),
+});
