@@ -9,6 +9,8 @@ import EditProfile from "../pages/user/EditProfile";
 import ResetPassword from "../pages/user/ResetPassword";
 import CreatePost from "../pages/user/CreatePost";
 import AdminSignIn from "../pages/admin/AdminSignIn";
+import Dashboard from "@/pages/admin/Dashboard";
+import Users from "@/pages/admin/Users";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -54,6 +56,18 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     ) : (
       <AdminSignIn />
     ),
+  },
+  {
+    path: "/admin/dashboard",
+    element: currentAdmin ? (
+      <Dashboard />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
+  },
+  {
+    path: "/admin/users",
+    element: currentAdmin ? <Users /> : <Navigate to="/admin/sign-in" replace />,
   },
 ];
 

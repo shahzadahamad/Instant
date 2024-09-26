@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import formImage from "/form-image.png";
 import { FormData } from "@/types/authentication/authenticationTypes";
-import { AdminSignInSchema } from "../../validations/authValidations";
+import { AdminSignInSchema } from "@/validations/authValidations";
 import toast from "react-hot-toast";
-import apiClient from "../../apis/apiClient";
+import apiClient from "@/apis/apiClient";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
