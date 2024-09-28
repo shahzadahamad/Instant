@@ -149,4 +149,24 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async getUserData(
+    startIndex: number, limit: number
+  ): Promise<{ users: any; totalPages: number }> {
+    try {
+      const totalUser = await UserModel.countDocuments();
+      console.log(totalUser)
+      const users = await UserModel.find({}, { password: 0 })
+        .skip(startIndex)
+        .limit(limit);
+      return { users, totalPages: Math.ceil(totalUser / limit) };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
