@@ -3,12 +3,12 @@ import formImage from "/form-image.png";
 import { FormData } from "@/types/authentication/authenticationTypes";
 import { AdminSignInSchema } from "@/validations/authValidations";
 import toast from "react-hot-toast";
-import apiClient from "@/apis/apiClient";
+import { adminApiClient } from "@/apis/apiClient";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { AdminLoginSuccess } from "@/redux/slice/admin/adminSlice";
+import { adminLoginSuccess } from "@/redux/slice/admin/adminSlice";
 
 const SignInForm = () => {
   const dispatch = useDispatch();
@@ -36,11 +36,11 @@ const SignInForm = () => {
     }
     toast.dismiss();
     try {
-      const response = await apiClient.post(`/admin/auth/login`, formData);
+      const response = await adminApiClient.post(`/auth/login`, formData);
       const token = response.data.token;
       const currentAdmin = response.data.admin;
       localStorage.setItem("adminToken", token);
-      dispatch(AdminLoginSuccess(currentAdmin));
+      dispatch(adminLoginSuccess(currentAdmin));
       setTimeout(() => {
         navigate("/admin/dashboard");
         toast.success("Welcome, back!");

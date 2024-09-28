@@ -28,12 +28,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import apiClient from "@/apis/apiClient";
+import { adminApiClient } from "@/apis/apiClient";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { logout } from "@/redux/slice/userSlice";
 import { useTheme } from "../../ui/theme-provider";
+import { adminLogout } from "@/redux/slice/admin/adminSlice";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -46,10 +46,10 @@ const Sidebar = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await apiClient.post("/admin/auth/login");
+      const response = await adminApiClient.post("/auth/logout");
       localStorage.removeItem("adminToken");
       setTimeout(() => {
-        dispatch(logout());
+        dispatch(adminLogout());
         navigate("/admin/sign-in");
         toast.success(response.data.message);
         setLoading(false);

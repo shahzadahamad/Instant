@@ -1,14 +1,14 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import apiClient from "../apiClient";
-import { logout } from "../../redux/slice/userSlice";
+import { adminApiClient } from "../apiClient";
 import store from "../../redux/store/store";
+import { adminLogout } from "@/redux/slice/admin/adminSlice";
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem("token");
+export const adminRequestInterceptor = (config: InternalAxiosRequestConfig) => {
+  const token = localStorage.getItem("adminToken");
   if (token) {
     config.headers = config.headers || {};
     config.headers["Authorization"] = `Bearer ${token}`;
@@ -17,11 +17,11 @@ export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
   return config;
 };
 
-export const responseInterceptor = (response: AxiosResponse) => {
+export const adminResponseInterceptor = (response: AxiosResponse) => {
   return response;
 };
 
-export const errorInterceptor = async (error: AxiosError) => {
+export const adminErrorInterceptor = async (error: AxiosError) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
   if (
     originalRequest &&
@@ -30,17 +30,17 @@ export const errorInterceptor = async (error: AxiosError) => {
   ) {
     originalRequest._retry = true;
     try {
-      const response = await apiClient.get("/auth/refresh-token");
+      const response = await adminApiClient.get("/auth/refresh-token");
       const token = response.data.token;
       if (token) {
-        localStorage.setItem("token", token);
+        localStorage.setItem("adminToken", token);
       }
       if (originalRequest.headers) {
         originalRequest.headers["Authorization"] = `Bearer ${token}`;
       }
-      return apiClient(originalRequest);
+      return adminApiClient(originalRequest);
     } catch (refreshError) {
-      store.dispatch(logout());
+      store.dispatch(adminLogout());
       return Promise.reject(refreshError);
     }
   }
