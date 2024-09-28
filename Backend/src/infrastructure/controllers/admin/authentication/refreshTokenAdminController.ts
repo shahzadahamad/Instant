@@ -11,10 +11,8 @@ export default class RefreshTokenAdminController {
     );
     const adminRefreshToken = req.cookies?.adminRefreshToken;
     try {
-      console.log(adminRefreshToken + 'admin refresh token')
       const status = await handleRefreshToken.execute(adminRefreshToken);
       if (status.clearCookie) {
-        console.log('clear cokie')
         return res
           .clearCookie("adminRefreshToken")
           .status(403)
