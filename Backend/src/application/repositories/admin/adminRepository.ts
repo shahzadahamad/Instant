@@ -19,4 +19,15 @@ export default class AdminRepository {
       throw new Error("Unknown error");
     }
   }
+  public async findById(_id: string): Promise<IAdmin | null> {
+    try {
+      return await AdminModel.findOne({ _id: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }

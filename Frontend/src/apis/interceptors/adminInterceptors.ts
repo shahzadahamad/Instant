@@ -31,12 +31,12 @@ export const adminErrorInterceptor = async (error: AxiosError) => {
     originalRequest._retry = true;
     try {
       const response = await adminApiClient.get("/auth/refresh-token");
-      const token = response.data.token;
-      if (token) {
-        localStorage.setItem("adminToken", token);
+      const adminToken = response.data.adminToken;
+      if (adminToken) {
+        localStorage.setItem("adminToken", adminToken);
       }
       if (originalRequest.headers) {
-        originalRequest.headers["Authorization"] = `Bearer ${token}`;
+        originalRequest.headers["Authorization"] = `Bearer ${adminToken}`;
       }
       return adminApiClient(originalRequest);
     } catch (refreshError) {
