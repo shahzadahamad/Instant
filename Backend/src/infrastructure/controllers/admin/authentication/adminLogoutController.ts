@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
-export default class LogoutController {
+export default class AdminLogoutController {
   public async handle(req: Request, res: Response): Promise<Response | void> {
     try {
-      res.clearCookie("refreshToken", {
+      res.clearCookie("adminRefreshToken", {
         httpOnly: true,
         secure: false,
         sameSite: "strict",
