@@ -1,5 +1,5 @@
 export interface GetUserDataForAdminDashboard {
-  _id: string,
+  _id: string;
   fullname: string;
   username: string;
   email: string;
@@ -9,4 +9,5 @@ export interface GetUserDataForAdminDashboard {
   dateOfBirth: string;
   bio: string;
   isPrivateAccount: boolean;
+  isBlock: boolean;
 }

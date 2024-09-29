@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { adminApiClient } from "@/apis/apiClient";
 import { GetUserDataForAdminDashboard } from "@/types/admin/user";
+import toast from "react-hot-toast";
 
 const UserDetialsTable = () => {
   const [users, setUsers] = useState<GetUserDataForAdminDashboard[]>([]);
@@ -48,6 +49,34 @@ const UserDetialsTable = () => {
     if (page < totalPages) setPage(page + 1);
   };
 
+  const handleAction = async (
+    e: React.MouseEvent<HTMLDivElement>,
+    userId: string,
+    isBlock: boolean,
+    username: string
+  ) => {
+    e.preventDefault();
+    const status = isBlock ? "unblock" : "block";
+    try {
+      const response = await adminApiClient.patch(
+        `/users/block-or-unblock/${userId}/${status}`
+      );
+      if (response.data === "action successfull") {
+        toast.success(
+          `User ${username} has been ${
+            status === "unblock" ? "unblocked" : "blocked"
+          }`
+        );
+        fetchUsers(page)
+      } else {
+        toast.success(response.data);
+      }
+      return;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <>
       <div className="p-10 pb-1 flex justify-between items-center">
@@ -78,6 +107,7 @@ const UserDetialsTable = () => {
                 <th className="py-3 px-4 text-left">Username</th>
                 <th className="py-3 px-4 text-left">Email</th>
                 <th className="py-3 px-4 text-left">Number</th>
+                <th className="py-3 px-4 text-left">Status</th>
                 <th className="py-3 px-4 text-left">Actions</th>
               </tr>
             </thead>
@@ -86,7 +116,11 @@ const UserDetialsTable = () => {
                 <tr className="">
                   <td className="py-2 px-4">
                     <img
-                      src={typeof user.profilePicture === 'string' ? user.profilePicture : ""}
+                      src={
+                        typeof user.profilePicture === "string"
+                          ? user.profilePicture
+                          : ""
+                      }
                       alt="upload"
                       className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
                     />
@@ -97,6 +131,13 @@ const UserDetialsTable = () => {
                   <td className="py-2 px-4">
                     {user.phoneNumber || "-------------"}
                   </td>
+                  <td
+                    className={`py-2 px-4 ${
+                      user.isBlock ? "text-red-600" : "text-green-600"
+                    }`}
+                  >
+                    {user.isBlock ? "Blocked" : "Active"}
+                  </td>
                   <td className="py-2 px-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -104,7 +145,18 @@ const UserDetialsTable = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem>View More</DropdownMenuItem>
-                        <DropdownMenuItem>Block</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) =>
+                            handleAction(
+                              e,
+                              user._id,
+                              user.isBlock,
+                              user.username
+                            )
+                          }
+                        >
+                          {user.isBlock ? "Unblock" : "Block"}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </td>
