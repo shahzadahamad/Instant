@@ -161,11 +161,39 @@ export default class UserRepository {
       const users = await UserModel.find(query, { password: 0 })
         .skip(startIndex)
         .limit(limit);
-      return { users, totalPages: Math.ceil(searchTotalUser / limit), totalUser };
+      return {
+        users,
+        totalPages: Math.ceil(searchTotalUser / limit),
+        totalUser,
+      };
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);
         throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async blockUser(_id: string) {
+    try {
+      await UserModel.updateOne({ _id: _id }, { $set: { isBlock: true } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async unBlockUser(_id: string) {
+    try {
+      await UserModel.updateOne({ _id: _id }, { $set: { isBlock: false } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
       }
       console.error("Unknown error finding user");
       throw new Error("Unknown error");

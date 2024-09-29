@@ -9,7 +9,7 @@ export default class GetUserDataAdmin {
   }
 
   public async execute(pageVal: number, search: any): Promise<any> {
-    const page = pageVal || 1
+    const page = pageVal || 1;
     const limit = 10;
     const startIndex = (page - 1) * limit;
     let query = {};
@@ -20,6 +20,7 @@ export default class GetUserDataAdmin {
           { fullname: { $regex: searchRegex } },
           { username: { $regex: searchRegex } },
           { email: { $regex: searchRegex } },
+          { phoneNumber: { $regex: searchRegex } },
         ],
       };
     }
