@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import apiClient from "../apiClient";
 import { logout } from "../../redux/slice/userSlice";
 import store from "../../redux/store/store";
+import toast from "react-hot-toast";
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -43,6 +44,13 @@ export const errorInterceptor = async (error: AxiosError) => {
       store.dispatch(logout());
       return Promise.reject(refreshError);
     }
+  } else if (
+    originalRequest &&
+    error.response?.status === 403 &&
+    !originalRequest._retry
+  ) {
+    toast.error("Your account has been blocked");
+    store.dispatch(logout());
   }
   return Promise.reject(error);
 };
