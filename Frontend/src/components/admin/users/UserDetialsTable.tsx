@@ -1,3 +1,4 @@
+import * as React from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@/components/ui/button";
@@ -11,13 +12,24 @@ import { useEffect, useState } from "react";
 import { adminApiClient } from "@/apis/apiClient";
 import { GetUserDataForAdminDashboard } from "@/types/admin/user";
 import toast from "react-hot-toast";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@nextui-org/modal";
 
 const UserDetialsTable = () => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const [users, setUsers] = useState<GetUserDataForAdminDashboard[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchVal, setSearchVal] = useState("");
   const [totalUser, setTotalUser] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+  const [viewProfile, setViewProfile] = useState<string | File>("");
   const isDisabled = page === totalPages;
 
   const fetchUsers = async (page: number) => {
@@ -67,7 +79,7 @@ const UserDetialsTable = () => {
             status === "unblock" ? "unblocked" : "blocked"
           }`
         );
-        fetchUsers(page)
+        fetchUsers(page);
       } else {
         toast.success(response.data);
       }
@@ -77,8 +89,36 @@ const UserDetialsTable = () => {
     }
   };
 
+  const handleModal = (profileUrl: string | File) => {
+    setViewProfile(profileUrl);
+    setOpenModal(true);
+    onOpen();
+  };
+
   return (
     <>
+      {openModal && (
+        <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
+          <ModalContent>
+            {() => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-center border-1">
+                  View Profile
+                </ModalHeader>
+                <ModalBody className="p-10 border-1 w-full h-full flex justify-center items-center">
+                  <div className="w-[200px] h-[200px] rounded-full border overflow-hidden">
+                    <img
+                      src={typeof viewProfile === "string" ? viewProfile : ""}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
       <div className="p-10 pb-1 flex justify-between items-center">
         <div className="w-full max-w-md">
           <div className="relative">
@@ -116,6 +156,7 @@ const UserDetialsTable = () => {
                 <tr className="">
                   <td className="py-2 px-4">
                     <img
+                      onClick={() => handleModal(user.profilePicture)}
                       src={
                         typeof user.profilePicture === "string"
                           ? user.profilePicture
