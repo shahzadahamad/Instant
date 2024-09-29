@@ -8,11 +8,26 @@ export default class GetUserDataAdmin {
     this.userRepository = adminRepository;
   }
 
-  public async execute(pageVal: string): Promise<any> {
-    const page = parseInt(pageVal) || 1;
+  public async execute(pageVal: number, search: any): Promise<any> {
+    const page = pageVal || 1
     const limit = 10;
     const startIndex = (page - 1) * limit;
-    const user = await this.userRepository.getUserData(startIndex , limit);
+    let query = {};
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      query = {
+        $or: [
+          { fullname: { $regex: searchRegex } },
+          { username: { $regex: searchRegex } },
+          { email: { $regex: searchRegex } },
+        ],
+      };
+    }
+    const user = await this.userRepository.getUserData(
+      startIndex,
+      limit,
+      query
+    );
     return user;
   }
 }

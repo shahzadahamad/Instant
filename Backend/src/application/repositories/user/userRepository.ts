@@ -151,15 +151,17 @@ export default class UserRepository {
   }
 
   public async getUserData(
-    startIndex: number, limit: number
-  ): Promise<{ users: any; totalPages: number }> {
+    startIndex: number,
+    limit: number,
+    query: {}
+  ): Promise<{ users: any; totalPages: number; totalUser: number }> {
     try {
       const totalUser = await UserModel.countDocuments();
-      console.log(totalUser)
-      const users = await UserModel.find({}, { password: 0 })
+      const searchTotalUser = await UserModel.countDocuments(query);
+      const users = await UserModel.find(query, { password: 0 })
         .skip(startIndex)
         .limit(limit);
-      return { users, totalPages: Math.ceil(totalUser / limit) };
+      return { users, totalPages: Math.ceil(searchTotalUser / limit), totalUser };
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

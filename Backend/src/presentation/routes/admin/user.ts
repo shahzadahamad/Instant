@@ -6,6 +6,6 @@ const adminUsersRouter = Router();
 
 const getUserDataAdminController = new GetUserDataAdminController();
 
-adminUsersRouter.get('/get-data/:page', adminAuthMiddleware, getUserDataAdminController.handle);
+adminUsersRouter.get('/get-data', adminAuthMiddleware, getUserDataAdminController.handle);
 
 export default adminUsersRouter;
