@@ -28,6 +28,10 @@ export default class AuthenticateUser {
       throw new Error("User not found!");
     }
 
+    if(userExist.isBlock) {
+      throw new Error("Your account has been blocked");
+    }
+
     const isValidPassword = await this.passwordHasher.compare(
       password,
       userExist.password

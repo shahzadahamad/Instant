@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import TokenManager from "../../application/providers/tokenManager";
+import VerifyIngUser from "../../application/useCases/user/user/verifyIngUser";
+import UserRepository from "../../application/repositories/user/userRepository";
 
 const tokenManager = new TokenManager();
 
@@ -20,6 +22,11 @@ const authMiddleware = async (req: any, res: Response, next: NextFunction) => {
     const decoded = tokenManager.verifyAccessToken(token);
     req.user = decoded;
     if (req.user.role == "user") {
+      const verifyUser = new VerifyIngUser(new UserRepository());
+      const user = await verifyUser.execute(req.user.userId);
+      if (!user || user.isBlock) {
+        return res.status(403).json({ message: "Your accout is blocked" });
+      }
       next();
     } else {
       return res
