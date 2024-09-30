@@ -11,6 +11,7 @@ import CreatePost from "../pages/user/CreatePost";
 import AdminSignIn from "../pages/admin/AdminSignIn";
 import Dashboard from "@/pages/admin/Dashboard";
 import Users from "@/pages/admin/Users";
+import Music from "@/pages/admin/Music";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -67,7 +68,19 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   },
   {
     path: "/admin/users",
-    element: currentAdmin ? <Users /> : <Navigate to="/admin/sign-in" replace />,
+    element: currentAdmin ? (
+      <Users />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
+  },
+  {
+    path: "/admin/music",
+    element: currentAdmin ? (
+      <Music />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
   },
 ];
 

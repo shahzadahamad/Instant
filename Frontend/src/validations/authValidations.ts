@@ -123,7 +123,7 @@ export const editProfileSchema = z.object({
       const phoneNumberPattern = /^\d{10}$/;
       return phoneNumberPattern.test(value.toString());
     } else {
-      return true
+      return true;
     }
   }, "Invalid Phone number"),
   dateOfBirth: z.string().refine((value) => {
@@ -152,4 +152,12 @@ export const AdminSignInSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(32, "Password must be at most 32 characters")
     .regex(/^\S+$/, "Password should not contain spaces"),
+});
+
+export const createMusicSchema = z.object({
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .min(4, "Title must be at least 4 characters")
+    .max(32, "Title must be at most 32 characters"),
 });

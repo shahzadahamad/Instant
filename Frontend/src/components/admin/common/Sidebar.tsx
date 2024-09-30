@@ -109,6 +109,7 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faMusic}
+            onClick={() => navigate('/admin/music')}
             className="hover:text-white cursor-pointer"
           />
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
