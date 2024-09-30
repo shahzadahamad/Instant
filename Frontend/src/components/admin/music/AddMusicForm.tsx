@@ -14,7 +14,9 @@ import { createMusicSchema } from "@/validations/authValidations";
 import { AxiosError } from "axios";
 import { adminApiClient } from "@/apis/apiClient";
 
-const AddMusicForm = () => {
+const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
+  fetchMusic,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedFile, setSelectedFile] = useState<string>("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -187,6 +189,7 @@ const AddMusicForm = () => {
     if (!isOpen) {
       setSelectedFile("");
       setImage("");
+      setTitle("");
       setIsPlaying(false);
       setCurrentTime(0);
       setDuration(0);
@@ -275,7 +278,8 @@ const AddMusicForm = () => {
         `/music/create-music`,
         formData
       );
-      onOpenChange();
+      fetchMusic(1);
+      handleModalChange(false);
       toast.success(response.data.message);
       setLoading(false);
     } catch (error) {
