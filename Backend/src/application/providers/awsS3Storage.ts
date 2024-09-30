@@ -8,10 +8,10 @@ import { s3Client } from "../../infrastructure/configs/aswS3";
 
 export default class AwsS3Storage {
   public async uploadFile(file: Express.Multer.File): Promise<string> {
-    const unique_id = uuidv4();
+    const uniqueName = `${uuidv4()}-${file.originalname}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `uploads/profiles/${unique_id}/${file.originalname}`,
+      Key: `uploads/profiles/${uniqueName}`,
       Body: file.buffer,
       ContentType: file.mimetype,
     };
@@ -48,6 +48,38 @@ export default class AwsS3Storage {
         console.error("An unknown error occurred");
         throw new Error("An unknown error occurred while deleting the file");
       }
+    }
+  }
+  public async uploadFileOfMusic(
+    imageFile: Express.Multer.File,
+    audioFile: Express.Multer.File
+  ): Promise<{ imageFileUrl: string; audioFileUrl: string }> {
+    const imageUniqueName = `${uuidv4()}-${imageFile.originalname}`;
+    const audioUniqueName = `${uuidv4()}-${audioFile.originalname}`;
+    const imageParams = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `uploads/music-image/${imageUniqueName}`,
+      Body: imageFile.buffer,
+      ContentType: imageFile.mimetype,
+    };
+    const audioParams = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `uploads/music/${audioUniqueName}`,
+      Body: audioFile.buffer,
+      ContentType: audioFile.mimetype,
+    };
+    try {
+      const iamgeCommand = new PutObjectCommand(imageParams);
+      await s3Client.send(iamgeCommand);
+      const imageFileUrl = `https://${imageParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageParams.Key}`;
+
+      const audioCommand = new PutObjectCommand(audioParams);
+      await s3Client.send(audioCommand);
+      const audioFileUrl = `https://${imageParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageParams.Key}`;
+      return { imageFileUrl, audioFileUrl };
+    } catch (error) {
+      console.error("Error uploading image in aws s3", error);
+      throw new Error("Failed to upload image in aws s3");
     }
   }
 }

@@ -4,21 +4,21 @@ import EditUserDataController from "../../../infrastructure/controllers/user/use
 import { upload } from "../../../infrastructure/configs/multer";
 import authMiddleware from "../../../infrastructure/middlewares/authMiddleware";
 
-const userRoute = Router();
+const userRouter = Router();
 
 const getUserDataController = new GetUserDataController();
 const editUserDataController = new EditUserDataController();
 
-userRoute.get(
+userRouter.get(
   "/edit-profile/get-data/:_id",
   authMiddleware,
   getUserDataController.handle
 );
-userRoute.post(
+userRouter.post(
   "/edit-profile/:_id",
   authMiddleware,
   upload.single("profilePicture"),
   editUserDataController.handle
 );
 
-export default userRoute;
+export default userRouter;
