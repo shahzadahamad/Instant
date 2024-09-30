@@ -15,8 +15,8 @@ export default class CreateMusicController {
     );
 
     try {
-      const musicData = await createMusic.execute(title, files as FilesType);
-      return res.status(200).json(musicData);
+      await createMusic.execute(title, files as FilesType);
+      return res.status(200).json({message:"Music created successful."});
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });
