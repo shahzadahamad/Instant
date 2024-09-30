@@ -36,4 +36,29 @@ export default class MusicRepository {
       throw new Error("Unknown error");
     }
   }
+  public async getMusicData(
+    startIndex: number,
+    limit: number,
+    query: {}
+  ): Promise<{ music: any; totalPages: number; totalMusic: number }> {
+    try {
+      const totalMusic = await MusicModel.countDocuments();
+      const searchTotalMusic = await MusicModel.countDocuments(query);
+      const music = await MusicModel.find(query)
+        .skip(startIndex)
+        .limit(limit);
+      return {
+        music,
+        totalPages: Math.ceil(searchTotalMusic / limit),
+        totalMusic,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find music");
+      }
+      console.error("Unknown error finding music");
+      throw new Error("Unknown error");
+    }
+  }
 }

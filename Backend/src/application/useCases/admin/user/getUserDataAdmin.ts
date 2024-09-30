@@ -4,8 +4,8 @@ import UserRepository from "../../../repositories/user/userRepository";
 export default class GetUserDataAdmin {
   private userRepository: UserRepository;
 
-  constructor(adminRepository: UserRepository) {
-    this.userRepository = adminRepository;
+  constructor(userRepository: UserRepository) {
+    this.userRepository = userRepository;
   }
 
   public async execute(pageVal: number, search: any): Promise<any> {
