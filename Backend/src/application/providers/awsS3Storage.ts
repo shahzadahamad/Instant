@@ -75,7 +75,7 @@ export default class AwsS3Storage {
 
       const audioCommand = new PutObjectCommand(audioParams);
       await s3Client.send(audioCommand);
-      const audioFileUrl = `https://${imageParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageParams.Key}`;
+      const audioFileUrl = `https://${audioParams.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${audioParams.Key}`;
       return { imageFileUrl, audioFileUrl };
     } catch (error) {
       console.error("Error uploading image in aws s3", error);

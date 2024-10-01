@@ -7,6 +7,7 @@ import adminAuthRouter from "../routes/admin/auth";
 import adminUsersRouter from "../routes/admin/user";
 import userRouter from "../routes/user/user";
 import musicRouter from "../routes/admin/music";
+import userMusicRouter from "../routes/user/music";
 
 const app = express();
 app.use(express.json());
@@ -23,7 +24,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin/auth", adminAuthRouter);
 app.use('/api/admin/users', adminUsersRouter);
-app.use('/api/admin/music', musicRouter)
+app.use('/api/admin/music', musicRouter);
+app.use('/api/user/music', userMusicRouter);
 
 const port: number | string = process.env.PORT || 3000;
 app.listen(port, () => {
