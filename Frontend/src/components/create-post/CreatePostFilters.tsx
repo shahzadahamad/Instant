@@ -11,6 +11,7 @@ import { RootState } from "@/redux/store/store";
 import CustomFilter from "./CustomFilter";
 import { useState } from "react";
 import CreatePostMusic from "./CreatePostMusic";
+import CreatePostFormSubmit from "./CreatePostFormSubmit";
 
 const CreatePostFilters = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const CreatePostFilters = () => {
               Music
             </TabsTrigger>
           )}
-          <TabsTrigger value="caption" onClick={() => setTabs("captions")}>
+          <TabsTrigger value="caption" onClick={() => setTabs("caption")}>
             Captions
           </TabsTrigger>
         </TabsList>
@@ -111,23 +112,36 @@ const CreatePostFilters = () => {
               )}
             </div>
           </TabsContent>
+        ) : tab === "music" ? (
+          <TabsContent
+            value="music"
+            className={`${
+              post && post.length > 0
+                ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+            }`}
+          >
+            {post && post.length > 0 ? (
+              <CreatePostMusic />
+            ) : (
+              <div>Upload a Post to Select Music</div>
+            )}
+          </TabsContent>
         ) : (
-          tab === "music" && (
-            <TabsContent
-              value="music"
-              className={`${
-                post && post.length > 0
-                  ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                  : ""
-              }`}
-            >
-              {post && post.length > 0 ? (
-                <CreatePostMusic />
-              ) : (
-                <div>Upload a Post to Select Music</div>
-              )}
-            </TabsContent>
-          )
+          <TabsContent
+            value="caption"
+            className={`${
+              post && post.length > 0
+                ? "w-[24rem] h-[70vh] scrollbar-hidden transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+            }`}
+          >
+            {post && post.length > 0 ? (
+              <CreatePostFormSubmit />
+            ) : (
+              <div>Upload a Post to Set Captions</div>
+            )}
+          </TabsContent>
         )}
       </Tabs>
     </div>
