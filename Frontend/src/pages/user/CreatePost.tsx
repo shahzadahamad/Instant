@@ -1,8 +1,14 @@
 import Sidebar from "@/components/common/Sidebar";
 import CreatePostBody from "@/components/create-post/CreatePostBody";
 import CreatePostHeader from "@/components/create-post/CreatePostHeader";
+import { setPostType } from "@/redux/slice/postSlice";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const CreatePost = () => {
+  const dispatch = useDispatch();
+  const { type } = useParams();
+  dispatch(setPostType(type));
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />

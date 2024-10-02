@@ -15,8 +15,7 @@ import CreatePostMusic from "./CreatePostMusic";
 const CreatePostFilters = () => {
   const dispatch = useDispatch();
   const { post, postIndex } = useSelector((state: RootState) => state.post);
-  const [customFilOrInstantFil, setCustomFilOrInstantFil] =
-    useState("instantFilter");
+  const [tab, setTabs] = useState("instantFilter");
 
   return (
     <div className="col-span-12 md:col-span-5">
@@ -24,30 +23,26 @@ const CreatePostFilters = () => {
         <TabsList>
           <TabsTrigger
             value="instant-filter"
-            onClick={() => setCustomFilOrInstantFil("instantFilter")}
+            onClick={() => setTabs("instantFilter")}
           >
             Instant Filter
           </TabsTrigger>
           <TabsTrigger
             value="custom-filter"
-            onClick={() => setCustomFilOrInstantFil("customFilter")}
+            onClick={() => setTabs("customFilter")}
           >
             Custom Filter
           </TabsTrigger>
-          <TabsTrigger
-            value="music"
-            onClick={() => setCustomFilOrInstantFil("music")}
-          >
-            Music
-          </TabsTrigger>
-          <TabsTrigger
-            value="caption"
-            onClick={() => setCustomFilOrInstantFil("captions")}
-          >
+          {post && post[postIndex] && post[postIndex].type !== "video" && (
+            <TabsTrigger value="music" onClick={() => setTabs("music")}>
+              Music
+            </TabsTrigger>
+          )}
+          <TabsTrigger value="caption" onClick={() => setTabs("captions")}>
             Captions
           </TabsTrigger>
         </TabsList>
-        {customFilOrInstantFil === "instantFilter" ? (
+        {tab === "instantFilter" ? (
           <TabsContent
             value="instant-filter"
             className={`${
@@ -97,7 +92,7 @@ const CreatePostFilters = () => {
                 ))
               : "Upload a Post to Select Filter"}
           </TabsContent>
-        ) : customFilOrInstantFil === "customFilter" ? (
+        ) : tab === "customFilter" ? (
           <TabsContent
             value="custom-filter"
             className={`${
@@ -117,20 +112,22 @@ const CreatePostFilters = () => {
             </div>
           </TabsContent>
         ) : (
-          <TabsContent
-            value="music"
-            className={`${
-              post && post.length > 0
-                ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                : ""
-            }`}
-          >
-            {post && post.length > 0 ? (
-              <CreatePostMusic />
-            ) : (
-              <div>Upload a Post to Select Filter</div>
-            )}
-          </TabsContent>
+          tab === "music" && (
+            <TabsContent
+              value="music"
+              className={`${
+                post && post.length > 0
+                  ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                  : ""
+              }`}
+            >
+              {post && post.length > 0 ? (
+                <CreatePostMusic />
+              ) : (
+                <div>Upload a Post to Select Music</div>
+              )}
+            </TabsContent>
+          )
         )}
       </Tabs>
     </div>

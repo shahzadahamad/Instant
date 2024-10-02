@@ -47,7 +47,7 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? <Navigate to="/" replace /> : <ResetPassword />,
   },
   {
-    path: "/create-post",
+    path: "/create-post/:type",
     element: currentUser ? <CreatePost /> : <Navigate to="/sign-in" replace />,
   },
   {

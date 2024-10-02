@@ -4,7 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: PostState = {
   post: [],
   postIndex: -1,
+  musicId: "",
+  aspectRatio: null,
   postHoverFilterClass: "",
+  postType: "",
 };
 
 const postSlice = createSlice({
@@ -29,6 +32,24 @@ const postSlice = createSlice({
         action.payload.index
       ].value = action.payload.newValue;
     },
+    setPostMusic(state, action) {
+      state.musicId = action.payload.music;
+    },
+    removePostMusic(state) {
+      state.musicId = "";
+    },
+    removePost(state, action) {
+      state.post.splice(action.payload, 1);
+    },
+    pushPost(state, action) {
+      state.post.push(action.payload);
+    },
+    setAspectRatios(state, action) {
+      state.aspectRatio = action.payload;
+    },
+    setPostType(state, action) {
+      state.postType = action.payload;
+    },
     setPostIndex(state, action) {
       state.postIndex = action.payload;
     },
@@ -37,11 +58,17 @@ const postSlice = createSlice({
 
 export const {
   onHoverUpFilter,
+  setPostType,
   setPostFilterClass,
   onHoverOutFilter,
+  setAspectRatios,
   setPost,
   setCustomFilters,
   setPostIndex,
+  setPostMusic,
+  removePostMusic,
+  removePost,
+  pushPost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

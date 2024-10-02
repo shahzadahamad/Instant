@@ -26,5 +26,22 @@ interface PostItem {
 export interface PostState {
   post: PostItem[];
   postIndex: number;
+  aspectRatio: number | null;
+  musicId: string;
   postHoverFilterClass: string;
+  postType: string;
+}
+
+export interface GetCreatePostMusicData {
+  _id: string;
+  title: string;
+  music: string;
+  image: string;
+}
+
+export interface GetSelectMusicData {
+  _id: string;
+  title: string;
+  music: string;
+  image: string;
 }

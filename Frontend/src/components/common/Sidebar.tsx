@@ -149,13 +149,19 @@ const Sidebar = () => {
                   </ModalHeader>
                   <ModalBody className="!p-0 border-1 w-full h-full">
                     <div className="text-center p-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 justify-center">
-                      <div onClick={() => navigate('/create-post')} className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer">
+                      <div
+                        onClick={() => navigate("/create-post/image")}
+                        className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
+                      >
                         <Image className="w-10 h-10 mb-2" />
-                        <span className="text-base font-semibold">Post</span>
+                        <span className="text-base font-semibold">Image</span>
                       </div>
-                      <div className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer">
+                      <div
+                        onClick={() => navigate("/create-post/video")}
+                        className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
+                      >
                         <VideoIcon className="w-10 h-10 mb-2" />
-                        <span className="text-base font-semibold">Live</span>
+                        <span className="text-base font-semibold">Video</span>
                       </div>
                     </div>
                   </ModalBody>
