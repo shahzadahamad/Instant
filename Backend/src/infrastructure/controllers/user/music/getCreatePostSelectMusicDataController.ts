@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 import MusicRepository from "../../../../application/repositories/admin/musicRepository";
-import GetCreatePostMusicData from "../../../../application/useCases/user/music/getCreatePostMusicData";
+import GetCreatePostSelectedMusicData from "../../../../application/useCases/user/music/getCreatePostSelectedMusicData";
 
-export default class GetCreatePostMusicDataController {
+export default class GetCreatePostSelectMusicDataController {
   public async handle(req: Request, res: Response): Promise<Response | void> {
-    const { searchVal } = req.query;
-    const getCreatePostMusicData = new GetCreatePostMusicData(
+    const { _id } = req.params;
+
+    const getCreatePostSelectedMusicData = new GetCreatePostSelectedMusicData(
       new MusicRepository()
     );
 
     try {
-      const musicData = await getCreatePostMusicData.execute(searchVal);
+      const musicData = await getCreatePostSelectedMusicData.execute(_id);
 
       return res.status(200).json(musicData);
     } catch (error) {

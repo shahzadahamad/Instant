@@ -60,9 +60,27 @@ export default class MusicRepository {
     }
   }
 
-  public async findAllMusic(): Promise<IMusic[]> {
+  public async find10Music(query: {}): Promise<{
+    musicData: IMusic[];
+    totalMusic: number;
+  }> {
     try {
-      const totalMusic = await MusicModel.find();
+      const totalMusic = await MusicModel.countDocuments();
+      const musicData = await MusicModel.find(query).limit(10);
+      return { musicData, totalMusic };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find music");
+      }
+      console.error("Unknown error finding music");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findById(_id: string): Promise<IMusic | null> {
+    try {
+      const totalMusic = await MusicModel.findOne({ _id: _id });
       return totalMusic;
     } catch (error) {
       if (error instanceof Error) {
