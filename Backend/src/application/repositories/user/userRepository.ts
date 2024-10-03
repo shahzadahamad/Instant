@@ -199,4 +199,23 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async find10UserBySearch(query: {}): Promise<IUser[]> {
+    try {
+      const musicData = await UserModel.find(query, {
+        _id: 1,
+        username: 1,
+        fullname: 1,
+        profilePicture: 1,
+      }).limit(10);
+      return musicData;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
