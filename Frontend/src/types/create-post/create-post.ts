@@ -21,6 +21,7 @@ interface PostItem {
     { label: "Sepia"; value: 0; field: "sepia" },
     { label: "Gray Scale"; value: 0; field: "gray" }
   ];
+  tagUsers: string[];
 }
 
 export interface PostState {
@@ -44,4 +45,11 @@ export interface GetSelectMusicData {
   title: string;
   music: string;
   image: string;
+}
+
+export interface GetCreatePostUserData {
+  _id: string;
+  fullname: string;
+  username: string;
+  profilePicture: string;
 }

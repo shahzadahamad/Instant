@@ -50,6 +50,10 @@ const postSlice = createSlice({
     setPostType(state, action) {
       state.postType = action.payload;
     },
+    pushTagUser(state, action) {
+      const { index, id } = action.payload;
+      state.post[index].tagUsers.push(id);
+    },
     setPostIndex(state, action) {
       state.postIndex = action.payload;
     },
@@ -65,6 +69,7 @@ export const {
   setPost,
   setCustomFilters,
   setPostIndex,
+  pushTagUser,
   setPostMusic,
   removePostMusic,
   removePost,

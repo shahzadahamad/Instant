@@ -58,6 +58,7 @@ const ChangePost = () => {
             { label: "Sepia", value: 0, field: "sepia" },
             { label: "Gray Scale", value: 0, field: "gray" },
           ],
+          tagUsers: [],
         };
         dispatch(pushPost(post));
         dispatch(setPostIndex(0));

@@ -3,9 +3,8 @@ import { useSelector } from "react-redux";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
-import { useEffect, useRef, useState } from "react";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useRef, useState } from "react";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const CreatePostFormSubmit = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -87,28 +86,20 @@ const CreatePostFormSubmit = () => {
         />
         <span className="text-sm text-gray-500">{caption.length}/2000</span>
       </div>
-      <div className="relative w-[22.5rem]">
-        <input
-          type="text"
-          className="w-full py-3 pl-1 border-b outline-none bg-transparent resize-none text-sm"
-          placeholder="Tag users"
-        />
-        <PersonAddAltIcon className="absolute right-1 top-1/2 transform -translate-y-1/2 text-sm cursor-pointer" />
-      </div>
       <div
         className="flex items-center justify-between w-full cursor-pointer"
         onClick={toggleAdvancedSettings}
       >
         <span className="text-sm font-semibold ml-1">Advanced Settings</span>
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className={`transform transition duration-300  ${
-            showAdvancedSettings ? "rotate-180" : ""
-          }`}
-        />
+
+        {showAdvancedSettings ? (
+          <FontAwesomeIcon icon={faChevronUp} />
+        ) : (
+          <FontAwesomeIcon icon={faChevronDown} />
+        )}
       </div>
       {showAdvancedSettings && (
-        <div className="w-full overflow-hidden transition-all duration-300 ease-in-out z-10">
+        <div className="w-full max-h-48 overflow-y-auto transition-all duration-300 ease-in-out">
           <div className="flex flex-col gap-2 w-full mt-2">
             <div className="flex justify-between items-center">
               <span className="text-sm ml-1">

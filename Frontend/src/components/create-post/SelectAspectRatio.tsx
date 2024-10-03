@@ -76,6 +76,7 @@ const SelectAspectRatioAndUplaod = () => {
             { label: "Sepia", value: 0, field: "sepia" },
             { label: "Gray Scale", value: 0, field: "gray" },
           ],
+          tagUsers: [],
         };
         dispatch(setPost([post]));
         dispatch(setPostIndex(0));
@@ -101,8 +102,6 @@ const SelectAspectRatioAndUplaod = () => {
     if (files && files.length === 1) {
       const file = files[0];
       const fileType = file.type.startsWith("video") ? "video" : "image";
-
-      console.log(fileType, postType)
 
       if (fileType == "video" && postType == "image") {
         toast.error("Upload Image");
@@ -140,6 +139,7 @@ const SelectAspectRatioAndUplaod = () => {
               { label: "Sepia", value: 0, field: "sepia" },
               { label: "Gray Scale", value: 0, field: "gray" },
             ],
+            tagUsers: [],
           };
           dispatch(setPost([post]));
           dispatch(setPostIndex(0));

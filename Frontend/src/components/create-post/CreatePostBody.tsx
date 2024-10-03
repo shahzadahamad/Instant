@@ -15,6 +15,7 @@ import apiClient from "@/apis/apiClient";
 import { GetSelectMusicData } from "@/types/create-post/create-post";
 import ChangePost from "./ChangePost";
 import SelectAspectRatio from "./SelectAspectRatio";
+import TagUser from "./TagUser";
 
 const CreatePostBody = () => {
   const dispatch = useDispatch();
@@ -110,7 +111,12 @@ const CreatePostBody = () => {
         <Tabs defaultValue="post" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="post">Post</TabsTrigger>
-            <TabsTrigger value="change">Change</TabsTrigger>
+            {post.length > 0 && (
+              <>
+                <TabsTrigger value="change">Add Post</TabsTrigger>
+                <TabsTrigger value="tag-user">Tag users</TabsTrigger>
+              </>
+            )}
           </TabsList>
           <TabsContent value="post">
             <div className="w-[30rem] h-[70vh] border flex justify-center items-center rounded-md overflow-hidden mt-4 relative">
@@ -215,6 +221,11 @@ const CreatePostBody = () => {
           <TabsContent value="change" className="">
             <div className="w-[30rem] h-[70vh] border rounded-md p-2 mt-4">
               <ChangePost />
+            </div>
+          </TabsContent>
+          <TabsContent value="tag-user" className="">
+            <div className="w-[30rem] h-[70vh] border rounded-md p-2 mt-4">
+              <TagUser />
             </div>
           </TabsContent>
         </Tabs>
