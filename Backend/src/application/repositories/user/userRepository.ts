@@ -218,4 +218,25 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+  public async findTaggedUser(data: string[]): Promise<IUser[]> {
+    try {
+      const musicData = await UserModel.find(
+        { _id: { $in: data } },
+        {
+          _id: 1,
+          username: 1,
+          fullname: 1,
+          profilePicture: 1,
+        }
+      );
+      return musicData;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }

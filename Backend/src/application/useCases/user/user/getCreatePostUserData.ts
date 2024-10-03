@@ -8,12 +8,17 @@ export default class GetCreatePostUserData {
     this.UserRepository = UserRepository;
   }
 
-  public async execute(search: any): Promise<IUser[]> {
+  public async execute(search: any, userData: any): Promise<IUser[]> {
     const searchRegex = new RegExp(search, "i");
     const query = {
-      $or: [
-        { username: { $regex: searchRegex } },
-        { fullname: { $regex: searchRegex } },
+      $and: [
+        {
+          $or: [
+            { username: { $regex: searchRegex } },
+            { fullname: { $regex: searchRegex } },
+          ],
+        },
+        { _id: { $nin: userData } },
       ],
     };
 
