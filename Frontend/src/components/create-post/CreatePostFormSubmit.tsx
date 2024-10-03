@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useRef, useState } from "react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/ui/button";
 
 const CreatePostFormSubmit = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -172,6 +173,9 @@ const CreatePostFormSubmit = () => {
           </div>
         </div>
       )}
+      <div className="w-full flex justify-end mt-1">
+        <Button variant="outline">Share Post</Button>
+      </div>
     </div>
   );
 };

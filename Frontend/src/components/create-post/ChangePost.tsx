@@ -36,6 +36,7 @@ const ChangePost = () => {
 
   const handleCancel = (index: number) => {
     dispatch(removePost(index));
+    toast.success("Post Removed");
   };
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
@@ -68,6 +69,7 @@ const ChangePost = () => {
         setCrop({ x: 0, y: 0 });
         setZoom(1);
         onOpenChange();
+        toast.success("Post Added");
       }
     } catch (error) {
       console.log(error);
@@ -122,7 +124,13 @@ const ChangePost = () => {
 
   return (
     <div className="relative flex items-center justify-center h-full w-full">
-      <div className="flex h-full w-full items-center justify-start gap-2 overflow-x-scroll scrollbar-hidden">
+      <div
+        className={`flex h-full w-full items-center ${
+          post && post.length > 0 && post[postIndex].type === "video"
+            ? "justify-center"
+            : "justify-start"
+        } gap-2 overflow-x-scroll scrollbar-hidden`}
+      >
         {post && post.length > 0 ? (
           <>
             {post.map((post, index) =>
@@ -140,9 +148,12 @@ const ChangePost = () => {
                   />
                 </div>
               ) : post.type === "video" ? (
-                <div key={index} className="relative w-44 h-44 flex-shrink-0">
+                <div
+                  key={index}
+                  className="relative w-72 h-72 border rounded-md flex-shrink-0"
+                >
                   <video
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-full object-contain rounded"
                     src={post.url}
                   ></video>
                   <FontAwesomeIcon
@@ -210,7 +221,7 @@ const ChangePost = () => {
           </>
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <h1 className="text-center">Upload a Post to Select Music</h1>
+            <h1 className="text-center">Upload a Post</h1>
           </div>
         )}
       </div>

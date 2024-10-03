@@ -10,7 +10,7 @@ import {
   faArrowRight,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { pushTagUser } from "@/redux/slice/postSlice";
+import { pushTagUser, removeTagUser } from "@/redux/slice/postSlice";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
@@ -53,6 +53,11 @@ const TagUser = () => {
     return () => {};
   }, [searchVal, postIndex, post]);
 
+  useEffect(() => {
+    fetchTagUser();
+    return () => {};
+  }, [post[postIndex].tagUsers]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       setSearchVal("");
@@ -73,19 +78,21 @@ const TagUser = () => {
     }
   };
 
+  const fetchTagUser = async () => {
+    try {
+      const response = await apiClient.get(
+        `/user/create-post/get-tagged-user-data`,
+        { params: { taggedUsers: post[postIndex].tagUsers } }
+      );
+      setTaggedUser(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   const handleTagUserClick = async () => {
     if (post[postIndex].tagUsers.length > 0) {
-      try {
-        const response = await apiClient.get(
-          `/user/create-post/get-tagged-user-data`,
-          { params: { taggedUsers: post[postIndex].tagUsers } }
-        );
-        setTaggedUser(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-
+      fetchTagUser();
       onOpen();
     } else {
       toast.error("No user tagged yet.");
@@ -105,6 +112,11 @@ const TagUser = () => {
     dispatch(pushTagUser({ index: postIndex, id: id }));
     setSearchVal("");
     setSearchUsers([]);
+  };
+
+  const handleRemoveTag = (id: string) => {
+    dispatch(removeTagUser({ index: postIndex, id }));
+    toast.success('User has been untagged.')
   };
 
   return (
@@ -143,11 +155,16 @@ const TagUser = () => {
         )}
       </div>
       <div className="relative w-72 h-72 flex items-center justify-center">
-        {post && post.length > 0 && (
+        {post && post.length > 0 && post[postIndex].type === 'image' ? (
           <img
             className="absolute w-full h-full rounded-md object-contain"
             src={post[postIndex].url}
             alt="Uploaded content"
+          />
+        ) : (
+          <video
+            className="absolute w-full h-full rounded-md object-contain"
+            src={post[postIndex].url}
           />
         )}
       </div>
@@ -203,33 +220,40 @@ const TagUser = () => {
             </div>
           </ModalHeader>
           <ModalBody className="w-full h-[70vh] overflow-y-auto flex flex-col border-t relative">
-            <div className="w-full">
-              {taggedUser.map((user) => (
-                <div
-                  key={user._id}
-                  className="w-full rounded-md flex border justify-between items-center p-2 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 cursor-pointer mb-2"
-                >
-                  <div className="flex gap-2">
-                    <img
-                      src={user.profilePicture}
-                      alt="profile"
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-semibold">
-                        {user.username}
-                      </span>
-                      <span className="text-[12px] dark:text-[#a3a09f] text-[#3c3532]">
-                        {user.fullname}
-                      </span>
+            {post[postIndex].tagUsers.length > 0 ? (
+              <div className="w-full">
+                {taggedUser.map((user) => (
+                  <div
+                    key={user._id}
+                    className="w-full rounded-md flex border justify-between items-center p-2 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 cursor-pointer mb-2"
+                  >
+                    <div className="flex gap-2">
+                      <img
+                        src={user.profilePicture}
+                        alt="profile"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-semibold">
+                          {user.username}
+                        </span>
+                        <span className="text-[12px] dark:text-[#a3a09f] text-[#3c3532]">
+                          {user.fullname}
+                        </span>
+                      </div>
                     </div>
+                    <button className="text-red-500 hover:text-red-700">
+                      <FontAwesomeIcon
+                        onClick={() => handleRemoveTag(user._id)}
+                        icon={faXmark}
+                      />
+                    </button>
                   </div>
-                  <button className="text-red-500 hover:text-red-700">
-                    <FontAwesomeIcon icon={faXmark} />
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <h1 className="text-center">No Tagged User.</h1>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>

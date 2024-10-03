@@ -120,9 +120,7 @@ const CreatePostBody = () => {
           </TabsList>
           <TabsContent value="post">
             <div className="w-[30rem] h-[70vh] border flex justify-center items-center rounded-md overflow-hidden mt-4 relative">
-              {post && !(post.length > 0) ? (
-                <SelectAspectRatio />
-              ) : (
+              {post && post.length > 0 ? (
                 <>
                   {post[postIndex].type === "image" ? (
                     <div
@@ -159,6 +157,8 @@ const CreatePostBody = () => {
                     </>
                   )}
                 </>
+              ) : (
+                <SelectAspectRatio />
               )}
               {post && post.length > 0 && (
                 <>

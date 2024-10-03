@@ -54,6 +54,13 @@ const postSlice = createSlice({
       const { index, id } = action.payload;
       state.post[index].tagUsers.push(id);
     },
+    removeTagUser(state, action) {
+      const { index, id } = action.payload;
+      const newTaggedArray = state.post[index].tagUsers.filter(
+        (item) => item !== id
+      );
+      state.post[index].tagUsers = newTaggedArray;
+    },
     setPostIndex(state, action) {
       state.postIndex = action.payload;
     },
@@ -62,6 +69,7 @@ const postSlice = createSlice({
 
 export const {
   onHoverUpFilter,
+  removeTagUser,
   setPostType,
   setPostFilterClass,
   onHoverOutFilter,

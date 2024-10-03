@@ -75,7 +75,11 @@ const CreatePostFilters = () => {
                           }}
                         >
                           <img
-                            src={"/para1.jpg"}
+                            src={
+                              post[postIndex].type === "image"
+                                ? post[postIndex].url
+                                : "/view.jpg"
+                            }
                             alt=""
                             className={`${filter.class} ${
                               post[postIndex].postFilterClass === filter.class
