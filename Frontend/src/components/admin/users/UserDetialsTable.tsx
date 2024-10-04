@@ -36,7 +36,7 @@ const UserDetialsTable = () => {
     try {
       const response = await adminApiClient.get(`/users/get-data`, {
         params: {
-          page,
+          page: page,
           search: searchVal,
         },
       });
@@ -52,6 +52,11 @@ const UserDetialsTable = () => {
     fetchUsers(page);
     return () => {};
   }, [page, searchVal]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchVal(e.target.value);
+    setPage(1);
+  };
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -119,121 +124,123 @@ const UserDetialsTable = () => {
           </ModalContent>
         </Modal>
       )}
-      <div className="p-10 pb-1 flex justify-between items-center">
-        <div className="w-full max-w-md">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
-              className="w-full bg-transparent p-3 border rounded-md shadow-sm focus:outline-none"
-              name="search"
-              placeholder="Search"
-            />
-            <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </button>
+      <div className="h-[88vh]">
+        <div className=" p-10 pb-1 flex justify-between items-center">
+          <div className="w-full max-w-md">
+            <div className="relative">
+              <input
+                type="text"
+                value={searchVal}
+                onChange={handleSearchChange}
+                className="w-full bg-transparent p-3 border rounded-md shadow-sm focus:outline-none"
+                name="search"
+                placeholder="Search"
+              />
+              <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </button>
+            </div>
           </div>
+          <h1 className="text-lg font-semibold">Total Users: {totalUser}</h1>
         </div>
-        <h1 className="text-lg font-semibold">Total Users: {totalUser}</h1>
-      </div>
-      <div className="overflow-x-auto p-10">
-        {users.length > 0 ? (
-          <table className="min-w-full">
-            <thead className="border rounded-md">
-              <tr>
-                <th className="py-3 px-4 text-left">Profile</th>
-                <th className="py-3 px-4 text-left">Fullname</th>
-                <th className="py-3 px-4 text-left">Username</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">Number</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-left">Actions</th>
-              </tr>
-            </thead>
-            {users.map((user) => (
-              <tbody key={user._id} className="border">
-                <tr className="">
-                  <td className="py-2 px-4">
-                    <img
-                      onClick={() => handleModal(user.profilePicture)}
-                      src={
-                        typeof user.profilePicture === "string"
-                          ? user.profilePicture
-                          : ""
-                      }
-                      alt="upload"
-                      className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
-                    />
-                  </td>
-                  <td className="py-2 px-4">{user.fullname}</td>
-                  <td className="py-2 px-4">{user.username}</td>
-                  <td className="py-2 px-4">{user.email}</td>
-                  <td className="py-2 px-4">
-                    {user.phoneNumber || "-------------"}
-                  </td>
-                  <td
-                    className={`py-2 px-4 ${
-                      user.isBlock ? "text-red-600" : "text-green-600"
-                    }`}
-                  >
-                    {user.isBlock ? "Blocked" : "Active"}
-                  </td>
-                  <td className="py-2 px-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Action</Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>View More</DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={(e) =>
-                            handleAction(
-                              e,
-                              user._id,
-                              user.isBlock,
-                              user.username
-                            )
-                          }
-                        >
-                          {user.isBlock ? "Unblock" : "Block"}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              </tbody>
-            ))}
-            {!(totalUser !== 0 && page === 1 && isDisabled) && (
-              <tfoot className="border">
+        <div className="overflow-x-auto p-10">
+          {users.length > 0 ? (
+            <table className="min-w-full">
+              <thead className="border rounded-md">
                 <tr>
-                  <td className="py-2 px-4 font-bold" colSpan={2}>
-                    <div className="flex gap-4">
-                      <Button
-                        disabled={page === 1}
-                        onClick={handlePrevPage}
-                        variant="outline"
-                      >
-                        &lt;&lt;
-                      </Button>
-                      <Button
-                        disabled={isDisabled}
-                        onClick={handleNextPage}
-                        variant="outline"
-                      >
-                        &gt;&gt;
-                      </Button>
-                    </div>
-                  </td>
+                  <th className="py-3 px-4 text-left">Profile</th>
+                  <th className="py-3 px-4 text-left">Fullname</th>
+                  <th className="py-3 px-4 text-left">Username</th>
+                  <th className="py-3 px-4 text-left">Email</th>
+                  <th className="py-3 px-4 text-left">Number</th>
+                  <th className="py-3 px-4 text-left">Status</th>
+                  <th className="py-3 px-4 text-left">Actions</th>
                 </tr>
-              </tfoot>
-            )}
-          </table>
-        ) : totalUser === 0 ? (
-          <h1>User Not found in Database</h1>
-        ) : (
-          <h1>No search result</h1>
-        )}
+              </thead>
+              {users.map((user) => (
+                <tbody key={user._id} className="border">
+                  <tr className="">
+                    <td className="py-2 px-4">
+                      <img
+                        onClick={() => handleModal(user.profilePicture)}
+                        src={
+                          typeof user.profilePicture === "string"
+                            ? user.profilePicture
+                            : ""
+                        }
+                        alt="upload"
+                        className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
+                      />
+                    </td>
+                    <td className="py-2 px-4">{user.fullname}</td>
+                    <td className="py-2 px-4">{user.username}</td>
+                    <td className="py-2 px-4">{user.email}</td>
+                    <td className="py-2 px-4">
+                      {user.phoneNumber || "-------------"}
+                    </td>
+                    <td
+                      className={`py-2 px-4 ${
+                        user.isBlock ? "text-red-600" : "text-green-600"
+                      }`}
+                    >
+                      {user.isBlock ? "Blocked" : "Active"}
+                    </td>
+                    <td className="py-2 px-4">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">Action</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>View More</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) =>
+                              handleAction(
+                                e,
+                                user._id,
+                                user.isBlock,
+                                user.username
+                              )
+                            }
+                          >
+                            {user.isBlock ? "Unblock" : "Block"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                </tbody>
+              ))}
+              {!(totalUser !== 0 && page === 1 && isDisabled) && (
+                <tfoot className="border">
+                  <tr>
+                    <td className="py-2 px-4 font-bold" colSpan={2}>
+                      <div className="flex gap-4">
+                        <Button
+                          disabled={page === 1}
+                          onClick={handlePrevPage}
+                          variant="outline"
+                        >
+                          &lt;&lt;
+                        </Button>
+                        <Button
+                          disabled={isDisabled}
+                          onClick={handleNextPage}
+                          variant="outline"
+                        >
+                          &gt;&gt;
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
+            </table>
+          ) : totalUser === 0 ? (
+            <h1>User Not found in Database</h1>
+          ) : (
+            <h1>No search result</h1>
+          )}
+        </div>
       </div>
     </>
   );

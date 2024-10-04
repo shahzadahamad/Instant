@@ -9,6 +9,7 @@ import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@mui/material";
 
 const CreatePostMusic = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,49 @@ const CreatePostMusic = () => {
     null
   );
   const [totalMusic, setTotalMusic] = useState(0);
+  const [sliderValues, setSliderValues] = useState<{ [key: string]: number }>(
+    {}
+  );
+
+  useEffect(() => {
+    const currentAudio = audioRefs.current[currentlyPlayingIndex];
+    if (currentAudio) {
+      const updateSlider = () => {
+        setSliderValues((prevValues) => ({
+          ...prevValues,
+          [currentlyPlayingIndex]: currentAudio.currentTime,
+        }));
+      };
+
+      const endedHandler = () => {
+        currentAudio.currentTime = 0;
+        currentAudio.pause();
+        setCurrentlyPlayingIndex("");
+      };
+
+      const pauseHandler = () => {
+        currentAudio.pause();
+        setCurrentlyPlayingIndex("");
+      };
+
+      const playHandler = () => {
+        currentAudio.play();
+        setCurrentlyPlayingIndex(currentlyPlayingIndex);
+      };
+
+      currentAudio.addEventListener("timeupdate", updateSlider);
+      currentAudio.addEventListener("ended", endedHandler);
+      currentAudio.addEventListener("play", playHandler);
+      currentAudio.addEventListener("pause", pauseHandler);
+
+      return () => {
+        currentAudio.removeEventListener("timeupdate", updateSlider);
+        currentAudio.addEventListener("ended", endedHandler);
+        currentAudio.addEventListener("play", playHandler);
+        currentAudio.addEventListener("pause", pauseHandler);
+      };
+    }
+  }, [currentlyPlayingIndex]);
 
   const fetchMusic = async (id: string | boolean) => {
     try {
@@ -46,6 +90,21 @@ const CreatePostMusic = () => {
     if (musicId) {
       fetchMusic(musicId);
     } else {
+      if (currentlyPlayingIndex) {
+        const currentAudio = audioRefs.current[currentlyPlayingIndex];
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+        setCurrentlyPlayingIndex("");
+      }
+      setSliderValues((prevValues) => {
+        const newValues: { [key: string]: number } = {};
+        Object.keys(prevValues).forEach((key) => {
+          newValues[key] = 0;
+        });
+        return newValues;
+      });
       fetchMusic(false);
     }
   }, [musicId, searchVal]);
@@ -73,6 +132,22 @@ const CreatePostMusic = () => {
         currentAudio.pause();
         setCurrentlyPlayingIndex("");
       }
+    }
+  };
+
+  const handleSliderChange = (
+    event: Event,
+    newValue: number | number[],
+    musicId: string
+  ) => {
+    setSliderValues((prevValues) => ({
+      ...prevValues,
+      [musicId]: newValue as number,
+    }));
+
+    const currentAudio = audioRefs.current[musicId];
+    if (currentAudio) {
+      currentAudio.currentTime = newValue as number;
     }
   };
 
@@ -109,27 +184,43 @@ const CreatePostMusic = () => {
                     className={`w-[22.5rem] cursor-pointer object-cover rounded-md border ${
                       music._id === musicId &&
                       "border-1 border-black dark:border-white"
-                    } p-2 flex items-center justify-between`}
+                    } p-2 flex items-center justify-between gap-1`}
                   >
-                    <div className="w-14 h-14 mr-10">
-                      <img
-                        src={music.image}
-                        className="w-full rounded-md h-full object-cover"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-1">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14">
+                        <img
+                          src={music.image}
+                          className="w-full rounded-md h-full object-cover"
+                          alt=""
+                        />
+                      </div>
                       <h1>{music.title}</h1>
                     </div>
-                    <div
-                      className="border p-2 rounded-full content-center cursor-pointer"
-                      onClick={(e) => handlePlayPause(e, music._id)}
-                    >
-                      {currentlyPlayingIndex === music._id ? (
-                        <PauseIcon className="" />
-                      ) : (
-                        <PlayIcon className="" />
-                      )}
+                    <div className=" flex items-center justify-center gap-2">
+                      <div
+                        className="w-20 flex items-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Slider
+                          size="small"
+                          value={sliderValues[music._id] || 0}
+                          onChange={(e, newValue) =>
+                            handleSliderChange(e, newValue, music._id)
+                          }
+                          valueLabelDisplay="off"
+                          max={audioRefs.current[music._id]?.duration}
+                        />
+                      </div>
+                      <div
+                        className="border p-2 rounded-full content-center cursor-pointer"
+                        onClick={(e) => handlePlayPause(e, music._id)}
+                      >
+                        {currentlyPlayingIndex === music._id ? (
+                          <PauseIcon className="" />
+                        ) : (
+                          <PlayIcon className="" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -157,6 +248,7 @@ const CreatePostMusic = () => {
                 setCurrentlyPlayingIndex("");
                 setSearchValue("");
                 setSelectedMusic(null);
+                setSliderValues({});
               }}
             >
               Change

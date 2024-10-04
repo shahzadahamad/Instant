@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
 import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
-import { RotateCwIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Modal,
@@ -13,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { createMusicSchema } from "@/validations/authValidations";
 import { AxiosError } from "axios";
 import { adminApiClient } from "@/apis/apiClient";
+import { Slider } from "@mui/material";
 
 const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
   fetchMusic,
@@ -23,9 +23,6 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyzerRef = useRef<AnalyserNode | null>(null);
   const musicRef = useRef<HTMLInputElement | null>(null);
   const imageRef = useRef<HTMLInputElement | null>(null);
   const [title, setTitle] = useState("");
@@ -44,75 +41,34 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
         setDuration(audio.duration);
       };
 
+      const endedHandler = () => {
+        setCurrentTime(0);
+        setIsPlaying(false);
+      };
+
+      const pauseHandler = () => {
+        setIsPlaying(false);
+      };
+
+      const playHandler = () => {
+        setIsPlaying(true);
+      };
+
       audio.addEventListener("timeupdate", timeUpdateHandler);
       audio.addEventListener("loadedmetadata", loadedMetadataHandler);
+      audio.addEventListener("ended", endedHandler);
+      audio.addEventListener("play", playHandler);
+      audio.addEventListener("pause", pauseHandler);
 
       return () => {
         audio.removeEventListener("timeupdate", timeUpdateHandler);
         audio.removeEventListener("loadedmetadata", loadedMetadataHandler);
+        audio.addEventListener("ended", endedHandler);
+        audio.addEventListener("play", playHandler);
+        audio.addEventListener("pause", pauseHandler);
       };
     }
   }, [selectedFile]);
-
-  useEffect(() => {
-    if (selectedFile && audioRef.current) {
-      const audioContext = new window.AudioContext();
-      const analyzer = audioContext.createAnalyser();
-      const source = audioContext.createMediaElementSource(audioRef.current);
-      source.connect(analyzer);
-      analyzer.connect(audioContext.destination);
-      analyzer.fftSize = 2048;
-
-      audioContextRef.current = audioContext;
-      analyzerRef.current = analyzer;
-
-      visualize();
-
-      return () => {
-        audioContext.close();
-        audioContextRef.current = null;
-        analyzerRef.current = null;
-      };
-    }
-  }, [selectedFile]);
-
-  const visualize = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    const analyzer = analyzerRef.current;
-
-    if (!ctx || !analyzer) return;
-
-    const bufferLength = analyzer.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    if (canvas) {
-      const draw = () => {
-        requestAnimationFrame(draw);
-        analyzer.getByteFrequencyData(dataArray);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const barWidth = (canvas.width / bufferLength) * 10;
-        let barHeight;
-        let x = 0;
-
-        const r = 100;
-        const g = 150;
-        const b = 250;
-
-        for (let i = 0; i < bufferLength; i++) {
-          barHeight = (dataArray[i] / 255) * canvas.height;
-
-          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-
-          ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
-          x += barWidth + 1;
-        }
-      };
-      draw();
-    }
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -152,6 +108,7 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
         setSelectedFile(audioURL);
       };
 
+      setIsPlaying(true);
       audio.load();
     } else {
       toast.error("Only one music allowed.");
@@ -168,14 +125,6 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
         audio.play();
         setIsPlaying(true);
       }
-    }
-  };
-
-  const handleRestart = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-      setIsPlaying(true);
     }
   };
 
@@ -296,12 +245,21 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
     }
   };
 
+  const handleSliderChange = (_event: Event, newValue: number | number[]) => {
+    if (typeof newValue === "number") {
+      if (audioRef.current) {
+        audioRef.current.currentTime = newValue;
+      }
+      setCurrentTime(newValue);
+    }
+  };
+
   return (
     <>
       <Button variant="outline" className="mb-5" onClick={onOpen}>
         Add Music
       </Button>
-      <Modal isOpen={isOpen} size="2xl" onOpenChange={handleModalChange}>
+      <Modal isOpen={isOpen} size="lg" onOpenChange={handleModalChange}>
         <ModalContent>
           {() => (
             <>
@@ -322,7 +280,7 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                     onClick={handleChooseImage}
                     className="border"
                   >
-                    Choose a image
+                    {image ? "Change image" : "Choose a image"}
                   </Button>
                   <input
                     ref={imageRef}
@@ -357,10 +315,11 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                           ref={audioRef}
                           id="audio"
                           src={selectedFile}
+                          autoPlay={true}
                           preload="metadata"
                         ></audio>
-                        <div className="flex items-center justify-between border rounded-md p-5">
-                          <div className="flex gap-2">
+                        <div className="flex items-center justify-start gap-10 border rounded-md p-5">
+                          <div className="flex items-center gap-4">
                             <Button
                               variant="ghost"
                               className="w-12 h-12 flex items-center justify-center rounded-full border"
@@ -368,24 +327,23 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                             >
                               {isPlaying ? <PauseIcon /> : <PlayIcon />}
                             </Button>
-                            <Button
-                              variant="ghost"
-                              className="w-12 h-12 flex items-center justify-center rounded-full border"
-                              onClick={handleRestart}
-                            >
-                              <RotateCwIcon size={13} />
-                            </Button>
+                            <div>
+                              <span>
+                                {formatTime(currentTime)} /{" "}
+                                {formatTime(duration)}
+                              </span>
+                            </div>
                           </div>
-                          <canvas
-                            ref={canvasRef}
-                            width={300}
-                            height={50}
-                            className="rounded-sm"
-                          />
-                          <div className="">
-                            <span>
-                              {formatTime(currentTime)} /{formatTime(duration)}
-                            </span>
+                          <div className=" flex flex-col w-40">
+                            <Slider
+                              size="small"
+                              valueLabelDisplay="off"
+                              onChange={(e, newValue) =>
+                                handleSliderChange(e, newValue)
+                              }
+                              value={currentTime}
+                              max={duration}
+                            />
                           </div>
                         </div>
                       </div>
