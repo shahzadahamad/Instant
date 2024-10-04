@@ -32,6 +32,13 @@ const postSlice = createSlice({
         action.payload.index
       ].value = action.payload.newValue;
     },
+    setStateDefualt(state) {
+      state.post = [];
+      state.postIndex = -1;
+      state.musicId = "";
+      state.aspectRatio = null;
+      state.postHoverFilterClass = "";
+    },
     setPostMusic(state, action) {
       state.musicId = action.payload.music;
     },
@@ -82,6 +89,7 @@ export const {
   removePostMusic,
   removePost,
   pushPost,
+  setStateDefualt,
 } = postSlice.actions;
 
 export default postSlice.reducer;

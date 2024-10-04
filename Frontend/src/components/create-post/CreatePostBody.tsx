@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import "../../styles/instant.css";
 import CreatePostFilters from "./CreatePostFilters";
 import { useDispatch, useSelector } from "react-redux";
-import { setPostIndex } from "@/redux/slice/postSlice";
+import { setPostIndex, setStateDefualt } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";
 import "../../styles/instant.css";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,11 @@ const CreatePostBody = () => {
   const { post, postIndex, musicId, postHoverFilterClass } = useSelector(
     (state: RootState) => state.post
   );
+
+  useEffect(() => {
+    dispatch(setStateDefualt());
+    return () => {};
+  }, [dispatch]);
 
   const [music, setMusic] = useState<GetSelectMusicData | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);

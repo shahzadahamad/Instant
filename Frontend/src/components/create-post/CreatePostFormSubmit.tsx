@@ -50,7 +50,7 @@ const CreatePostFormSubmit = () => {
         <div className="w-8 h-8">
           <img
             src={currentUser?.profilePicture}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
             alt=""
           />
         </div>
