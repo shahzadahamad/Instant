@@ -32,6 +32,9 @@ export default class GoogleAuthenticateUser {
     const userExist = await this.userRepository.findByEmail(email);
 
     if (userExist) {
+      if (userExist.isBlock) {
+        throw new Error("Your account has been blocked");
+      }
       const token = await this.tokenManager.generateAccessToken({
         userId: userExist._id,
         role: "user",
