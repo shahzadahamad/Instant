@@ -76,43 +76,43 @@ const Sidebar = () => {
       >
         Instant
       </h1>
-      <div className="flex flex-col items-center gap-8 mt-9 text-[#787878] text-3xl">
+      <div className="flex flex-col items-center gap-14 mt-9 text-[#787878] text-3xl">
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faHouse}
             onClick={() => navigate("/admin/dashboard")}
-            className="text-white dark:hover:text-white light:hover:text-black cursor-pointer"
+            className="text-white dark:hover:text-white light:hover:text-black cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Dashboard
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faUsers}
-            onClick={() => navigate('/admin/users')}
-            className="hover:text-white cursor-pointer"
+            onClick={() => navigate("/admin/users")}
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Users
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faImage}
-            className="hover:text-white cursor-pointer"
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Post
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faMusic}
-            onClick={() => navigate('/admin/music')}
-            className="hover:text-white cursor-pointer"
+            onClick={() => navigate("/admin/music")}
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Music
           </div>
         </div>
@@ -120,19 +120,19 @@ const Sidebar = () => {
           <img
             src={currentAdmin?.profilePicture}
             alt="avatar"
-            className="w-[35px] h-[35px] border rounded-full object-cover cursor-pointer"
+            className="w-[27px] h-[27px] border rounded-full object-cover cursor-pointer"
             onClick={() => navigate("/admin/profile")}
           />
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Profile
           </div>
         </div>
-        <Menubar className="cursor-pointer">
+        <Menubar className="cursor-pointer p-0">
           <MenubarMenu>
-            <MenubarTrigger className="cursor-pointer">
+            <MenubarTrigger className="p-[10px] ">
               <FontAwesomeIcon
                 icon={faBars}
-                className="hover:text-white cursor-pointer"
+                className="hover:text-white cursor-pointer text-lg"
               />
             </MenubarTrigger>
             <MenubarContent>

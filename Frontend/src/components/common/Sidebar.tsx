@@ -6,7 +6,11 @@ import {
   faPlus,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
+import {
+  faComment,
+  faCompass,
+  faHeart,
+} from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -90,55 +94,64 @@ const Sidebar = () => {
           <FontAwesomeIcon
             icon={faHouse}
             onClick={() => navigate("/")}
-            className="text-white hover:text-white cursor-pointer"
+            className="text-white hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Home
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faSearch}
-            className="hover:text-white cursor-pointer"
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Search
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faClapperboard}
-            className="hover:text-white cursor-pointer"
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Reel
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faComment}
-            className="hover:text-white cursor-pointer"
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Message
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
-            icon={faHeart}
-            className="hover:text-white cursor-pointer"
+            icon={faCompass}
+            className="hover:text-white cursor-pointer text-2xl"
           />
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Explore
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faHeart}
+            className="hover:text-white cursor-pointer text-2xl"
+          />
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Notification
           </div>
         </div>
         <div
-          className="relative group flex items-center justify-center"
+          className="relative group flex items-center justify-center text-2xl"
           onClick={onOpen}
         >
           <FontAwesomeIcon
             icon={faPlus}
-            className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[15px] py-1 px-[6.5px]"
+            className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[9px] py-1 px-[6.5px]"
           />
           <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
             <ModalContent>
@@ -170,7 +183,7 @@ const Sidebar = () => {
             </ModalContent>
           </Modal>
 
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Create
           </div>
         </div>
@@ -178,19 +191,19 @@ const Sidebar = () => {
           <img
             src={currentUser?.profilePicture}
             alt="avatar"
-            className="w-[35px] h-[35px] rounded-full object-cover cursor-pointer"
+            className="w-[27px] h-[27px] rounded-full object-cover cursor-pointer"
             onClick={() => navigate("/profile")}
           />
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Profile
           </div>
         </div>
-        <Menubar className="cursor-pointer">
+        <Menubar className="cursor-pointer p-0">
           <MenubarMenu>
-            <MenubarTrigger className="cursor-pointer">
+            <MenubarTrigger className="p-[10px]">
               <FontAwesomeIcon
                 icon={faBars}
-                className="hover:text-white cursor-pointer"
+                className="hover:text-white cursor-pointer text-white text-lg"
               />
             </MenubarTrigger>
             <MenubarContent>
