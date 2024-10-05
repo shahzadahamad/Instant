@@ -37,7 +37,7 @@ export default class UpdateUserData {
       throw new Error("Invalied Access!");
     }
 
-    if(email && email !== user.email) {
+    if (email && email !== user.email) {
       throw new Error("connot change email!");
     }
 
@@ -46,7 +46,7 @@ export default class UpdateUserData {
       await this.awsS3Storage.deleteFile(user.profilePicture);
     }
     if (file) {
-      fileUrl = await this.awsS3Storage.uploadFile(file);
+      fileUrl = await this.awsS3Storage.uploadFile(file, "profile");
     } else {
       fileUrl = profilePicture;
     }

@@ -26,19 +26,20 @@ export default class CreateMusic {
 
     const existMusic = await this.musicRepository.findMusic(title);
 
-    if(existMusic) {
-      throw new Error("Music title already exist.")
+    if (existMusic) {
+      throw new Error("Music title already exist.");
     }
 
-    const fileUrl = await this.awsS3Storage.uploadFileOfMusic(
+    const imageFileUrl = await this.awsS3Storage.uploadFile(
       imageFile,
-      audioFile
+      "music-image"
     );
+    const audioFileUrl = await this.awsS3Storage.uploadFile(audioFile, "music");
 
     const newMusic = await this.musicRepository.createMusic(
       title,
-      fileUrl.imageFileUrl,
-      fileUrl.audioFileUrl
+      imageFileUrl,
+      audioFileUrl
     );
 
     if (!newMusic) {

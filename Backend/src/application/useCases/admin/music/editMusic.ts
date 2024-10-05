@@ -21,11 +21,11 @@ export default class EditMusic {
       throw new Error("Invalied Access!");
     }
 
-      let fileUrl;
+    let fileUrl;
 
     if (file) {
       await this.awsS3Storage.deleteFile(music.image);
-      fileUrl = await this.awsS3Storage.uploadFileOfMusicImage(file);
+      fileUrl = await this.awsS3Storage.uploadFile(file, "music-image");
     }
 
     const updateMusic = await this.musicRepository.updateMusic(
