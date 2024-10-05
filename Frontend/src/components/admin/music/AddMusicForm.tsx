@@ -13,6 +13,8 @@ import { createMusicSchema } from "@/validations/authValidations";
 import { AxiosError } from "axios";
 import { adminApiClient } from "@/apis/apiClient";
 import { Slider } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
   fetchMusic,
@@ -312,7 +314,7 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                       Music
                     </label>
                     {selectedFile ? (
-                      <div className="">
+                      <div className="relative">
                         <audio
                           ref={audioRef}
                           id="audio"
@@ -347,6 +349,16 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                               max={duration}
                             />
                           </div>
+                          <FontAwesomeIcon
+                            onClick={() => {
+                              setIsPlaying(false);
+                              setCurrentTime(0);
+                              setMusicFile(null);
+                              setSelectedFile("");
+                            }}
+                            icon={faCircleXmark}
+                            className="absolute rounded-full hover:opacity-70 transition-colors top-2 right-2 cursor-pointer"
+                          />
                         </div>
                       </div>
                     ) : (
