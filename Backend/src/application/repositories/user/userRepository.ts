@@ -176,21 +176,9 @@ export default class UserRepository {
     }
   }
 
-  public async blockUser(_id: string) {
+  public async blockAndUnBlockUser(_id: string, status: boolean) {
     try {
-      await UserModel.updateOne({ _id: _id }, { $set: { isBlock: true } });
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error("Invalid Access!");
-      }
-      console.error("Unknown error finding user");
-      throw new Error("Unknown error");
-    }
-  }
-
-  public async unBlockUser(_id: string) {
-    try {
-      await UserModel.updateOne({ _id: _id }, { $set: { isBlock: false } });
+      await UserModel.updateOne({ _id: _id }, { $set: { isBlock: status } });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

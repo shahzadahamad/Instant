@@ -22,6 +22,11 @@ const musicSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    isListed: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
   {
     timestamps: true,

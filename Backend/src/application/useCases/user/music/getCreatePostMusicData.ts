@@ -9,11 +9,12 @@ export default class GetCreatePostMusicData {
   }
 
   public async execute(search: any): Promise<{}> {
-    let query = {};
+    let query: any = { isListed: true };
     if (search) {
       const searchRegex = new RegExp(search, "i");
       query = {
         title: { $regex: searchRegex },
+        isListed: true,
       };
     }
     const allMusic = this.musicRepository.find10Music(query);

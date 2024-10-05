@@ -80,7 +80,7 @@ export default class MusicRepository {
 
   public async findById(_id: string): Promise<IMusic | null> {
     try {
-      const totalMusic = await MusicModel.findOne({ _id: _id });
+      const totalMusic = await MusicModel.findOne({ _id: _id, isListed: true });
       return totalMusic;
     } catch (error) {
       if (error instanceof Error) {
@@ -88,6 +88,18 @@ export default class MusicRepository {
         throw new Error("Failed to find music");
       }
       console.error("Unknown error finding music");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async listAndUnlistMusic(_id: string, status: boolean) {
+    try {
+      await MusicModel.updateOne({ _id: _id }, { $set: { isListed: status } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error edit music");
       throw new Error("Unknown error");
     }
   }
