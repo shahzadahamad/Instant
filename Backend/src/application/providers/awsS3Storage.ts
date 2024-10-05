@@ -50,6 +50,26 @@ export default class AwsS3Storage {
       }
     }
   }
+
+  public async uploadFileOfMusicImage(file: Express.Multer.File): Promise<string> {
+    const uniqueName = `${uuidv4()}-${file.originalname}`;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `uploads/music-image/${uniqueName}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    };
+    try {
+      const command = new PutObjectCommand(params);
+      await s3Client.send(command);
+      const fileUrl = `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+      return fileUrl;
+    } catch (error) {
+      console.error("Error uploading image in aws s3", error);
+      throw new Error("Failed to upload image in aws s3");
+    }
+  }
+
   public async uploadFileOfMusic(
     imageFile: Express.Multer.File,
     audioFile: Express.Multer.File
