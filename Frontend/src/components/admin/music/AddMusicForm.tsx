@@ -33,6 +33,8 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
   const [musicFile, setMusicFile] = useState<File | null>(null);
 
   useEffect(() => {
+    setCurrentTime(0);
+    setDuration(0);
     if (audioRef.current) {
       const audio = audioRef.current;
       const timeUpdateHandler = () => {
@@ -136,15 +138,14 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handleModalChange = (isOpen: boolean) => {
-    if (!isOpen) {
-      setSelectedFile("");
-      setImage("");
-      setTitle("");
-      setIsPlaying(false);
-      setCurrentTime(0);
-      setDuration(0);
-    }
+  const handleModalChange = () => {
+    setSelectedFile("");
+    setCurrentTime(0);
+    setDuration(0);
+    setImage("");
+    setTitle("");
+    setIsPlaying(false);
+    setMusicFile(null);
     onOpenChange();
   };
 
@@ -230,9 +231,7 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
         formData
       );
       fetchMusic(1);
-      handleModalChange(false);
-      setIsPlaying(false);
-      setCurrentTime(0);
+      handleModalChange();
       toast.success(response.data.message);
       setLoading(false);
     } catch (error) {

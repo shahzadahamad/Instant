@@ -6,12 +6,6 @@ import { GetMusicData } from "@/types/admin/music";
 import { adminApiClient } from "@/apis/apiClient";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Modal,
   ModalContent,
   ModalHeader,
@@ -20,11 +14,10 @@ import {
 } from "@nextui-org/modal";
 import { Slider } from "@mui/material";
 import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
-import toast from "react-hot-toast";
+import MusicAction from "./MusicAction";
 
 const MusicDetialsTable = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [openModal, setOpenModal] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const [totalPages, setTotalPages] = useState(0);
   const [totalMusic, setTotalMusic] = useState(0);
@@ -125,7 +118,6 @@ const MusicDetialsTable = () => {
 
   const handleModal = (musicImageUrl: string | File) => {
     setViewMusicImage(musicImageUrl);
-    setOpenModal(true);
     onOpen();
   };
 
@@ -177,40 +169,12 @@ const MusicDetialsTable = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handleAction = async (
-    e: React.MouseEvent<HTMLDivElement>,
-    musicId: string,
-    isListed: boolean,
-    username: string
-  ) => {
-    e.preventDefault();
-    const status = isListed ? "unlist" : "list";
-    try {
-      const response = await adminApiClient.patch(
-        `/music/listed-or-unlisted/${musicId}/${status}`
-      );
-      if (response.data === "action successfull") {
-        toast.success(
-          `Music ${username} has been ${
-            status === "unlist" ? "unlisted" : "listed"
-          }`
-        );
-        fetchMusic(page);
-      } else {
-        toast.success(response.data);
-      }
-      return;
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
   return (
     <>
-      {openModal && (
-        <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
-          <ModalContent>
-            {() => (
+      <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
+        <ModalContent>
+          {() => (
+            <>
               <>
                 <ModalHeader className="flex flex-col gap-1 text-center border-1">
                   View Profile
@@ -227,10 +191,10 @@ const MusicDetialsTable = () => {
                   </div>
                 </ModalBody>
               </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <div className="h-[88vh]">
         <div className="w-full p-10 pb-1 flex justify-between items-center">
           <div className="w-full max-w-md">
@@ -331,26 +295,14 @@ const MusicDetialsTable = () => {
                       {music.isListed ? "Listed" : "Unlisted"}
                     </td>
                     <td className="py-2 px-4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline">Action</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem>Edit Music</DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={(e) =>
-                              handleAction(
-                                e,
-                                music._id,
-                                music.isListed,
-                                music.title
-                              )
-                            }
-                          >
-                            {music.isListed ? "Listed" : "Unlisted"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <MusicAction
+                        id={music._id}
+                        isListed={music.isListed}
+                        title={music.title}
+                        fetchMusic={fetchMusic}
+                        page={page}
+                        image={music.image}
+                      />
                     </td>
                   </tr>
                 </tbody>

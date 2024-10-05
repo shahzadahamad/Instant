@@ -28,7 +28,6 @@ const UserDetialsTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchVal, setSearchVal] = useState("");
   const [totalUser, setTotalUser] = useState(0);
-  const [openModal, setOpenModal] = useState(false);
   const [viewProfile, setViewProfile] = useState<string | File>("");
   const isDisabled = page === totalPages;
 
@@ -96,34 +95,31 @@ const UserDetialsTable = () => {
 
   const handleModal = (profileUrl: string | File) => {
     setViewProfile(profileUrl);
-    setOpenModal(true);
     onOpen();
   };
 
   return (
     <>
-      {openModal && (
-        <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
-          <ModalContent>
-            {() => (
-              <>
-                <ModalHeader className="flex flex-col gap-1 text-center border-1">
-                  View Profile
-                </ModalHeader>
-                <ModalBody className="p-10 border-1 w-full h-full flex justify-center items-center">
-                  <div className="w-[200px] h-[200px] rounded-full border overflow-hidden">
-                    <img
-                      src={typeof viewProfile === "string" ? viewProfile : ""}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+      <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-center border-1">
+                View Profile
+              </ModalHeader>
+              <ModalBody className="p-10 border-1 w-full h-full flex justify-center items-center">
+                <div className="w-[200px] h-[200px] rounded-full border overflow-hidden">
+                  <img
+                    src={typeof viewProfile === "string" ? viewProfile : ""}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <div className="h-[88vh]">
         <div className=" p-10 pb-1 flex justify-between items-center">
           <div className="w-full max-w-md">
