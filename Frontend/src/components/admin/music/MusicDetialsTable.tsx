@@ -20,6 +20,7 @@ import {
 } from "@nextui-org/modal";
 import { Slider } from "@mui/material";
 import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
+import toast from "react-hot-toast";
 
 const MusicDetialsTable = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -176,6 +177,34 @@ const MusicDetialsTable = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  const handleAction = async (
+    e: React.MouseEvent<HTMLDivElement>,
+    musicId: string,
+    isListed: boolean,
+    username: string
+  ) => {
+    e.preventDefault();
+    const status = isListed ? "unlist" : "list";
+    try {
+      const response = await adminApiClient.patch(
+        `/music/listed-or-unlisted/${musicId}/${status}`
+      );
+      if (response.data === "action successfull") {
+        toast.success(
+          `Music ${username} has been ${
+            status === "unlist" ? "unlisted" : "listed"
+          }`
+        );
+        fetchMusic(page);
+      } else {
+        toast.success(response.data);
+      }
+      return;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <>
       {openModal && (
@@ -294,7 +323,13 @@ const MusicDetialsTable = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="py-2 px-4">Listed</td>
+                    <td
+                      className={`py-2 px-4 ${
+                        music.isListed ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {music.isListed ? "Listed" : "Unlisted"}
+                    </td>
                     <td className="py-2 px-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -302,7 +337,18 @@ const MusicDetialsTable = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>Edit Music</DropdownMenuItem>
-                          <DropdownMenuItem>List</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) =>
+                              handleAction(
+                                e,
+                                music._id,
+                                music.isListed,
+                                music.title
+                              )
+                            }
+                          >
+                            {music.isListed ? "Listed" : "Unlisted"}
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>

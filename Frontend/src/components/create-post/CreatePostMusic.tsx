@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@mui/material";
+import toast from "react-hot-toast";
 
 const CreatePostMusic = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,14 @@ const CreatePostMusic = () => {
         const response = await apiClient.get(
           `/user/music/create-post/get-selected-music-data/${id}`
         );
+        if (response.data.message) {
+          dispatch(removePostMusic());
+          setCurrentlyPlayingIndex("");
+          setSearchValue("");
+          setSelectedMusic(null);
+          setSliderValues({});
+          return toast.error(response.data.message);
+        }
         setSelectedMusic(response.data);
       } else {
         const response = await apiClient.get(
@@ -121,7 +130,6 @@ const CreatePostMusic = () => {
         const currentlyPlayingAudio = audioRefs.current[currentlyPlayingIndex];
         if (currentlyPlayingAudio) {
           currentlyPlayingAudio.pause();
-          currentlyPlayingAudio.currentTime = 0;
         }
       }
 

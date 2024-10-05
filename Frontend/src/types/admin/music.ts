@@ -3,4 +3,5 @@ export interface GetMusicData {
   title: string;
   image: string;
   music: string;
+  isListed: boolean;
 }

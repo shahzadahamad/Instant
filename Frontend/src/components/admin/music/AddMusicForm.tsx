@@ -229,6 +229,8 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
       );
       fetchMusic(1);
       handleModalChange(false);
+      setIsPlaying(false);
+      setCurrentTime(0);
       toast.success(response.data.message);
       setLoading(false);
     } catch (error) {
