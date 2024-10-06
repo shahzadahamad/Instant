@@ -42,12 +42,16 @@ export default class UpdateUserData {
     }
 
     let fileUrl;
-    if (file && user.profilePicture) {
-      await this.awsS3Storage.deleteFile(user.profilePicture);
-    }
     if (file) {
+      await this.awsS3Storage.deleteFile(user.profilePicture);
       fileUrl = await this.awsS3Storage.uploadFile(file, "profile");
     } else {
+      if (
+        profilePicture ===
+        "https://static.vecteezy.com/system/resources/previews/026/966/960/original/default-avatar-profile-icon-of-social-media-user-vector.jpg"
+      ) {
+        await this.awsS3Storage.deleteFile(user.profilePicture);
+      }
       fileUrl = profilePicture;
     }
 
