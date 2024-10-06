@@ -122,8 +122,8 @@ const EditProfileForm = () => {
         formData
       );
       const updatedUser = response.data.user;
-      dispatch(loginSuccess(updatedUser));
       setTimeout(() => {
+        dispatch(loginSuccess(updatedUser));
         navigate("/profile");
         toast.success(response.data.message);
         setLoading(false);
