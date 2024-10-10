@@ -9,3 +9,18 @@ export interface GetUserData {
   bio: string;
   isPrivateAccount: boolean;
 }
+
+export interface GetUserDataPostDetials {
+  fullname: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  profilePicture: string | File;
+  gender: string;
+  dateOfBirth: string;
+  bio: string;
+  isPrivateAccount: boolean;
+  followings: string[];
+  followers: string[];
+  blockerUser: string[];
+}

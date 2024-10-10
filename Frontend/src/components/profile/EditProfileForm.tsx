@@ -38,13 +38,11 @@ const EditProfileForm = () => {
 
   useLayoutEffect(() => {
     const fetchUserData = async () => {
-      const res = await apiClient.get(
-        `/user/edit-profile/get-data`
-      );
+      const res = await apiClient.get(`/user/get-user-data`);
       setUserData({ ...res.data });
     };
     fetchUserData();
-  }, [currentUser?._id]);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
@@ -117,10 +115,7 @@ const EditProfileForm = () => {
     });
 
     try {
-      const response = await apiClient.post(
-        `/user/edit-profile`,
-        formData
-      );
+      const response = await apiClient.post(`/user/edit-profile`, formData);
       const updatedUser = response.data.user;
       setTimeout(() => {
         dispatch(loginSuccess(updatedUser));
