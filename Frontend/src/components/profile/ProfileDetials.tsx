@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLayoutEffect, useState } from "react";
 import apiClient from "@/apis/apiClient";

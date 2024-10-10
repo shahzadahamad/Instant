@@ -134,8 +134,7 @@ const CreatePostBody = () => {
                     >
                       <img
                         className={`absolute w-full h-full rounded-md object-contain ${
-                          postHoverFilterClass ||
-                          post[postIndex].filterClass
+                          postHoverFilterClass || post[postIndex].filterClass
                         }`}
                         src={post[postIndex].url}
                         alt="Uploaded content"
@@ -149,8 +148,7 @@ const CreatePostBody = () => {
                       >
                         <video
                           className={`w-full rounded-md h-full object-contain ${
-                            postHoverFilterClass ||
-                            post[postIndex].filterClass
+                            postHoverFilterClass || post[postIndex].filterClass
                           }`}
                           ref={videoRef}
                           controls
