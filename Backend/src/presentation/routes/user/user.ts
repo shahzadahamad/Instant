@@ -15,7 +15,7 @@ const createPostGetTaggedUserDataController =
   new CreatePostGetTaggedUserDataController();
 
 userRouter.get(
-  "/edit-profile/get-data",
+  "/get-user-data",
   authMiddleware,
   getUserDataController.handle
 );

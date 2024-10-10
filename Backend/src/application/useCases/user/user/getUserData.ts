@@ -8,35 +8,15 @@ export default class GetUserData {
     this.userRepository = userRepository;
   }
 
-  public async execute(userId: string): Promise<IUser> {
+  public async execute(userId: string): Promise<Partial<IUser>> {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new Error("Invalid Access!");
     }
 
-    const {
-      fullname,
-      username,
-      email,
-      phoneNumber,
-      dateOfBirth,
-      profilePicture,
-      gender,
-      bio,
-      isPrivateAccount,
-      ...userWithoutSensitiveInfo
-    } = user.toObject();
-    return {
-      fullname,
-      username,
-      email,
-      phoneNumber,
-      dateOfBirth,
-      profilePicture,
-      gender,
-      bio,
-      isPrivateAccount,
-    } as IUser;
+    const { password, isBlock, ...userWithoutSensitiveInfo } = user.toObject();
+
+    return userWithoutSensitiveInfo;
   }
 }
