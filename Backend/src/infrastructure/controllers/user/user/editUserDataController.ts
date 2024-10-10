@@ -4,8 +4,8 @@ import UpdateUserData from "../../../../application/useCases/user/user/updateUse
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 
 export default class EditUserDataController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
-    const { _id } = req.params;
+  public async handle(req: any, res: Response): Promise<Response | void> {
+    const { userId } = req.user;
     const {
       fullname,
       username,
@@ -26,7 +26,7 @@ export default class EditUserDataController {
 
     try {
       const userData = await updateUserData.execute(
-        _id,
+        userId,
         fullname,
         username,
         email,

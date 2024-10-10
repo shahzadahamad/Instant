@@ -15,7 +15,7 @@ const createPostGetTaggedUserDataController =
   new CreatePostGetTaggedUserDataController();
 
 userRouter.get(
-  "/edit-profile/get-data/:_id",
+  "/edit-profile/get-data",
   authMiddleware,
   getUserDataController.handle
 );
@@ -30,7 +30,7 @@ userRouter.get(
   createPostGetTaggedUserDataController.handle
 );
 userRouter.post(
-  "/edit-profile/:_id",
+  "/edit-profile",
   authMiddleware,
   upload.single("profilePicture"),
   editUserDataController.handle

@@ -3,13 +3,13 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetUserData from "../../../../application/useCases/user/user/getUserData";
 
 export default class GetUserDataController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
-    const { _id } = req.params;
+  public async handle(req: any, res: Response): Promise<Response | void> {
+    const { userId } = req.user;
 
     const getUserData = new GetUserData(new UserRepository());
 
     try {
-      const userData = await getUserData.execute(_id);
+      const userData = await getUserData.execute(userId);
 
       return res.status(200).json(userData);
     } catch (error) {

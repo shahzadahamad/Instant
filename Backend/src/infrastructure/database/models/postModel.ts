@@ -1,14 +1,20 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { PostData } from "../../../application/interface/post";
 
 export interface IPost extends Document {
-  otp: string;
-  expiresAt: Date;
+  userId: string;
+  post: PostData[];
+  caption: string;
+  musicId: string;
+  aspectRatio: String;
+  hideLikeAndView: boolean;
+  hideComment: boolean;
 }
 
 const postSchema: Schema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.ObjectId,
+      type: String,
       required: true,
     },
     post: [
@@ -23,7 +29,6 @@ const postSchema: Schema = new Schema(
         },
         filterClass: {
           type: String,
-          required: true,
         },
         customFilter: {
           contrast: {
@@ -47,27 +52,28 @@ const postSchema: Schema = new Schema(
             required: true,
           },
         },
-        tags: [mongoose.Schema.ObjectId],
+        tagUsers: {
+          type: [String],
+        },
         isSensitive: {
           type: Boolean,
           required: true,
         },
         sensitiveContentType: {
-          type: String,
+          type: [String],
           required: true,
         },
       },
     ],
     caption: {
       type: String,
-      default: "",
     },
     musicId: {
-      type: mongoose.Schema.ObjectId,
+      type: String,
     },
     aspectRatio: {
       type: String,
-      enum: ["1/1", "4/5", "16/9"],
+      enum: ["1/1", "4/5", "16/9", "original"],
     },
     hideLikeAndView: {
       type: String,
