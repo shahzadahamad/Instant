@@ -20,7 +20,6 @@ import {
 } from "@nextui-org/modal";
 import Cropper, { Area } from "react-easy-crop";
 import { getCroppedImg } from "@/helperFuntions/getCroppedImage";
-import convertBlobUrlToBase64 from "@/helperFuntions/convertBlobUrlToBase64";
 
 const ChangePost = () => {
   const dispatch = useDispatch();
@@ -47,11 +46,10 @@ const ChangePost = () => {
     try {
       if (image && croppedAreaPixels) {
         const croppedImage = await getCroppedImg(image, croppedAreaPixels);
-        const base64Image = await convertBlobUrlToBase64(croppedImage);
         const post = {
-          url: base64Image,
+          url: croppedImage,
           type: fileType,
-          postFilterClass: "",
+          filterClass: "",
           customFilter: [
             { label: "Contrast", value: 100, field: "contrast" },
             { label: "Brightness", value: 100, field: "brightness" },

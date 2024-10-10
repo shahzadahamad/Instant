@@ -24,7 +24,7 @@ const postSlice = createSlice({
       state.postHoverFilterClass = action.payload;
     },
     setPostFilterClass(state, action) {
-      state.post[action.payload.postIndex].postFilterClass =
+      state.post[action.payload.postIndex].filterClass =
         action.payload.filter;
     },
     setCustomFilters(state, action) {

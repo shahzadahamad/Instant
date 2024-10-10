@@ -82,7 +82,7 @@ const CreatePostFilters = () => {
                             }
                             alt=""
                             className={`${filter.class} ${
-                              post[postIndex].postFilterClass === filter.class
+                              post[postIndex].filterClass === filter.class
                                 ? "border-2 border-black dark:border-white"
                                 : ""
                             } rounded-md w-full h-full object-cover`}

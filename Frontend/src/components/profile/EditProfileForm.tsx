@@ -39,7 +39,7 @@ const EditProfileForm = () => {
   useLayoutEffect(() => {
     const fetchUserData = async () => {
       const res = await apiClient.get(
-        `/user/edit-profile/get-data/${currentUser?._id}`
+        `/user/edit-profile/get-data`
       );
       setUserData({ ...res.data });
     };
@@ -118,7 +118,7 @@ const EditProfileForm = () => {
 
     try {
       const response = await apiClient.post(
-        `/user/edit-profile/${currentUser?._id}`,
+        `/user/edit-profile`,
         formData
       );
       const updatedUser = response.data.user;

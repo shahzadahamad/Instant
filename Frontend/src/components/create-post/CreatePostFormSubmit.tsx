@@ -6,15 +6,22 @@ import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useRef, useState } from "react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+import apiClient from "@/apis/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const CreatePostFormSubmit = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const { post, musicId, aspectRatio } = useSelector(
+    (state: RootState) => state.post
+  );
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const [open, setOpen] = useState(false);
   const [caption, setCaption] = useState("");
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [hideLikeAndViewCount, setLikeAndHideViewCount] = useState(false);
   const [turnOffCounting, setTurnOffCounting] = useState(false);
+  const navigate = useNavigate();
 
   const handleCaptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCaption(e.target.value);
@@ -43,6 +50,71 @@ const CreatePostFormSubmit = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleSharePost = async () => {
+    try {
+      const files = await Promise.all(
+        post.map(async (postItem, index) => {
+          if (postItem.url.startsWith("blob:")) {
+            const response = await fetch(postItem.url);
+            const blob = await response.blob();
+            const file = new File(
+              [blob],
+              `post-${
+                postItem.type === "image" ? `image${index}` : "video"
+              }-${Date.now()}.${postItem.type === "image" ? "png" : "mp4"}`,
+              {
+                type: postItem.type === "image" ? "image/png" : postItem.type,
+              }
+            );
+            const customFilter = {
+              contrast: postItem.customFilter[0].value,
+              brightness: postItem.customFilter[1].value,
+              saturation: postItem.customFilter[2].value,
+              sepia: postItem.customFilter[3].value,
+              grayScale: postItem.customFilter[4].value,
+            };
+            return {
+              ...postItem,
+              url: file,
+              customFilter: customFilter,
+            };
+          }
+          return postItem;
+        })
+      );
+
+      const formData = new FormData();
+      files.forEach((fileItem) => {
+        formData.append("files", fileItem.url);
+      });
+
+      formData.append("postData", JSON.stringify(files));
+      formData.append("caption", caption);
+      formData.append("music", musicId);
+      formData.append("hideLikesAndViewCount", String(hideLikeAndViewCount));
+      formData.append("turnOffCounting", String(turnOffCounting));
+
+      const covertedAspectRatio =
+        aspectRatio === 1
+          ? "1/1"
+          : aspectRatio === 0.8
+          ? "4/5"
+          : aspectRatio === 1.7777777777777777
+          ? "16/9"
+          : aspectRatio;
+      formData.append("aspectRatio", String(covertedAspectRatio));
+      navigate("/profile");
+      toast.promise(apiClient.post(`/user/post/create-post`, formData), {
+        loading: "Post creating processing",
+        success: (response) => <b>{response.data}</b>,
+        error: <b>Post creating failed</b>,
+      });
+    } catch (error) {
+      toast.error("Error creating post");
+      console.error("Error handling post share:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-start gap-3 py-2">
@@ -174,7 +246,9 @@ const CreatePostFormSubmit = () => {
         </div>
       )}
       <div className="w-full flex justify-end mt-1">
-        <Button variant="outline">Share Post</Button>
+        <Button variant="outline" onClick={handleSharePost}>
+          Share Post
+        </Button>
       </div>
     </div>
   );

@@ -20,7 +20,6 @@ import {
 } from "@nextui-org/modal";
 import Cropper, { Area } from "react-easy-crop";
 import { getCroppedImg } from "@/helperFuntions/getCroppedImage";
-import convertBlobUrlToBase64 from "@/helperFuntions/convertBlobUrlToBase64";
 import { RootState } from "@/redux/store/store";
 
 const SelectAspectRatioAndUplaod = () => {
@@ -64,11 +63,10 @@ const SelectAspectRatioAndUplaod = () => {
     try {
       if (image && croppedAreaPixels) {
         const croppedImage = await getCroppedImg(image, croppedAreaPixels);
-        const base64Image = await convertBlobUrlToBase64(croppedImage);
         const post = {
-          url: base64Image,
+          url: croppedImage,
           type: fileType,
-          postFilterClass: "",
+          filterClass: "",
           customFilter: [
             { label: "Contrast", value: 100, field: "contrast" },
             { label: "Brightness", value: 100, field: "brightness" },
@@ -131,7 +129,7 @@ const SelectAspectRatioAndUplaod = () => {
           const post = {
             url: URL.createObjectURL(file),
             type: fileType,
-            postFilterClass: "",
+            filterClass: "",
             customFilter: [
               { label: "Contrast", value: 100, field: "contrast" },
               { label: "Brightness", value: 100, field: "brightness" },
@@ -143,7 +141,7 @@ const SelectAspectRatioAndUplaod = () => {
           };
           dispatch(setPost([post]));
           dispatch(setPostIndex(0));
-          dispatch(setAspectRatios(null));
+          dispatch(setAspectRatios('original'));
         };
       } else {
         const fileURL = URL.createObjectURL(file);

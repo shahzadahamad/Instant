@@ -1,7 +1,7 @@
 interface PostItem {
   url: string;
   type: "image" | "video";
-  postFilterClass: string;
+  filterClass: string;
   customFilter: [
     {
       label: "Contrast";
