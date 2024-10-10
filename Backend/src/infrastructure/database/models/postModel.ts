@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 import { PostData } from "../../../application/interface/post";
 
 export interface IPost extends Document {
+  _id: string;
   userId: string;
   post: PostData[];
   caption: string;
@@ -9,6 +10,8 @@ export interface IPost extends Document {
   aspectRatio: String;
   hideLikeAndView: boolean;
   hideComment: boolean;
+  likeCount: number;
+  commentCount: number;
 }
 
 const postSchema: Schema = new Schema(
@@ -76,11 +79,21 @@ const postSchema: Schema = new Schema(
       enum: ["1/1", "4/5", "16/9", "original"],
     },
     hideLikeAndView: {
-      type: String,
+      type: Boolean,
       required: true,
     },
     hideComment: {
-      type: String,
+      type: Boolean,
+      required: true,
+    },
+    likeCount: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    commentCount: {
+      type: Number,
+      default: 0,
       required: true,
     },
   },
