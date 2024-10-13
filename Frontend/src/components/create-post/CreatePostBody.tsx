@@ -36,7 +36,7 @@ const CreatePostBody = () => {
   const fetchMusic = async (id: string) => {
     try {
       const response = await apiClient.get(
-        `/user/music/create-post/get-selected-music-data/${id}`
+        `/user/music/get-selected-music-data/${id}`
       );
       setMusic(response.data);
     } catch (error) {
@@ -103,7 +103,6 @@ const CreatePostBody = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.currentTime = 0;
         audioRef.current.play();
       }
       setIsPlaying(!isPlaying);

@@ -1,49 +1,370 @@
+import { PostModalProps } from "@/types/profile/profile";
 import {
   faComment,
   faHeart,
   faPaperPlane,
+  faUser,
 } from "@fortawesome/free-regular-svg-icons";
-import { faEllipsis, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faEllipsis,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import apiClient from "@/apis/apiClient";
+import {
+  GetCreatePostUserData,
+  GetSelectMusicData,
+} from "@/types/create-post/create-post";
+import toast from "react-hot-toast";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@nextui-org/modal";
+import { useNavigate } from "react-router-dom";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
-const PostModal = () => {
+const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const defaultArray = Array.from({ length: 30 }, (_, index) =>
     (index + 1).toString()
   );
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(imageIndex);
+  const [taggedUser, setTaggedUser] = useState<GetCreatePostUserData[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [music, setMusic] = useState<GetSelectMusicData | null>(null);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (
+      modalRef.current &&
+      !modalRef.current.contains(event.target as Node) &&
+      !(event.target as HTMLElement).closest(".preventbutton")
+    ) {
+      close();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchMusic = async (id: string) => {
+      const response = await apiClient.get(
+        `/user/music/get-selected-music-data/${id}`
+      );
+      setMusic(response.data);
+    };
+    if (post[currentIndex].musicId) {
+      fetchMusic(post[currentIndex].musicId);
+    }
+  });
 
   const handleEmojiClick = (emoji: string) => {
     setComment((prev) => prev + emoji);
   };
+
+  const handleNextIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (post && post[currentIndex].post.length > 0) {
+      const newIndex = (index + 1) % post[currentIndex].post.length;
+      window.history.pushState(
+        null,
+        "",
+        `/post/${post[currentIndex]._id}/?img_index=${newIndex}`
+      );
+      setIndex(newIndex);
+    }
+  };
+
+  const handlePreviousIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (post && post[currentIndex].post.length > 0) {
+      const newIndex =
+        (index - 1 + post[currentIndex].post.length) %
+        post[currentIndex].post.length;
+      window.history.pushState(
+        null,
+        "",
+        `/post/${post[currentIndex]._id}/?img_index=${newIndex}`
+      );
+      setIndex(newIndex);
+    }
+  };
+
+  const handleNextImage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setIndex(0);
+    setIsPlaying(true);
+    if (post && post.length > 0) {
+      const newIndex = (currentIndex + 1) % post.length;
+      if (post[newIndex].post.length > 1) {
+        window.history.pushState(
+          null,
+          "",
+          `/post/${post[newIndex]._id}/?img_index=0`
+        );
+      } else {
+        window.history.pushState(null, "", `/post/${post[newIndex]._id}`);
+      }
+      setCurrentIndex(newIndex);
+    }
+  };
+
+  const handlePreviousImage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setIndex(0);
+    setIsPlaying(true);
+    if (post && post.length > 0) {
+      const newIndex = (currentIndex - 1 + post.length) % post.length;
+      if (post[newIndex].post.length > 1) {
+        window.history.pushState(
+          null,
+          "",
+          `/post/${post[newIndex]._id}/?img_index=0`
+        );
+      } else {
+        window.history.pushState(null, "", `/post/${post[newIndex]._id}`);
+      }
+      setCurrentIndex(newIndex);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
+    return new Intl.DateTimeFormat("en-GB", options).format(date);
+  };
+
+  const fetchTagUser = async () => {
+    try {
+      const response = await apiClient.get(`/user/get-tagged-user-data`, {
+        params: { taggedUsers: post[currentIndex].post[index].tagUsers },
+      });
+      setTaggedUser(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const handleTagUserClick = async () => {
+    if (post[currentIndex].post[index].tagUsers.length > 0) {
+      fetchTagUser();
+      onOpen();
+    } else {
+      toast.error("No user tagged yet.");
+    }
+  };
+
+  function timeSince(date: Date) {
+    const now = new Date().getTime();
+    const past = new Date(date).getTime();
+
+    if (isNaN(past)) {
+      throw new Error("Invalid date provided");
+    }
+
+    const seconds = Math.floor((now - past) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    if (years > 0) {
+      return `${years} year${years > 1 ? "s" : ""}`;
+    } else if (months > 0) {
+      return `${months} month${months > 1 ? "s" : ""}`;
+    } else if (weeks > 0) {
+      return `${weeks} week${weeks > 1 ? "s" : ""}`;
+    } else if (days > 0) {
+      return `${days} day${days > 1 ? "s" : ""}`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? "s" : ""}`;
+    } else if (minutes > 0) {
+      return `${minutes} min`;
+    } else {
+      return `${seconds} sec`;
+    }
+  }
+
+  const handleAudioControl = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-70 flex justify-center items-center z-[1000]">
-      <div className="absolute top-2.5 right-4 text-2xl cursor-pointer">
+    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-70 flex justify-center items-center z-50">
+      <div
+        className="absolute top-2.5 right-4 text-2xl cursor-pointer"
+        onClick={() => {
+          close();
+        }}
+      >
         <FontAwesomeIcon icon={faXmark} />
       </div>
-
-      <div className="relative flex w-[85vw] h-[90vh] dark:bg-black bg-white">
-        <div className="w-full h-full border-r">
-          <img
-            src="./ney.jpg"
-            alt="Modal Content"
-            className="object-contain w-full h-full"
-          />
+      {currentIndex < post.length - 1 && (
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
+          <button
+            onClick={handleNextImage}
+            className="w-8 h-8 rounded-full preventbutton bg-white hover:bg-opacity-70 cursor-pointer transition-colors flex items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="text-black text-[15px]"
+            />
+          </button>
         </div>
+      )}
+      {currentIndex > 0 && (
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+          <button
+            onClick={handlePreviousImage}
+            className="w-8 h-8 rounded-full bg-white preventbutton hover:bg-opacity-70 cursor-pointer transition-colors flex items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className="text-black text-[15px]"
+            />
+          </button>
+        </div>
+      )}
+      <div
+        ref={modalRef}
+        className="relative flex w-[85vw] h-[90vh] border dark:bg-black bg-white"
+      >
+        <div className="relative w-full h-full">
+          {post[currentIndex].post[index].type === "video" ? (
+            <video
+              src={post[currentIndex].post[index].url}
+              autoPlay
+              controls
+              className={`object-contain w-full h-full ${post[currentIndex].post[index].filterClass}`}
+            />
+          ) : (
+            <div
+              className="w-full h-full border-r"
+              style={{
+                filter: `
+                    contrast(${post[currentIndex].post[index].customFilter.contrast}%)
+                    brightness(${post[currentIndex].post[index].customFilter.brightness}%)
+                    saturate(${post[currentIndex].post[index].customFilter.saturation}%)
+                    sepia(${post[currentIndex].post[index].customFilter.sepia}%)
+                    grayscale(${post[currentIndex].post[index].customFilter.grayScale}%)
+                  `,
+              }}
+            >
+              <img
+                src={post[currentIndex].post[index].url}
+                alt="Modal Content"
+                className={`object-contain w-full h-full ${post[currentIndex].post[index].filterClass}`}
+              />
+            </div>
+          )}
+          {index < post[currentIndex].post.length - 1 && (
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
+              <button
+                onClick={handleNextIndex}
+                className="w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+              >
+                <ChevronRightIcon fontSize="medium" color="action" />
+              </button>
+            </div>
+          )}
+          {index > 0 && (
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+              <button
+                onClick={handlePreviousIndex}
+                className="w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+              >
+                <ChevronLeftIcon fontSize="medium" color="action" />
+              </button>
+            </div>
+          )}
+          {post[currentIndex].post[index].tagUsers.length > 0 && (
+            <Button
+              onClick={handleTagUserClick}
+              variant="outline"
+              className="absolute bottom-2 border-none text-white z-10 hover:text-white left-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+            >
+              <FontAwesomeIcon icon={faUser} />
+            </Button>
+          )}
+          {post[currentIndex].musicId && music && (
+            <>
+              <audio
+                ref={audioRef}
+                id="audio"
+                src={music.music}
+                onEnded={() => setIsPlaying(!isPlaying)}
+                autoPlay={isPlaying}
+              ></audio>
+              <Button
+                onClick={handleAudioControl}
+                variant="outline"
+                className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+              >
+                {isPlaying ? (
+                  <VolumeUpIcon style={{ fontSize: "15px" }} />
+                ) : (
+                  <VolumeOffIcon style={{ fontSize: "15px" }} />
+                )}
+              </Button>
+            </>
+          )}
+        </div>
+
         <div className="w-full h-full dark:bg-black bg-white">
           <div className="flex item-center justify-between p-3 border-b">
             <div className="flex gap-2">
               <div className="w-8 h-8">
                 <img
-                  src="./avatar.png"
+                  src={
+                    post[currentIndex].userId?.profilePicture
+                      ? typeof post[currentIndex].userId.profilePicture ===
+                        "string"
+                        ? post[currentIndex].userId.profilePicture
+                        : URL.createObjectURL(
+                            post[currentIndex].userId.profilePicture
+                          )
+                      : ""
+                  }
                   className="rounded-full object-cover"
                   alt=""
                 />
               </div>
               <h1 className="text-sm font-semibold flex items-center">
-                neymarjr
+                {post[currentIndex].userId.username}
               </h1>
             </div>
             <div className="flex cursor-pointer items-center">
@@ -54,22 +375,41 @@ const PostModal = () => {
             <div className="w-full p-3 flex gap-4 items-center">
               <div className="w-8 h-8">
                 <img
-                  src="./avatar.png"
+                  src={
+                    post[currentIndex].userId?.profilePicture
+                      ? typeof post[currentIndex].userId.profilePicture ===
+                        "string"
+                        ? post[currentIndex].userId.profilePicture
+                        : URL.createObjectURL(
+                            post[currentIndex].userId.profilePicture
+                          )
+                      : ""
+                  }
                   className="rounded-full object-cover"
                   alt=""
                 />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-sm font-semibold">jiyad muhammed</h1>
-                <h1 className="text-xs text-[#8a8a8a]">1 year</h1>
+                <h1 className="text-sm font-semibold">
+                  {post[currentIndex].userId.username}&nbsp;{" "}
+                  <span className="font-normal">
+                    {post[currentIndex].caption}
+                  </span>
+                </h1>
+                <h1 className="text-xs text-[#8a8a8a]">
+                  {timeSince(new Date(post[currentIndex].createdAt))}
+                </h1>
               </div>
             </div>
             {defaultArray.map((item) => (
-              <div className="w-full p-3 flex justify-between items-center">
+              <div
+                key={item}
+                className="w-full p-3 flex justify-between items-center"
+              >
                 <div className="flex gap-4 items-center">
                   <div className="w-8 h-8">
                     <img
-                      src="./avatar.png"
+                      src="/avatar1.jpg"
                       className="rounded-full object-cover"
                       alt=""
                     />
@@ -107,21 +447,21 @@ const PostModal = () => {
                 <div className="flex hover:cursor-pointer">
                   <div className="w-5 h-5 rounded-full overflow-hidden z-30 relative">
                     <img
-                      src="./avatar.png"
+                      src="/avatar.png"
                       alt="First person"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="w-5 h-5 rounded-full overflow-hidden z-20 relative -left-2">
                     <img
-                      src="./avatar1.jpg"
+                      src="/avatar1.jpg"
                       alt="Second person"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="w-5 h-5 rounded-full overflow-hidden z-10 relative -left-4">
                     <img
-                      src="./avatar.png"
+                      src="/avatar.png"
                       alt="Third person"
                       className="w-full h-full object-cover"
                     />
@@ -130,9 +470,11 @@ const PostModal = () => {
                 <p className="text-xs">Liked by _jasill and others</p>
               </div>
             </div>
-            <span className="text-xs pr-3">11 September 2023</span>
+            <span className="text-xs pr-3">
+              {formatDate(new Date(post[currentIndex].createdAt))}
+            </span>
           </div>
-          <div className="flex items-center p-3 dark:bg-black bg-white h-[52px]">
+          <div className="flex items-center p-3 dark:bg-black bg-white h-[51px]">
             <div className="relative">
               <svg
                 aria-label="Emoji"
@@ -170,6 +512,51 @@ const PostModal = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isOpen}
+        size="lg"
+        onOpenChange={onOpenChange}
+        className="relative flex items-center preventbutton justify-center"
+      >
+        <ModalContent>
+          <ModalHeader>
+            <div className="w-full flex justify-between items-center">
+              <h1 className="text-lg font-semibold">Tagged Users</h1>
+            </div>
+          </ModalHeader>
+          <ModalBody className="w-full h-[70vh] overflow-y-auto flex flex-col border-t relative">
+            {post[currentIndex].post[index].tagUsers.length > 0 ? (
+              <div className="w-full">
+                {taggedUser.map((user) => (
+                  <div
+                    key={user._id}
+                    onClick={() => navigate(`/user/${user.username}`)}
+                    className="w-full rounded-md flex border justify-between items-center p-2 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 cursor-pointer mb-2"
+                  >
+                    <div className="flex gap-2">
+                      <img
+                        src={user.profilePicture}
+                        alt="profile"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-[13px] font-semibold">
+                          {user.username}
+                        </span>
+                        <span className="text-[12px] dark:text-[#a3a09f] text-[#3c3532]">
+                          {user.fullname}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <h1 className="text-center">No Tagged User.</h1>
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

@@ -72,7 +72,7 @@ const CreatePostMusic = () => {
     try {
       if (id) {
         const response = await apiClient.get(
-          `/user/music/create-post/get-selected-music-data/${id}`
+          `/user/music/get-selected-music-data/${id}`
         );
         if (response.data.message) {
           dispatch(removePostMusic());

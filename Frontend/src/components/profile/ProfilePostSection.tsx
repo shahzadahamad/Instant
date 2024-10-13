@@ -13,12 +13,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLayoutEffect, useState } from "react";
 import PostModal from "../common/PostModal";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePostSection = () => {
+  const navigate = useNavigate();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
   const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED">(
     "POSTS"
   );
+  const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const fetchUserData = async () => {
@@ -27,6 +30,11 @@ const ProfilePostSection = () => {
     };
     fetchUserData();
   }, []);
+
+  const closeModal = () => {
+    setSelectedPost(null);
+    navigate("/profile");
+  };
 
   return (
     <div className="w-full">
@@ -67,12 +75,33 @@ const ProfilePostSection = () => {
           <h1>LIKED</h1>
         </div>
       </div>
-      <PostModal />
+      {(selectedPost || selectedPost === 0) && (
+        <PostModal
+          post={postData}
+          imageIndex={selectedPost}
+          close={closeModal}
+        />
+      )}
       {postData.length > 0 ? (
         <div className="flex flex-wrap items-center justify-start gap-2 px-[82px] pb-5">
-          {postData.map((item) => (
+          {postData.map((item, index) => (
             <>
-              <div className="relative group">
+              <div
+                key={item._id}
+                className="relative group"
+                onClick={() => {
+                  setSelectedPost(index);
+                  if (item.post.length > 1) {
+                    window.history.pushState(
+                      null,
+                      "",
+                      `/post/${item._id}/?img_index=0`
+                    );
+                  } else {
+                    window.history.pushState(null, "", `/post/${item._id}`);
+                  }
+                }}
+              >
                 {item.post[0].type === "video" ? (
                   <div
                     key={item._id}

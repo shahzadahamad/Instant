@@ -80,10 +80,9 @@ const TagUser = () => {
 
   const fetchTagUser = async () => {
     try {
-      const response = await apiClient.get(
-        `/user/create-post/get-tagged-user-data`,
-        { params: { taggedUsers: post[postIndex].tagUsers } }
-      );
+      const response = await apiClient.get(`/user/get-tagged-user-data`, {
+        params: { taggedUsers: post[postIndex].tagUsers },
+      });
       setTaggedUser(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -116,7 +115,10 @@ const TagUser = () => {
 
   const handleRemoveTag = (id: string) => {
     dispatch(removeTagUser({ index: postIndex, id }));
-    toast.success('User has been untagged.')
+    if (post[postIndex].tagUsers.length === 1) {
+      onOpenChange();
+    }
+    toast.success("User has been untagged.");
   };
 
   return (
@@ -155,7 +157,7 @@ const TagUser = () => {
         )}
       </div>
       <div className="relative w-72 h-72 flex items-center justify-center">
-        {post && post.length > 0 && post[postIndex].type === 'image' ? (
+        {post && post.length > 0 && post[postIndex].type === "image" ? (
           <img
             className="absolute w-full h-full rounded-md object-contain"
             src={post[postIndex].url}
@@ -198,13 +200,15 @@ const TagUser = () => {
               />
             </button>
           </div>
-          <Button
-            onClick={handleTagUserClick}
-            variant="outline"
-            className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
-          >
-            <FontAwesomeIcon icon={faUser} />
-          </Button>
+          {post[postIndex].tagUsers.length > 0 && (
+            <Button
+              onClick={handleTagUserClick}
+              variant="outline"
+              className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+            >
+              <FontAwesomeIcon icon={faUser} />
+            </Button>
+          )}
         </>
       )}
       <Modal

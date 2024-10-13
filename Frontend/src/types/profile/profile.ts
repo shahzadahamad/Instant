@@ -45,12 +45,20 @@ export interface PostData {
 
 export interface GetUserPostData {
   _id: string;
-  userId: string;
+  userId: GetUserData;
   post: PostData[];
   caption: string;
   aspectRatio: string;
   hideLikeAndView: boolean;
   hideComment: boolean;
+  musicId: string;
   likeCount: number;
   commentCount: number;
+  createdAt: Date;
+}
+
+export interface PostModalProps {
+  post: GetUserPostData[];
+  imageIndex: number;
+  close: () => void;
 }
