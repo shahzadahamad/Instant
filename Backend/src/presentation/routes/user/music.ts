@@ -14,7 +14,7 @@ userMusicRouter.get(
   getCreatePostMusicDataController.handle
 );
 userMusicRouter.get(
-  "/create-post/get-selected-music-data/:_id",
+  "/get-selected-music-data/:_id",
   authMiddleware,
   getCreatePostSelectMusicDataController.handle
 );

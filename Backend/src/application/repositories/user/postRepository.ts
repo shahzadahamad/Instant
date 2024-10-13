@@ -36,7 +36,7 @@ export default class PostRepository {
 
   public async findUserPostData(userId: string): Promise<IPost[]> {
     try {
-      return await PostModal.find({ userId });
+      return await PostModal.find({ userId }).populate('userId'); 
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding post: ${error.message}`);

@@ -19,6 +19,7 @@ const postSchema: Schema = new Schema(
     userId: {
       type: String,
       required: true,
+      ref: "User",
     },
     post: [
       {

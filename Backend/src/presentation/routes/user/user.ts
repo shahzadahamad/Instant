@@ -25,7 +25,7 @@ userRouter.get(
   createPostGetUserDataController.handle
 );
 userRouter.get(
-  "/create-post/get-tagged-user-data",
+  "/get-tagged-user-data",
   authMiddleware,
   createPostGetTaggedUserDataController.handle
 );
