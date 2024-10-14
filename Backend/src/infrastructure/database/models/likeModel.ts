@@ -30,6 +30,11 @@ const likeSchema: Schema = new Schema(
   }
 );
 
+likeSchema.index({ postId: 1 });
+likeSchema.index({ commentId: 1 });
+likeSchema.index({ storyId: 1 });
+likeSchema.index({ likedUsers: 1 });
+
 const LikeModel = mongoose.model<IIike>("LIke", likeSchema);
 
 export default LikeModel;

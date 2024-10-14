@@ -4,12 +4,15 @@ import CreatePostController from "../../../infrastructure/controllers/user/post/
 import { upload } from "../../../infrastructure/configs/multer";
 import GetUserPostDataController from "../../../infrastructure/controllers/user/post/getUserPostDataController";
 import LikeOrUnlikePostController from "../../../infrastructure/controllers/user/post/likeOrUnlikePostController";
+import CheckingHasUserLikedPostController from "../../../infrastructure/controllers/user/post/checkingHasUserLikedPostController";
 
 const userPostRouter = Router();
 
 const createPostController = new CreatePostController();
 const getUserPostData = new GetUserPostDataController();
 const likeOrUnlikePostController = new LikeOrUnlikePostController();
+const checkingHasUserLikedPostController =
+  new CheckingHasUserLikedPostController();
 
 userPostRouter.post(
   "/create-post",
@@ -26,6 +29,11 @@ userPostRouter.patch(
   "/like-or-unlike/:postId/:status",
   authMiddleware,
   likeOrUnlikePostController.handle
+);
+userPostRouter.get(
+  "/has-user-liked-post/:postId",
+  authMiddleware,
+  checkingHasUserLikedPostController.handle
 );
 
 export default userPostRouter;

@@ -23,4 +23,22 @@ export default class LikeRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async hasUserLikedPost(postId: string, userId: string) {
+    try {
+      const post = await LikeModel.findOne({
+        postId: postId,
+        likedUsers: userId,
+      });
+
+      return !!post;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error hasUserLikedPost check: ${error.message}`);
+        throw new Error("Failed to hasUserLikedPost check");
+      }
+      console.error("Unknown error hasUserLikedPost post");
+      throw new Error("Unknown error");
+    }
+  }
 }
