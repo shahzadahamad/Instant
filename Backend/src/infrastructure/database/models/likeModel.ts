@@ -1,6 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IIike extends Document {}
+export interface IIike extends Document {
+  _id: string;
+  postId?: string;
+  commentId?: string;
+  storyId?: string;
+  likedUsers: string[];
+}
 
 const likeSchema: Schema = new Schema(
   {
