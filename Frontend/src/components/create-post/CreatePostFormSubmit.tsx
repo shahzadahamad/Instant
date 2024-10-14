@@ -22,6 +22,7 @@ const CreatePostFormSubmit = () => {
   const [hideLikeAndViewCount, setLikeAndHideViewCount] = useState(false);
   const [turnOffCounting, setTurnOffCounting] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleCaptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCaption(e.target.value);
@@ -52,6 +53,7 @@ const CreatePostFormSubmit = () => {
   }, []);
 
   const handleSharePost = async () => {
+    setLoading(true);
     try {
       const files = await Promise.all(
         post.map(async (postItem, index) => {
@@ -113,6 +115,8 @@ const CreatePostFormSubmit = () => {
     } catch (error) {
       toast.error("Error creating post");
       console.error("Error handling post share:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -246,8 +250,17 @@ const CreatePostFormSubmit = () => {
         </div>
       )}
       <div className="w-full flex justify-end mt-1">
-        <Button variant="outline" onClick={handleSharePost}>
-          Share Post
+        <Button
+          variant="outline"
+          onClick={handleSharePost}
+          style={{
+            width: "6rem",
+            opacity: loading ? 0.6 : 1,
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+          disabled={loading}
+        >
+          {loading ? <div className="spinner"></div> : "Share Post"}
         </Button>
       </div>
     </div>

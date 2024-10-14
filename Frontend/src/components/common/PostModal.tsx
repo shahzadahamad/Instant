@@ -1,7 +1,7 @@
 import { PostModalProps } from "@/types/profile/profile";
 import {
   faComment,
-  faHeart,
+  faHeart as faHeartRegular,
   faPaperPlane,
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
@@ -9,13 +9,14 @@ import {
   faArrowLeft,
   faArrowRight,
   faEllipsis,
+  faHeart,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import apiClient from "@/apis/apiClient";
 import {
@@ -33,6 +34,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import {
+  checkHasUserLikedThePost,
+  likeAndDisLikePost,
+} from "../../apis/api/userApi";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const defaultArray = Array.from({ length: 30 }, (_, index) =>
@@ -49,6 +54,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [music, setMusic] = useState<GetSelectMusicData | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -68,7 +74,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchMusic = async (id: string) => {
       const response = await apiClient.get(
         `/user/music/get-selected-music-data/${id}`
@@ -78,7 +84,17 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     if (post[currentIndex].musicId) {
       fetchMusic(post[currentIndex].musicId);
     }
-  });
+    return () => {};
+  }, [post, currentIndex]);
+
+  useLayoutEffect(() => {
+    const checkHasuserLikedCurrentPost = async (id: string) => {
+      const response = await checkHasUserLikedThePost(id);
+      setIsLiked(response);
+    };
+    checkHasuserLikedCurrentPost(post[currentIndex]._id);
+    return () => {};
+  }, [post, currentIndex]);
 
   const handleEmojiClick = (emoji: string) => {
     setComment((prev) => prev + emoji);
@@ -220,6 +236,18 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
         audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleLikeAndUnlikePost = async () => {
+    if (isLiked) {
+      await likeAndDisLikePost(post[currentIndex]._id, "dislike");
+      setIsLiked(false);
+      post[currentIndex].likeCount--;
+    } else {
+      await likeAndDisLikePost(post[currentIndex]._id, "like");
+      setIsLiked(true);
+      post[currentIndex].likeCount++;
     }
   };
 
@@ -423,16 +451,19 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                     </div>
                   </div>
                 </div>
-                <FontAwesomeIcon icon={faHeart} className="text-xs" />
+                <FontAwesomeIcon icon={faHeartRegular} className="text-xs" />
               </div>
             ))}
           </div>
-          <div className="flex items-center justify-between border-b dark:bg-black bg-white">
+          <div className="w-full h-[4.8rem] flex items-center justify-between border-b dark:bg-black bg-white">
             <div className="p-3 flex flex-col gap-2">
-              <div className="text-white flex gap-3 text-2xl">
+              <div className="dark:text-white text-black flex gap-3 text-2xl">
                 <FontAwesomeIcon
-                  className="hover:cursor-pointer"
-                  icon={faHeart}
+                  onClick={handleLikeAndUnlikePost}
+                  className={`${
+                    isLiked ? "text-[#ff3040]" : "text-white"
+                  } hover:cursor-pointer`}
+                  icon={isLiked ? faHeart : faHeartRegular}
                 />
                 <FontAwesomeIcon
                   className="hover:cursor-pointer"
@@ -443,32 +474,37 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                   icon={faPaperPlane}
                 />
               </div>
-              <div className="flex items-center">
-                <div className="flex hover:cursor-pointer">
-                  <div className="w-5 h-5 rounded-full overflow-hidden z-30 relative">
-                    <img
-                      src="/avatar.png"
-                      alt="First person"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-5 h-5 rounded-full overflow-hidden z-20 relative -left-2">
-                    <img
-                      src="/avatar1.jpg"
-                      alt="Second person"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-5 h-5 rounded-full overflow-hidden z-10 relative -left-4">
-                    <img
-                      src="/avatar.png"
-                      alt="Third person"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+              {post[currentIndex].likeCount > 0 && (
+                <div className="flex items-center transition-all">
+                  {/* <div className="flex hover:cursor-pointer">
+                    <div className="w-5 h-5 rounded-full overflow-hidden z-30 relative">
+                      <img
+                        src="/avatar.png"
+                        alt="First person"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="w-5 h-5 rounded-full overflow-hidden z-20 relative -left-2">
+                      <img
+                        src="/avatar1.jpg"
+                        alt="Second person"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="w-5 h-5 rounded-full overflow-hidden z-10 relative -left-4">
+                      <img
+                        src="/avatar.png"
+                        alt="Third person"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div> */}
+                  <p className="text-xs">
+                    Liked by {post[currentIndex].likeCount}{" "}
+                    {post[currentIndex].likeCount <= 1 ? "user" : "users"}
+                  </p>
                 </div>
-                <p className="text-xs">Liked by _jasill and others</p>
-              </div>
+              )}
             </div>
             <span className="text-xs pr-3">
               {formatDate(new Date(post[currentIndex].createdAt))}
