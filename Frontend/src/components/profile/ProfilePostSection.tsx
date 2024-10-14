@@ -223,7 +223,10 @@ const ProfilePostSection = () => {
           </svg>
           <h1 className="font-extrabold text-3xl">Share photos</h1>
           <p>When you share photos, they will appear on your profile.</p>
-          <p className="text-[#0085d4] cursor-pointer">
+          <p
+            onClick={() => navigate("/create-post/image")}
+            className="text-[#0085d4] cursor-pointer"
+          >
             Share your first photo
           </p>
         </div>
