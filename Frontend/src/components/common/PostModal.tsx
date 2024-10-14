@@ -55,6 +55,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [music, setMusic] = useState<GetSelectMusicData | null>(null);
   const [isLiked, setIsLiked] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -63,6 +64,11 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !(event.target as HTMLElement).closest(".preventbutton")
     ) {
       close();
+    } else if (
+      emojiPickerRef.current &&
+      !emojiPickerRef.current.contains(event.target as Node)
+    ) {
+      setOpen(false);
     }
   };
 
@@ -293,12 +299,30 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       >
         <div className="relative w-full h-full">
           {post[currentIndex].post[index].type === "video" ? (
-            <video
-              src={post[currentIndex].post[index].url}
-              autoPlay
-              controls
-              className={`object-contain w-full h-full ${post[currentIndex].post[index].filterClass}`}
-            />
+            <div
+              className="w-full h-full border-r"
+              style={{
+                filter: `
+                  contrast(${post[currentIndex].post[index].customFilter.contrast}%)
+                  brightness(${post[currentIndex].post[index].customFilter.brightness}%)
+                  saturate(${post[currentIndex].post[index].customFilter.saturation}%)
+                  sepia(${post[currentIndex].post[index].customFilter.sepia}%)
+                  grayscale(${post[currentIndex].post[index].customFilter.grayScale}%)
+                `,
+              }}
+            >
+              <video
+                src={post[currentIndex].post[index].url}
+                autoPlay
+                controls
+                className={`${post[currentIndex].post[index].filterClass} object-contain w-full h-full`}
+                onLoad={(e) =>
+                  e.currentTarget.classList.add(
+                    post[currentIndex].post[index].filterClass
+                  )
+                }
+              />
+            </div>
           ) : (
             <div
               className="w-full h-full border-r"
@@ -315,7 +339,12 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
               <img
                 src={post[currentIndex].post[index].url}
                 alt="Modal Content"
-                className={`object-contain w-full h-full ${post[currentIndex].post[index].filterClass}`}
+                className={`${post[currentIndex].post[index].filterClass} object-contain w-full h-full`}
+                onLoad={(e) =>
+                  e.currentTarget.classList.add(
+                    post[currentIndex].post[index].filterClass
+                  )
+                }
               />
             </div>
           )}
@@ -525,7 +554,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 <title>Emoji</title>
                 <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
               </svg>
-              <div className="absolute bottom-[25px]">
+              <div ref={emojiPickerRef} className="absolute bottom-[25px]">
                 <EmojiPicker
                   open={open}
                   autoFocusSearch={false}

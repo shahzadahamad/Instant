@@ -7,6 +7,7 @@ import {
   pushPost,
   removePost,
   setAspectRatios,
+  setPost,
   setPostIndex,
 } from "@/redux/slice/postSlice";
 import { useRef, useState } from "react";
@@ -20,6 +21,7 @@ import {
 } from "@nextui-org/modal";
 import Cropper, { Area } from "react-easy-crop";
 import { getCroppedImg } from "@/helperFuntions/getCroppedImage";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const ChangePost = () => {
   const dispatch = useDispatch();
@@ -131,37 +133,73 @@ const ChangePost = () => {
       >
         {post && post.length > 0 ? (
           <>
-            {post.map((post, index) =>
-              post.type === "image" ? (
-                <div key={index} className="relative w-44 h-44 flex-shrink-0">
-                  <img
-                    className="w-full h-full object-cover rounded"
-                    src={post.url}
-                    alt=""
-                  />
-                  <FontAwesomeIcon
-                    onClick={() => handleCancel(index)}
-                    icon={faCircleXmark}
-                    className="absolute rounded-full w-5 hover:opacity-70 transition-colors h-5 top-2 right-2 cursor-pointer"
-                  />
-                </div>
-              ) : post.type === "video" ? (
-                <div
-                  key={index}
-                  className="relative w-72 h-72 border rounded-md flex-shrink-0"
-                >
-                  <video
-                    className="w-full h-full object-contain rounded"
-                    src={post.url}
-                  ></video>
-                  <FontAwesomeIcon
-                    onClick={() => handleCancel(index)}
-                    icon={faCircleXmark}
-                    className="absolute rounded-full w-5 hover:opacity-70 transition-colors h-5 top-2 right-2 cursor-pointer"
-                  />
-                </div>
-              ) : null
-            )}
+            <DragDropContext
+              onDragEnd={(result) => {
+                if (!result.destination) return;
+                const newPosts = Array.from(post);
+                const [movedPost] = newPosts.splice(result.source.index, 1);
+                newPosts.splice(result.destination.index, 0, movedPost);
+                dispatch(setPost(newPosts));
+              }}
+            >
+              <Droppable droppableId="post" direction="horizontal">
+                {(provided) => (
+                  <div
+                    className="flex gap-2 overflow-auto scrollbar-hidden"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {post.map((postItem, index) =>
+                      postItem.type === "image" ? (
+                        <Draggable
+                          key={index}
+                          draggableId={`post-${index}`}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="relative w-44 h-44 flex-shrink-0"
+                            >
+                              <div className="relative w-44 h-44">
+                                <img
+                                  className="w-full h-full object-cover rounded"
+                                  src={postItem.url}
+                                  alt=""
+                                />
+                                <FontAwesomeIcon
+                                  onClick={() => handleCancel(index)}
+                                  icon={faCircleXmark}
+                                  className="absolute rounded-full w-5 hover:opacity-70 transition-colors h-5 top-2 right-2 cursor-pointer"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      ) : postItem.type === "video" ? (
+                        <div
+                          key={index}
+                          className="relative w-72 h-72 border rounded-md"
+                        >
+                          <video
+                            className="w-full h-full object-contain rounded"
+                            src={postItem.url}
+                          />
+                          <FontAwesomeIcon
+                            onClick={() => handleCancel(index)}
+                            icon={faCircleXmark}
+                            className="absolute rounded-full w-5 hover:opacity-70 transition-colors h-5 top-2 right-2 cursor-pointer"
+                          />
+                        </div>
+                      ) : null
+                    )}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
             <input
               onChange={handleInputChange}
               ref={uploadInputRef}
