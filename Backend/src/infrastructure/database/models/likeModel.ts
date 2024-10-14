@@ -6,15 +6,12 @@ const likeSchema: Schema = new Schema(
   {
     postId: {
       type: String,
-      required: true,
     },
     commentId: {
       type: String,
-      required: true,
     },
     storyId: {
       type: String,
-      required: true,
     },
     likedUsers: {
       type: [String],
