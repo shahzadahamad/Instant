@@ -64,7 +64,7 @@ const postSchema: Schema = new Schema(
           required: true,
         },
         sensitiveContentType: {
-          type: [String],
+          type: [],
           required: true,
         },
       },

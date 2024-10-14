@@ -48,4 +48,32 @@ export default class PostRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async handleLikes(postId: string, status: boolean) {
+    try {
+      await PostModal.updateOne(
+        { _id: postId },
+        { $inc: { likeCount: status ? 1 : -1 } }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error likeCount increment post: ${error.message}`);
+        throw new Error("Failed to likeCount increment post");
+      }
+      console.error("Unknown error likeCount increment post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPostById(_id: string): Promise<IPost | null> {
+    try {
+      return await PostModal.findOne({ _id: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
