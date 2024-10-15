@@ -12,6 +12,7 @@ import AdminSignIn from "../pages/admin/AdminSignIn";
 import Dashboard from "@/pages/admin/Dashboard";
 import Users from "@/pages/admin/Users";
 import Music from "@/pages/admin/Music";
+import UserProfile from "@/pages/user/UserProfile";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -78,6 +79,14 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     path: "/admin/music",
     element: currentAdmin ? (
       <Music />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
+  },
+  {
+    path: "/user/:username",
+    element: currentUser ? (
+      <UserProfile />
     ) : (
       <Navigate to="/admin/sign-in" replace />
     ),

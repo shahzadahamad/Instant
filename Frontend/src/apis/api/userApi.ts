@@ -40,3 +40,8 @@ export const editPostApi = async (
   );
   return response.data;
 };
+
+export const getUserProfileDates = async (username: string) => {
+  const response = await apiClient.get(`/user/get-user-data-by-username/${username}`);
+  return response.data;
+};

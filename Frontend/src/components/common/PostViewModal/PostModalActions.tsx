@@ -22,6 +22,8 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
   const [openEditModal, setOpenEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log(postUserId);
+
   useLayoutEffect(() => {
     const currentUser = async () => {
       const response = await getCurrentUser();
@@ -95,7 +97,7 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
         hideCloseButton={true}
       >
         <ModalContent>
-          {currentUser === postUserId ? (
+          {currentUser === postUserId || currentUser === postUserId ? (
             <ModalBody className="w-full p-0 flex flex-col gap-0">
               <div
                 onClick={() => setOpenDeleteModal(true)}
