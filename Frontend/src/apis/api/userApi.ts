@@ -13,3 +13,13 @@ export const likeAndDisLikePost = async (postId: string, status: string) => {
   );
   return response.data;
 };
+
+export const getCurrentUser = async () => {
+  const response = await apiClient.get(`/user/get-current-user`);
+  return response.data;
+};
+
+export const deletePost = async (postId: string) => {
+  const response = await apiClient.delete(`/user/post/delete-post/${postId}`);
+  return response.data;
+};

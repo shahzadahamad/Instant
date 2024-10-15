@@ -37,7 +37,8 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import {
   checkHasUserLikedThePost,
   likeAndDisLikePost,
-} from "../../apis/api/userApi";
+} from "../../../apis/api/userApi";
+import PostModalActions from "./PostModalActions";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const defaultArray = Array.from({ length: 30 }, (_, index) =>
@@ -56,6 +57,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [music, setMusic] = useState<GetSelectMusicData | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const [openActionModal, setOpenActionModal] = useState(false);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -63,7 +65,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !modalRef.current.contains(event.target as Node) &&
       !(event.target as HTMLElement).closest(".preventbutton")
     ) {
-      close();
+      close(post);
     } else if (
       emojiPickerRef.current &&
       !emojiPickerRef.current.contains(event.target as Node)
@@ -257,12 +259,21 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
+  const handleDeletePostData = (id: string) => {
+    const data = post.filter((post) => post._id !== id);
+    close(data);
+  };
+
+  const handleModalOpenAndClose = (status: boolean) => {
+    setOpenActionModal(status);
+  };
+
   return (
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-70 flex justify-center items-center z-50">
       <div
         className="absolute top-2.5 right-4 text-2xl cursor-pointer"
         onClick={() => {
-          close();
+          close(post);
         }}
       >
         <FontAwesomeIcon icon={faXmark} />
@@ -293,6 +304,17 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           </button>
         </div>
       )}
+
+      {openActionModal && (
+        <PostModalActions
+          openActionModal={openActionModal}
+          handleModalOpenAndClose={handleModalOpenAndClose}
+          postUserId={post[currentIndex].userId._id}
+          postId={post[currentIndex]._id}
+          handleDeletePostData={handleDeletePostData}
+        />
+      )}
+
       <div
         ref={modalRef}
         className="relative flex w-[85vw] h-[90vh] border dark:bg-black bg-white"
@@ -316,11 +338,6 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 autoPlay
                 controls
                 className={`${post[currentIndex].post[index].filterClass} object-contain w-full h-full`}
-                onLoad={(e) =>
-                  e.currentTarget.classList.add(
-                    post[currentIndex].post[index].filterClass
-                  )
-                }
               />
             </div>
           ) : (
@@ -340,11 +357,6 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 src={post[currentIndex].post[index].url}
                 alt="Modal Content"
                 className={`${post[currentIndex].post[index].filterClass} object-contain w-full h-full`}
-                onLoad={(e) =>
-                  e.currentTarget.classList.add(
-                    post[currentIndex].post[index].filterClass
-                  )
-                }
               />
             </div>
           )}
@@ -424,7 +436,12 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 {post[currentIndex].userId.username}
               </h1>
             </div>
-            <div className="flex cursor-pointer items-center">
+            <div
+              className="flex cursor-pointer items-center"
+              onClick={() => {
+                setOpenActionModal(true);
+              }}
+            >
               <FontAwesomeIcon icon={faEllipsis} className="text-lg" />
             </div>
           </div>
@@ -503,7 +520,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                   icon={faPaperPlane}
                 />
               </div>
-              {post[currentIndex].likeCount > 0 && (
+              {post[currentIndex].likeCount > 0 ? (
                 <div className="flex items-center transition-all">
                   {/* <div className="flex hover:cursor-pointer">
                     <div className="w-5 h-5 rounded-full overflow-hidden z-30 relative">
@@ -528,9 +545,25 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                       />
                     </div>
                   </div> */}
-                  <p className="text-xs">
+                  {/* <p className="text-xs">
                     Liked by {post[currentIndex].likeCount}{" "}
                     {post[currentIndex].likeCount <= 1 ? "user" : "users"}
+                  </p> */}
+                  <p className="text-xs">
+                    {post[currentIndex].likeCount}{" "}
+                    {post[currentIndex].likeCount <= 1 ? "like" : "likes"}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center transition-all">
+                  <p className="text-xs">
+                    Be the first to{" "}
+                    <span
+                      onClick={handleLikeAndUnlikePost}
+                      className="hover:text-gray-500 cursor-pointer"
+                    >
+                      like this
+                    </span>{" "}
                   </p>
                 </div>
               )}

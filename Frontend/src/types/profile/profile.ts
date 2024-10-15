@@ -1,4 +1,5 @@
 export interface GetUserData {
+  _id: string;
   fullname: string;
   username: string;
   email: string;
@@ -60,5 +61,18 @@ export interface GetUserPostData {
 export interface PostModalProps {
   post: GetUserPostData[];
   imageIndex: number;
-  close: () => void;
+  close: (post: GetUserPostData[]) => void;
+}
+
+export interface PostActionModalProps {
+  openActionModal: boolean;
+  handleModalOpenAndClose: (status: boolean) => void;
+  postUserId: string;
+  postId: string;
+  handleDeletePostData: (id: string) => void;
+}
+
+export interface PostShareModalProps {
+  openShareModal: boolean;
+  handleShareModalOpenAndClose: (status: boolean) => void;
 }

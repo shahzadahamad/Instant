@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLayoutEffect, useState } from "react";
-import PostModal from "../common/PostModal";
+import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate } from "react-router-dom";
 
 const ProfilePostSection = () => {
@@ -31,7 +31,8 @@ const ProfilePostSection = () => {
     fetchUserData();
   }, []);
 
-  const closeModal = () => {
+  const closeModal = (post: GetUserPostData[]) => {
+    setPostData(post);
     setSelectedPost(null);
     navigate("/profile");
   };
