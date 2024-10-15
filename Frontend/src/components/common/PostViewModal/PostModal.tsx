@@ -65,7 +65,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !modalRef.current.contains(event.target as Node) &&
       !(event.target as HTMLElement).closest(".preventbutton")
     ) {
-      close(post);
+      close();
     } else if (
       emojiPickerRef.current &&
       !emojiPickerRef.current.contains(event.target as Node)
@@ -259,9 +259,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
-  const handleDeletePostData = (id: string) => {
-    const data = post.filter((post) => post._id !== id);
-    close(data);
+  const handleDeletePostData = () => {
+    close();
   };
 
   const handleModalOpenAndClose = (status: boolean) => {
@@ -273,7 +272,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       <div
         className="absolute top-2.5 right-4 text-2xl cursor-pointer"
         onClick={() => {
-          close(post);
+          close();
         }}
       >
         <FontAwesomeIcon icon={faXmark} />

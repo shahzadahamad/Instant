@@ -23,16 +23,16 @@ const ProfilePostSection = () => {
   );
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
+  const fetchUserData = async () => {
+    const res = await apiClient.get(`/user/post/get-user-post-data`);
+    setPostData(res.data);
+  };
   useLayoutEffect(() => {
-    const fetchUserData = async () => {
-      const res = await apiClient.get(`/user/post/get-user-post-data`);
-      setPostData(res.data);
-    };
     fetchUserData();
   }, []);
 
-  const closeModal = (post: GetUserPostData[]) => {
-    setPostData(post);
+  const closeModal = () => {
+    fetchUserData();
     setSelectedPost(null);
     navigate("/profile");
   };

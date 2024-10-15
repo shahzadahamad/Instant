@@ -41,7 +41,7 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
       setOpenShareModal(false);
       setOpenDeleteModal(false);
       handleModalOpenAndClose(false);
-      handleDeletePostData(postId);
+      handleDeletePostData();
       navigate("/profile");
       toast.success(res);
     } catch (error) {
