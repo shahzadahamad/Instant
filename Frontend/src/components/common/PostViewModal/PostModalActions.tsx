@@ -38,12 +38,15 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
     try {
       setLoading(true);
       const res = await deletePost(postId);
-      setOpenShareModal(false);
-      setOpenDeleteModal(false);
-      handleModalOpenAndClose(false);
-      handleDeletePostData();
-      navigate("/profile");
-      toast.success(res);
+      setTimeout(() => {
+        setOpenShareModal(false);
+        setOpenDeleteModal(false);
+        handleModalOpenAndClose(false);
+        handleDeletePostData();
+        navigate("/profile");
+        toast.success(res);
+        setLoading(false);
+      }, 1000);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -53,8 +56,6 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
         console.error("Unexpected error:", error);
         toast.error("An unexpected error occurred");
       }
-      setLoading(false);
-    } finally {
       setLoading(false);
     }
   };

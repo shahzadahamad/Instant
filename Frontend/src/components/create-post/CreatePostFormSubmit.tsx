@@ -108,7 +108,7 @@ const CreatePostFormSubmit = () => {
       formData.append("aspectRatio", String(covertedAspectRatio));
       navigate("/profile");
       toast.promise(apiClient.post(`/user/post/create-post`, formData), {
-        loading: "Post creating processing",
+        loading: "We're processing your post. This will just take a moment...",
         success: (response) => <b>{response.data}</b>,
         error: <b>Post creating failed</b>,
       });
