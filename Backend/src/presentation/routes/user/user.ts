@@ -5,6 +5,7 @@ import { upload } from "../../../infrastructure/configs/multer";
 import authMiddleware from "../../../infrastructure/middlewares/authMiddleware";
 import CretePostGetUserDataController from "../../../infrastructure/controllers/user/user/cretePostGetUserDataController";
 import CreatePostGetTaggedUserDataController from "../../../infrastructure/controllers/user/user/createPostGetTaggedUserDataController";
+import GetCurrentUserController from "../../../infrastructure/controllers/user/user/getCurrentUserController";
 
 const userRouter = Router();
 
@@ -13,12 +14,9 @@ const editUserDataController = new EditUserDataController();
 const createPostGetUserDataController = new CretePostGetUserDataController();
 const createPostGetTaggedUserDataController =
   new CreatePostGetTaggedUserDataController();
+const getCurrentUserController = new GetCurrentUserController();
 
-userRouter.get(
-  "/get-user-data",
-  authMiddleware,
-  getUserDataController.handle
-);
+userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get(
   "/create-post/get-data",
   authMiddleware,
@@ -34,6 +32,11 @@ userRouter.post(
   authMiddleware,
   upload.single("profilePicture"),
   editUserDataController.handle
+);
+userRouter.get(
+  "/get-current-user",
+  authMiddleware,
+  getCurrentUserController.handle
 );
 
 export default userRouter;
