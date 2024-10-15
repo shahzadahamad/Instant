@@ -72,7 +72,24 @@ export interface PostActionModalProps {
   handleDeletePostData: () => void;
 }
 
+export interface PostEditModalProps {
+  openEditModal: boolean;
+  handleEditModalOpenAndClose: (status: boolean) => void;
+  postId: string;
+  handleEditAndDelete: () => void;
+}
+
 export interface PostShareModalProps {
   openShareModal: boolean;
   handleShareModalOpenAndClose: (status: boolean) => void;
+}
+
+export interface ProifilePostSectionProps {
+  fetchPostDetialData: () => void;
+}
+
+export interface PostUpdateFormData {
+  caption: string;
+  hideLikeAndViewCount: string;
+  turnOffCounting: string;
 }

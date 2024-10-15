@@ -1,3 +1,4 @@
+import { PostUpdateFormData } from "@/types/profile/profile";
 import apiClient from "../apiClient";
 
 export const checkHasUserLikedThePost = async (postId: string) => {
@@ -21,5 +22,21 @@ export const getCurrentUser = async () => {
 
 export const deletePost = async (postId: string) => {
   const response = await apiClient.delete(`/user/post/delete-post/${postId}`);
+  return response.data;
+};
+
+export const getPostData = async (postId: string) => {
+  const response = await apiClient.get(`/user/post/get-post-data/${postId}`);
+  return response.data;
+};
+
+export const editPostApi = async (
+  postId: string,
+  formData: PostUpdateFormData
+) => {
+  const response = await apiClient.patch(
+    `/user/post/update-post/${postId}`,
+    formData
+  );
   return response.data;
 };

@@ -1,5 +1,8 @@
 import apiClient from "@/apis/apiClient";
-import { GetUserPostData } from "@/types/profile/profile";
+import {
+  GetUserPostData,
+  ProifilePostSectionProps,
+} from "@/types/profile/profile";
 import {
   faUserCircle,
   faHeart as faHeartRegular,
@@ -15,7 +18,9 @@ import { useLayoutEffect, useState } from "react";
 import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate } from "react-router-dom";
 
-const ProfilePostSection = () => {
+const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
+  fetchPostDetialData,
+}) => {
   const navigate = useNavigate();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
   const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED">(
@@ -34,6 +39,7 @@ const ProfilePostSection = () => {
   const closeModal = () => {
     fetchUserData();
     setSelectedPost(null);
+    fetchPostDetialData();
     navigate("/profile");
   };
 

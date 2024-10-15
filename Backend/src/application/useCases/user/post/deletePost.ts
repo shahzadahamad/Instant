@@ -23,15 +23,18 @@ export default class DeletePost {
 
   public async execute(id: string, userId: string): Promise<string> {
     const postData = await this.postRepository.findPostById(id);
-
     const userData = await this.userRepository.findById(userId);
 
-    if (userData?._id.toString() !== postData?.userId.toString()) {
-      throw new Error("Invalid Action!");
+    if (!userData) {
+      throw new Error("User now found!");
     }
 
     if (!postData) {
       throw new Error("Post not found!");
+    }
+
+    if (userData?._id.toString() !== postData?.userId.toString()) {
+      throw new Error("Invalid Action!");
     }
 
     postData.post.forEach(async (item) => {

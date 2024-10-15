@@ -77,6 +77,18 @@ export default class PostRepository {
     }
   }
 
+  public async findPostByIdWithUserData(_id: string): Promise<IPost | null> {
+    try {
+      return await PostModal.findOne({ _id: _id }).populate("userId");
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async deletePost(_id: string) {
     try {
       return await PostModal.deleteOne({ _id: _id });
@@ -97,6 +109,32 @@ export default class PostRepository {
         throw new Error("Invalid Access!");
       }
       console.error("Unknown error delete post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async updatePost(
+    _id: string,
+    caption: string,
+    hideLikesAndViewCount: boolean,
+    turnOffCounting: boolean
+  ) {
+    try {
+      return await PostModal.updateOne(
+        { _id: _id },
+        {
+          $set: {
+            caption,
+            hideLikeAndView: hideLikesAndViewCount,
+            hideComment: turnOffCounting,
+          },
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error updating post");
       throw new Error("Unknown error");
     }
   }

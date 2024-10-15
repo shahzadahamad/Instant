@@ -6,6 +6,7 @@ import PostShareModal from "./PostShareModal";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import PostEditModal from "./PostEditModal";
 
 const PostModalActions: React.FC<PostActionModalProps> = ({
   openActionModal,
@@ -18,6 +19,7 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
   const navigate = useNavigate();
   const [openShareModal, setOpenShareModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
@@ -34,15 +36,24 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
     handleModalOpenAndClose(!openActionModal);
   };
 
+  const handleEditModalOpenAndClose = (status: boolean) => {
+    setOpenShareModal(status);
+    handleModalOpenAndClose(!openActionModal);
+  };
+
+  const handleEditAndDelete = () => {
+    setOpenShareModal(false);
+    setOpenDeleteModal(false);
+    handleModalOpenAndClose(false);
+    handleDeletePostData();
+  };
+
   const handleDeletePost = async () => {
     try {
       setLoading(true);
       const res = await deletePost(postId);
       setTimeout(() => {
-        setOpenShareModal(false);
-        setOpenDeleteModal(false);
-        handleModalOpenAndClose(false);
-        handleDeletePostData();
+        handleEditAndDelete();
         navigate("/profile");
         toast.success(res);
         setLoading(false);
@@ -62,6 +73,14 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
 
   return (
     <>
+      {openEditModal && (
+        <PostEditModal
+          openEditModal={openEditModal}
+          handleEditModalOpenAndClose={handleEditModalOpenAndClose}
+          postId={postId}
+          handleEditAndDelete={handleEditAndDelete}
+        />
+      )}
       {openShareModal && (
         <PostShareModal
           openShareModal={openShareModal}
@@ -84,7 +103,10 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
               >
                 <h1 className="text-[#ed4956] font-bold">Delete</h1>
               </div>
-              <div className="w-full text-center border-b p-3 cursor-pointer">
+              <div
+                onClick={() => setOpenEditModal(true)}
+                className="w-full text-center border-b p-3 cursor-pointer"
+              >
                 <h1>Edit</h1>
               </div>
               <div
