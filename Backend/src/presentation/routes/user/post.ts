@@ -5,6 +5,7 @@ import { upload } from "../../../infrastructure/configs/multer";
 import GetUserPostDataController from "../../../infrastructure/controllers/user/post/getUserPostDataController";
 import LikeOrUnlikePostController from "../../../infrastructure/controllers/user/post/likeOrUnlikePostController";
 import CheckingHasUserLikedPostController from "../../../infrastructure/controllers/user/post/checkingHasUserLikedPostController";
+import DeletePostController from "../../../infrastructure/controllers/user/post/deletePostController";
 
 const userPostRouter = Router();
 
@@ -13,6 +14,7 @@ const getUserPostData = new GetUserPostDataController();
 const likeOrUnlikePostController = new LikeOrUnlikePostController();
 const checkingHasUserLikedPostController =
   new CheckingHasUserLikedPostController();
+const deletePostController = new DeletePostController();
 
 userPostRouter.post(
   "/create-post",
@@ -34,6 +36,11 @@ userPostRouter.get(
   "/has-user-liked-post/:postId",
   authMiddleware,
   checkingHasUserLikedPostController.handle
+);
+userPostRouter.delete(
+  "/delete-post/:postId",
+  authMiddleware,
+  deletePostController.handle
 );
 
 export default userPostRouter;

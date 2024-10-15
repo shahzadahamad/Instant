@@ -76,4 +76,16 @@ export default class PostRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async deletePost(_id: string) {
+    try {
+      return await PostModal.deleteOne({ _id: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete post");
+      throw new Error("Unknown error");
+    }
+  }
 }
