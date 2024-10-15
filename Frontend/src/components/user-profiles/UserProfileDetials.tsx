@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { useLayoutEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import ErrorPage from "../common/ErrorPage";
 
 const UserProfileDetials = () => {
   const { username } = useParams();
@@ -79,8 +80,7 @@ const UserProfileDetials = () => {
           </div>
         </div>
       ) : (
-        // {/* <ProfilePostSection fetchPostDetialData={fetchUserData} /> */}
-        <h1>sorry page not found</h1>
+        <ErrorPage />
       )}
     </>
   );
