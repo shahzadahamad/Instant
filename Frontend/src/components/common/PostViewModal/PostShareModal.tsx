@@ -36,7 +36,7 @@ const PostShareModal: React.FC<PostShareModalProps> = ({
             </div>
           </ModalHeader>
           <ModalBody className="w-full p-0 flex flex-col border-t gap-0">
-            <div className="w-full h-[22.6rem] overflow-scroll scrollbar-hidden">
+            <div className="w-full h-[22.5rem] overflow-scroll scrollbar-hidden">
               <div className="w-full text-start p-3 border-b cursor-pointer">
                 <WhatsappShareButton url={pageUrl}>
                   <div className="flex items-center gap-3">

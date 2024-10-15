@@ -145,7 +145,9 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
                 <h1 className="text-[#ed4956] font-bold">Report</h1>
               </div>
               <div
-                onClick={() => handleModalOpenAndClose(!openActionModal)}
+                onClick={() => {
+                  setOpenShareModal(true);
+                }}
                 className="w-full text-center border-b p-3 cursor-pointer"
               >
                 <h1>Share to...</h1>
