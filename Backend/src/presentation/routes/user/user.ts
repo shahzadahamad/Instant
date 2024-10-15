@@ -6,6 +6,7 @@ import authMiddleware from "../../../infrastructure/middlewares/authMiddleware";
 import CretePostGetUserDataController from "../../../infrastructure/controllers/user/user/cretePostGetUserDataController";
 import CreatePostGetTaggedUserDataController from "../../../infrastructure/controllers/user/user/createPostGetTaggedUserDataController";
 import GetCurrentUserController from "../../../infrastructure/controllers/user/user/getCurrentUserController";
+import GetUserDataByUsernameController from "../../../infrastructure/controllers/user/user/getUserDataByUsernameController";
 
 const userRouter = Router();
 
@@ -15,6 +16,7 @@ const createPostGetUserDataController = new CretePostGetUserDataController();
 const createPostGetTaggedUserDataController =
   new CreatePostGetTaggedUserDataController();
 const getCurrentUserController = new GetCurrentUserController();
+const getUserDataByUsernameController = new GetUserDataByUsernameController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get(
@@ -37,6 +39,11 @@ userRouter.get(
   "/get-current-user",
   authMiddleware,
   getCurrentUserController.handle
+);
+userRouter.get(
+  "/get-user-data-by-username/:username",
+  authMiddleware,
+  getUserDataByUsernameController.handle
 );
 
 export default userRouter;
