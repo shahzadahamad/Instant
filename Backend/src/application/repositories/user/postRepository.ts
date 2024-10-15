@@ -88,4 +88,16 @@ export default class PostRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async getUserPostCount(_id: string) {
+    try {
+      return await PostModal.countDocuments({ userId: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete post");
+      throw new Error("Unknown error");
+    }
+  }
 }

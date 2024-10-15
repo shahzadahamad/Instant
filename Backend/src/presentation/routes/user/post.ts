@@ -6,6 +6,7 @@ import GetUserPostDataController from "../../../infrastructure/controllers/user/
 import LikeOrUnlikePostController from "../../../infrastructure/controllers/user/post/likeOrUnlikePostController";
 import CheckingHasUserLikedPostController from "../../../infrastructure/controllers/user/post/checkingHasUserLikedPostController";
 import DeletePostController from "../../../infrastructure/controllers/user/post/deletePostController";
+import GetPostCountController from "../../../infrastructure/controllers/user/post/getPostCountController";
 
 const userPostRouter = Router();
 
@@ -15,6 +16,7 @@ const likeOrUnlikePostController = new LikeOrUnlikePostController();
 const checkingHasUserLikedPostController =
   new CheckingHasUserLikedPostController();
 const deletePostController = new DeletePostController();
+const getPostCountController = new GetPostCountController();
 
 userPostRouter.post(
   "/create-post",
@@ -41,6 +43,11 @@ userPostRouter.delete(
   "/delete-post/:postId",
   authMiddleware,
   deletePostController.handle
+);
+userPostRouter.get(
+  "/post-count",
+  authMiddleware,
+  getPostCountController.handle
 );
 
 export default userPostRouter;
