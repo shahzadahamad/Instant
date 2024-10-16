@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import PostEditModal from "./PostEditModal";
+import PostReportModal from "./PostReportModal";
 
 const PostModalActions: React.FC<PostActionModalProps> = ({
   openActionModal,
@@ -20,9 +21,8 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
   const [openShareModal, setOpenShareModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openReportModal, setOpenReportModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  console.log(postUserId);
 
   useLayoutEffect(() => {
     const currentUser = async () => {
@@ -40,6 +40,11 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
 
   const handleEditModalOpenAndClose = (status: boolean) => {
     setOpenShareModal(status);
+    handleModalOpenAndClose(!openActionModal);
+  };
+
+  const handleReportModalOpenAndClose = (status: boolean) => {
+    setOpenReportModal(status);
     handleModalOpenAndClose(!openActionModal);
   };
 
@@ -87,6 +92,13 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
         <PostShareModal
           openShareModal={openShareModal}
           handleShareModalOpenAndClose={handleShareModalOpenAndClose}
+        />
+      )}
+      {openReportModal && (
+        <PostReportModal
+          openReportModal={openReportModal}
+          handleReportModalOpenAndClose={handleReportModalOpenAndClose}
+          postId={postId}
         />
       )}
       <Modal
@@ -141,7 +153,10 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
               <div className="w-full text-center border-b p-3 cursor-pointer">
                 <h1 className="text-[#ed4956] font-bold">Unfollow</h1>
               </div>
-              <div className="w-full text-center border-b p-3 cursor-pointer">
+              <div
+                onClick={() => setOpenReportModal(true)}
+                className="w-full text-center border-b p-3 cursor-pointer"
+              >
                 <h1 className="text-[#ed4956] font-bold">Report</h1>
               </div>
               <div

@@ -427,7 +427,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                           )
                       : ""
                   }
-                  className="rounded-full object-cover"
+                  className="w-[27px] h-[27px] rounded-full object-cover"
                   alt=""
                 />
               </div>
@@ -458,7 +458,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                           )
                       : ""
                   }
-                  className="rounded-full object-cover"
+                  className="w-[27px] h-[27px] rounded-full object-cover"
                   alt=""
                 />
               </div>
@@ -482,8 +482,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 <div className="flex gap-4 items-center">
                   <div className="w-8 h-8">
                     <img
-                      src="/avatar1.jpg"
-                      className="rounded-full object-cover"
+                      src="/ney.jpg"
+                      className="w-[27px] h-[27px] rounded-full object-cover"
                       alt=""
                     />
                   </div>

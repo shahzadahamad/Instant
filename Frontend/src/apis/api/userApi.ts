@@ -42,6 +42,19 @@ export const editPostApi = async (
 };
 
 export const getUserProfileDates = async (username: string) => {
-  const response = await apiClient.get(`/user/get-user-data-by-username/${username}`);
+  const response = await apiClient.get(
+    `/user/get-user-data-by-username/${username}`
+  );
   return response.data;
+};
+
+export const reportPost = async (reason: string, postId: string) => {
+  const response = await apiClient.patch(
+    `/user/post/report-post/${postId}`,
+    null,
+    {
+      params: { reason },
+    }
+  );
+  return response.data.message;
 };

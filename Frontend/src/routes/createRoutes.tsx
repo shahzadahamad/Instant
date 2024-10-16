@@ -88,7 +88,7 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? (
       <UserProfile />
     ) : (
-      <Navigate to="/admin/sign-in" replace />
+      <Navigate to="/sign-in" replace />
     ),
   },
 ];

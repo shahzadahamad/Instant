@@ -84,6 +84,12 @@ export interface PostShareModalProps {
   handleShareModalOpenAndClose: (status: boolean) => void;
 }
 
+export interface PostReportModalProps {
+  openReportModal: boolean;
+  handleReportModalOpenAndClose: (status: boolean) => void;
+  postId: string;
+}
+
 export interface ProifilePostSectionProps {
   fetchPostDetialData: () => void;
 }
