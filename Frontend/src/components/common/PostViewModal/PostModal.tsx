@@ -493,66 +493,83 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             </div>
           </div>
           <div className="w-full h-[22rem] overflow-auto scrollbar-hidden dark:bg-black bg-white border-b">
-            <div className="w-full p-3 flex gap-2 items-center">
-              <div className="w-8 h-8">
-                <img
-                  src={
-                    post[currentIndex].userId?.profilePicture
-                      ? typeof post[currentIndex].userId.profilePicture ===
-                        "string"
-                        ? post[currentIndex].userId.profilePicture
-                        : URL.createObjectURL(
-                            post[currentIndex].userId.profilePicture
-                          )
-                      : ""
-                  }
-                  className="w-[27px] h-[27px] rounded-full object-cover"
-                  alt=""
-                />
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-sm font-semibold">
-                  {post[currentIndex].userId.username}&nbsp;{" "}
-                  <span className="font-normal">
-                    {post[currentIndex].caption}
-                  </span>
-                </h1>
-                <h1 className="text-xs text-[#8a8a8a]">
-                  {timeSince(new Date(post[currentIndex].createdAt))}
-                </h1>
-              </div>
-            </div>
-            {comments.map((item) => (
-              <div
-                key={item._id}
-                className="w-full p-3 flex justify-between items-center"
-              >
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8">
-                    <img
-                      src={item.userId.profilePicture}
-                      className="w-[27px] h-[27px] rounded-full object-cover"
-                      alt=""
+            {comments.length > 0 || post[currentIndex].caption ? (
+              <>
+                {post[currentIndex].caption && (
+                  <div className="w-full p-3 flex gap-2 items-center">
+                    <div className="w-8 h-8">
+                      <img
+                        src={
+                          post[currentIndex].userId?.profilePicture
+                            ? typeof post[currentIndex].userId
+                                .profilePicture === "string"
+                              ? post[currentIndex].userId.profilePicture
+                              : URL.createObjectURL(
+                                  post[currentIndex].userId.profilePicture
+                                )
+                            : ""
+                        }
+                        className="w-[27px] h-[27px] rounded-full object-cover"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <h1 className="text-sm font-semibold">
+                        {post[currentIndex].userId.username}&nbsp;
+                        <span className="font-normal">
+                          {post[currentIndex].caption}
+                        </span>
+                      </h1>
+                      <h1 className="text-xs text-[#8a8a8a]">
+                        {timeSince(new Date(post[currentIndex].createdAt))}
+                      </h1>
+                    </div>
+                  </div>
+                )}
+                {comments.map((item) => (
+                  <div
+                    key={item._id}
+                    className="w-full p-3 flex justify-between items-center"
+                  >
+                    <div className="flex gap-2 items-center">
+                      <div className="w-8 h-8">
+                        <img
+                          src={item.userId.profilePicture}
+                          className="w-[27px] h-[27px] rounded-full object-cover"
+                          alt=""
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="flex gap-2 text-sm">
+                          <h1 className="font-semibold">
+                            {item.userId.username}
+                          </h1>
+                          <h1 className="font-normal">{item.comment}</h1>
+                        </div>
+                        <div className="flex gap-2 text-[#8a8a8a]">
+                          <h1 className="text-xs">
+                            {timeSince(new Date(item.createdAt))}
+                          </h1>
+                          <h1 className="text-xs">23 like</h1>
+                          <h1 className="text-xs">Reply</h1>
+                        </div>
+                      </div>
+                    </div>
+                    <FontAwesomeIcon
+                      icon={faHeartRegular}
+                      className="text-xs"
                     />
                   </div>
-                  <div className="flex flex-col ">
-                    <div className="flex gap-2 text-sm">
-                      <h1 className="font-semibold">{item.userId.username}</h1>
-                      <h1 className="font-normal">{item.comment}</h1>
-                    </div>
-                    <div className="flex gap-2 text-[#8a8a8a]">
-                      <h1 className="text-xs">
-                        {timeSince(new Date(item.createdAt))}
-                      </h1>
-                      <h1 className="text-xs">23 like</h1>
-                      <h1 className="text-xs">Reply</h1>
-                    </div>
-                  </div>
-                </div>
-                <FontAwesomeIcon icon={faHeartRegular} className="text-xs" />
+                ))}
+              </>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <h1 className="text-2xl font-bold">No comments yet.</h1>
+                <p>Start the conversation.</p>
               </div>
-            ))}
+            )}
           </div>
+
           <div className="w-full h-[4.8rem] flex items-center justify-between border-b dark:bg-black bg-white">
             <div className="p-3 flex flex-col gap-2">
               <div className="dark:text-white text-black flex gap-3 text-2xl">
