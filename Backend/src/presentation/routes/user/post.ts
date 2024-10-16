@@ -10,6 +10,8 @@ import GetPostCountController from "../../../infrastructure/controllers/user/pos
 import GetPostDataController from "../../../infrastructure/controllers/user/post/getPostDataController";
 import EditPostController from "../../../infrastructure/controllers/user/post/editPostController";
 import ReportPostController from "../../../infrastructure/controllers/user/post/reportPostController";
+import CommentPostController from "../../../infrastructure/controllers/user/post/commentPostController";
+import GetCommentController from "../../../infrastructure/controllers/user/post/getCommentController";
 
 const userPostRouter = Router();
 
@@ -23,6 +25,8 @@ const getPostCountController = new GetPostCountController();
 const getPostDataController = new GetPostDataController();
 const editPostController = new EditPostController();
 const reportPostController = new ReportPostController();
+const commentPostController = new CommentPostController();
+const getCommentController = new GetCommentController();
 
 userPostRouter.post(
   "/create-post",
@@ -69,6 +73,16 @@ userPostRouter.patch(
   "/report-post/:postId",
   authMiddleware,
   reportPostController.handle
+);
+userPostRouter.post(
+  "/comment/:postId",
+  authMiddleware,
+  commentPostController.handle
+);
+userPostRouter.get(
+  "/get-comments/:postId",
+  authMiddleware,
+  getCommentController.handle
 );
 
 export default userPostRouter;
