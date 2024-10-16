@@ -99,3 +99,18 @@ export interface PostUpdateFormData {
   hideLikeAndViewCount: string;
   turnOffCounting: string;
 }
+
+interface CommentUserData {
+  _id: string;
+  username: string;
+  profilePicture: string;
+}
+
+export interface GetComments {
+  _id: string;
+  postId: string;
+  userId: CommentUserData;
+  comment: string;
+  reply: [];
+  createdAt: Date;
+}

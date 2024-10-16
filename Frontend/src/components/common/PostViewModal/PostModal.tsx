@@ -1,4 +1,4 @@
-import { PostModalProps } from "@/types/profile/profile";
+import { GetComments, PostModalProps } from "@/types/profile/profile";
 import {
   faComment,
   faHeart as faHeartRegular,
@@ -36,14 +36,14 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import {
   checkHasUserLikedThePost,
+  commentPost,
+  getComments,
   likeAndDisLikePost,
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
+import { AxiosError } from "axios";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
-  const defaultArray = Array.from({ length: 30 }, (_, index) =>
-    (index + 1).toString()
-  );
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [open, setOpen] = useState(false);
@@ -58,6 +58,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [isLiked, setIsLiked] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [openActionModal, setOpenActionModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState<GetComments[]>([]);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -82,6 +84,23 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     };
   }, []);
 
+  const fetchComments = async () => {
+    try {
+      const res = await getComments(post[currentIndex]._id);
+      setComments(res);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+      setLoading(false);
+    }
+  };
+
   useLayoutEffect(() => {
     const fetchMusic = async (id: string) => {
       const response = await apiClient.get(
@@ -92,6 +111,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     if (post[currentIndex].musicId) {
       fetchMusic(post[currentIndex].musicId);
     }
+    fetchComments();
     return () => {};
   }, [post, currentIndex]);
 
@@ -231,6 +251,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       return `${hours} hour${hours > 1 ? "s" : ""}`;
     } else if (minutes > 0) {
       return `${minutes} min`;
+    } else if (seconds < 10) {
+      return "Now";
     } else {
       return `${seconds} sec`;
     }
@@ -265,6 +287,32 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
 
   const handleModalOpenAndClose = (status: boolean) => {
     setOpenActionModal(status);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (comment.trim()) {
+        setLoading(true);
+        setTimeout(async () => {
+          const res = await commentPost(post[currentIndex]._id, comment);
+          const newComment = [res, ...comments];
+          setComments(newComment);
+          setComment("");
+          setLoading(false);
+        }, 1000);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+      setLoading(false);
+    }
   };
 
   return (
@@ -445,7 +493,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             </div>
           </div>
           <div className="w-full h-[22rem] overflow-auto scrollbar-hidden dark:bg-black bg-white border-b">
-            <div className="w-full p-3 flex gap-4 items-center">
+            <div className="w-full p-3 flex gap-2 items-center">
               <div className="w-8 h-8">
                 <img
                   src={
@@ -474,23 +522,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 </h1>
               </div>
             </div>
-            {defaultArray.map((item) => (
+            {comments.map((item) => (
               <div
-                key={item}
+                key={item._id}
                 className="w-full p-3 flex justify-between items-center"
               >
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-2 items-center">
                   <div className="w-8 h-8">
                     <img
-                      src="/ney.jpg"
+                      src={item.userId.profilePicture}
                       className="w-[27px] h-[27px] rounded-full object-cover"
                       alt=""
                     />
                   </div>
                   <div className="flex flex-col ">
-                    <h1 className="text-sm font-semibold">jiyad muhammed</h1>
+                    <div className="flex gap-2 text-sm">
+                      <h1 className="font-semibold">{item.userId.username}</h1>
+                      <h1 className="font-normal">{item.comment}</h1>
+                    </div>
                     <div className="flex gap-2 text-[#8a8a8a]">
-                      <h1 className="text-xs">1 year</h1>
+                      <h1 className="text-xs">
+                        {timeSince(new Date(item.createdAt))}
+                      </h1>
                       <h1 className="text-xs">23 like</h1>
                       <h1 className="text-xs">Reply</h1>
                     </div>
@@ -596,16 +649,26 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 />
               </div>
             </div>
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-            {comment && (
-              <button className="text-blue-500 font-bold ml-3">Post</button>
-            )}
+            <form onSubmit={handleFormSubmit} className="w-full flex">
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              {comment &&
+                (loading ? (
+                  <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-blue-500 border-t-transparent"></div>
+                ) : (
+                  <button
+                    type="submit"
+                    className="text-blue-500 font-bold ml-3"
+                  >
+                    Post
+                  </button>
+                ))}
+            </form>
           </div>
         </div>
       </div>

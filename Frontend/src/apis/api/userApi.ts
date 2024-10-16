@@ -48,6 +48,18 @@ export const getUserProfileDates = async (username: string) => {
   return response.data;
 };
 
+export const commentPost = async (postId: string, comment: string) => {
+  const response = await apiClient.post(`/user/post/comment/${postId}`, {
+    comment,
+  });
+  return response.data.data;
+};
+
+export const getComments = async (postId: string) => {
+  const response = await apiClient.get(`/user/post/get-comments/${postId}`);
+  return response.data.commentData;
+};
+
 export const reportPost = async (reason: string, postId: string) => {
   const response = await apiClient.patch(
     `/user/post/report-post/${postId}`,
