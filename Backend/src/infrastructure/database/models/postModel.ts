@@ -92,6 +92,26 @@ const postSchema: Schema = new Schema(
       default: 0,
       required: true,
     },
+    reportDetials: [
+      {
+        userId: {
+          type: String,
+          required: true,
+        },
+        username: {
+          type: String,
+          required: true,
+        },
+        profilePicture: {
+          type: String,
+          required: true,
+        },
+        reportReason: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     commentCount: {
       type: Number,
       default: 0,

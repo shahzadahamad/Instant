@@ -9,6 +9,7 @@ import DeletePostController from "../../../infrastructure/controllers/user/post/
 import GetPostCountController from "../../../infrastructure/controllers/user/post/getPostCountController";
 import GetPostDataController from "../../../infrastructure/controllers/user/post/getPostDataController";
 import EditPostController from "../../../infrastructure/controllers/user/post/editPostController";
+import ReportPostController from "../../../infrastructure/controllers/user/post/reportPostController";
 
 const userPostRouter = Router();
 
@@ -21,6 +22,7 @@ const deletePostController = new DeletePostController();
 const getPostCountController = new GetPostCountController();
 const getPostDataController = new GetPostDataController();
 const editPostController = new EditPostController();
+const reportPostController = new ReportPostController();
 
 userPostRouter.post(
   "/create-post",
@@ -62,6 +64,11 @@ userPostRouter.patch(
   "/update-post/:postId",
   authMiddleware,
   editPostController.handle
+);
+userPostRouter.patch(
+  "/report-post/:postId",
+  authMiddleware,
+  reportPostController.handle
 );
 
 export default userPostRouter;

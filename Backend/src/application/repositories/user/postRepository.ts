@@ -22,6 +22,7 @@ export default class PostRepository {
         hideComment,
         hideLikeAndView,
         aspectRatio,
+        reportDetials: [],
       });
       return await newPost.save();
     } catch (error) {
@@ -127,6 +128,36 @@ export default class PostRepository {
             caption,
             hideLikeAndView: hideLikesAndViewCount,
             hideComment: turnOffCounting,
+          },
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error updating post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async reportPost(
+    _id: string,
+    userId: string,
+    username: string,
+    profilePicture: string,
+    reason: string
+  ) {
+    try {
+      return await PostModal.updateOne(
+        { _id: _id },
+        {
+          $push: {
+            reportDetials: {
+              userId,
+              username,
+              profilePicture,
+              reportReason: reason,
+            },
           },
         }
       );
