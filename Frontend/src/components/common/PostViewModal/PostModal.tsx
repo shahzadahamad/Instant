@@ -38,6 +38,7 @@ import {
   checkHasUserLikedThePost,
   commentPost,
   getComments,
+  getCurrentUser,
   likeAndDisLikePost,
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
@@ -60,6 +61,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [openActionModal, setOpenActionModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState<GetComments[]>([]);
+  const [currentUser, setCurrentUser] = useState("");
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -108,10 +110,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       );
       setMusic(response.data);
     };
+    const currentUser = async () => {
+      const response = await getCurrentUser();
+      setCurrentUser(response);
+    };
     if (post[currentIndex].musicId) {
       fetchMusic(post[currentIndex].musicId);
     }
     fetchComments();
+    currentUser();
     return () => {};
   }, [post, currentIndex]);
 
@@ -529,7 +536,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 {comments.map((item) => (
                   <div
                     key={item._id}
-                    className="w-full p-3 flex justify-between items-center"
+                    className="w-full p-3 flex justify-between items-center group"
                   >
                     <div className="flex gap-2 items-center">
                       <div className="w-8 h-8">
@@ -551,7 +558,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             {timeSince(new Date(item.createdAt))}
                           </h1>
                           <h1 className="text-xs">23 like</h1>
-                          <h1 className="text-xs">Reply</h1>
+                          <h1 className="text-xs cursor-pointer">Reply</h1>
+                          {currentUser === item.userId._id && (
+                            <FontAwesomeIcon
+                              icon={faEllipsis}
+                              className="hidden cursor-pointer group-hover:block"
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
