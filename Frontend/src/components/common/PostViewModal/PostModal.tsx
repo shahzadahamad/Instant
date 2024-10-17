@@ -37,6 +37,7 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import {
   checkHasUserLikedThePost,
   commentPost,
+  commentReplyPost,
   getComments,
   getCurrentUser,
   likeAndDisLikePost,
@@ -60,8 +61,23 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [openActionModal, setOpenActionModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingReply, setLoadingReply] = useState(false);
   const [comments, setComments] = useState<GetComments[]>([]);
   const [currentUser, setCurrentUser] = useState("");
+  const [visibleReplies, setVisibleReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [suggestions, setSuggestions] = useState<GetCreatePostUserData[]>([]);
+  const [suggestionsforReply, setSuggestionsForReply] = useState<
+    GetCreatePostUserData[]
+  >([]);
+  const [replyVisible, setReplyVisible] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const replyRef = useRef<HTMLDivElement>(null);
+  const [replyText, setReplyText] = useState<{
+    [key: string]: string;
+  }>({});
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -78,11 +94,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      replyRef.current &&
+      !replyRef.current.contains(event.target as Node) &&
+      !(event.target as HTMLElement).closest(".reply-div")
+    ) {
+      setReplyVisible({});
+      setReplyText({});
+    }
+  };
+
   useEffect(() => {
+    if (replyVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
     document.addEventListener("mousedown", handleOutsideClick);
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -322,6 +355,135 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
+  const toggleReplies = (commentId: string) => {
+    setVisibleReplies((prevState) => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
+    }));
+  };
+
+  const fetchUser = async (query: string, reply: boolean) => {
+    try {
+      const response = await apiClient.get(
+        `/user/get-user-data-by-search-username/${query}`
+      );
+      if (reply) {
+        setSuggestionsForReply(response.data);
+      } else {
+        setSuggestions(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const toggleReplyInput = (commentId: string) => {
+    setReplyVisible((prevState) => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
+    }));
+    setTimeout(() => {
+      replyRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      const inputElement = replyRef.current;
+      console.log(inputElement);
+      inputElement?.focus();
+    }, 100);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setComment(value);
+
+    const atIndex = value.lastIndexOf("@");
+    if (atIndex !== -1) {
+      const query = value.slice(atIndex + 1);
+      if (query.trim()) {
+        fetchUser(query, false);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleInputChangeReply = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    commentId: string
+  ) => {
+    const value = e.target.value;
+    setReplyText((prevState) => ({
+      ...prevState,
+      [commentId]: value,
+    }));
+
+    const atIndex = value.lastIndexOf("@");
+    if (atIndex !== -1) {
+      const query = value.slice(atIndex + 1);
+      if (query.trim()) {
+        fetchUser(query, true);
+      }
+    } else {
+      setSuggestionsForReply([]);
+    }
+  };
+
+  const insertUsername = (username: string) => {
+    const atIndex = comment.lastIndexOf("@");
+    const newComment = comment.slice(0, atIndex) + `@${username} `;
+    setComment(newComment);
+    setSuggestions([]);
+  };
+
+  const insertUsernameReply = (username: string, commentId: string) => {
+    const atIndex = comment.lastIndexOf("@");
+    const newComment = comment.slice(0, atIndex) + `@${username} `;
+    setReplyText((prevState) => ({
+      ...prevState,
+      [commentId]: newComment,
+    }));
+    setSuggestionsForReply([]);
+  };
+
+  const handleReplySubmit = (commentId: string) => {
+    try {
+      if (replyText[commentId].trim()) {
+        setLoadingReply(true);
+        setTimeout(async () => {
+          const res = await commentReplyPost(
+            post[currentIndex]._id,
+            commentId,
+            replyText[commentId]
+          );
+          setComments((prevComments) =>
+            prevComments.map((comment) =>
+              comment._id === res._id
+                ? {
+                    ...comment,
+                    reply: res.reply,
+                  }
+                : comment
+            )
+          );
+          setReplyText({});
+          setReplyVisible({});
+          setLoadingReply(false);
+        }, 1000);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+      setLoadingReply(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-70 flex justify-center items-center z-50">
       <div
@@ -469,7 +631,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
 
         <div className="w-full h-full dark:bg-black bg-white">
           <div className="flex item-center justify-between p-3 border-b">
-            <div className="flex gap-2">
+            <div
+              className="flex gap-2 cursor-pointer"
+              onClick={handleDeletePostData}
+            >
               <div className="w-8 h-8">
                 <img
                   src={
@@ -503,9 +668,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             {comments.length > 0 || post[currentIndex].caption ? (
               <>
                 {post[currentIndex].caption && (
-                  <div className="w-full p-3 flex gap-2 items-center">
+                  <div className="w-full p-3 py-4 flex gap-2 items-center">
                     <div className="w-8 h-8">
                       <img
+                        onClick={handleDeletePostData}
                         src={
                           post[currentIndex].userId?.profilePicture
                             ? typeof post[currentIndex].userId
@@ -516,17 +682,22 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                 )
                             : ""
                         }
-                        className="w-[27px] h-[27px] rounded-full object-cover"
+                        className="w-[27px] h-[27px] rounded-full object-cover cursor-pointer"
                         alt=""
                       />
                     </div>
                     <div className="flex flex-col">
-                      <h1 className="text-sm font-semibold">
-                        {post[currentIndex].userId.username}&nbsp;
+                      <div className="flex text-sm font-semibold">
+                        <h1
+                          className="cursor-pointer"
+                          onClick={handleDeletePostData}
+                        >
+                          {post[currentIndex].userId.username}&nbsp;
+                        </h1>
                         <span className="font-normal">
                           {post[currentIndex].caption}
                         </span>
-                      </h1>
+                      </div>
                       <h1 className="text-xs text-[#8a8a8a]">
                         {timeSince(new Date(post[currentIndex].createdAt))}
                       </h1>
@@ -534,45 +705,198 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                   </div>
                 )}
                 {comments.map((item) => (
-                  <div
-                    key={item._id}
-                    className="w-full p-3 flex justify-between items-center group"
-                  >
-                    <div className="flex gap-2 items-center">
-                      <div className="w-8 h-8">
-                        <img
-                          src={item.userId.profilePicture}
-                          className="w-[27px] h-[27px] rounded-full object-cover"
-                          alt=""
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex gap-2 text-sm">
-                          <h1 className="font-semibold">
-                            {item.userId.username}
-                          </h1>
-                          <h1 className="font-normal">{item.comment}</h1>
+                  <>
+                    <div
+                      key={item._id}
+                      className="w-full p-3 py-4 flex justify-between items-center group"
+                    >
+                      <div className="flex gap-2 items-center">
+                        <div className="w-8 h-8">
+                          <img
+                            onClick={() =>
+                              item.userId._id === currentUser
+                                ? handleDeletePostData()
+                                : navigate(`/user/${item.userId.username}`)
+                            }
+                            src={item.userId.profilePicture}
+                            className="w-[27px] h-[27px] cursor-pointer rounded-full object-cover"
+                            alt=""
+                          />
                         </div>
-                        <div className="flex gap-2 text-[#8a8a8a]">
-                          <h1 className="text-xs">
-                            {timeSince(new Date(item.createdAt))}
-                          </h1>
-                          <h1 className="text-xs">23 like</h1>
-                          <h1 className="text-xs cursor-pointer">Reply</h1>
-                          {currentUser === item.userId._id && (
-                            <FontAwesomeIcon
-                              icon={faEllipsis}
-                              className="hidden cursor-pointer group-hover:block"
-                            />
+                        <div className="flex flex-col">
+                          <div className="flex gap-2 text-sm">
+                            <h1
+                              onClick={() =>
+                                item.userId._id === currentUser
+                                  ? handleDeletePostData()
+                                  : navigate(`/user/${item.userId.username}`)
+                              }
+                              className="font-semibold cursor-pointer"
+                            >
+                              {item.userId.username}
+                            </h1>
+                            <h1 className="font-normal">{item.comment}</h1>
+                          </div>
+                          <div className="flex gap-2 text-[#8a8a8a]">
+                            <h1 className="text-xs">
+                              {timeSince(new Date(item.createdAt))}
+                            </h1>
+                            <h1 className="text-xs">23 like</h1>
+                            <h1
+                              onClick={() => toggleReplyInput(item._id)}
+                              className="text-xs reply-div cursor-pointer"
+                            >
+                              Reply
+                            </h1>
+                            {currentUser === item.userId._id && (
+                              <FontAwesomeIcon
+                                icon={faEllipsis}
+                                className="hidden cursor-pointer group-hover:block"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faHeartRegular}
+                        className="text-xs"
+                      />
+                    </div>
+                    {replyVisible[item._id] && (
+                      <div
+                        ref={replyRef}
+                        className="w-full p-3 py-3 uniquIdFocus pl-[54px]"
+                      >
+                        <div className="w-full flex text-sm gap-3">
+                          <input
+                            type="text"
+                            className="w-[70%] p-1 border-b bg-transparent  outline-none"
+                            placeholder="Write your reply..."
+                            value={replyText[item._id]}
+                            onChange={(e) =>
+                              handleInputChangeReply(e, item._id)
+                            }
+                          />
+
+                          {replyText[item._id] && (
+                            <button
+                              onClick={() => handleReplySubmit(item._id)}
+                              className="px-3py-1 transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
+                            >
+                              {loadingReply ? (
+                                <div className="spinner"></div>
+                              ) : (
+                                "Reply"
+                              )}
+                            </button>
                           )}
                         </div>
+                        {suggestionsforReply.length > 0 && (
+                          <div
+                            className={`absolute dark:bg-[#09090b] top-[14.8rem] bg-[#ffffff] border rounded-md mt-1 w-96 m-h-80 overflow-y-auto scrollbar-hidden z-10`}
+                          >
+                            {suggestionsforReply.map((user) => (
+                              <div
+                                key={user.username}
+                                onClick={() =>
+                                  insertUsernameReply(user.username, item._id)
+                                }
+                                className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+                              >
+                                <img
+                                  src={user.profilePicture}
+                                  alt={user.username}
+                                  className="w-10 h-10 rounded-full object-cover mr-2"
+                                />
+                                <div className="flex flex-col">
+                                  <span className="text-[13px]">
+                                    {user.username}
+                                  </span>
+                                  <span className="text-[12px] text-[#a9a6a4]">
+                                    {user.fullname}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <FontAwesomeIcon
-                      icon={faHeartRegular}
-                      className="text-xs"
-                    />
-                  </div>
+                    )}
+                    {item.reply.length > 0 && (
+                      <>
+                        <div
+                          onClick={() => toggleReplies(item._id)}
+                          className="flex items-center reply-div gap-2 pl-[54px] text-[#8a8a8a] cursor-pointer"
+                        >
+                          <hr className="w-7  border-[#8a8a8a]" />
+                          <h1 className="text-xs">
+                            {visibleReplies[item._id]
+                              ? "Hide replies"
+                              : `View replies (${item.reply.length})`}
+                          </h1>
+                        </div>
+                        {item.reply.map((reply) =>
+                          visibleReplies[item._id] ? (
+                            <div
+                              key={reply._id}
+                              className="w-full p-3 py-4 pl-[54px] flex justify-between items-center group"
+                            >
+                              <div className="flex gap-2 items-center">
+                                <div className="w-8 h-8">
+                                  <img
+                                    onClick={() =>
+                                      reply.userId === currentUser
+                                        ? handleDeletePostData()
+                                        : navigate(`/user/${reply.username}`)
+                                    }
+                                    src={reply.profilePicture}
+                                    className="w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
+                                    alt="Profile"
+                                  />
+                                </div>
+                                <div className="flex flex-col">
+                                  <div className="flex gap-2 text-sm">
+                                    <h1
+                                      onClick={() =>
+                                        reply.userId === currentUser
+                                          ? handleDeletePostData()
+                                          : navigate(`/user/${reply.username}`)
+                                      }
+                                      className="font-semibold cursor-pointer"
+                                    >
+                                      {reply.username}
+                                    </h1>
+                                    <h1 className="font-normal">
+                                      {reply.comment}
+                                    </h1>
+                                  </div>
+                                  <div className="flex gap-2 text-[#8a8a8a]">
+                                    <h1 className="text-xs">
+                                      {timeSince(new Date(reply.createdAt))}
+                                    </h1>
+                                    <h1 className="text-xs">23 like</h1>
+                                    <h1 className="text-xs cursor-pointer">
+                                      Reply
+                                    </h1>
+                                    {currentUser === reply.userId && (
+                                      <FontAwesomeIcon
+                                        icon={faEllipsis}
+                                        className="hidden cursor-pointer group-hover:block"
+                                      />
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <FontAwesomeIcon
+                                icon={faHeartRegular}
+                                className="text-xs"
+                              />
+                            </div>
+                          ) : null
+                        )}
+                      </>
+                    )}
+                  </>
                 ))}
               </>
             ) : (
@@ -685,8 +1009,33 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 placeholder="Add a comment..."
                 className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
                 value={comment}
-                onChange={(e) => setComment(e.target.value)}
+                onChange={handleInputChange}
               />
+              {suggestions.length > 0 && (
+                <div
+                  className={`absolute dark:bg-[#09090b] bottom-14 bg-[#ffffff] border rounded-md mt-1 w-96 m-h-96 overflow-y-auto scrollbar-hidden z-10`}
+                >
+                  {suggestions.map((user) => (
+                    <div
+                      key={user.username}
+                      onClick={() => insertUsername(user.username)}
+                      className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+                    >
+                      <img
+                        src={user.profilePicture}
+                        alt={user.username}
+                        className="w-10 h-10 rounded-full object-cover mr-2"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-[13px]">{user.username}</span>
+                        <span className="text-[12px] text-[#a9a6a4]">
+                          {user.fullname}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               {comment &&
                 (loading ? (
                   <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-blue-500 border-t-transparent"></div>

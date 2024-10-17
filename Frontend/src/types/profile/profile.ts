@@ -106,11 +106,20 @@ interface CommentUserData {
   profilePicture: string;
 }
 
+interface Replies {
+  _id: string;
+  userId: string;
+  username: string;
+  profilePicture: string;
+  comment: string;
+  createdAt: string;
+}
+
 export interface GetComments {
   _id: string;
   postId: string;
   userId: CommentUserData;
   comment: string;
-  reply: [];
+  reply: Replies[];
   createdAt: Date;
 }

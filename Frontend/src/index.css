@@ -26,7 +26,7 @@
 
 .scrollbar-style::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: rgba(107, 109, 112, 0.5); 
+  background-color: rgba(107, 109, 112, 0.5);
 }
 
 .scrollbar-style::-webkit-scrollbar-thumb {
@@ -94,6 +94,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -126,6 +127,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

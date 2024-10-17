@@ -55,6 +55,21 @@ export const commentPost = async (postId: string, comment: string) => {
   return response.data.data;
 };
 
+export const commentReplyPost = async (
+  postId: string,
+  commentId: string,
+  comment: string
+) => {
+  console.log(postId, commentId, comment);
+  const response = await apiClient.post(
+    `/user/post/reply-to-comment/${commentId}/${postId}`,
+    {
+      comment,
+    }
+  );
+  return response.data.data;
+};
+
 export const getComments = async (postId: string) => {
   const response = await apiClient.get(`/user/post/get-comments/${postId}`);
   return response.data.commentData;
