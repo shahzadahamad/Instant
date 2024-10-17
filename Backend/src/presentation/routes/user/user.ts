@@ -7,6 +7,7 @@ import CretePostGetUserDataController from "../../../infrastructure/controllers/
 import CreatePostGetTaggedUserDataController from "../../../infrastructure/controllers/user/user/createPostGetTaggedUserDataController";
 import GetCurrentUserController from "../../../infrastructure/controllers/user/user/getCurrentUserController";
 import GetUserDataByUsernameController from "../../../infrastructure/controllers/user/user/getUserDataByUsernameController";
+import GetUserDataBySearchingUsernameController from "../../../infrastructure/controllers/user/user/getUserDataBySearchingUsernameController";
 
 const userRouter = Router();
 
@@ -17,6 +18,8 @@ const createPostGetTaggedUserDataController =
   new CreatePostGetTaggedUserDataController();
 const getCurrentUserController = new GetCurrentUserController();
 const getUserDataByUsernameController = new GetUserDataByUsernameController();
+const getUserDataBySearchingUsername =
+  new GetUserDataBySearchingUsernameController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get(
@@ -44,6 +47,11 @@ userRouter.get(
   "/get-user-data-by-username/:username",
   authMiddleware,
   getUserDataByUsernameController.handle
+);
+userRouter.get(
+  "/get-user-data-by-search-username/:search",
+  authMiddleware,
+  getUserDataBySearchingUsername.handle
 );
 
 export default userRouter;

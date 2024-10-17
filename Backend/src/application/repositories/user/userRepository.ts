@@ -190,13 +190,13 @@ export default class UserRepository {
 
   public async find10UserBySearch(query: {}): Promise<IUser[]> {
     try {
-      const musicData = await UserModel.find(query, {
+      const userData = await UserModel.find(query, {
         _id: 1,
         username: 1,
         fullname: 1,
         profilePicture: 1,
       }).limit(10);
-      return musicData;
+      return userData;
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

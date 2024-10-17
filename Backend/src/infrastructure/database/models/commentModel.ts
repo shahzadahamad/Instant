@@ -48,9 +48,10 @@ const commentSchema: Schema = new Schema(
           type: String,
           required: true,
         },
-      },
-      {
-        timestamps: true,
+        createdAt: {
+          type: Date,
+          required: true,
+        }
       },
     ],
   },

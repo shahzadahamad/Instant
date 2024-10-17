@@ -12,6 +12,7 @@ import EditPostController from "../../../infrastructure/controllers/user/post/ed
 import ReportPostController from "../../../infrastructure/controllers/user/post/reportPostController";
 import CommentPostController from "../../../infrastructure/controllers/user/post/commentPostController";
 import GetCommentController from "../../../infrastructure/controllers/user/post/getCommentController";
+import ReplyCommentController from "../../../infrastructure/controllers/user/post/replyCommentController";
 
 const userPostRouter = Router();
 
@@ -27,6 +28,7 @@ const editPostController = new EditPostController();
 const reportPostController = new ReportPostController();
 const commentPostController = new CommentPostController();
 const getCommentController = new GetCommentController();
+const replyCommentController = new ReplyCommentController();
 
 userPostRouter.post(
   "/create-post",
@@ -83,6 +85,11 @@ userPostRouter.get(
   "/get-comments/:postId",
   authMiddleware,
   getCommentController.handle
+);
+userPostRouter.post(
+  "/reply-to-comment/:commentId/:postId",
+  authMiddleware,
+  replyCommentController.handle
 );
 
 export default userPostRouter;
