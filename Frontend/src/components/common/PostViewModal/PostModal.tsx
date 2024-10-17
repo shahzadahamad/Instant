@@ -62,6 +62,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [openActionModal, setOpenActionModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingReply, setLoadingReply] = useState(false);
+  const [loadingReplyReply, setLoadingReplyReply] = useState(false);
   const [comments, setComments] = useState<GetComments[]>([]);
   const [currentUser, setCurrentUser] = useState("");
   const [visibleReplies, setVisibleReplies] = useState<{
@@ -71,10 +72,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [suggestionsforReply, setSuggestionsForReply] = useState<
     GetCreatePostUserData[]
   >([]);
-  const [replyVisible, setReplyVisible] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [replyVisible, setReplyVisible] = useState("");
+  const [replyReplyVisible, setReplyReplyVisible] = useState("");
   const replyRef = useRef<HTMLDivElement>(null);
+  const replyReplyRef = useRef<HTMLDivElement>(null);
   const [replyText, setReplyText] = useState<{
     [key: string]: string;
   }>({});
@@ -100,17 +101,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !replyRef.current.contains(event.target as Node) &&
       !(event.target as HTMLElement).closest(".reply-div")
     ) {
-      setReplyVisible({});
+      setReplyVisible("");
       setReplyText({});
     }
   };
 
   useEffect(() => {
-    if (replyVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("mousedown", handleOutsideClick);
 
     return () => {
@@ -377,18 +374,38 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
-  const toggleReplyInput = (commentId: string) => {
-    setReplyVisible((prevState) => ({
+  const toggleReplyInput = (commentId: string, username: string) => {
+    setSuggestionsForReply([]);
+    setReplyReplyVisible("");
+    setReplyText((prevState) => ({
       ...prevState,
-      [commentId]: !prevState[commentId],
+      [commentId]: `@${username} `,
     }));
+    setReplyVisible(commentId);
     setTimeout(() => {
       replyRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
       const inputElement = replyRef.current;
-      console.log(inputElement);
+      inputElement?.focus();
+    }, 100);
+  };
+
+  const toggleReplyReplyInput = (replyId: string, username: string) => {
+    setSuggestionsForReply([]);
+    setReplyVisible("");
+    setReplyText((prevState) => ({
+      ...prevState,
+      [replyId]: `@${username} `,
+    }));
+    setReplyReplyVisible(replyId);
+    setTimeout(() => {
+      replyReplyRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      const inputElement = replyRef.current;
       inputElement?.focus();
     }, 100);
   };
@@ -410,12 +427,12 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
 
   const handleInputChangeReply = (
     e: React.ChangeEvent<HTMLInputElement>,
-    commentId: string
+    replyId: string
   ) => {
     const value = e.target.value;
     setReplyText((prevState) => ({
       ...prevState,
-      [commentId]: value,
+      [replyId]: value,
     }));
 
     const atIndex = value.lastIndexOf("@");
@@ -446,15 +463,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     setSuggestionsForReply([]);
   };
 
-  const handleReplySubmit = (commentId: string) => {
+  const handleReplySubmit = (id: string, commentId: string) => {
     try {
-      if (replyText[commentId].trim()) {
+      if (replyText[id].trim()) {
         setLoadingReply(true);
         setTimeout(async () => {
           const res = await commentReplyPost(
             post[currentIndex]._id,
             commentId,
-            replyText[commentId]
+            replyText[id]
           );
           setComments((prevComments) =>
             prevComments.map((comment) =>
@@ -467,8 +484,14 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             )
           );
           setReplyText({});
-          setReplyVisible({});
+          setReplyVisible("");
           setLoadingReply(false);
+          setReplyReplyVisible("");
+          setLoadingReplyReply(false);
+          setVisibleReplies((prevState) => ({
+            ...prevState,
+            [commentId]: true,
+          }));
         }, 1000);
       }
     } catch (error) {
@@ -743,12 +766,16 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             </h1>
                             <h1 className="text-xs">23 like</h1>
                             <h1
-                              onClick={() => toggleReplyInput(item._id)}
+                              onClick={() =>
+                                toggleReplyInput(item._id, item.userId.username)
+                              }
                               className="text-xs reply-div cursor-pointer"
                             >
                               Reply
                             </h1>
-                            {currentUser === item.userId._id && (
+                            {(currentUser === item.userId._id ||
+                              post[currentIndex].userId._id ===
+                                currentUser) && (
                               <FontAwesomeIcon
                                 icon={faEllipsis}
                                 className="hidden cursor-pointer group-hover:block"
@@ -762,14 +789,12 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         className="text-xs"
                       />
                     </div>
-                    {replyVisible[item._id] && (
-                      <div
-                        ref={replyRef}
-                        className="w-full p-3 py-3 uniquIdFocus pl-[54px]"
-                      >
+                    {replyVisible === item._id && (
+                      <div ref={replyRef} className="w-full p-3 py-3 pl-[54px]">
                         <div className="w-full flex text-sm gap-3">
                           <input
                             type="text"
+                            disabled={loadingReply}
                             className="w-[70%] p-1 border-b bg-transparent  outline-none"
                             placeholder="Write your reply..."
                             value={replyText[item._id]}
@@ -780,7 +805,9 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
 
                           {replyText[item._id] && (
                             <button
-                              onClick={() => handleReplySubmit(item._id)}
+                              onClick={() =>
+                                handleReplySubmit(item._id, item._id)
+                              }
                               className="px-3py-1 transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
                             >
                               {loadingReply ? (
@@ -793,7 +820,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         </div>
                         {suggestionsforReply.length > 0 && (
                           <div
-                            className={`absolute dark:bg-[#09090b] top-[14.8rem] bg-[#ffffff] border rounded-md mt-1 w-96 m-h-80 overflow-y-auto scrollbar-hidden z-10`}
+                            className={`absolute dark:bg-[#09090b] top-[10.3rem] bg-[#ffffff] border rounded-md mt-1 w-96 m-h-80 overflow-y-auto scrollbar-hidden z-10`}
                           >
                             {suggestionsforReply.map((user) => (
                               <div
@@ -835,65 +862,141 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                               : `View replies (${item.reply.length})`}
                           </h1>
                         </div>
-                        {item.reply.map((reply) =>
-                          visibleReplies[item._id] ? (
-                            <div
-                              key={reply._id}
-                              className="w-full p-3 py-4 pl-[54px] flex justify-between items-center group"
-                            >
-                              <div className="flex gap-2 items-center">
-                                <div className="w-8 h-8">
-                                  <img
-                                    onClick={() =>
-                                      reply.userId === currentUser
-                                        ? handleDeletePostData()
-                                        : navigate(`/user/${reply.username}`)
-                                    }
-                                    src={reply.profilePicture}
-                                    className="w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
-                                    alt="Profile"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <div className="flex gap-2 text-sm">
-                                    <h1
+                        {item.reply.map((reply) => (
+                          <div key={reply._id}>
+                            {visibleReplies[item._id] && (
+                              <div className="w-full p-3 py-4 pl-[54px] flex justify-between items-center group">
+                                <div className="flex gap-2 items-center">
+                                  <div className="w-8 h-8">
+                                    <img
                                       onClick={() =>
                                         reply.userId === currentUser
                                           ? handleDeletePostData()
                                           : navigate(`/user/${reply.username}`)
                                       }
-                                      className="font-semibold cursor-pointer"
-                                    >
-                                      {reply.username}
-                                    </h1>
-                                    <h1 className="font-normal">
-                                      {reply.comment}
-                                    </h1>
+                                      src={reply.profilePicture}
+                                      className="w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
+                                      alt="Profile"
+                                    />
                                   </div>
-                                  <div className="flex gap-2 text-[#8a8a8a]">
-                                    <h1 className="text-xs">
-                                      {timeSince(new Date(reply.createdAt))}
-                                    </h1>
-                                    <h1 className="text-xs">23 like</h1>
-                                    <h1 className="text-xs cursor-pointer">
-                                      Reply
-                                    </h1>
-                                    {currentUser === reply.userId && (
-                                      <FontAwesomeIcon
-                                        icon={faEllipsis}
-                                        className="hidden cursor-pointer group-hover:block"
-                                      />
-                                    )}
+                                  <div className="flex flex-col">
+                                    <div className="flex gap-2 text-sm">
+                                      <h1
+                                        onClick={() =>
+                                          reply.userId === currentUser
+                                            ? handleDeletePostData()
+                                            : navigate(
+                                                `/user/${reply.username}`
+                                              )
+                                        }
+                                        className="font-semibold cursor-pointer"
+                                      >
+                                        {reply.username}
+                                      </h1>
+                                      <h1 className="font-normal">
+                                        {reply.comment}
+                                      </h1>
+                                    </div>
+                                    <div className="flex gap-2 text-[#8a8a8a]">
+                                      <h1 className="text-xs">
+                                        {timeSince(new Date(reply.createdAt))}
+                                      </h1>
+                                      <h1 className="text-xs">23 like</h1>
+                                      <h1
+                                        onClick={() =>
+                                          toggleReplyReplyInput(
+                                            reply._id,
+                                            reply.username
+                                          )
+                                        }
+                                        className="text-xs reply-div cursor-pointer"
+                                      >
+                                        Reply
+                                      </h1>
+                                      {(currentUser === reply.userId ||
+                                        post[currentIndex].userId._id ===
+                                          currentUser) && (
+                                        <FontAwesomeIcon
+                                          icon={faEllipsis}
+                                          className="hidden cursor-pointer group-hover:block"
+                                        />
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
+                                <FontAwesomeIcon
+                                  icon={faHeartRegular}
+                                  className="text-xs"
+                                />
                               </div>
-                              <FontAwesomeIcon
-                                icon={faHeartRegular}
-                                className="text-xs"
-                              />
-                            </div>
-                          ) : null
-                        )}
+                            )}
+
+                            {replyReplyVisible === reply._id && (
+                              <div
+                                ref={replyReplyRef}
+                                className="w-full p-3 py-3 pl-[54px]"
+                              >
+                                <div className="w-full flex text-sm gap-3">
+                                  <input
+                                    type="text"
+                                    disabled={loadingReplyReply}
+                                    className="w-[70%] p-1 border-b bg-transparent outline-none"
+                                    placeholder="Write your reply..."
+                                    value={replyText[reply._id]}
+                                    onChange={(e) =>
+                                      handleInputChangeReply(e, reply._id)
+                                    }
+                                  />
+
+                                  {replyText[reply._id] && (
+                                    <button
+                                      onClick={() =>
+                                        handleReplySubmit(reply._id, item._id)
+                                      }
+                                      className="px-3 py-1 transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
+                                    >
+                                      {loadingReply ? (
+                                        <div className="spinner"></div>
+                                      ) : (
+                                        "Reply"
+                                      )}
+                                    </button>
+                                  )}
+                                </div>
+                                {suggestionsforReply.length > 0 && (
+                                  <div className="absolute dark:bg-[#09090b] top-[15.4rem] bg-[#ffffff] border rounded-md mt-1 w-96 max-h-80 overflow-y-auto scrollbar-hidden z-10">
+                                    {suggestionsforReply.map((user) => (
+                                      <div
+                                        key={user.username}
+                                        onClick={() =>
+                                          insertUsernameReply(
+                                            user.username,
+                                            item._id
+                                          )
+                                        }
+                                        className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+                                      >
+                                        <img
+                                          src={user.profilePicture}
+                                          alt={user.username}
+                                          className="w-10 h-10 rounded-full object-cover mr-2"
+                                        />
+                                        <div className="flex flex-col">
+                                          <span className="text-[13px]">
+                                            {user.username}
+                                          </span>
+                                          <span className="text-[12px] text-[#a9a6a4]">
+                                            {user.fullname}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </>
                     )}
                   </>
@@ -1006,6 +1109,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             <form onSubmit={handleFormSubmit} className="w-full flex">
               <input
                 type="text"
+                disabled={loading}
                 placeholder="Add a comment..."
                 className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
                 value={comment}
