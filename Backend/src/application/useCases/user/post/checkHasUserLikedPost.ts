@@ -14,7 +14,7 @@ export default class CheckHasUserLikedPost {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error("Invalid Access!");
+      throw new Error("Post not found!");
     }
 
     const checking = await this.likeRepository.hasUserLikedPost(postId, userId);

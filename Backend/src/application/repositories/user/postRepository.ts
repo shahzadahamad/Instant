@@ -66,6 +66,19 @@ export default class PostRepository {
     }
   }
 
+  public async updateCommentCount(postId: string) {
+    try {
+      await PostModal.updateOne({ _id: postId }, { $inc: { commentCount: 1 } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error likeCount increment post: ${error.message}`);
+        throw new Error("Failed to likeCount increment post");
+      }
+      console.error("Unknown error likeCount increment post");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findPostById(_id: string): Promise<IPost | null> {
     try {
       return await PostModal.findOne({ _id: _id });

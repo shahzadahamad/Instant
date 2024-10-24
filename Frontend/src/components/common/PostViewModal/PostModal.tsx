@@ -35,11 +35,13 @@ import { useNavigate } from "react-router-dom";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import {
+  checkHasUserLikedTheComment,
   checkHasUserLikedThePost,
   commentPost,
   commentReplyPost,
   getComments,
   getCurrentUser,
+  likeAndDisLikeComment,
   likeAndDisLikePost,
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
@@ -78,6 +80,9 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const replyReplyRef = useRef<HTMLDivElement>(null);
   const [replyText, setReplyText] = useState<{
     [key: string]: string;
+  }>({});
+  const [checkIsCommentLiked, setCheckIsCommentLiked] = useState<{
+    [key: string]: { liked: boolean; count: number };
   }>({});
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -120,6 +125,23 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     try {
       const res = await getComments(post[currentIndex]._id);
       setComments(res);
+      const commentIds = res.flatMap((comment: GetComments) => {
+        const ids = [comment._id];
+
+        if (comment.reply && Array.isArray(comment.reply)) {
+          const replyIds = comment.reply.map((reply) => reply._id);
+          return ids.concat(replyIds);
+        }
+
+        return ids;
+      });
+
+      const commentIdsQuery = commentIds.join(",");
+      const resForIsLiked = await checkHasUserLikedTheComment(
+        post[currentIndex]._id,
+        commentIdsQuery
+      );
+      setCheckIsCommentLiked(resForIsLiked);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -315,6 +337,39 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       await likeAndDisLikePost(post[currentIndex]._id, "like");
       setIsLiked(true);
       post[currentIndex].likeCount++;
+    }
+  };
+
+  const handleCommentLike = async (commentId: string) => {
+    if (
+      commentId in checkIsCommentLiked &&
+      checkIsCommentLiked[commentId].liked
+    ) {
+      const res = await likeAndDisLikeComment(
+        post[currentIndex]._id,
+        commentId,
+        "dislike"
+      );
+      setCheckIsCommentLiked((prev) => ({
+        ...prev,
+        [commentId]: {
+          liked: false,
+          count: Math.max((prev[res]?.count || 1) - 1, 0),
+        },
+      }));
+    } else {
+      const res = await likeAndDisLikeComment(
+        post[currentIndex]._id,
+        commentId,
+        "like"
+      );
+      setCheckIsCommentLiked((prev) => ({
+        ...prev,
+        [res]: {
+          liked: true,
+          count: (prev[res]?.count || 0) + 1,
+        },
+      }));
     }
   };
 
@@ -764,7 +819,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             <h1 className="text-xs">
                               {timeSince(new Date(item.createdAt))}
                             </h1>
-                            <h1 className="text-xs">23 like</h1>
+                            {checkIsCommentLiked[item._id]?.count > 0 && (
+                              <h1 className="text-xs">
+                                {" "}
+                                {checkIsCommentLiked[item._id]?.count + " "}
+                                like
+                              </h1>
+                            )}
                             <h1
                               onClick={() =>
                                 toggleReplyInput(item._id, item.userId.username)
@@ -785,8 +846,17 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         </div>
                       </div>
                       <FontAwesomeIcon
-                        icon={faHeartRegular}
-                        className="text-xs"
+                        onClick={() => handleCommentLike(item._id)}
+                        className={`${
+                          checkIsCommentLiked[item._id]?.liked
+                            ? "text-[#ff3040]"
+                            : "text-white"
+                        } hover:cursor-pointer text-xs`}
+                        icon={
+                          checkIsCommentLiked[item._id]?.liked
+                            ? faHeart
+                            : faHeartRegular
+                        }
                       />
                     </div>
                     {replyVisible === item._id && (
@@ -901,7 +971,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                       <h1 className="text-xs">
                                         {timeSince(new Date(reply.createdAt))}
                                       </h1>
-                                      <h1 className="text-xs">23 like</h1>
+                                      {checkIsCommentLiked[reply._id]?.count >
+                                        0 && (
+                                        <h1 className="text-xs">
+                                          {" "}
+                                          {checkIsCommentLiked[reply._id]
+                                            ?.count + " "}
+                                          like
+                                        </h1>
+                                      )}
                                       <h1
                                         onClick={() =>
                                           toggleReplyReplyInput(
@@ -925,8 +1003,17 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                   </div>
                                 </div>
                                 <FontAwesomeIcon
-                                  icon={faHeartRegular}
-                                  className="text-xs"
+                                  onClick={() => handleCommentLike(reply._id)}
+                                  className={`${
+                                    checkIsCommentLiked[reply._id]?.liked
+                                      ? "text-[#ff3040]"
+                                      : "text-white"
+                                  } hover:cursor-pointer text-xs`}
+                                  icon={
+                                    checkIsCommentLiked[reply._id]?.liked
+                                      ? faHeart
+                                      : faHeartRegular
+                                  }
                                 />
                               </div>
                             )}

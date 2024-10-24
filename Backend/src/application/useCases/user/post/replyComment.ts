@@ -23,7 +23,7 @@ export default class ReplyComment {
     userId: string,
     commentId: string,
     comment: string
-  ){
+  ) {
     const commentData = await this.commentRepository.findCommentById(commentId);
     const postData = await this.postRepository.findPostById(id);
     const userData = await this.userRepository.findById(userId);
@@ -40,7 +40,6 @@ export default class ReplyComment {
       throw new Error("Post not found!");
     }
 
-
     const replyComment = await this.commentRepository.replytoComment(
       id,
       userId,
@@ -49,6 +48,7 @@ export default class ReplyComment {
       userData.username,
       userData.profilePicture
     );
+    await this.postRepository.updateCommentCount(id);
     return replyComment;
   }
 }

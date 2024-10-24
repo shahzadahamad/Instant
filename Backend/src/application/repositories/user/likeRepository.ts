@@ -8,7 +8,31 @@ export default class LikeRepository {
   ) {
     try {
       await LikeModel.updateOne(
-        { postId },
+        { postId, commentId: { $exists: false } },
+        status
+          ? { $addToSet: { likedUsers: userId } }
+          : { $pull: { likedUsers: userId } },
+        { upsert: true }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error likeing post: ${error.message}`);
+        throw new Error("Failed to like post");
+      }
+      console.error("Unknown error likeing post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async likeAndDisLikeComment(
+    postId: string,
+    commentId: string,
+    userId: string,
+    status: boolean
+  ) {
+    try {
+      await LikeModel.updateOne(
+        { postId: postId, commentId: commentId },
         status
           ? { $addToSet: { likedUsers: userId } }
           : { $pull: { likedUsers: userId } },
@@ -28,6 +52,7 @@ export default class LikeRepository {
     try {
       const post = await LikeModel.findOne({
         postId: postId,
+        commentId: { $exists: false },
         likedUsers: userId,
       });
 
@@ -42,9 +67,44 @@ export default class LikeRepository {
     }
   }
 
+  public async hasUserLikedComment(
+    postId: string,
+    userId: string,
+    commentIds: string[]
+  ): Promise<{ [key: string]: { liked: boolean; count: number } }> {
+    try {
+      const likedComments = await LikeModel.find({
+        postId: postId,
+        commentId: { $in: commentIds },
+      });
+
+      const likedCommentMap = commentIds.reduce((acc, commentId) => {
+        const likedComment = likedComments.find(
+          (comment) => comment.commentId === commentId
+        );
+        acc[commentId] = {
+          liked: likedComment
+            ? likedComment.likedUsers.includes(userId)
+            : false,
+          count: likedComment ? likedComment.likedUsers.length : 0,
+        };
+        return acc;
+      }, {} as { [key: string]: { liked: boolean; count: number } });
+
+      return likedCommentMap;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error hasUserLikedComments check: ${error.message}`);
+        throw new Error("Failed to check if user liked comments");
+      }
+      console.error("Unknown error hasUserLikedComments check");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async deletePostlikes(_id: string) {
     try {
-      return await LikeModel.deleteOne({ postId: _id });
+      return await LikeModel.deleteMany({ postId: _id });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

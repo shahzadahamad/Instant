@@ -13,6 +13,8 @@ import ReportPostController from "../../../infrastructure/controllers/user/post/
 import CommentPostController from "../../../infrastructure/controllers/user/post/commentPostController";
 import GetCommentController from "../../../infrastructure/controllers/user/post/getCommentController";
 import ReplyCommentController from "../../../infrastructure/controllers/user/post/replyCommentController";
+import LikeOrUnlikeCommentController from "../../../infrastructure/controllers/user/post/likeOrUnlikeCommentController";
+import CheckingHasUserLikedCommentController from "../../../infrastructure/controllers/user/post/checkingHasUserLikedCommentController";
 
 const userPostRouter = Router();
 
@@ -21,6 +23,8 @@ const getUserPostData = new GetUserPostDataController();
 const likeOrUnlikePostController = new LikeOrUnlikePostController();
 const checkingHasUserLikedPostController =
   new CheckingHasUserLikedPostController();
+const checkingHasUserLikedCommentController =
+  new CheckingHasUserLikedCommentController();
 const deletePostController = new DeletePostController();
 const getPostCountController = new GetPostCountController();
 const getPostDataController = new GetPostDataController();
@@ -29,6 +33,7 @@ const reportPostController = new ReportPostController();
 const commentPostController = new CommentPostController();
 const getCommentController = new GetCommentController();
 const replyCommentController = new ReplyCommentController();
+const likeOrUnlikeCommentController = new LikeOrUnlikeCommentController();
 
 userPostRouter.post(
   "/create-post",
@@ -46,10 +51,20 @@ userPostRouter.patch(
   authMiddleware,
   likeOrUnlikePostController.handle
 );
+userPostRouter.patch(
+  "/comment/like-or-unlike/:postId/:commentId/:status",
+  authMiddleware,
+  likeOrUnlikeCommentController.handle
+);
 userPostRouter.get(
   "/has-user-liked-post/:postId",
   authMiddleware,
   checkingHasUserLikedPostController.handle
+);
+userPostRouter.get(
+  "/has-user-liked-comment/:postId",
+  authMiddleware,
+  checkingHasUserLikedCommentController.handle
 );
 userPostRouter.delete(
   "/delete-post/:postId",

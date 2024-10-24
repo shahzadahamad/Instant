@@ -8,9 +8,35 @@ export const checkHasUserLikedThePost = async (postId: string) => {
   return response.data;
 };
 
+export const checkHasUserLikedTheComment = async (
+  postId: string,
+  commentIds: string
+) => {
+  const response = await apiClient.get(
+    `/user/post/has-user-liked-comment/${postId}`,
+    {
+      params: {
+        commentIds,
+      },
+    }
+  );
+  return response.data;
+};
+
 export const likeAndDisLikePost = async (postId: string, status: string) => {
   const response = await apiClient.patch(
     `/user/post/like-or-unlike/${postId}/${status}`
+  );
+  return response.data;
+};
+
+export const likeAndDisLikeComment = async (
+  postId: string,
+  commentId: string,
+  status: string
+) => {
+  const response = await apiClient.patch(
+    `/user/post/comment/like-or-unlike/${postId}/${commentId}/${status}`
   );
   return response.data;
 };

@@ -1,27 +1,27 @@
 import { Request, Response } from "express";
 import PostRepository from "../../../../application/repositories/user/postRepository";
-import DeletePost from "../../../../application/useCases/user/post/deletePost";
-import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import LikeRepository from "../../../../application/repositories/user/likeRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
 import CommentRepository from "../../../../application/repositories/user/commentRepository";
+import LikeOrUnlikeComment from "../../../../application/useCases/user/post/likeOrUnlikeComment";
 
-export default class DeletePostController {
+export default class LikeOrUnlikeCommentController {
   public async handle(req: any, res: Response): Promise<Response | void> {
-    const { postId } = req.params;
+    const { postId, commentId, status } = req.params;
     const { userId } = req.user;
-
-    const deletePost = new DeletePost(
+    const likeOrUnlikeComment = new LikeOrUnlikeComment(
       new PostRepository(),
-      new AwsS3Storage(),
       new LikeRepository(),
-      new UserRepository(),
       new CommentRepository()
     );
 
     try {
-      const data = await deletePost.execute(postId, userId);
-      return res.status(200).json(data);
+      const actionStatus = await likeOrUnlikeComment.execute(
+        postId,
+        commentId,
+        userId,
+        status
+      );
+      return res.status(200).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });

@@ -1,9 +1,10 @@
+import { commonParams } from "@aws-sdk/client-rekognition/dist-types/endpoint/EndpointParameters";
 import CommentModel, {
   IComment,
 } from "../../../infrastructure/database/models/commentModel";
 
 export default class CommentRepository {
-  public async createPost(
+  public async createComment(
     id: string,
     userId: string,
     comment: string
@@ -54,6 +55,20 @@ export default class CommentRepository {
     }
   }
 
+  public async findCommentReplyById(_id: string): Promise<IComment | null> {
+    try {
+      return await CommentModel.findOne({
+        reply: { $elemMatch: { _id: _id } },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding comment");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async replytoComment(
     id: string,
     userId: string,
@@ -84,6 +99,18 @@ export default class CommentRepository {
         throw new Error("Failed to create comment");
       }
       console.error("Unknown error creating comment");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async deletePostComments(_id: string) {
+    try {
+      return await CommentModel.deleteMany({ postId: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete like post");
       throw new Error("Unknown error");
     }
   }

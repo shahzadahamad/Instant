@@ -92,6 +92,11 @@ const postSchema: Schema = new Schema(
       default: 0,
       required: true,
     },
+    commentCount: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
     reportDetials: [
       {
         userId: {
@@ -112,11 +117,6 @@ const postSchema: Schema = new Schema(
         },
       },
     ],
-    commentCount: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
   },
   {
     timestamps: true,

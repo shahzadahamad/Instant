@@ -34,11 +34,12 @@ export default class CommentPost {
       throw new Error("Post not found!");
     }
 
-    const newComment = await this.commentRepository.createPost(
+    const newComment = await this.commentRepository.createComment(
       id,
       userId,
       comment
     );
+    await this.postRepository.updateCommentCount(id);
     return newComment;
   }
 }
