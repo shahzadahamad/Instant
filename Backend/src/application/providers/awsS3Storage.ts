@@ -138,7 +138,6 @@ export default class AwsS3Storage {
           throw new Error("Video moderation job failed");
         }
 
-        // Wait for 5 seconds before checking the status again
         await new Promise((resolve) => setTimeout(resolve, 5000));
       }
 

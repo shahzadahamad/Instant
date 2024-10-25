@@ -8,6 +8,7 @@ import CreatePostGetTaggedUserDataController from "../../../infrastructure/contr
 import GetCurrentUserController from "../../../infrastructure/controllers/user/user/getCurrentUserController";
 import GetUserDataByUsernameController from "../../../infrastructure/controllers/user/user/getUserDataByUsernameController";
 import GetUserDataBySearchingUsernameController from "../../../infrastructure/controllers/user/user/getUserDataBySearchingUsernameController";
+import CheckUserByUsernameController from "../../../infrastructure/controllers/user/user/checkUserByUsernameController";
 
 const userRouter = Router();
 
@@ -20,6 +21,7 @@ const getCurrentUserController = new GetCurrentUserController();
 const getUserDataByUsernameController = new GetUserDataByUsernameController();
 const getUserDataBySearchingUsername =
   new GetUserDataBySearchingUsernameController();
+const checkUserByUsernameController = new CheckUserByUsernameController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get(
@@ -52,6 +54,11 @@ userRouter.get(
   "/get-user-data-by-search-username/:search",
   authMiddleware,
   getUserDataBySearchingUsername.handle
+);
+userRouter.get(
+  "/check-user/:username",
+  authMiddleware,
+  checkUserByUsernameController.handle
 );
 
 export default userRouter;

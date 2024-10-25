@@ -111,3 +111,10 @@ export const reportPost = async (reason: string, postId: string) => {
   );
   return response.data.message;
 };
+
+export const userExist = async (username: string) => {
+  console.log(username)
+  const response = await apiClient.get(`/user/check-user/${username}`);
+  console.log(response.data)
+  return response.data;
+};

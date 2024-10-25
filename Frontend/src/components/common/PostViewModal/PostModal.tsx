@@ -43,6 +43,7 @@ import {
   getCurrentUser,
   likeAndDisLikeComment,
   likeAndDisLikePost,
+  userExist,
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
@@ -509,8 +510,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   };
 
   const insertUsernameReply = (username: string, commentId: string) => {
-    const atIndex = comment.lastIndexOf("@");
-    const newComment = comment.slice(0, atIndex) + `@${username} `;
+    const atIndex = replyText[commentId].lastIndexOf("@");
+    const newComment = replyText[commentId].slice(0, atIndex) + `@${username} `;
     setReplyText((prevState) => ({
       ...prevState,
       [commentId]: newComment,
@@ -560,6 +561,54 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       }
       setLoadingReply(false);
     }
+  };
+
+  const handleCommentClick = (comment: string) => {
+    const words = comment.split(" ");
+
+    words.forEach(async (word) => {
+      if (word.startsWith("@")) {
+        const username = word.substring(1);
+        try {
+          const userCheck = await userExist(username);
+          if (userCheck) {
+            console.log(userCheck);
+            if (currentUser === userCheck.userId) {
+              handleDeletePostData();
+            } else {
+              navigate(`/user/${userCheck.username}`);
+            }
+          }
+        } catch (error) {
+          if (error instanceof AxiosError && error.response) {
+            console.log(error);
+            const errorMsg = error.response.data?.error || "An error occurred";
+            toast.error(errorMsg);
+          } else {
+            console.error("Unexpected error:", error);
+            toast.error("An unexpected error occurred");
+          }
+        }
+      }
+    });
+  };
+
+  const renderCommentWithLinks = (comment: string) => {
+    const words = comment.split(" ");
+    return words.map((word, index) => {
+      if (word.startsWith("@")) {
+        return (
+          <span
+            key={index}
+            onClick={() => handleCommentClick(word)}
+            className="text-[#c8d7e4] cursor-pointer"
+          >
+            {word + " "}
+          </span>
+        );
+      }
+      return <span key={index}>{word} </span>;
+    });
   };
 
   return (
@@ -773,7 +822,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                           {post[currentIndex].userId.username}&nbsp;
                         </h1>
                         <span className="font-normal">
-                          {post[currentIndex].caption}
+                          {renderCommentWithLinks(post[currentIndex].caption)}
                         </span>
                       </div>
                       <h1 className="text-xs text-[#8a8a8a]">
@@ -813,7 +862,9 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             >
                               {item.userId.username}
                             </h1>
-                            <h1 className="font-normal">{item.comment}</h1>
+                            <h1 className="font-normal cursor-pointer">
+                              {renderCommentWithLinks(item.comment)}
+                            </h1>
                           </div>
                           <div className="flex gap-2 text-[#8a8a8a]">
                             <h1 className="text-xs">
@@ -964,7 +1015,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                         {reply.username}
                                       </h1>
                                       <h1 className="font-normal">
-                                        {reply.comment}
+                                        {renderCommentWithLinks(reply.comment)}
                                       </h1>
                                     </div>
                                     <div className="flex gap-2 text-[#8a8a8a]">
@@ -1058,7 +1109,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                         onClick={() =>
                                           insertUsernameReply(
                                             user.username,
-                                            item._id
+                                            reply._id
                                           )
                                         }
                                         className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
@@ -1260,7 +1311,11 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 {taggedUser.map((user) => (
                   <div
                     key={user._id}
-                    onClick={() => navigate(`/user/${user.username}`)}
+                    onClick={() =>
+                      currentUser === user._id
+                        ? handleDeletePostData()
+                        : navigate(`/user/${user.username}`)
+                    }
                     className="w-full rounded-md flex border justify-between items-center p-2 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 cursor-pointer mb-2"
                   >
                     <div className="flex gap-2">
