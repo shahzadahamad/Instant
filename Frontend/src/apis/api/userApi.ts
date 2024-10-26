@@ -113,8 +113,16 @@ export const reportPost = async (reason: string, postId: string) => {
 };
 
 export const userExist = async (username: string) => {
-  console.log(username)
   const response = await apiClient.get(`/user/check-user/${username}`);
-  console.log(response.data)
+  return response.data;
+};
+
+export const deleteComment = async (
+  commentOrReplyId: string,
+  actionFor: string
+) => {
+  const response = await apiClient.delete(
+    `/user/post/comment-or-reply/${commentOrReplyId}/${actionFor}`
+  );
   return response.data;
 };

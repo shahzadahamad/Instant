@@ -39,6 +39,7 @@ import {
   checkHasUserLikedThePost,
   commentPost,
   commentReplyPost,
+  deleteComment,
   getComments,
   getCurrentUser,
   likeAndDisLikeComment,
@@ -63,6 +64,11 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [isLiked, setIsLiked] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [openActionModal, setOpenActionModal] = useState(false);
+  const [openDeleteCommentModal, setOpenDeleteCommentModal] = useState({
+    open: false,
+    reply: false,
+    id: "",
+  });
   const [loading, setLoading] = useState(false);
   const [loadingReply, setLoadingReply] = useState(false);
   const [loadingReplyReply, setLoadingReplyReply] = useState(false);
@@ -93,6 +99,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !(event.target as HTMLElement).closest(".preventbutton")
     ) {
       close();
+      setOpenDeleteCommentModal({ open: false, reply: false, id: "" });
     } else if (
       emojiPickerRef.current &&
       !emojiPickerRef.current.contains(event.target as Node)
@@ -108,6 +115,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !(event.target as HTMLElement).closest(".reply-div")
     ) {
       setReplyVisible("");
+      setReplyText({});
+    } else if (
+      replyReplyRef.current &&
+      !replyReplyRef.current.contains(event.target as Node) &&
+      !(event.target as HTMLElement).closest(".reply-div")
+    ) {
+      setReplyReplyVisible("");
       setReplyText({});
     }
   };
@@ -572,7 +586,6 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
         try {
           const userCheck = await userExist(username);
           if (userCheck) {
-            console.log(userCheck);
             if (currentUser === userCheck.userId) {
               handleDeletePostData();
             } else {
@@ -609,6 +622,44 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       }
       return <span key={index}>{word} </span>;
     });
+  };
+
+  const handleDeleteComment = async (reply: boolean) => {
+    try {
+      setLoading(true);
+      const actionFor = reply ? "reply" : "comment";
+      const res = await deleteComment(openDeleteCommentModal.id, actionFor);
+      setTimeout(() => {
+        setOpenDeleteCommentModal({ open: false, reply: false, id: "" });
+        setComments((prevComments) =>
+          prevComments
+            .map((comment) => {
+              if (comment._id === res.commentId) {
+                return null;
+              }
+
+              const updatedReplies = comment.reply.filter(
+                (reply) => reply._id !== res.commentId
+              );
+
+              return { ...comment, reply: updatedReplies };
+            })
+            .filter((comment) => comment !== null)
+        );
+        toast.success(res.message);
+        setLoading(false);
+      }, 100);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+      setLoading(false);
+    }
   };
 
   return (
@@ -657,6 +708,53 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           handleDeletePostData={handleDeletePostData}
         />
       )}
+
+      <Modal
+        isOpen={openDeleteCommentModal.open}
+        size="sm"
+        className="relative flex items-center preventbutton justify-center"
+        onOpenChange={() =>
+          setOpenDeleteCommentModal({
+            open: !openDeleteCommentModal.open,
+            reply: false,
+            id: "",
+          })
+        }
+        hideCloseButton={true}
+      >
+        <ModalContent>
+          <ModalHeader>
+            <div className="w-full flex flex-col gap-4 justify-between items-center">
+              <h1 className="text-2xl font-semibold">Delete comment?</h1>
+              <p className="text-sm text-[#87929a] font-normal">
+                Are you sure you want to delete this comment?
+              </p>
+            </div>
+          </ModalHeader>
+          <ModalBody className="w-full p-0 flex flex-col border-t gap-0">
+            <div
+              className="w-full text-start p-3 border-t border-b cursor-pointer"
+              onClick={() => handleDeleteComment(openDeleteCommentModal.reply)}
+            >
+              <h1
+                className={`${
+                  !loading ? "text-[#ed4956] font-bold" : ""
+                }  text-center`}
+              >
+                {loading ? <div className="spinner"></div> : "Delete"}
+              </h1>
+            </div>
+            <div
+              onClick={() =>
+                setOpenDeleteCommentModal({ open: false, reply: false, id: "" })
+              }
+              className="w-full text-start p-3 border-t border-b cursor-pointer"
+            >
+              <h1 className="text-center">Cancel</h1>
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <div
         ref={modalRef}
@@ -890,6 +988,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                 currentUser) && (
                               <FontAwesomeIcon
                                 icon={faEllipsis}
+                                onClick={() =>
+                                  setOpenDeleteCommentModal({
+                                    open: true,
+                                    reply: false,
+                                    id: item._id,
+                                  })
+                                }
                                 className="hidden cursor-pointer group-hover:block"
                               />
                             )}
@@ -929,7 +1034,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                               onClick={() =>
                                 handleReplySubmit(item._id, item._id)
                               }
-                              className="px-3py-1 transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
+                              className="transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
                             >
                               {loadingReply ? (
                                 <div className="spinner"></div>
@@ -973,7 +1078,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                     {item.reply.length > 0 && (
                       <>
                         <div
-                          onClick={() => toggleReplies(item._id)}
+                          onClick={() => {
+                            setReplyReplyVisible("");
+                            toggleReplies(item._id);
+                          }}
                           className="flex items-center reply-div gap-2 pl-[54px] text-[#8a8a8a] cursor-pointer"
                         >
                           <hr className="w-7  border-[#8a8a8a]" />
@@ -1046,6 +1154,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                         post[currentIndex].userId._id ===
                                           currentUser) && (
                                         <FontAwesomeIcon
+                                          onClick={() =>
+                                            setOpenDeleteCommentModal({
+                                              open: true,
+                                              reply: true,
+                                              id: reply._id,
+                                            })
+                                          }
                                           icon={faEllipsis}
                                           className="hidden cursor-pointer group-hover:block"
                                         />
@@ -1091,7 +1206,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                       onClick={() =>
                                         handleReplySubmit(reply._id, item._id)
                                       }
-                                      className="px-3 py-1 transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
+                                      className="transition-colors border-none bg-transparent text-blue-500 hover:bg-opacity-70 font-semibold rounded-md"
                                     >
                                       {loadingReply ? (
                                         <div className="spinner"></div>
