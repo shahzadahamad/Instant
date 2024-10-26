@@ -1,5 +1,5 @@
-import { commonParams } from "@aws-sdk/client-rekognition/dist-types/endpoint/EndpointParameters";
 import CommentModel, {
+  CommentReplyData,
   IComment,
 } from "../../../infrastructure/database/models/commentModel";
 
@@ -106,6 +106,51 @@ export default class CommentRepository {
   public async deletePostComments(_id: string) {
     try {
       return await CommentModel.deleteMany({ postId: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete like post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async deleteComment(_id: string): Promise<void> {
+    try {
+      const deleteResult = await CommentModel.deleteOne({ _id });
+
+      if (deleteResult.deletedCount > 0) {
+        return;
+      }
+
+      await CommentModel.updateOne(
+        { "reply._id": _id },
+        { $pull: { reply: { _id } } }
+      );
+
+      return;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete like post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findcommentOrReplyIdById(_id: string): Promise<IComment | CommentReplyData | null> {
+    try {
+      const comment = await CommentModel.findOne({ _id });
+      if (comment) {
+        return comment;
+      }
+
+
+      const replyMatch = await CommentModel.findOne({
+        reply: { $elemMatch: { _id: _id } }
+      }, { "reply.$": 1 });
+
+      return replyMatch ? replyMatch.reply[0] : null;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

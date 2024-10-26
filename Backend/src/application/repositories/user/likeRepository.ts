@@ -113,4 +113,16 @@ export default class LikeRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async deleteCommentlikes(_id: string) {
+    try {
+      return await LikeModel.deleteOne({ commentId: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete like comment");
+      throw new Error("Unknown error");
+    }
+  }
 }

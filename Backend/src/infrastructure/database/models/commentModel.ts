@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface CommentReplyData {
+export interface CommentReplyData {
+  _id: string
   userId: string;
   username: string;
   profilePicture: string;

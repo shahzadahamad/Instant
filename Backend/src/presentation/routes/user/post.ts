@@ -15,16 +15,15 @@ import GetCommentController from "../../../infrastructure/controllers/user/post/
 import ReplyCommentController from "../../../infrastructure/controllers/user/post/replyCommentController";
 import LikeOrUnlikeCommentController from "../../../infrastructure/controllers/user/post/likeOrUnlikeCommentController";
 import CheckingHasUserLikedCommentController from "../../../infrastructure/controllers/user/post/checkingHasUserLikedCommentController";
+import DeleteCommentOrReplyController from "../../../infrastructure/controllers/user/post/deleteCommentOrReplyController";
 
 const userPostRouter = Router();
 
 const createPostController = new CreatePostController();
 const getUserPostData = new GetUserPostDataController();
 const likeOrUnlikePostController = new LikeOrUnlikePostController();
-const checkingHasUserLikedPostController =
-  new CheckingHasUserLikedPostController();
-const checkingHasUserLikedCommentController =
-  new CheckingHasUserLikedCommentController();
+const checkingHasUserLikedPostController = new CheckingHasUserLikedPostController();
+const checkingHasUserLikedCommentController = new CheckingHasUserLikedCommentController();
 const deletePostController = new DeletePostController();
 const getPostCountController = new GetPostCountController();
 const getPostDataController = new GetPostDataController();
@@ -34,77 +33,22 @@ const commentPostController = new CommentPostController();
 const getCommentController = new GetCommentController();
 const replyCommentController = new ReplyCommentController();
 const likeOrUnlikeCommentController = new LikeOrUnlikeCommentController();
+const deleteCommentOrReplyController = new DeleteCommentOrReplyController();
 
-userPostRouter.post(
-  "/create-post",
-  authMiddleware,
-  upload.array("files", 10),
-  createPostController.handle
-);
-userPostRouter.get(
-  "/get-user-post-data",
-  authMiddleware,
-  getUserPostData.handle
-);
-userPostRouter.patch(
-  "/like-or-unlike/:postId/:status",
-  authMiddleware,
-  likeOrUnlikePostController.handle
-);
-userPostRouter.patch(
-  "/comment/like-or-unlike/:postId/:commentId/:status",
-  authMiddleware,
-  likeOrUnlikeCommentController.handle
-);
-userPostRouter.get(
-  "/has-user-liked-post/:postId",
-  authMiddleware,
-  checkingHasUserLikedPostController.handle
-);
-userPostRouter.get(
-  "/has-user-liked-comment/:postId",
-  authMiddleware,
-  checkingHasUserLikedCommentController.handle
-);
-userPostRouter.delete(
-  "/delete-post/:postId",
-  authMiddleware,
-  deletePostController.handle
-);
-userPostRouter.get(
-  "/post-count",
-  authMiddleware,
-  getPostCountController.handle
-);
-userPostRouter.get(
-  "/get-post-data/:postId",
-  authMiddleware,
-  getPostDataController.handle
-);
-userPostRouter.patch(
-  "/update-post/:postId",
-  authMiddleware,
-  editPostController.handle
-);
-userPostRouter.patch(
-  "/report-post/:postId",
-  authMiddleware,
-  reportPostController.handle
-);
-userPostRouter.post(
-  "/comment/:postId",
-  authMiddleware,
-  commentPostController.handle
-);
-userPostRouter.get(
-  "/get-comments/:postId",
-  authMiddleware,
-  getCommentController.handle
-);
-userPostRouter.post(
-  "/reply-to-comment/:commentId/:postId",
-  authMiddleware,
-  replyCommentController.handle
-);
+userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
+userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
+userPostRouter.patch("/like-or-unlike/:postId/:status", authMiddleware, likeOrUnlikePostController.handle);
+userPostRouter.patch("/comment/like-or-unlike/:postId/:commentId/:status", authMiddleware, likeOrUnlikeCommentController.handle);
+userPostRouter.get("/has-user-liked-post/:postId", authMiddleware, checkingHasUserLikedPostController.handle);
+userPostRouter.get("/has-user-liked-comment/:postId", authMiddleware, checkingHasUserLikedCommentController.handle);
+userPostRouter.delete("/delete-post/:postId", authMiddleware, deletePostController.handle);
+userPostRouter.get("/post-count", authMiddleware, getPostCountController.handle);
+userPostRouter.get("/get-post-data/:postId", authMiddleware, getPostDataController.handle);
+userPostRouter.patch("/update-post/:postId", authMiddleware, editPostController.handle);
+userPostRouter.patch("/report-post/:postId", authMiddleware, reportPostController.handle);
+userPostRouter.post("/comment/:postId", authMiddleware, commentPostController.handle);
+userPostRouter.get("/get-comments/:postId", authMiddleware, getCommentController.handle);
+userPostRouter.post("/reply-to-comment/:commentId/:postId", authMiddleware, replyCommentController.handle);
+userPostRouter.delete("/comment-or-reply/:commentOrReplyId/:actionFor", authMiddleware, deleteCommentOrReplyController.handle);
 
 export default userPostRouter;
