@@ -4,9 +4,13 @@ import {
   faCircle,
   faMagnifyingGlass,
   faPhone,
+  faPlus,
+  faUsers,
+  faUsersRectangle,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { Button } from "@mui/material";
 
 const ChatInbox = () => {
   const [tab, setTab] = useState("chats");
@@ -59,7 +63,7 @@ const ChatInbox = () => {
         {tab === "chats" && (
           <div className="max-h-[80vh] overflow-y-scroll scrollbar-hidden">
             <h1 className="text-end px-4 pt-4 pb-0 font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer">
-              Requests
+              Requests (1)
             </h1>
             {[1, 2, 3, 4, 5, 7, 9, 1, 2, 5, 1, 512, 2351, 512, 3512, 35].map(
               (item, index) => (
@@ -100,11 +104,25 @@ const ChatInbox = () => {
         )}
         {tab === "group-chats" && (
           <div className="max-h-[80vh] overflow-y-scroll scrollbar-hidden">
+            <div className="px-4 pt-4 pb-0 flex items-center justify-between">
+              <div className="flex gap-2 items-center group transition-transform cursor-pointer">
+                <FontAwesomeIcon
+                  icon={faUsers}
+                  className="text-xl border p-2 py-1.5 rounded-md"
+                />
+                <h1 className="text-sm hidden group-hover:block transition-transform">
+                  Create new group chat{" "}
+                </h1>
+              </div>
+              <h1 className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer">
+                Requests (4)
+              </h1>
+            </div>
             {[1, 2, 3, 4, 5, 7, 9, 1, 2, 5, 1, 512, 2351, 512, 3512, 35].map(
               (item, index) => (
                 <div
                   key={index + item}
-                  className="flex p-3 group items-center cursor-pointer"
+                  className="flex items-center justify-between p-3 group cursor-pointer"
                 >
                   <div className="w-12 h-12 relative">
                     <img
