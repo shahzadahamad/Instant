@@ -4,7 +4,7 @@ import ProfileDetials from "@/components/profile/ProfileDetials";
 const Profile = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar page={"profile"} />
       <div className="w-full overflow-auto scrollbar-hidden">
         <ProfileDetials />
       </div>

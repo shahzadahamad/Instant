@@ -5,7 +5,7 @@ import EditProfileHeader from "@/components/profile/EditProfileHeader";
 const EditProfile = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar page={"profile"} />
       <div className="w-full overflow-auto scrollbar-hidden">
         <EditProfileHeader />
         <div className="flex flex-col gap-8 pt-8 items-center">

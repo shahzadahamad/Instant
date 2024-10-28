@@ -1,15 +1,15 @@
-import Sidebar from '@/components/common/Sidebar'
-import UserProfileDetials from '@/components/user-profiles/UserProfileDetials'
+import Sidebar from "@/components/common/Sidebar";
+import UserProfileDetials from "@/components/user-profiles/UserProfileDetials";
 
 const UserProfile = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-    <Sidebar />
-    <div className="w-full overflow-auto scrollbar-hidden">
-      <UserProfileDetials />
+      <Sidebar page={"none"} />
+      <div className="w-full overflow-auto scrollbar-hidden">
+        <UserProfileDetials />
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;

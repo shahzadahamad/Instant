@@ -5,7 +5,7 @@ import Stories from "@/components/home/Stories";
 const Home = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar page={"home"} />
       <div className="w-full flex flex-col overflow-auto">
         <Stories />
         <Posts />

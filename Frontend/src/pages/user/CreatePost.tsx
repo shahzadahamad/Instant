@@ -11,7 +11,7 @@ const CreatePost = () => {
   dispatch(setPostType(type));
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar page={"create-post"} />
       <div className="w-full flex flex-col overflow-auto">
         <CreatePostHeader />
         <div className="flex flex-col gap-8 pt-8 items-center ">

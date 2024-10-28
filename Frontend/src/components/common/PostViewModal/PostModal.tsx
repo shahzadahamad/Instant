@@ -84,6 +84,9 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
   const [replyVisible, setReplyVisible] = useState("");
   const [replyReplyVisible, setReplyReplyVisible] = useState("");
   const replyRef = useRef<HTMLDivElement>(null);
+  const commentInputRef = useRef<HTMLInputElement>(null);
+  const replyCommentInputRef = useRef<HTMLInputElement>(null);
+  const replyReplycommentInputRef = useRef<HTMLInputElement>(null);
   const replyReplyRef = useRef<HTMLDivElement>(null);
   const [replyText, setReplyText] = useState<{
     [key: string]: string;
@@ -487,8 +490,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     const atIndex = value.lastIndexOf("@");
     if (atIndex !== -1) {
       const query = value.slice(atIndex + 1);
-      if (query.trim()) {
+      if (query.trim() && !query.includes(" ")) {
         fetchUser(query, false);
+      } else {
+        setSuggestions([]);
       }
     } else {
       setSuggestions([]);
@@ -508,8 +513,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     const atIndex = value.lastIndexOf("@");
     if (atIndex !== -1) {
       const query = value.slice(atIndex + 1);
-      if (query.trim()) {
+      if (query.trim() && !query.includes(" ")) {
         fetchUser(query, true);
+      } else {
+        setSuggestionsForReply([]);
       }
     } else {
       setSuggestionsForReply([]);
@@ -521,6 +528,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     const newComment = comment.slice(0, atIndex) + `@${username} `;
     setComment(newComment);
     setSuggestions([]);
+    commentInputRef.current?.focus();
   };
 
   const insertUsernameReply = (username: string, commentId: string) => {
@@ -531,6 +539,11 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       [commentId]: newComment,
     }));
     setSuggestionsForReply([]);
+    if (replyCommentInputRef.current) {
+      replyCommentInputRef.current.focus();
+    } else if (replyReplycommentInputRef.current) {
+      replyReplycommentInputRef.current.focus();
+    }
   };
 
   const handleReplySubmit = (id: string, commentId: string) => {
@@ -944,7 +957,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                 : navigate(`/user/${item.userId.username}`)
                             }
                             src={item.userId.profilePicture}
-                            className="w-[27px] h-[27px] cursor-pointer rounded-full object-cover"
+                            className="max-w-[27px] h-[27px] cursor-pointer rounded-full object-cover"
                             alt=""
                           />
                         </div>
@@ -960,7 +973,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             >
                               {item.userId.username}
                             </h1>
-                            <h1 className="font-normal cursor-pointer">
+                            <h1 className="font-normal">
                               {renderCommentWithLinks(item.comment)}
                             </h1>
                           </div>
@@ -1020,6 +1033,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         <div className="w-full flex text-sm gap-3">
                           <input
                             type="text"
+                            ref={replyCommentInputRef}
                             disabled={loadingReply}
                             className="w-[70%] p-1 border-b bg-transparent  outline-none"
                             placeholder="Write your reply..."
@@ -1104,7 +1118,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                           : navigate(`/user/${reply.username}`)
                                       }
                                       src={reply.profilePicture}
-                                      className="w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
+                                      className="max-w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
                                       alt="Profile"
                                     />
                                   </div>
@@ -1192,6 +1206,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                 <div className="w-full flex text-sm gap-3">
                                   <input
                                     type="text"
+                                    ref={replyReplycommentInputRef}
                                     disabled={loadingReplyReply}
                                     className="w-[70%] p-1 border-b bg-transparent outline-none"
                                     placeholder="Write your reply..."
@@ -1269,16 +1284,16 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 <FontAwesomeIcon
                   onClick={handleLikeAndUnlikePost}
                   className={`${
-                    isLiked ? "text-[#ff3040]" : "text-white"
-                  } hover:cursor-pointer`}
+                    isLiked ? "text-[#ff3040]" : "text-white hover:opacity-70"
+                  } hover:cursor-pointer transition-colors`}
                   icon={isLiked ? faHeart : faHeartRegular}
                 />
                 <FontAwesomeIcon
-                  className="hover:cursor-pointer"
+                  className="hover:cursor-pointer transition-colors hover:opacity-70"
                   icon={faComment}
                 />
                 <FontAwesomeIcon
-                  className="hover:cursor-pointer"
+                  className="hover:cursor-pointer transition-colors hover:opacity-70"
                   icon={faPaperPlane}
                 />
               </div>
@@ -1362,6 +1377,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             <form onSubmit={handleFormSubmit} className="w-full flex">
               <input
                 type="text"
+                ref={commentInputRef}
                 disabled={loading}
                 placeholder="Add a comment..."
                 className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"

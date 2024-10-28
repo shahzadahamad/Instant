@@ -47,7 +47,7 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 
-const Sidebar = () => {
+const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
@@ -89,12 +89,14 @@ const Sidebar = () => {
       >
         Instant
       </h1>
-      <div className="flex flex-col items-center gap-8 mt-9 text-[#787878] text-3xl">
+      <div className="flex flex-col items-center gap-8 mt-9 text-[#787878] text-3xl transition-colors">
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faHouse}
             onClick={() => navigate("/")}
-            className="text-white hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "home" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Home
@@ -103,7 +105,9 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faSearch}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "search" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Search
@@ -112,7 +116,9 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faClapperboard}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "reel" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Reel
@@ -121,7 +127,9 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faComment}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "message" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Message
@@ -130,7 +138,9 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faCompass}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "explore" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Explore
@@ -139,7 +149,9 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faHeart}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${
+              page === "notification" && "dark:text-white text-black"
+            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Notification
@@ -151,7 +163,10 @@ const Sidebar = () => {
         >
           <FontAwesomeIcon
             icon={faPlus}
-            className="border-[2.5px] rounded hover:text-white cursor-pointer hover:border-white border-[#787878] text-[9px] py-1 px-[6.5px]"
+            className={`border-[2.5px] rounded ${
+              page === "create-post" &&
+              "dark:text-white text-black dark:border-white border-black"
+            } dark:hover:text-white hover:text-black cursor-pointer dark:hover:border-white hover:border-black border-[#787878] text-[9px] py-1 px-[6.5px]`}
           />
           <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
             <ModalContent>
@@ -191,7 +206,7 @@ const Sidebar = () => {
           <img
             src={currentUser?.profilePicture}
             alt="avatar"
-            className="w-[27px] h-[27px] rounded-full object-cover cursor-pointer"
+            className={`w-[27px] h-[27px] rounded-full transition-all ${page==='profile' && 'border-2 dark:border-white border-black'} hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
             onClick={() => navigate("/profile")}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -203,7 +218,7 @@ const Sidebar = () => {
             <MenubarTrigger className="p-[10px]">
               <FontAwesomeIcon
                 icon={faBars}
-                className="hover:text-white cursor-pointer text-white text-lg"
+                className="dark:hover:text-white hover:text-black cursor-pointer dark:text-white text-black text-lg"
               />
             </MenubarTrigger>
             <MenubarContent>
