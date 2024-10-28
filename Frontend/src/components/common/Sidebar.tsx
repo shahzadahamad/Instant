@@ -4,6 +4,9 @@ import {
   faClapperboard,
   faHouse,
   faPlus,
+  faCompass as faCompas,
+  faHeart as faHearts,
+  faComment as faComments,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -126,18 +129,28 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
-            icon={faComment}
+            icon={page === "chat" ? faComments : faComment}
+            onClick={() => navigate("/chats")}
             className={`${
-              page === "message" && "dark:text-white text-black"
+              page === "chat" && "dark:text-white text-black"
             } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div
+            onClick={() => navigate("/chats")}
+            className="cursor-pointer absolute top-0.5 right-0.5 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full"
+          >
+            1
+          </div>
+          <div
+            onClick={() => navigate("/chats")}
+            className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          >
             Message
           </div>
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
-            icon={faCompass}
+            icon={page === "explore" ? faCompas : faCompass}
             className={`${
               page === "explore" && "dark:text-white text-black"
             } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
@@ -148,12 +161,15 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
-            icon={faHeart}
+            icon={page === "notification" ? faHearts : faHeart}
             className={`${
               page === "notification" && "dark:text-white text-black"
             } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
+            1
+          </div>
+          <div className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Notification
           </div>
         </div>
@@ -206,7 +222,9 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           <img
             src={currentUser?.profilePicture}
             alt="avatar"
-            className={`w-[27px] h-[27px] rounded-full transition-all ${page==='profile' && 'border-2 dark:border-white border-black'} hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
+            className={`w-[27px] h-[27px] rounded-full transition-all ${
+              page === "profile" && "border-2 dark:border-white border-black"
+            } hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
             onClick={() => navigate("/profile")}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">

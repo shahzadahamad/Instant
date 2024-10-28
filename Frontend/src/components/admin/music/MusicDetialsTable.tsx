@@ -203,7 +203,7 @@ const MusicDetialsTable = () => {
                 type="text"
                 value={searchVal}
                 onChange={handleSearchChange}
-                className="w-full bg-transparent p-3 border rounded-md shadow-sm focus:outline-none"
+                className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
                 name="search"
                 placeholder="Search"
               />

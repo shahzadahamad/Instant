@@ -13,6 +13,7 @@ import Dashboard from "@/pages/admin/Dashboard";
 import Users from "@/pages/admin/Users";
 import Music from "@/pages/admin/Music";
 import UserProfile from "@/pages/user/UserProfile";
+import Chats from "@/pages/user/Chats";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -52,6 +53,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? <CreatePost /> : <Navigate to="/sign-in" replace />,
   },
   {
+    path: "/chats",
+    element: currentUser ? <Chats /> : <Navigate to="/sign-in" replace />,
+  },
+  {
     path: "/admin/sign-in",
     element: currentAdmin ? (
       <Navigate to="/admin/dashboard" replace />
@@ -85,11 +90,7 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   },
   {
     path: "/user/:username",
-    element: currentUser ? (
-      <UserProfile />
-    ) : (
-      <Navigate to="/sign-in" replace />
-    ),
+    element: currentUser ? <UserProfile /> : <Navigate to="/sign-in" replace />,
   },
 ];
 
