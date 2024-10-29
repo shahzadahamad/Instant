@@ -1,7 +1,7 @@
 import ChatInboxDetials from "@/components/chats/ChatInboxDetials";
 import Sidebar from "@/components/common/Sidebar";
 
-const Chats = () => {
+const ChatInbox = () => {
   return (
     <div className="flex h-screen">
       <Sidebar page={"chat"} />
@@ -10,4 +10,4 @@ const Chats = () => {
   );
 };
 
-export default Chats;
+export default ChatInbox;

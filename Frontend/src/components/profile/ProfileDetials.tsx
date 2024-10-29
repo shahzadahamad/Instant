@@ -39,7 +39,7 @@ const ProfileDetials = () => {
               <h1 className="text-3xl font-extrabold">{userData?.username}</h1>
               <button
                 onClick={() => navigate("/edit-profile")}
-                className="cursor-pointer font-bold bg-transparent border text-sm p-2 rounded-md hover:bg-white hover:text-black transition-colors text-center"
+                className="cursor-pointer font-bold bg-transparent border text-sm px-3 py-1.5 rounded-md dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors text-center"
               >
                 Edit Profile
               </button>

@@ -13,7 +13,8 @@ import Dashboard from "@/pages/admin/Dashboard";
 import Users from "@/pages/admin/Users";
 import Music from "@/pages/admin/Music";
 import UserProfile from "@/pages/user/UserProfile";
-import Chats from "@/pages/user/Chats";
+import Chats from "@/pages/user/ChatsInbox";
+import ChatInbox from "@/pages/user/ChatsInbox";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -54,6 +55,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   },
   {
     path: "/chats",
+    element: currentUser ? <ChatInbox /> : <Navigate to="/sign-in" replace />,
+  },
+  {
+    path: "/chats/:chatId",
     element: currentUser ? <Chats /> : <Navigate to="/sign-in" replace />,
   },
   {
