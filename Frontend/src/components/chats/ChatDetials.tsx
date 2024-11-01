@@ -2,6 +2,8 @@ import { useState } from "react";
 import ChatMessageHeader from "./ChatMessageHeader";
 import TextMessage from "./message-type/TextMessage";
 import FileMessage from "./message-type/FileMessage";
+import AudioMessage from "./message-type/AudioMessage";
+import SharePostMessage from "./message-type/SharePostMessage";
 
 const ChatDetials = () => {
   const [message, setMessage] = useState("");
@@ -32,6 +34,8 @@ const ChatDetials = () => {
         </div>
         <TextMessage />
         <FileMessage />
+        <AudioMessage />
+        <SharePostMessage />
       </div>
       <div className="h-[5rem] p-3 content-center ">
         <div className="relative">
