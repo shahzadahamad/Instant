@@ -15,6 +15,7 @@ import Music from "@/pages/admin/Music";
 import UserProfile from "@/pages/user/UserProfile";
 import Chats from "@/pages/user/ChatsInbox";
 import ChatInbox from "@/pages/user/ChatsInbox";
+import Search from "@/pages/user/Search";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -60,6 +61,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/chats/:chatId",
     element: currentUser ? <Chats /> : <Navigate to="/sign-in" replace />,
+  },
+  {
+    path: "/search",
+    element: currentUser ? <Search /> : <Navigate to="/sign-in" replace />,
   },
   {
     path: "/admin/sign-in",

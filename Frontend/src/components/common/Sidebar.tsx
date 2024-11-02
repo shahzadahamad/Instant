@@ -96,9 +96,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           <FontAwesomeIcon
             icon={faHouse}
             onClick={() => navigate("/")}
-            className={`${
-              page === "home" && "dark:text-white text-black"
-            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+            className={`${page === "home" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Home
@@ -107,9 +106,9 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faSearch}
-            className={`${
-              page === "search" && "dark:text-white text-black"
-            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+            onClick={() => navigate('/search')}
+            className={`${page === "search" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Search
@@ -119,9 +118,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           {page === "reel" ? (
             <svg
               aria-label="Reels"
-              className={`${
-                page === "reel" && "dark:text-white text-black"
-              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+              className={`${page === "reel" && "dark:text-white text-black"
+                } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
               fill="currentColor"
               height="24"
               role="img"
@@ -137,9 +135,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           ) : (
             <svg
               aria-label="Reels"
-              className={`${
-                page === "reel" && "dark:text-white text-black"
-              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+              className={`${page === "reel" && "dark:text-white text-black"
+                } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
               fill="currentColor"
               height="24"
               role="img"
@@ -201,9 +198,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           <FontAwesomeIcon
             icon={page === "chat" ? faComments : faComment}
             onClick={() => navigate("/chats")}
-            className={`${
-              page === "chat" && "dark:text-white text-black"
-            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+            className={`${page === "chat" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div
             onClick={() => navigate("/chats")}
@@ -221,9 +217,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={page === "explore" ? faCompas : faCompass}
-            className={`${
-              page === "explore" && "dark:text-white text-black"
-            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+            className={`${page === "explore" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Explore
@@ -232,9 +227,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={page === "notification" ? faHearts : faHeart}
-            className={`${
-              page === "notification" && "dark:text-white text-black"
-            } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+            className={`${page === "notification" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
             1
@@ -249,10 +243,9 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         >
           <FontAwesomeIcon
             icon={faPlus}
-            className={`border-[2.5px] rounded ${
-              page === "create-post" &&
+            className={`border-[2.5px] rounded ${page === "create-post" &&
               "dark:text-white text-black dark:border-white border-black"
-            } dark:hover:text-white hover:text-black cursor-pointer dark:hover:border-white hover:border-black border-[#787878] text-[9px] py-1 px-[6.5px]`}
+              } dark:hover:text-white hover:text-black cursor-pointer dark:hover:border-white hover:border-black border-[#787878] text-[9px] py-1 px-[6.5px]`}
           />
           <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
             <ModalContent>
@@ -292,9 +285,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           <img
             src={currentUser?.profilePicture}
             alt="avatar"
-            className={`w-[27px] h-[27px] rounded-full transition-all ${
-              page === "profile" && "border-2 dark:border-white border-black"
-            } hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
+            className={`w-[27px] h-[27px] rounded-full transition-all ${page === "profile" && "border-2 dark:border-white border-black"
+              } hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
             onClick={() => navigate("/profile")}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -353,11 +345,10 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleLogout}
-                      className={`bg-[#09090b] transition-colors w-24 text-white border ${
-                        loading
+                      className={`bg-[#09090b] transition-colors w-24 text-white border ${loading
                           ? "opacity-60 cursor-not-allowed"
                           : "opacity-100 cursor-pointer hover:bg-[#B22222]"
-                      }`}
+                        }`}
                     >
                       {loading ? <div className="spinner "></div> : "Logout"}
                     </AlertDialogAction>
