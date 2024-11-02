@@ -101,9 +101,9 @@ const MusicDetialsTable = () => {
 
       return () => {
         currentAudio.removeEventListener("timeupdate", updateSlider);
-        currentAudio.addEventListener("ended", endedHandler);
-        currentAudio.addEventListener("play", playHandler);
-        currentAudio.addEventListener("pause", pauseHandler);
+        currentAudio.removeEventListener("ended", endedHandler);
+        currentAudio.removeEventListener("play", playHandler);
+        currentAudio.removeEventListener("pause", pauseHandler);
       };
     }
   }, [currentlyPlayingIndex]);

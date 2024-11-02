@@ -478,7 +478,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
         behavior: "smooth",
         block: "center",
       });
-      const inputElement = replyRef.current;
+      const inputElement = replyReplyRef.current;
       inputElement?.focus();
     }, 100);
   };

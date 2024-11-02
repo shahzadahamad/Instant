@@ -3,11 +3,12 @@ import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import { Slider } from "@mui/material";
 import MessageProfile from "../MessageProfile";
 import MessageMenu from "./MessageMenu";
+import EmojiReaction from "./EmojiReaction";
 
 const AudioMessage = () => {
   return (
     <>
-      <div className="flex items-center group gap-2 px-3 pb-7">
+      <div className="relative flex items-center group gap-2 px-3 pb-7">
         <MessageProfile />
         <div className="w-48 flex items-center justify-start gap-5 border rounded-2xl p-3">
           <div className="flex items-center gap-2">
@@ -25,10 +26,11 @@ const AudioMessage = () => {
             <Slider size="small" value={0} valueLabelDisplay="off" />
           </div>
         </div>
+        <EmojiReaction value={true} />
         <MessageMenu />
       </div>
 
-      <div className="flex group items-center justify-end gap-3 px-3 pb-7">
+      <div className="relative flex group items-center justify-end gap-3 px-3 pb-7">
         <MessageMenu />
         <div className="w-48 bg-[#0084ff] text-white flex items-center justify-start gap-5 border rounded-2xl p-3">
           <div className="flex items-center gap-2">
@@ -53,6 +55,7 @@ const AudioMessage = () => {
             />
           </div>
         </div>
+        <EmojiReaction value={false} />
       </div>
     </>
   );
