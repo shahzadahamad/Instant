@@ -27,6 +27,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.14.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
@@ -37,9 +38,13 @@
     "@types/nodemailer": "^6.4.15",
     "@types/uuid": "^10.0.0",
     "concurrently": "^8.2.2",
+    "eslint": "^9.14.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.11.0",
     "i": "^0.3.7",
     "nodemon": "^3.1.4",
     "npm": "^10.8.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.12.2"
   }
 }

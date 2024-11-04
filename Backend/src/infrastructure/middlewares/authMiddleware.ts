@@ -21,7 +21,7 @@ const authMiddleware = async (req: any, res: Response, next: NextFunction) => {
   try {
     const decoded = tokenManager.verifyAccessToken(token);
     req.user = decoded;
-    if (req.user.role == "user") {
+    if (req.user.role === "user") {
       const verifyUser = new VerifyIngUser(new UserRepository());
       const user = await verifyUser.execute(req.user.userId);
       if (!user || user.isBlock) {
