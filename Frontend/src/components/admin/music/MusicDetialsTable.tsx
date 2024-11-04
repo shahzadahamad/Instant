@@ -65,7 +65,7 @@ const MusicDetialsTable = () => {
       return newValues;
     });
     fetchMusic(page);
-    return () => {};
+    return () => { };
   }, [page, searchVal]);
 
   useEffect(() => {
@@ -288,9 +288,8 @@ const MusicDetialsTable = () => {
                       </div>
                     </td>
                     <td
-                      className={`py-2 px-4 ${
-                        music.isListed ? "text-green-600" : "text-red-600"
-                      }`}
+                      className={`py-2 px-4 ${music.isListed ? "text-green-600" : "text-red-600"
+                        }`}
                     >
                       {music.isListed ? "Listed" : "Unlisted"}
                     </td>
@@ -307,30 +306,33 @@ const MusicDetialsTable = () => {
                   </tr>
                 </tbody>
               ))}
-              {!(totalMusic !== 0 && page === 1 && isDisabled) && (
-                <tfoot className="border">
-                  <tr>
-                    <td className="py-2 px-4 font-bold" colSpan={2}>
-                      <div className="flex gap-4">
-                        <Button
-                          disabled={page === 1}
-                          onClick={handlePrevPage}
-                          variant="outline"
-                        >
-                          &lt;&lt;
-                        </Button>
-                        <Button
-                          disabled={isDisabled}
-                          onClick={handleNextPage}
-                          variant="outline"
-                        >
-                          &gt;&gt;
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
+              <tfoot className="border">
+                <tr>
+                  <td className="py-2 px-4 font-bold" colSpan={5}>
+                    <div className={`flex items-center ${!(totalMusic !== 0 && page === 1 && isDisabled) ? "justify-between" : "justify-end"}`}>
+                      {!(totalMusic !== 0 && page === 1 && isDisabled) && (
+                        <div className="flex gap-4">
+                          <Button
+                            disabled={page === 1}
+                            onClick={handlePrevPage}
+                            variant="outline"
+                          >
+                            &lt;&lt;
+                          </Button>
+                          <Button
+                            disabled={isDisabled}
+                            onClick={handleNextPage}
+                            variant="outline"
+                          >
+                            &gt;&gt;
+                          </Button>
+                        </div>
+                      )}
+                      <h1 className="p-2">Total Users: {music.length}</h1>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           ) : totalMusic === 0 ? (
             <h1>User Not found in Database</h1>

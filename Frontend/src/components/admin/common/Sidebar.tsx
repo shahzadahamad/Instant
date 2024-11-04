@@ -35,7 +35,7 @@ import { useState } from "react";
 import { useTheme } from "../../ui/theme-provider";
 import { adminLogout } from "@/redux/slice/admin/adminSlice";
 
-const Sidebar = () => {
+const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const dispatch = useDispatch();
@@ -81,7 +81,8 @@ const Sidebar = () => {
           <FontAwesomeIcon
             icon={faHouse}
             onClick={() => navigate("/admin/dashboard")}
-            className="text-white dark:hover:text-white light:hover:text-black cursor-pointer text-2xl"
+            className={`${page === "dashboard" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Dashboard
@@ -91,7 +92,8 @@ const Sidebar = () => {
           <FontAwesomeIcon
             icon={faUsers}
             onClick={() => navigate("/admin/users")}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${page === "users" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Users
@@ -100,7 +102,8 @@ const Sidebar = () => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faImage}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${page === "post" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Post
@@ -110,7 +113,8 @@ const Sidebar = () => {
           <FontAwesomeIcon
             icon={faMusic}
             onClick={() => navigate("/admin/music")}
-            className="hover:text-white cursor-pointer text-2xl"
+            className={`${page === "music" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Music
@@ -120,7 +124,8 @@ const Sidebar = () => {
           <img
             src={currentAdmin?.profilePicture}
             alt="avatar"
-            className="w-[27px] h-[27px] border rounded-full object-cover cursor-pointer"
+            className={`w-[27px] h-[27px] rounded-full transition-all ${page === "profile" && "border-2 dark:border-white border-black"
+              } hover:border-2 dark:hover:border-white hover:border-black object-cover cursor-pointer`}
             onClick={() => navigate("/admin/profile")}
           />
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -171,11 +176,10 @@ const Sidebar = () => {
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleLogout}
-                      className={`bg-[#09090b] transition-colors w-24 text-white border ${
-                        loading
-                          ? "opacity-60 cursor-not-allowed"
-                          : "opacity-100 cursor-pointer hover:bg-[#B22222]"
-                      }`}
+                      className={`bg-[#09090b] transition-colors w-24 text-white border ${loading
+                        ? "opacity-60 cursor-not-allowed"
+                        : "opacity-100 cursor-pointer hover:bg-[#B22222]"
+                        }`}
                     >
                       {loading ? <div className="spinner "></div> : "Logout"}
                     </AlertDialogAction>

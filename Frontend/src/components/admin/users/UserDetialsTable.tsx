@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { adminApiClient } from "@/apis/apiClient";
 import { GetUserDataForAdminDashboard } from "@/types/admin/user";
 import toast from "react-hot-toast";
@@ -19,6 +19,7 @@ import {
   ModalBody,
   useDisclosure,
 } from "@nextui-org/modal";
+import { debounce } from 'lodash';
 
 const UserDetialsTable = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -31,26 +32,27 @@ const UserDetialsTable = () => {
   const [viewProfile, setViewProfile] = useState<string | File>("");
   const isDisabled = page === totalPages;
 
-  const fetchUsers = async (page: number) => {
-    try {
-      const response = await adminApiClient.get(`/users/get-data`, {
-        params: {
-          page: page,
-          search: searchVal,
-        },
-      });
-      setUsers(response.data.users);
-      setTotalPages(response.data.totalPages);
-      setTotalUser(response.data.totalUser);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  const debouncedFetchUsers = useMemo(
+    () =>
+      debounce(async (page, search) => {
+        try {
+          const response = await adminApiClient.get(`/users/get-data`, {
+            params: { page, search },
+          });
+          setUsers(response.data.users);
+          setTotalPages(response.data.totalPages);
+          setTotalUser(response.data.totalUser);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }, 500),
+    []
+  );
 
   useEffect(() => {
-    fetchUsers(page);
-    return () => {};
-  }, [page, searchVal]);
+    debouncedFetchUsers(page, searchVal);
+    return () => debouncedFetchUsers.cancel();
+  }, [page, searchVal, debouncedFetchUsers]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(e.target.value);
@@ -79,11 +81,14 @@ const UserDetialsTable = () => {
       );
       if (response.data === "action successfull") {
         toast.success(
-          `User ${username} has been ${
-            status === "unblock" ? "unblocked" : "blocked"
+          `User ${username} has been ${status === "unblock" ? "unblocked" : "blocked"
           }`
         );
-        fetchUsers(page);
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === userId ? { ...user, isBlock: !isBlock } : user
+          )
+        );
       } else {
         toast.success(response.data);
       }
@@ -175,9 +180,8 @@ const UserDetialsTable = () => {
                       {user.phoneNumber || "-------------"}
                     </td>
                     <td
-                      className={`py-2 px-4 ${
-                        user.isBlock ? "text-red-600" : "text-green-600"
-                      }`}
+                      className={`py-2 px-4 ${user.isBlock ? "text-red-600" : "text-green-600"
+                        }`}
                     >
                       {user.isBlock ? "Blocked" : "Active"}
                     </td>
@@ -206,30 +210,33 @@ const UserDetialsTable = () => {
                   </tr>
                 </tbody>
               ))}
-              {!(totalUser !== 0 && page === 1 && isDisabled) && (
-                <tfoot className="border">
-                  <tr>
-                    <td className="py-2 px-4 font-bold" colSpan={2}>
-                      <div className="flex gap-4">
-                        <Button
-                          disabled={page === 1}
-                          onClick={handlePrevPage}
-                          variant="outline"
-                        >
-                          &lt;&lt;
-                        </Button>
-                        <Button
-                          disabled={isDisabled}
-                          onClick={handleNextPage}
-                          variant="outline"
-                        >
-                          &gt;&gt;
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
+              <tfoot className="border">
+                <tr>
+                  <td className="py-2 px-4 font-bold" colSpan={7}>
+                    <div className={`flex items-center ${!(totalUser !== 0 && page === 1 && isDisabled) ? "justify-between" : "justify-end"}`}>
+                      {!(totalUser !== 0 && page === 1 && isDisabled) && (
+                        <div className="flex gap-4">
+                          <Button
+                            disabled={page === 1}
+                            onClick={handlePrevPage}
+                            variant="outline"
+                          >
+                            &lt;&lt;
+                          </Button>
+                          <Button
+                            disabled={isDisabled}
+                            onClick={handleNextPage}
+                            variant="outline"
+                          >
+                            &gt;&gt;
+                          </Button>
+                        </div>
+                      )}
+                      <h1 className="p-2">Total Users: {users.length}</h1>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           ) : totalUser === 0 ? (
             <h1>User Not found in Database</h1>

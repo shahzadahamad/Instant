@@ -5,7 +5,7 @@ import MusicDetialsTable from "@/components/admin/music/MusicDetialsTable";
 const Music = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar page={'music'} />
       <div className="w-full flex flex-col overflow-auto">
         <Header title={"Music"} />
         <MusicDetialsTable />
