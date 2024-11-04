@@ -9,10 +9,12 @@ import userRouter from "../routes/user/user";
 import musicRouter from "../routes/admin/music";
 import userMusicRouter from "../routes/user/music";
 import userPostRouter from "../routes/user/post";
+import morgan from 'morgan';
 
-const app = express();
+const app = express()
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan('dev'));
 
 app.use(
   cors({
