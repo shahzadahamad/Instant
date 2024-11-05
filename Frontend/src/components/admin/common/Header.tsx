@@ -4,7 +4,7 @@ interface MyComponentProps {
 
 const Header: React.FC<MyComponentProps> = ({ title }) => {
   return (
-    <header className="w-full text-white font-bold flex items-center gap-10 ps-10 h-[12vh] border-b border-[#363636]">
+    <header className="w-full font-bold flex items-center gap-10 ps-10 h-[12vh] border-b border-[#363636]">
       <h1 className="cursor-pointer">{title}</h1>
     </header>
   );

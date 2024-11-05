@@ -125,7 +125,7 @@ const UserDetialsTable = () => {
           )}
         </ModalContent>
       </Modal>
-      <div className="h-[88vh]">
+      <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
         <div className=" p-10 pb-1 flex justify-between items-center">
           <div className="w-full max-w-md">
             <div className="relative">

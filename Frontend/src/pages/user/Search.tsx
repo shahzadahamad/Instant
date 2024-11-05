@@ -1,5 +1,5 @@
 import Sidebar from "@/components/common/Sidebar"
-import SearchDetials from "@/components/searh/SearchDetials"
+import SearchDetials from "@/components/search/SearchDetials"
 
 const Search = () => {
   return (

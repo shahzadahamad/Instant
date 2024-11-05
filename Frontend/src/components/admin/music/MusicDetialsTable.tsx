@@ -195,7 +195,7 @@ const MusicDetialsTable = () => {
           )}
         </ModalContent>
       </Modal>
-      <div className="h-[88vh]">
+      <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
         <div className="w-full p-10 pb-1 flex justify-between items-center">
           <div className="w-full max-w-md">
             <div className="relative">
@@ -328,7 +328,7 @@ const MusicDetialsTable = () => {
                           </Button>
                         </div>
                       )}
-                      <h1 className="p-2">Total Users: {music.length}</h1>
+                      <h1 className="p-2 font-semibold">Total Music: {music.length}</h1>
                     </div>
                   </td>
                 </tr>

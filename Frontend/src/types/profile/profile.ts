@@ -1,4 +1,17 @@
 export interface GetUserData {
+  _id?: string;
+  fullname: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  profilePicture: string | File;
+  gender: string;
+  dateOfBirth: string;
+  bio: string;
+  isPrivateAccount: boolean;
+}
+
+export interface GetUserDataForPost {
   _id: string;
   fullname: string;
   username: string;
@@ -46,7 +59,7 @@ export interface PostData {
 
 export interface GetUserPostData {
   _id: string;
-  userId: GetUserData;
+  userId: GetUserDataForPost;
   post: PostData[];
   caption: string;
   aspectRatio: string;

@@ -30,6 +30,10 @@ const SearchDetials = () => {
       </div>
 
       <div className="w-full flex-1 flex flex-col items-center border rounded-sm scrollbar-style overflow-y-auto scrollbar-hidden">
+        <div className="w-2/3 px-4 py-3 flex justify-between">
+          <h1 className="font-bold">Recent</h1>
+          <button className="font-base text-blue-500">Clear All</button>
+        </div>
         {[1, 2, 3, 4, 5, 7, 9, 0, 9, 1, 7].map((user, index) => (
           <div
             key={index + user}

@@ -16,6 +16,7 @@ import UserProfile from "@/pages/user/UserProfile";
 import Chats from "@/pages/user/ChatsInbox";
 import ChatInbox from "@/pages/user/ChatsInbox";
 import Search from "@/pages/user/Search";
+import AdminProfile from "@/pages/admin/AdminProfile";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -67,6 +68,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? <Search /> : <Navigate to="/sign-in" replace />,
   },
   {
+    path: "/user/:username",
+    element: currentUser ? <UserProfile /> : <Navigate to="/sign-in" replace />,
+  },
+  {
     path: "/admin/sign-in",
     element: currentAdmin ? (
       <Navigate to="/admin/dashboard" replace />
@@ -99,8 +104,12 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     ),
   },
   {
-    path: "/user/:username",
-    element: currentUser ? <UserProfile /> : <Navigate to="/sign-in" replace />,
+    path: "/admin/profile",
+    element: currentAdmin ? (
+      <AdminProfile />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
   },
 ];
 
