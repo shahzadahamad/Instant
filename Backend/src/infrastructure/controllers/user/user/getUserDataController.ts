@@ -3,7 +3,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetUserData from "../../../../application/useCases/user/user/getUserData";
 
 export default class GetUserDataController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
     const getUserData = new GetUserData(new UserRepository());
@@ -11,12 +11,13 @@ export default class GetUserDataController {
     try {
       const userData = await getUserData.execute(userId);
 
-      return res.status(200).json(userData);
+      res.status(200).json(userData);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

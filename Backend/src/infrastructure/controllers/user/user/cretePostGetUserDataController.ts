@@ -3,21 +3,22 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetCreatePostUserData from "../../../../application/useCases/user/user/getCreatePostUserData";
 
 export default class CretePostGetUserDataController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { search, users } = req.query;
     const getCreatePostUserData = new GetCreatePostUserData(
       new UserRepository()
     );
 
     try {
-      const userData = await getCreatePostUserData.execute(search,users);
+      const userData = await getCreatePostUserData.execute(search, users);
 
-      return res.status(200).json(userData);
+      res.status(200).json(userData);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

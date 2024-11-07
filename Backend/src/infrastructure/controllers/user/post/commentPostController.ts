@@ -5,7 +5,7 @@ import CommentRepository from "../../../../application/repositories/user/comment
 import CommentPost from "../../../../application/useCases/user/post/commentPost";
 
 export default class CommentPostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
     const { comment } = req.body;
@@ -18,12 +18,13 @@ export default class CommentPostController {
 
     try {
       const data = await commentPost.execute(postId, userId, comment);
-      return res.status(200).json({ data: data });
+      res.status(200).json({ data: data });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

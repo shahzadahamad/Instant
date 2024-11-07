@@ -4,7 +4,7 @@ import UpdateUserData from "../../../../application/useCases/user/user/updateUse
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 
 export default class EditUserDataController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const {
       fullname,
@@ -39,14 +39,15 @@ export default class EditUserDataController {
         file
       );
 
-      return res
+      res
         .status(200)
         .json({ message: "Profile Updated Successfully!", user: userData });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

@@ -5,7 +5,7 @@ export interface IAdmin extends Document {
   username: string;
   email: string;
   password: string;
-  profilePicture?: string;
+  profilePicture: string;
 }
 
 const adminSchema: Schema = new Schema(

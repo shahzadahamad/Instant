@@ -4,7 +4,7 @@ import CommentRepository from "../../../../application/repositories/user/comment
 import DeleteCommentOrReply from "../../../../application/useCases/user/post/deleteCommentOrReply";
 
 export default class DeleteCommentOrReplyController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { commentOrReplyId, actionFor } = req.params;
     const { userId } = req.user;
 
@@ -15,12 +15,13 @@ export default class DeleteCommentOrReplyController {
 
     try {
       const data = await deleteCommentOrReply.execute(commentOrReplyId, actionFor, userId);
-      return res.status(200).json(data);
+      res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

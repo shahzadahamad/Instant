@@ -5,7 +5,7 @@ import AuthenticateAdmin from "../../../../application/useCases/admin/authentica
 import AdminRepository from "../../../../application/repositories/admin/adminRepository";
 
 export default class AuthenticateAdminController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { usernameOrEmail, password } = req.body;
 
     const authenticateAdmin = new AuthenticateAdmin(
@@ -26,12 +26,15 @@ export default class AuthenticateAdminController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res.json({ token, admin });
+      res.json({ token, admin });
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }

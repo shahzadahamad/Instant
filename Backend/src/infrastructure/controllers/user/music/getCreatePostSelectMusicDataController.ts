@@ -3,7 +3,7 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import GetCreatePostSelectedMusicData from "../../../../application/useCases/user/music/getCreatePostSelectedMusicData";
 
 export default class GetCreatePostSelectMusicDataController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
 
     const getCreatePostSelectedMusicData = new GetCreatePostSelectedMusicData(
@@ -13,14 +13,16 @@ export default class GetCreatePostSelectMusicDataController {
     try {
       const musicData = await getCreatePostSelectedMusicData.execute(_id);
       if (musicData) {
-        return res.status(200).json(musicData);
+        res.status(200).json(musicData);
+        return;
       }
-      return res.status(200).json({ message: "Music not available" });
+      res.status(200).json({ message: "Music not available" });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

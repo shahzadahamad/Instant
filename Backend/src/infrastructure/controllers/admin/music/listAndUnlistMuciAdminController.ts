@@ -3,7 +3,7 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import ListAndUnlistMusicByAdmin from "../../../../application/useCases/admin/music/listAndUnlistMusicByAdmin";
 
 export default class ListAndUnlistMuciAdminController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { id, status } = req.params;
     const listAndUnlistMusicByAdmin = new ListAndUnlistMusicByAdmin(
       new MusicRepository()
@@ -11,12 +11,15 @@ export default class ListAndUnlistMuciAdminController {
 
     try {
       const actionStatus = await listAndUnlistMusicByAdmin.execute(id, status);
-      return res.status(200).json(actionStatus);
+      res.status(200).json(actionStatus);
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }

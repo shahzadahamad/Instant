@@ -10,6 +10,7 @@ import musicRouter from "../routes/admin/music";
 import userMusicRouter from "../routes/user/music";
 import userPostRouter from "../routes/user/post";
 import morgan from 'morgan';
+import adminRouter from "../routes/admin/admin";
 
 const app = express()
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin/auth", adminAuthRouter);
+app.use("/api/admin", adminRouter);
 app.use('/api/admin/users', adminUsersRouter);
 app.use('/api/admin/music', musicRouter);
 app.use('/api/user/music', userMusicRouter);

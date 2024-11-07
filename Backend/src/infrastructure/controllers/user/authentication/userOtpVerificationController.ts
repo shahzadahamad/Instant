@@ -8,7 +8,7 @@ import { EmailService } from "../../../../application/providers/nodeMailer";
 
 
 export default class UserOtpVerificationController {
-  public async handle(req: Request, res: Response): Promise<Response> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { email, fullname, username } = req.body;
 
     const otpSend = new OtpSend(
@@ -21,16 +21,18 @@ export default class UserOtpVerificationController {
 
     try {
       const otp = await otpSend.execute(email, fullname, username);
-
-      return res.status(200).json({
+      res.status(200).json({
         message: "OTP send successfully",
         id: otp._id,
       });
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }

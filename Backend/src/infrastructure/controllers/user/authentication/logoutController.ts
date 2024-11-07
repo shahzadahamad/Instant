@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 export default class LogoutController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     try {
       res.clearCookie("refreshToken", {
         httpOnly: true,
@@ -9,10 +9,10 @@ export default class LogoutController {
         sameSite: "strict",
       });
 
-      return res.json({ message: "Logged out successfully" });
+      res.json({ message: "Logged out successfully" });
     } catch (error) {
       console.error("Logout error:", error);
-      return res.status(500).json({ error: "An error occurred during logout" });
+      res.status(500).json({ error: "An error occurred during logout" });
     }
   }
 }

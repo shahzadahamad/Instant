@@ -5,7 +5,7 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import { EmailService } from "../../../../application/providers/nodeMailer";
 
 export default class ForgotPasswordController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { emailOrUsername } = req.body;
 
     const verifyAndSendMail = new VerifyAndSendMail(
@@ -16,12 +16,13 @@ export default class ForgotPasswordController {
 
     try {
       const status = await verifyAndSendMail.execute(emailOrUsername);
-      return res.status(200).json({ message: status });
+      res.status(200).json({ message: status });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

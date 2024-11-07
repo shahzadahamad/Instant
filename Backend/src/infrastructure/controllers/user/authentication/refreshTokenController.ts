@@ -4,7 +4,7 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import HandleRefreshToken from "../../../../application/useCases/user/authentication/handleRefreshToken";
 
 export default class RefreshTokenController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const handleRefreshToken = new HandleRefreshToken(
       new UserRepository(),
       new TokenManager()
@@ -15,17 +15,19 @@ export default class RefreshTokenController {
       const status = await handleRefreshToken.execute(refreshToken);
 
       if (status.clearCookie) {
-        return res
+        res
           .clearCookie("refreshToken")
           .status(403)
           .json({ error: "Invalid refresh token" });
+        return;
       }
-      return res.status(200).json({ token: status.token });
+      res.status(200).json({ token: status.token });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

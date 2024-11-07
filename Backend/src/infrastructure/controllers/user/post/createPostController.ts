@@ -5,7 +5,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import PostRepository from "../../../../application/repositories/user/postRepository";
 
 export default class CreatePostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const files = req.files;
     const {
@@ -35,12 +35,13 @@ export default class CreatePostController {
         parsedPostData,
         files
       );
-      return res.status(200).json(data);
+      res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

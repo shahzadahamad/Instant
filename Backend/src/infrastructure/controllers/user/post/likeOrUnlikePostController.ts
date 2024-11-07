@@ -4,7 +4,7 @@ import LikeRepository from "../../../../application/repositories/user/likeReposi
 import LikeOrUnlikePost from "../../../../application/useCases/user/post/likeOrUnlikePost";
 
 export default class LikeOrUnlikePostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId, status } = req.params;
     const { userId } = req.user;
     const likeOrUnlikePost = new LikeOrUnlikePost(
@@ -13,13 +13,14 @@ export default class LikeOrUnlikePostController {
     );
 
     try {
-      const actionStatus = await likeOrUnlikePost.execute(postId, userId,status);
-      return res.status(200).json(actionStatus);
+      const actionStatus = await likeOrUnlikePost.execute(postId, userId, status);
+      res.status(200).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

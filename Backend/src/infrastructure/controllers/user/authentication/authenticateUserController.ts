@@ -5,7 +5,7 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 
 export default class LoginUserController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { usernameOrEmail, password } = req.body;
 
     const authenticateUser = new AuthenticateUser(
@@ -26,12 +26,13 @@ export default class LoginUserController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res.json({ token, user });
+      res.json({ token, user });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

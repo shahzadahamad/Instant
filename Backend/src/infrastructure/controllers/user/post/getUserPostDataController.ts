@@ -4,7 +4,7 @@ import UserPostData from "../../../../application/useCases/user/post/userPostDat
 import UserRepository from "../../../../application/repositories/user/userRepository";
 
 export default class GetUserPostDataController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { username = "" } = req.query;
 
@@ -14,13 +14,14 @@ export default class GetUserPostDataController {
     );
 
     try {
-      const data = await userPostData.execute(userId, username);
-      return res.status(200).json(data);
+      const data = await userPostData.execute(userId, username as string);
+      res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

@@ -1,33 +1,38 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import TokenManager from "../../application/providers/tokenManager";
+import { UserRole } from "../enums/userRoles";
 
 const tokenManager = new TokenManager();
 
-const adminAuthMiddleware = async (req: any, res: Response, next: NextFunction) => {
+const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    return res.status(401).json({ message: "No token provided" });
+    res.status(401).json({ message: "No token provided" });
+    return;
   }
 
   const parts = authHeader.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return res.status(401).json({ message: "Token error" });
+    res.status(401).json({ message: "Token error" });
+    return;
   }
 
   const token = parts[1];
   try {
     const decoded = tokenManager.verifyAccessToken(token);
-    req.admin = decoded;
-    if (req.admin.role == "admin") {
+    req.user = decoded as { userId: string, role: string };
+    if (req.user.role == UserRole.ADMIN) {
       next();
     } else {
-      return res
+      res
         .status(404)
         .json({ message: "You're not authorised for this operation" });
+      return;
     }
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token", error });
+    return;
   }
 };
 

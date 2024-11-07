@@ -3,7 +3,7 @@ import PostRepository from "../../../../application/repositories/user/postReposi
 import GetComments from "../../../../application/useCases/user/post/getComments";
 import CommentRepository from "../../../../application/repositories/user/commentRepository";
 export default class GetCommentController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
 
     const getComments = new GetComments(
@@ -13,12 +13,13 @@ export default class GetCommentController {
 
     try {
       const commentData = await getComments.execute(postId);
-      return res.status(200).json({ commentData: commentData });
+      res.status(200).json({ commentData: commentData });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

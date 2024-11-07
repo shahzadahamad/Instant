@@ -4,7 +4,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import ReportPost from "../../../../application/useCases/user/post/reportPost";
 
 export default class ReportPostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { reason } = req.query;
     const { userId } = req.user;
@@ -15,13 +15,14 @@ export default class ReportPostController {
     );
 
     try {
-      const actionStatus = await reportPost.execute(userId, postId, reason);
-      return res.status(200).json({message:actionStatus});
+      const actionStatus = await reportPost.execute(userId, postId, reason as string);
+      res.status(200).json({ message: actionStatus });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

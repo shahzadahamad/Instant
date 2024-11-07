@@ -6,7 +6,7 @@ import PasswordHasher from "../../../../application/providers/passwordHasher";
 
 
 export default class CreateUserController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { fullname, username, email, password, id, otp } = req.body;
 
     const createUser = new CreateUser(
@@ -18,12 +18,13 @@ export default class CreateUserController {
     try {
       await createUser.execute(fullname, username, email, password, id, otp);
 
-      return res.status(200).json({ message: "Registration successful!" });
+      res.status(200).json({ message: "Registration successful!" });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

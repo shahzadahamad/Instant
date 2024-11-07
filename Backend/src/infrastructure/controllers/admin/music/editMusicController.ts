@@ -4,7 +4,7 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import EditMusic from "../../../../application/useCases/admin/music/editMusic";
 
 export default class EditMusicController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
     const { title } = req.body;
     const file = req.file;
@@ -13,12 +13,15 @@ export default class EditMusicController {
 
     try {
       await editMusic.execute(_id, title, file);
-      return res.status(200).json({ message: "Music Updated Successfully!" });
+      res.status(200).json({ message: "Music Updated Successfully!" });
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }

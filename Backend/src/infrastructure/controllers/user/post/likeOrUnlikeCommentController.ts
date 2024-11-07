@@ -5,7 +5,7 @@ import CommentRepository from "../../../../application/repositories/user/comment
 import LikeOrUnlikeComment from "../../../../application/useCases/user/post/likeOrUnlikeComment";
 
 export default class LikeOrUnlikeCommentController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId, commentId, status } = req.params;
     const { userId } = req.user;
     const likeOrUnlikeComment = new LikeOrUnlikeComment(
@@ -21,12 +21,13 @@ export default class LikeOrUnlikeCommentController {
         userId,
         status
       );
-      return res.status(200).json(actionStatus);
+      res.status(200).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

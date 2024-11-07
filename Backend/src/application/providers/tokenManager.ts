@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export default class TokenManager {
   public generateAccessToken(payload: {
@@ -22,7 +22,7 @@ export default class TokenManager {
     });
   }
 
-  public verifyAccessToken(token: string): string | object {
+  public verifyAccessToken(token: string): string | JwtPayload {
     return jwt.verify(token, process.env.JWT_SECRET!);
   }
 

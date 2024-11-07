@@ -4,10 +4,10 @@ import LikeRepository from "../../../../application/repositories/user/likeReposi
 import CheckHasUserLikedComment from "../../../../application/useCases/user/post/checkHasUserLikedComment";
 
 export default class CheckingHasUserLikedCommentController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
-    const { commentIds = "" } = req.query;
+    const { commentIds = "" } = req.query as { commentIds: string };
     const checkHasUserLikedComment = new CheckHasUserLikedComment(
       new PostRepository(),
       new LikeRepository()
@@ -21,12 +21,13 @@ export default class CheckingHasUserLikedCommentController {
         userId,
         commentIdsArray
       );
-      return res.status(200).json(checkDetials);
+      res.status(200).json(checkDetials);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

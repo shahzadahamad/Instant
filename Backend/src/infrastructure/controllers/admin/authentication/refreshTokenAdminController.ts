@@ -4,7 +4,7 @@ import AdminRepository from "../../../../application/repositories/admin/adminRep
 import HandleAdminRefreshToken from "../../../../application/useCases/admin/authentication/handleAdminRefreshToken";
 
 export default class RefreshTokenAdminController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const handleRefreshToken = new HandleAdminRefreshToken(
       new AdminRepository(),
       new TokenManager()
@@ -13,17 +13,21 @@ export default class RefreshTokenAdminController {
     try {
       const status = await handleRefreshToken.execute(adminRefreshToken);
       if (status.clearCookie) {
-        return res
+        res
           .clearCookie("adminRefreshToken")
           .status(403)
           .json({ error: "Invalid refresh token" });
+        return;
       }
-      return res.status(200).json({ adminToken: status.adminToken });
+      res.status(200).json({ adminToken: status.adminToken });
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }

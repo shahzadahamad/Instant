@@ -7,7 +7,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import CommentRepository from "../../../../application/repositories/user/commentRepository";
 
 export default class DeletePostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
 
@@ -21,12 +21,13 @@ export default class DeletePostController {
 
     try {
       const data = await deletePost.execute(postId, userId);
-      return res.status(200).json(data);
+      res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

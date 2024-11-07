@@ -5,7 +5,7 @@ import ResetPassword from "../../../../application/useCases/user/authentication/
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 
 export default class ResetPasswordController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { password } = req.body;
     const { _id, token } = req.params;
 
@@ -17,12 +17,13 @@ export default class ResetPasswordController {
 
     try {
       const status = await resetPassword.execute(_id, token, password);
-      return res.status(200).json({ message: status });
+      res.status(200).json({ message: status });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

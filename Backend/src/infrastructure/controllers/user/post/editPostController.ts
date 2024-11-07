@@ -4,7 +4,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import EditPost from "../../../../application/useCases/user/post/editPost";
 
 export default class EditPostController {
-  public async handle(req: any, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { postId } = req.params;
     const { caption, hideLikeAndViewCount, turnOffCounting } = req.body;
@@ -19,12 +19,13 @@ export default class EditPostController {
         hideLikeAndViewCount,
         turnOffCounting
       );
-      return res.status(200).json(postData);
+      res.status(200).json(postData);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

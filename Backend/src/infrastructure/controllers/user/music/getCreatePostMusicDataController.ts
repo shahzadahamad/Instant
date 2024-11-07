@@ -3,7 +3,7 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import GetCreatePostMusicData from "../../../../application/useCases/user/music/getCreatePostMusicData";
 
 export default class GetCreatePostMusicDataController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { searchVal } = req.query;
     const getCreatePostMusicData = new GetCreatePostMusicData(
       new MusicRepository()
@@ -12,12 +12,13 @@ export default class GetCreatePostMusicDataController {
     try {
       const musicData = await getCreatePostMusicData.execute(searchVal);
 
-      return res.status(200).json(musicData);
+      res.status(200).json(musicData);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
     }
   }
 }

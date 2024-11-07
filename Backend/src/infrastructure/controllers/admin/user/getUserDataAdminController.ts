@@ -3,21 +3,24 @@ import GetUserDataAdmin from "../../../../application/useCases/admin/user/getUse
 import UserRepository from "../../../../application/repositories/user/userRepository";
 
 export default class GetUserDataAdminController {
-  public async handle(req: Request, res: Response): Promise<Response | void> {
+  public async handle(req: Request, res: Response): Promise<void> {
     const { page, search = "" } = req.query;
-    const pageNumber = parseInt(page as string)
+    const pageNumber = parseInt(page as string);
 
     const getUserData = new GetUserDataAdmin(new UserRepository());
 
     try {
-      const userData = await getUserData.execute(pageNumber,search);
+      const userData = await getUserData.execute(pageNumber, search);
 
-      return res.status(200).json(userData);
+      res.status(200).json(userData);
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
+        return;
       }
-      return res.status(400).json({ error: "Unknown error" });
+      res.status(400).json({ error: "Unknown error" });
+      return;
     }
   }
 }
