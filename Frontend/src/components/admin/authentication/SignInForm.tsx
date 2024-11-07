@@ -55,6 +55,7 @@ const SignInForm = () => {
         console.error("Unexpected error:", error);
         toast.error("An unexpected error occurred");
       }
+      setLoading(false);
     }
   };
 

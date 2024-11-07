@@ -5,8 +5,8 @@ export const signUpSchema = z
     fullname: z
       .string()
       .min(1, "Fullname is required")
-      .min(6, "Password must be at least 6 letters")
-      .max(30, "Password must be at most 30 letters")
+      .min(6, "Fullname must be at least 6 letters")
+      .max(30, "Fullname must be at most 30 letters")
       .regex(/^(?!.*\s{2,})[a-zA-Z ]+$/, "Fullname should only contain letter"),
     username: z
       .string()
@@ -99,8 +99,8 @@ export const editProfileSchema = z.object({
   fullname: z
     .string()
     .min(1, "Fullname is required")
-    .min(6, "Password must be at least 6 letters")
-    .max(30, "Password must be at most 30 letters")
+    .min(6, "Fullname must be at least 6 letters")
+    .max(30, "Fullname must be at most 30 letters")
     .regex(/^(?!.*\s{2,})[a-zA-Z ]+$/, "Fullname should only contain letter"),
   username: z
     .string()
@@ -161,3 +161,57 @@ export const createMusicSchema = z.object({
     .min(4, "Title must be at least 4 characters")
     .max(32, "Title must be at most 32 characters"),
 });
+
+export const adminEditProfile = z.object({
+  username: z
+    .string()
+    .min(1, "Username is required")
+    .min(6, "Username must be at least 6 characters")
+    .max(20, "Username must be at most 20 characters")
+    .regex(
+      /^[a-z0-9_]+$/,
+      "Username should only contain lowercase letters, numbers, and underscores and should not contain spaces or uppercase letters"
+    ),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .min(6, "Email must be at least 6 characters")
+    .max(30, "Email must be at most 30 letters")
+    .email("Invalid email address")
+    .regex(/^\S+$/, "Email should not contain spaces"),
+});
+
+export const adminChangePassword = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    // .max(32, "Password must be at most 32 characters")
+    // .regex(/^\S+$/, "Password should not contain spaces")
+    // .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    // .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    // .regex(/\d/, "Password must contain at least one number")
+    // .regex(
+    //   /[^a-zA-Z0-9]/,
+    //   "Password must contain at least one special character"
+    // ),
+    newPassword: z
+      .string()
+      .min(1, "New password is required")
+      .min(8, "New password must be at least 8 characters"),
+    // .max(32, "Password must be at most 32 characters")
+    // .regex(/^\S+$/, "Password should not contain spaces")
+    // .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    // .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    // .regex(/\d/, "Password must contain at least one number")
+    // .regex(
+    //   /[^a-zA-Z0-9]/,
+    //   "Password must contain at least one special character"
+    // ),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

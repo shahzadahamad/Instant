@@ -1,12 +1,132 @@
-import { useRef, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useLayoutEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { GetAdminData, GetAdminFromData } from "@/types/admin/profile";
+import { editProfile, getAdminDataApi } from "@/apis/api/adminApi";
+import { adminEditProfile } from "@/validations/authValidations";
+import { AxiosError } from "axios";
+import { adminLoginSuccess } from "@/redux/slice/admin/adminSlice";
+import { useDispatch } from "react-redux";
+import AdminProfileChangePassword from "./AdminProfileChangePassword";
 
 const AdminProfileDetails = () => {
+  const dispatch = useDispatch();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const profileInputRef = useRef<HTMLInputElement | null>(null);
   const [edit, setEdit] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const passwordFromRef = useRef<HTMLDivElement | null>(null);
+  const [image, setImage] = useState("");
+  const [adminData, setAdminData] = useState<GetAdminData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [adminFromData, setAdminFromData] = useState<GetAdminFromData>({
+    username: "",
+    email: "",
+    profilePicture: "",
+  });
+
+  useLayoutEffect(() => {
+    const fetchAdminData = async () => {
+      const res = await getAdminDataApi();
+      setAdminData(res);
+      setAdminFromData(res);
+    };
+    fetchAdminData();
+  }, []);
+
+  const handleProfileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const files = e.target.files;
+    if (files && files.length === 1) {
+      const file = files[0];
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "image/bmp",
+        "image/tiff",
+        "image/svg+xml",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Only images are allowed.");
+        return;
+      }
+
+      const maxSizeInMB = 10;
+      if (file.size > maxSizeInMB * 1024 * 1024) {
+        toast.error(`File size must be less than ${maxSizeInMB}MB.`);
+        return;
+      }
+
+      setImage(URL.createObjectURL(file));
+      setAdminFromData((prev) => ({
+        ...prev,
+        profilePicture: file,
+      }));
+    } else {
+      toast.error("Please select one file to upload.");
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAdminFromData({ ...adminFromData, [e.target.id]: e.target.value });
+  };
+
+  const handleChangePassword = (status: boolean) => {
+    if (status) {
+      setEdit(false);
+      setImage("");
+      setAdminFromData({
+        username: adminData ? adminData.username : "",
+        email: adminData ? adminData.email : "",
+        profilePicture: adminData ? adminData.profilePicture : "",
+      })
+      setShowPasswordForm(false);
+    } else {
+      setShowPasswordForm(false);
+    }
+  }
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const parsed = adminEditProfile.safeParse(adminFromData);
+    if (!parsed.success) {
+      const errorMessages = parsed.error.issues.map((err) => err.message);
+      toast.error(errorMessages[0]);
+      setLoading(false);
+      return;
+    }
+    toast.dismiss();
+
+    const formData = new FormData();
+
+    Object.entries(adminFromData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    try {
+      const response = await editProfile(formData);
+      setTimeout(() => {
+        dispatch(adminLoginSuccess(response));
+        setAdminData({ username: response.username, email: response.email, profilePicture: response.profilePicture });
+        setImage("");
+        setEdit(false);
+        toast.success("Profile Updated");
+        setLoading(false);
+      }, 500);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+        setLoading(false);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+        setLoading(false);
+      }
+    }
+  }
 
   return (
     <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
@@ -15,7 +135,7 @@ const AdminProfileDetails = () => {
           <div className="relative">
             <div className="w-24 h-24 rounded-full border overflow-hidden">
               <img
-                src="/avatar.png"
+                src={(edit ? image : "") || adminData?.profilePicture}
                 alt="Admin"
                 className="w-full h-full object-cover"
               />
@@ -44,6 +164,7 @@ const AdminProfileDetails = () => {
                 </button>
                 <input
                   ref={profileInputRef}
+                  onChange={handleProfileUpload}
                   type="file"
                   accept="image/*"
                   hidden
@@ -73,8 +194,11 @@ const AdminProfileDetails = () => {
             </label>
             <input
               type="text"
+              onChange={handleInputChange}
               disabled={!edit}
-              value="shahzad"
+              id="username"
+              defaultValue={adminData?.username}
+              value={adminFromData.username}
               className={`w-full ${!edit && "cursor-not-allowed"
                 } flex items-center border rounded-lg p-3 bg-transparent outline-none`}
             />
@@ -86,8 +210,11 @@ const AdminProfileDetails = () => {
             </label>
             <input
               type="text"
+              onChange={handleInputChange}
               disabled={!edit}
-              value="shahzad@gmail.com"
+              id="email"
+              defaultValue={adminData?.email}
+              value={adminFromData.email}
               className={`w-full ${!edit && "cursor-not-allowed"
                 } flex items-center border rounded-lg p-3 bg-transparent outline-none`}
             />
@@ -99,16 +226,27 @@ const AdminProfileDetails = () => {
           >
             <button
               type="button"
-              onClick={() => setEdit(false)}
+              onClick={() => {
+                setEdit(false);
+                setImage("");
+                setAdminFromData({
+                  username: adminData ? adminData.username : "",
+                  email: adminData ? adminData.email : "",
+                  profilePicture: adminData ? adminData.profilePicture : "",
+                })
+              }}
               className="px-4 py-1.5 min-w-24 bg-transparent border dark:text-white text-black hover:text-white hover:bg-[#B22222] rounded-lg font-medium transition-colors"
             >
               Cancel
             </button>
             <button
               type="button"
-              className="px-4 py-1.5 min-w-24 border bg-transparent dark:text-white text-black hover:text-white rounded-lg hover:bg-blue-500 font-medium transition-colors"
+              onClick={handleSubmit}
+              className={`px-4 py-1.5 min-w-24 border bg-transparent  dark:text-white text-black hover:text-white rounded-lg hover:bg-blue-500 font-medium transition-colors ${loading
+                && "opacity-60 cursor-not-allowed"
+                }`}
             >
-              Save
+              {loading ? <div className="spinner"></div> : "Save"}
             </button>
           </div>
         </div>
@@ -150,99 +288,11 @@ const AdminProfileDetails = () => {
           <div
             ref={passwordFromRef}
             className={`transition-all duration-300 ease-in-out overflow-hidden ${showPasswordForm
-                ? "max-h-96 opacity-100 pt-6 pb-6"
-                : "max-h-0 opacity-0"
+              ? "max-h-96 opacity-100 pt-6 pb-6"
+              : "max-h-0 opacity-0"
               }`}
           >
-            <form className="space-y-4">
-              <div>
-                <label className="block text-[#a9a6a4] text-sm font-normal mb-1">
-                  Current Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="currentPassword"
-                    className="w-full p-3 border rounded-lg bg-transparent outline-none"
-                    required
-                  />
-                  <span
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <Eye className="text-[#65656b] text-xs" size={20} />
-                    ) : (
-                      <EyeOff className="text-[#65656b] text-xs" size={20} />
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[#a9a6a4] text-sm font-normal mb-1">
-                  New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="newPassword"
-                    className="w-full p-3 border rounded-lg bg-transparent outline-none"
-                    required
-                  />
-                  <span
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <Eye className="text-[#65656b] text-xs" size={20} />
-                    ) : (
-                      <EyeOff className="text-[#65656b] text-xs" size={20} />
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[#a9a6a4] text-sm font-normal mb-1">
-                  Confirm New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    className="w-full p-3 border rounded-lg bg-transparent outline-none"
-                    required
-                  />
-                  <span
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <Eye className="text-[#65656b] text-xs" size={20} />
-                    ) : (
-                      <EyeOff className="text-[#65656b] text-xs" size={20} />
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowPasswordForm(false)}
-                  className="px-4 py-2 bg-transparent border dark:text-white text-black hover:text-white rounded-lg transition-colors hover:bg-[#B22222] font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 dark:text-white text-black hover:text-white rounded-lg hover:bg-blue-500 border font-medium transition-colors"
-                >
-                  Update Password
-                </button>
-              </div>
-            </form>
+            <AdminProfileChangePassword handleChangePassword={handleChangePassword} />
           </div>
         </div>
       </div>
