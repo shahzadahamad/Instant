@@ -189,7 +189,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
     fetchComments();
     currentUser();
-    return () => {};
+    return () => { };
   }, [post, currentIndex]);
 
   useLayoutEffect(() => {
@@ -198,7 +198,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       setIsLiked(response);
     };
     checkHasuserLikedCurrentPost(post[currentIndex]._id);
-    return () => {};
+    return () => { };
   }, [post, currentIndex]);
 
   const handleEmojiClick = (emoji: string) => {
@@ -391,8 +391,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
     }
   };
 
-  const handleDeletePostData = () => {
-    close();
+  const handleDeletePostData = (status?: boolean) => {
+    close(status);
   };
 
   const handleModalOpenAndClose = (status: boolean) => {
@@ -560,9 +560,9 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
             prevComments.map((comment) =>
               comment._id === res._id
                 ? {
-                    ...comment,
-                    reply: res.reply,
-                  }
+                  ...comment,
+                  reply: res.reply,
+                }
                 : comment
             )
           );
@@ -750,9 +750,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
               onClick={() => handleDeleteComment(openDeleteCommentModal.reply)}
             >
               <h1
-                className={`${
-                  !loading ? "text-[#ed4956] font-bold" : ""
-                }  text-center`}
+                className={`${!loading ? "text-[#ed4956] font-bold" : ""
+                  }  text-center`}
               >
                 {loading ? <div className="spinner"></div> : "Delete"}
               </h1>
@@ -871,7 +870,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           <div className="flex item-center justify-between p-3 border-b">
             <div
               className="flex gap-2 cursor-pointer"
-              onClick={handleDeletePostData}
+              onClick={() => handleDeletePostData()}
             >
               <div className="w-8 h-8">
                 <img
@@ -881,8 +880,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         "string"
                         ? post[currentIndex].userId.profilePicture
                         : URL.createObjectURL(
-                            post[currentIndex].userId.profilePicture
-                          )
+                          post[currentIndex].userId.profilePicture
+                        )
                       : ""
                   }
                   className="w-[27px] h-[27px] rounded-full object-cover"
@@ -909,15 +908,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                   <div className="w-full p-3 py-4 flex gap-2 items-center">
                     <div className="w-8 h-8">
                       <img
-                        onClick={handleDeletePostData}
+                        onClick={() => handleDeletePostData()}
                         src={
                           post[currentIndex].userId?.profilePicture
                             ? typeof post[currentIndex].userId
-                                .profilePicture === "string"
+                              .profilePicture === "string"
                               ? post[currentIndex].userId.profilePicture
                               : URL.createObjectURL(
-                                  post[currentIndex].userId.profilePicture
-                                )
+                                post[currentIndex].userId.profilePicture
+                              )
                             : ""
                         }
                         className="w-[27px] h-[27px] rounded-full object-cover cursor-pointer"
@@ -928,7 +927,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                       <div className="flex text-sm font-semibold">
                         <h1
                           className="cursor-pointer"
-                          onClick={handleDeletePostData}
+                          onClick={() => handleDeletePostData()}
                         >
                           {post[currentIndex].userId.username}&nbsp;
                         </h1>
@@ -998,29 +997,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                             </h1>
                             {(currentUser === item.userId._id ||
                               post[currentIndex].userId._id ===
-                                currentUser) && (
-                              <FontAwesomeIcon
-                                icon={faEllipsis}
-                                onClick={() =>
-                                  setOpenDeleteCommentModal({
-                                    open: true,
-                                    reply: false,
-                                    id: item._id,
-                                  })
-                                }
-                                className="hidden cursor-pointer group-hover:block"
-                              />
-                            )}
+                              currentUser) && (
+                                <FontAwesomeIcon
+                                  icon={faEllipsis}
+                                  onClick={() =>
+                                    setOpenDeleteCommentModal({
+                                      open: true,
+                                      reply: false,
+                                      id: item._id,
+                                    })
+                                  }
+                                  className="hidden cursor-pointer group-hover:block"
+                                />
+                              )}
                           </div>
                         </div>
                       </div>
                       <FontAwesomeIcon
                         onClick={() => handleCommentLike(item._id)}
-                        className={`${
-                          checkIsCommentLiked[item._id]?.liked
-                            ? "text-[#ff3040]"
-                            : "text-white"
-                        } hover:cursor-pointer text-xs`}
+                        className={`${checkIsCommentLiked[item._id]?.liked
+                          ? "text-[#ff3040]"
+                          : "text-white"
+                          } hover:cursor-pointer text-xs`}
                         icon={
                           checkIsCommentLiked[item._id]?.liked
                             ? faHeart
@@ -1129,8 +1127,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                           reply.userId === currentUser
                                             ? handleDeletePostData()
                                             : navigate(
-                                                `/user/${reply.username}`
-                                              )
+                                              `/user/${reply.username}`
+                                            )
                                         }
                                         className="font-semibold cursor-pointer"
                                       >
@@ -1146,13 +1144,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                       </h1>
                                       {checkIsCommentLiked[reply._id]?.count >
                                         0 && (
-                                        <h1 className="text-xs">
-                                          {" "}
-                                          {checkIsCommentLiked[reply._id]
-                                            ?.count + " "}
-                                          like
-                                        </h1>
-                                      )}
+                                          <h1 className="text-xs">
+                                            {" "}
+                                            {checkIsCommentLiked[reply._id]
+                                              ?.count + " "}
+                                            like
+                                          </h1>
+                                        )}
                                       <h1
                                         onClick={() =>
                                           toggleReplyReplyInput(
@@ -1166,29 +1164,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                       </h1>
                                       {(currentUser === reply.userId ||
                                         post[currentIndex].userId._id ===
-                                          currentUser) && (
-                                        <FontAwesomeIcon
-                                          onClick={() =>
-                                            setOpenDeleteCommentModal({
-                                              open: true,
-                                              reply: true,
-                                              id: reply._id,
-                                            })
-                                          }
-                                          icon={faEllipsis}
-                                          className="hidden cursor-pointer group-hover:block"
-                                        />
-                                      )}
+                                        currentUser) && (
+                                          <FontAwesomeIcon
+                                            onClick={() =>
+                                              setOpenDeleteCommentModal({
+                                                open: true,
+                                                reply: true,
+                                                id: reply._id,
+                                              })
+                                            }
+                                            icon={faEllipsis}
+                                            className="hidden cursor-pointer group-hover:block"
+                                          />
+                                        )}
                                     </div>
                                   </div>
                                 </div>
                                 <FontAwesomeIcon
                                   onClick={() => handleCommentLike(reply._id)}
-                                  className={`${
-                                    checkIsCommentLiked[reply._id]?.liked
-                                      ? "text-[#ff3040]"
-                                      : "text-white"
-                                  } hover:cursor-pointer text-xs`}
+                                  className={`${checkIsCommentLiked[reply._id]?.liked
+                                    ? "text-[#ff3040]"
+                                    : "text-white"
+                                    } hover:cursor-pointer text-xs`}
                                   icon={
                                     checkIsCommentLiked[reply._id]?.liked
                                       ? faHeart
@@ -1283,9 +1280,8 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
               <div className="dark:text-white text-black flex gap-3 text-2xl">
                 <FontAwesomeIcon
                   onClick={handleLikeAndUnlikePost}
-                  className={`${
-                    isLiked ? "text-[#ff3040]" : "text-white hover:opacity-70"
-                  } hover:cursor-pointer transition-colors`}
+                  className={`${isLiked ? "text-[#ff3040]" : "text-white hover:opacity-70"
+                    } hover:cursor-pointer transition-colors`}
                   icon={isLiked ? faHeart : faHeartRegular}
                 />
                 <FontAwesomeIcon
@@ -1442,11 +1438,14 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                 {taggedUser.map((user) => (
                   <div
                     key={user._id}
-                    onClick={() =>
-                      currentUser === user._id
-                        ? handleDeletePostData()
-                        : navigate(`/user/${user.username}`)
-                    }
+                    onClick={() => {
+                      if (currentUser === user._id) {
+                        handleDeletePostData(true);
+                      } else {
+                        handleDeletePostData();
+                        navigate(`/user/${user.username}`);
+                      }
+                    }}
                     className="w-full rounded-md flex border justify-between items-center p-2 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 cursor-pointer mb-2"
                   >
                     <div className="flex gap-2">
@@ -1473,7 +1472,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-    </div>
+    </div >
   );
 };
 

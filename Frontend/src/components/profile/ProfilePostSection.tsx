@@ -29,29 +29,38 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
   const fetchUserData = async () => {
-    const res = await apiClient.get(`/user/post/get-user-post-data`);
-    setPostData(res.data);
+    if (activeTab === "POSTS") {
+      const res = await apiClient.get(`/user/post/get-user-post-data`);
+      setPostData(res.data);
+    } else if (activeTab === "TAGGED") {
+      const res = await apiClient.get(`/user/post/tagged`);
+      setPostData(res.data);
+    } else if (activeTab === "LIKED") {
+      const res = await apiClient.get(`/user/post/liked`);
+      setPostData(res.data);
+    }
   };
   useLayoutEffect(() => {
     fetchUserData();
-  }, []);
+  }, [activeTab]);
 
-  const closeModal = () => {
+  const closeModal = (status: boolean = false) => {
     fetchUserData();
     setSelectedPost(null);
     fetchPostDetialData();
-    navigate("/profile");
+    if (status) {
+      navigate("/profile");
+    }
   };
 
   return (
     <div className="w-full">
       <div className="flex gap-10 transition-all text-xs p-4 items-center justify-center">
         <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "POSTS"
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "POSTS"
               ? "font-bold border-b-1 py-1 dark:border-white border-black"
               : ""
-          }`}
+            }`}
           onClick={() => setActiveTab("POSTS")}
         >
           <FontAwesomeIcon icon={faBorderAll} />
@@ -59,11 +68,10 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
         </div>
 
         <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "TAGGED"
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "TAGGED"
               ? "font-bold border-b-1 py-1 dark:border-white border-black"
               : ""
-          }`}
+            }`}
           onClick={() => setActiveTab("TAGGED")}
         >
           <FontAwesomeIcon icon={faUserCircle} />
@@ -71,11 +79,10 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
         </div>
 
         <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "LIKED"
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "LIKED"
               ? "font-bold border-b-1 py-1 dark:border-white border-black"
               : ""
-          }`}
+            }`}
           onClick={() => setActiveTab("LIKED")}
         >
           <FontAwesomeIcon icon={faHeartRegular} />
@@ -228,14 +235,22 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
               stroke-width="2"
             ></path>
           </svg>
-          <h1 className="font-extrabold text-3xl">Share photos</h1>
-          <p>When you share photos, they will appear on your profile.</p>
-          <p
-            onClick={() => navigate("/create-post/image")}
-            className="text-[#0085d4] cursor-pointer"
-          >
-            Share your first photo
-          </p>
+          {activeTab === "POSTS" ? (
+            <>
+              <h1 className="font-extrabold text-3xl">Share photos</h1>
+              <p>When you share photos, they will appear on your profile.</p>
+              <p
+                onClick={() => navigate("/create-post/image")}
+                className="text-[#0085d4] cursor-pointer"
+              >
+                Share your first photo
+              </p>
+            </>
+          ) : activeTab === "LIKED" || activeTab === "TAGGED" ? (
+            <h1 className="font-extrabold text-3xl">No posts</h1>
+          ) : (
+            ""
+          )}
         </div>
       )}
     </div>

@@ -2,7 +2,6 @@ import apiClient from "@/apis/apiClient";
 import { GetUserPostData } from "@/types/profile/profile";
 import {
   faUserCircle,
-  faHeart as faHeartRegular,
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faBorderAll,
@@ -19,38 +18,48 @@ const UserProfilePostSection = () => {
   const navigate = useNavigate();
   const { username } = useParams();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
-  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED">(
+  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED">(
     "POSTS"
   );
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
   const fetchUserData = async () => {
-    const res = await apiClient.get(`/user/post/get-user-post-data`, {
-      params: { username: username },
-    });
-    setPostData(res.data);
+    if (activeTab === 'POSTS') {
+      const res = await apiClient.get(`/user/post/get-user-post-data`, {
+        params: { username: username },
+      });
+      setPostData(res.data);
+    } else if (activeTab == 'TAGGED') {
+      const res = await apiClient.get(`/user/post/tagged`, {
+        params: { username: username },
+      });
+      setPostData(res.data);
+    }
   };
   useLayoutEffect(() => {
     if (username) {
       fetchUserData();
     }
-  }, [username]);
+  }, [activeTab, username]);
 
-  const closeModal = () => {
+  const closeModal = (status: boolean = false) => {
     fetchUserData();
     setSelectedPost(null);
-    navigate(`/user/${username}`);
+    if (status) {
+      navigate('/profile');
+    } else {
+      navigate(`/user/${username}`);
+    }
   };
 
   return (
     <div className="w-full">
       <div className="flex gap-10 transition-all text-xs p-4 items-center justify-center">
         <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "POSTS"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
-          }`}
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "POSTS"
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
+            }`}
           onClick={() => setActiveTab("POSTS")}
         >
           <FontAwesomeIcon icon={faBorderAll} />
@@ -58,27 +67,14 @@ const UserProfilePostSection = () => {
         </div>
 
         <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "TAGGED"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
-          }`}
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "TAGGED"
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
+            }`}
           onClick={() => setActiveTab("TAGGED")}
         >
           <FontAwesomeIcon icon={faUserCircle} />
           <h1>TAGGED</h1>
-        </div>
-
-        <div
-          className={`flex items-center gap-1 cursor-pointer ${
-            activeTab === "LIKED"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
-          }`}
-          onClick={() => setActiveTab("LIKED")}
-        >
-          <FontAwesomeIcon icon={faHeartRegular} />
-          <h1>LIKED</h1>
         </div>
       </div>
       {(selectedPost || selectedPost === 0) && (
@@ -227,7 +223,13 @@ const UserProfilePostSection = () => {
               stroke-width="2"
             ></path>
           </svg>
-          <h1 className="font-extrabold text-3xl">No posts yet</h1>
+          {
+            activeTab === 'POSTS' ? (
+              <h1 className="font-extrabold text-3xl">No posts yet</h1>
+            ) : activeTab === 'TAGGED' ? (
+              <h1 className="font-extrabold text-3xl">No posts</h1>
+            ) : ""
+          }
         </div>
       )}
     </div>

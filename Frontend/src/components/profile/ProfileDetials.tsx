@@ -46,8 +46,8 @@ const ProfileDetials = () => {
             </div>
             <div className="flex gap-5 cursor-pointer">
               <p>{count} posts</p>
-              <p>{userData?.followers.length} followers</p>
-              <p>{userData?.followings.length} following</p>
+              <p>0 followers</p>
+              <p>0 following</p>
             </div>
           </div>
         </div>

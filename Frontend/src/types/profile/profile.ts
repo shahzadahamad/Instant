@@ -74,7 +74,7 @@ export interface GetUserPostData {
 export interface PostModalProps {
   post: GetUserPostData[];
   imageIndex: number;
-  close: () => void;
+  close: (status?: boolean) => void;
 }
 
 export interface PostActionModalProps {
