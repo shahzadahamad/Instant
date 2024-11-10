@@ -7,7 +7,7 @@ export interface IPost extends Document {
   post: PostData[];
   caption: string;
   musicId: string;
-  aspectRatio: String;
+  aspectRatio: string;
   hideLikeAndView: boolean;
   hideComment: boolean;
   likeCount: number;

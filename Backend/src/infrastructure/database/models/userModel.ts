@@ -11,11 +11,8 @@ export interface IUser extends Document {
   gender?: string;
   dateOfBirth?: string;
   bio?: string;
-  isPrivateAccount?: Boolean;
-  isBlock?: Boolean;
-  followers?: string[];
-  following?: string[];
-  blockedUser?: string[];
+  isPrivateAccount?: boolean;
+  isBlock?: boolean;
   role?: string;
 }
 
@@ -73,21 +70,6 @@ const userSchema: Schema = new Schema(
       type: Boolean,
       required: true,
       default: false,
-    },
-    followers: {
-      type: Array,
-      required: true,
-      default: [],
-    },
-    followings: {
-      type: Array,
-      required: true,
-      default: [],
-    },
-    blockerUser: {
-      type: Array,
-      required: true,
-      default: [],
     },
   },
   {
