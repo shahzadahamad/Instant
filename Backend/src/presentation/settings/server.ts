@@ -12,7 +12,7 @@ import userPostRouter from "../routes/user/post";
 import morgan from 'morgan';
 import adminRouter from "../routes/admin/admin";
 
-const app = express()
+const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));

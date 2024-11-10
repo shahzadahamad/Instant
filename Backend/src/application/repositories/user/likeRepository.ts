@@ -125,4 +125,19 @@ export default class LikeRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findLikedPostUser(userId: string) {
+    try {
+      return await LikeModel.find({
+        postId: { $exists: true },
+        likedUsers: userId,
+      }, { postId: 1, _id: 0 }).then(docs => docs.map(doc => doc.postId?.toString()));
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error delete like comment");
+      throw new Error("Unknown error");
+    }
+  }
 }
