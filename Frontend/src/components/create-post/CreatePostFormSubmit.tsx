@@ -62,8 +62,7 @@ const CreatePostFormSubmit = () => {
             const blob = await response.blob();
             const file = new File(
               [blob],
-              `post-${
-                postItem.type === "image" ? `image${index}` : "video"
+              `post-${postItem.type === "image" ? `image${index}` : "video"
               }-${Date.now()}.${postItem.type === "image" ? "png" : "mp4"}`,
               {
                 type: postItem.type === "image" ? "image/png" : postItem.type,
@@ -101,17 +100,14 @@ const CreatePostFormSubmit = () => {
         aspectRatio === 1
           ? "1/1"
           : aspectRatio === 0.8
-          ? "4/5"
-          : aspectRatio === 1.7777777777777777
-          ? "16/9"
-          : aspectRatio;
+            ? "4/5"
+            : aspectRatio === 1.7777777777777777
+              ? "16/9"
+              : aspectRatio;
       formData.append("aspectRatio", String(covertedAspectRatio));
       navigate("/profile");
-      toast.promise(apiClient.post(`/user/post/create-post`, formData), {
-        loading: "We're processing your post. This will just take a moment...",
-        success: (response) => <b>{response.data}</b>,
-        error: <b>Post creating failed</b>,
-      });
+      toast.loading("We're processing your post. This will just take a moment...");
+      await apiClient.post(`/user/post/create-post`, formData)
     } catch (error) {
       toast.error("Error creating post");
       console.error("Error handling post share:", error);
@@ -142,9 +138,8 @@ const CreatePostFormSubmit = () => {
       />
       <div
         ref={emojiPickerRef}
-        className={`absolute bottom-[20%] right-[3%] transition-all duration-300 ease-in-out ${
-          open ? "opacity-100 scale-100" : "opacity-0 scale-0"
-        }`}
+        className={`absolute bottom-[20%] right-[3%] transition-all duration-300 ease-in-out ${open ? "opacity-100 scale-100" : "opacity-0 scale-0"
+          }`}
         style={{ transformOrigin: "bottom" }}
       >
         <EmojiPicker
@@ -193,18 +188,16 @@ const CreatePostFormSubmit = () => {
                 />
                 <div className="relative">
                   <div
-                    className={`block w-12 h-7 bg-gray-300 rounded-full transition duration-300 ${
-                      hideLikeAndViewCount
-                        ? "dark:bg-[#f8f9f9] bg-blue-500"
-                        : "dark:bg-[#323539] bg-[#e5e7eb]"
-                    }`}
+                    className={`block w-12 h-7 bg-gray-300 rounded-full transition duration-300 ${hideLikeAndViewCount
+                      ? "dark:bg-[#f8f9f9] bg-blue-500"
+                      : "dark:bg-[#323539] bg-[#e5e7eb]"
+                      }`}
                   ></div>
                   <div
-                    className={`dot absolute top-1/2 left-1 dark:bg-[#0f1419] bg-white w-5 h-5 rounded-full transition-transform duration-300 transform ${
-                      hideLikeAndViewCount
-                        ? "translate-x-full -translate-y-1/2"
-                        : "-translate-y-1/2"
-                    }`}
+                    className={`dot absolute top-1/2 left-1 dark:bg-[#0f1419] bg-white w-5 h-5 rounded-full transition-transform duration-300 transform ${hideLikeAndViewCount
+                      ? "translate-x-full -translate-y-1/2"
+                      : "-translate-y-1/2"
+                      }`}
                   ></div>
                 </div>
               </label>
@@ -226,18 +219,16 @@ const CreatePostFormSubmit = () => {
                 />
                 <div className="relative">
                   <div
-                    className={`block w-12 h-7 bg-gray-300 rounded-full transition duration-300 ${
-                      turnOffCounting
-                        ? "dark:bg-[#f8f9f9] bg-blue-500"
-                        : "dark:bg-[#323539] bg-[#e5e7eb]"
-                    }`}
+                    className={`block w-12 h-7 bg-gray-300 rounded-full transition duration-300 ${turnOffCounting
+                      ? "dark:bg-[#f8f9f9] bg-blue-500"
+                      : "dark:bg-[#323539] bg-[#e5e7eb]"
+                      }`}
                   ></div>
                   <div
-                    className={`dot absolute top-1/2 left-1 dark:bg-[#0f1419] bg-white w-5 h-5 rounded-full transition-transform duration-300 transform ${
-                      turnOffCounting
-                        ? "translate-x-full -translate-y-1/2"
-                        : "-translate-y-1/2"
-                    }`}
+                    className={`dot absolute top-1/2 left-1 dark:bg-[#0f1419] bg-white w-5 h-5 rounded-full transition-transform duration-300 transform ${turnOffCounting
+                      ? "translate-x-full -translate-y-1/2"
+                      : "-translate-y-1/2"
+                      }`}
                   ></div>
                 </div>
               </label>

@@ -49,7 +49,7 @@ import {
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
 
-const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
+const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhileTouchOutsideModal }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [open, setOpen] = useState(false);
@@ -101,7 +101,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
       !modalRef.current.contains(event.target as Node) &&
       !(event.target as HTMLElement).closest(".preventbutton")
     ) {
-      close();
+      closeWhileTouchOutsideModal();
       setOpenDeleteCommentModal({ open: false, reply: false, id: "" });
     } else if (
       emojiPickerRef.current &&
@@ -600,7 +600,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           const userCheck = await userExist(username);
           if (userCheck) {
             if (currentUser === userCheck.userId) {
-              handleDeletePostData();
+              handleDeletePostData(true);
             } else {
               navigate(`/user/${userCheck.username}`);
             }
@@ -870,7 +870,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
           <div className="flex item-center justify-between p-3 border-b">
             <div
               className="flex gap-2 cursor-pointer"
-              onClick={() => handleDeletePostData()}
+              onClick={() => {
+                const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
+                if (isCurrentUserPost) {
+                  handleDeletePostData(isCurrentUserPost);
+                } else {
+                  handleDeletePostData();
+                  navigate(`/user/${post[currentIndex].userId.username}`)
+                }
+              }}
             >
               <div className="w-8 h-8">
                 <img
@@ -908,7 +916,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                   <div className="w-full p-3 py-4 flex gap-2 items-center">
                     <div className="w-8 h-8">
                       <img
-                        onClick={() => handleDeletePostData()}
+                        onClick={() => {
+                          const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
+                          if (isCurrentUserPost) {
+                            handleDeletePostData(isCurrentUserPost);
+                          } else {
+                            handleDeletePostData();
+                            navigate(`/user/${post[currentIndex].userId.username}`)
+                          }
+                        }}
                         src={
                           post[currentIndex].userId?.profilePicture
                             ? typeof post[currentIndex].userId
@@ -927,7 +943,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                       <div className="flex text-sm font-semibold">
                         <h1
                           className="cursor-pointer"
-                          onClick={() => handleDeletePostData()}
+                          onClick={() => {
+                            const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
+                            if (isCurrentUserPost) {
+                              handleDeletePostData(isCurrentUserPost);
+                            } else {
+                              handleDeletePostData();
+                              navigate(`/user/${post[currentIndex].userId.username}`)
+                            }
+                          }}
                         >
                           {post[currentIndex].userId.username}&nbsp;
                         </h1>
@@ -950,11 +974,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                       <div className="flex gap-2 items-center">
                         <div className="w-8 h-8">
                           <img
-                            onClick={() =>
-                              item.userId._id === currentUser
-                                ? handleDeletePostData()
-                                : navigate(`/user/${item.userId.username}`)
-                            }
+                            onClick={() => {
+                              const isCurrentUserPost = currentUser === item.userId._id;
+                              if (isCurrentUserPost) {
+                                handleDeletePostData(isCurrentUserPost);
+                              } else {
+                                handleDeletePostData();
+                                navigate(`/user/${item.userId.username}`)
+                              }
+                            }}
                             src={item.userId.profilePicture}
                             className="max-w-[27px] h-[27px] cursor-pointer rounded-full object-cover"
                             alt=""
@@ -963,11 +991,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                         <div className="flex flex-col">
                           <div className="flex gap-2 text-sm">
                             <h1
-                              onClick={() =>
-                                item.userId._id === currentUser
-                                  ? handleDeletePostData()
-                                  : navigate(`/user/${item.userId.username}`)
-                              }
+                              onClick={() => {
+                                const isCurrentUserPost = currentUser === item.userId._id;
+                                if (isCurrentUserPost) {
+                                  handleDeletePostData(isCurrentUserPost);
+                                } else {
+                                  handleDeletePostData();
+                                  navigate(`/user/${item.userId.username}`)
+                                }
+                              }}
                               className="font-semibold cursor-pointer"
                             >
                               {item.userId.username}
@@ -1110,11 +1142,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                 <div className="flex gap-2 items-center">
                                   <div className="w-8 h-8">
                                     <img
-                                      onClick={() =>
-                                        reply.userId === currentUser
-                                          ? handleDeletePostData()
-                                          : navigate(`/user/${reply.username}`)
-                                      }
+                                      onClick={() => {
+                                        const isCurrentUserPost = currentUser === reply.userId;
+                                        if (isCurrentUserPost) {
+                                          handleDeletePostData(isCurrentUserPost);
+                                        } else {
+                                          handleDeletePostData();
+                                          navigate(`/user/${reply.username}`)
+                                        }
+                                      }}
                                       src={reply.profilePicture}
                                       className="max-w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
                                       alt="Profile"
@@ -1123,13 +1159,15 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close }) => {
                                   <div className="flex flex-col">
                                     <div className="flex gap-2 text-sm">
                                       <h1
-                                        onClick={() =>
-                                          reply.userId === currentUser
-                                            ? handleDeletePostData()
-                                            : navigate(
-                                              `/user/${reply.username}`
-                                            )
-                                        }
+                                        onClick={() => {
+                                          const isCurrentUserPost = currentUser === reply.userId;
+                                          if (isCurrentUserPost) {
+                                            handleDeletePostData(isCurrentUserPost);
+                                          } else {
+                                            handleDeletePostData();
+                                            navigate(`/user/${reply.username}`)
+                                          }
+                                        }}
                                         className="font-semibold cursor-pointer"
                                       >
                                         {reply.username}

@@ -38,6 +38,7 @@ const UserProfileDetials = () => {
       fetchUserData(username);
     }
   }, [username]);
+  
 
   return (
     <>
@@ -61,7 +62,7 @@ const UserProfileDetials = () => {
                   <h1 className="text-3xl font-extrabold">
                     {userData?.username}
                   </h1>
-                  <button className="cursor-pointer w-28 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-3 py-1.5 rounded-md transition-colors text-center">
+                  <button className="cursor-pointer w-28 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
                     Follow
                   </button>
                 </div>
@@ -81,7 +82,7 @@ const UserProfileDetials = () => {
               />
             </div>
           </div>
-          <UserProfilePostSection />
+          <UserProfilePostSection isPrivate={userData.isPrivateAccount} />
         </>
       ) : (
         <ErrorPage />

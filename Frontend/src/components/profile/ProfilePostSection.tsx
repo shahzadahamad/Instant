@@ -14,9 +14,11 @@ import {
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate } from "react-router-dom";
+import { socket } from "@/socket/socket";
+import toast from "react-hot-toast";
 
 const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
   fetchPostDetialData,
@@ -27,6 +29,23 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
     "POSTS"
   );
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
+
+  useEffect(() => {
+
+    socket.on("newPost", (postData: { postData: GetUserPostData, message: string }) => {
+      closeWhileTouchOutsideModal();
+      toast.dismiss();
+      toast.success(postData.message);
+      setPostData((prev) => [
+        postData.postData,
+        ...prev
+      ]);
+    });
+
+    return () => {
+      socket.off("newPost");
+    };
+  }, []);
 
   const fetchUserData = async () => {
     if (activeTab === "POSTS") {
@@ -53,13 +72,20 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
     }
   };
 
+  const closeWhileTouchOutsideModal = () => {
+    fetchUserData();
+    setSelectedPost(null);
+    fetchPostDetialData();
+    navigate('/profile');
+  }
+
   return (
     <div className="w-full">
       <div className="flex gap-10 transition-all text-xs p-4 items-center justify-center">
         <div
           className={`flex items-center gap-1 cursor-pointer ${activeTab === "POSTS"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
             }`}
           onClick={() => setActiveTab("POSTS")}
         >
@@ -69,8 +95,8 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
 
         <div
           className={`flex items-center gap-1 cursor-pointer ${activeTab === "TAGGED"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
             }`}
           onClick={() => setActiveTab("TAGGED")}
         >
@@ -80,8 +106,8 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
 
         <div
           className={`flex items-center gap-1 cursor-pointer ${activeTab === "LIKED"
-              ? "font-bold border-b-1 py-1 dark:border-white border-black"
-              : ""
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
             }`}
           onClick={() => setActiveTab("LIKED")}
         >
@@ -94,6 +120,7 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
           post={postData}
           imageIndex={selectedPost}
           close={closeModal}
+          closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
         />
       )}
       {postData.length > 0 ? (

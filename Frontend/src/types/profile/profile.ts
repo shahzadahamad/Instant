@@ -75,6 +75,7 @@ export interface PostModalProps {
   post: GetUserPostData[];
   imageIndex: number;
   close: (status?: boolean) => void;
+  closeWhileTouchOutsideModal: () => void;
 }
 
 export interface PostActionModalProps {

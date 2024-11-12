@@ -30,7 +30,7 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
       setCurrentUser(response);
     };
     currentUser();
-    return () => {};
+    return () => { };
   }, []);
 
   const handleShareModalOpenAndClose = (status: boolean) => {
@@ -213,9 +213,8 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
                 className="w-full text-start p-3 border-t border-b cursor-pointer"
               >
                 <h1
-                  className={`${
-                    !loading ? "text-[#ed4956] font-bold" : ""
-                  }  text-center`}
+                  className={`${!loading ? "text-[#ed4956] font-bold" : ""
+                    }  text-center`}
                 >
                   {loading ? <div className="spinner"></div> : "Delete"}
                 </h1>
