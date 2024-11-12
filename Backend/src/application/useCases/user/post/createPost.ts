@@ -1,3 +1,4 @@
+import SocketService from "../../../../infrastructure/service/socketService";
 import { PostData } from "../../../interface/post";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import PostRepository from "../../../repositories/user/postRepository";
@@ -11,7 +12,7 @@ export default class CreatePost {
   constructor(
     userRepository: UserRepository,
     awsS3Storage: AwsS3Storage,
-    postRepository: PostRepository
+    postRepository: PostRepository,
   ) {
     this.awsS3Storage = awsS3Storage;
     this.userRepository = userRepository;
@@ -68,7 +69,7 @@ export default class CreatePost {
       }
     }
 
-    await this.postRepository.createPost(
+    const newPost = await this.postRepository.createPost(
       id,
       postData,
       caption,
@@ -77,6 +78,8 @@ export default class CreatePost {
       hideComment,
       aspectRatio
     );
+
+    SocketService.getInstance().sendNewPost(id, newPost, "Post created successfully");
 
     return "Post created successfully";
   }

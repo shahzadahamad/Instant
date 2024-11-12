@@ -11,8 +11,22 @@ import userMusicRouter from "../routes/user/music";
 import userPostRouter from "../routes/user/post";
 import morgan from 'morgan';
 import adminRouter from "../routes/admin/admin";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import SocketService from "../../infrastructure/service/socketService";
 
 const app = express();
+
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
+
+SocketService.getInstance().setUpIO(io);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
@@ -34,7 +48,7 @@ app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
 
 const port: number | string = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server successfully running on port ${port}`);
   connectDb();
 });

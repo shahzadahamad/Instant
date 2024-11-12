@@ -2,6 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface INotification extends Document {
   userId: string;
+  fromId: string,
+  relatedId: string
   message: string;
   read: boolean;
 }
@@ -11,8 +13,15 @@ const notificationSchema: Schema = new Schema(
     userId: {
       type: String,
       required: true,
-      unique: true,
       ref: "User",
+    },
+    fromId: {
+      type: String,
+      ref: "User",
+    },
+    postId: {
+      type: String,
+      ref: 'Post',
     },
     message: {
       type: String,
