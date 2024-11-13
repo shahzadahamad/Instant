@@ -38,7 +38,7 @@ import {
 import apiClient from "../../apis/apiClient";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { logout } from "@/redux/slice/userSlice";
 import { useTheme } from "../ui/theme-provider";
 import {
@@ -48,6 +48,8 @@ import {
   ModalBody,
   useDisclosure,
 } from "@nextui-org/modal";
+import { getUnreadNotificationCount } from "@/apis/api/userApi";
+import { socket } from "@/socket/socket";
 
 const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -56,6 +58,35 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useLayoutEffect(() => {
+    const fetchUnreadNotificationCount = async () => {
+      try {
+        const count = await getUnreadNotificationCount();
+        setNotificationCount(count);
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          console.log(error);
+          const errorMsg = error.response.data?.error || "An error occurred";
+          toast.error(errorMsg);
+        } else {
+          console.error("Unexpected error:", error);
+          toast.error("An unexpected error occurred");
+        }
+      }
+    }
+    fetchUnreadNotificationCount();
+
+
+    socket.on("newNotification", () => {
+      setNotificationCount((prev) => prev + 1);
+    });
+
+    return () => {
+      socket.off("newNotification");
+    };
+  }, [])
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -230,9 +261,13 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             className={`${page === "notification" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
-            1
-          </div>
+          {
+            notificationCount > 0 && (
+              <div className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
+                {notificationCount}
+              </div>
+            )
+          }
           <div className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Notification
           </div>
@@ -346,8 +381,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
                     <AlertDialogAction
                       onClick={handleLogout}
                       className={`bg-[#09090b] transition-colors w-24 text-white border ${loading
-                          ? "opacity-60 cursor-not-allowed"
-                          : "opacity-100 cursor-pointer hover:bg-[#B22222]"
+                        ? "opacity-60 cursor-not-allowed"
+                        : "opacity-100 cursor-pointer hover:bg-[#B22222]"
                         }`}
                     >
                       {loading ? <div className="spinner "></div> : "Logout"}

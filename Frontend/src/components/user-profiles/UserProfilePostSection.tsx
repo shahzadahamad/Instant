@@ -11,6 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLayoutEffect, useState } from "react";
 import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate, useParams } from "react-router-dom";
+import { RootState } from "@/redux/store/store";
+import { useSelector } from "react-redux";
 
 const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
   isPrivate,
@@ -20,6 +22,8 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
   const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED">("POSTS");
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
+  const { followDetials } = useSelector((state: RootState) => state.user);
+
 
   const fetchUserData = async () => {
     if (activeTab === "POSTS") {
@@ -58,7 +62,7 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
 
   return (
     <>
-      {isPrivate ? (
+      {(!followDetials?.follow && isPrivate) ? (
         <div className="flex flex-col items-center justify-center">
           <div className="w-full flex items-center gap-4 justify-center px-10 pt-10 pb-5">
             <svg
@@ -97,9 +101,6 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
               </h1>
             </div>
           </div>
-          <button className="cursor-pointer w-24 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-            Follow
-          </button>
         </div>
       ) : (
         <>

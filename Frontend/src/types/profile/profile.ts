@@ -25,6 +25,7 @@ export interface GetUserDataForPost {
 }
 
 export interface GetUserDataPostDetials {
+  _id: string;
   fullname: string;
   username: string;
   email: string;

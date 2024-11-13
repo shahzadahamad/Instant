@@ -126,3 +126,18 @@ export const deleteComment = async (
   );
   return response.data;
 };
+
+export const followUser = async (username: string) => {
+  const response = await apiClient.post(`/user/follow/${username}`);
+  return response.data;
+};
+
+export const followData = async (username: string) => {
+  const response = await apiClient.get(`/user/follow-detials/${username}`);
+  return response.data;
+};
+
+export const getUnreadNotificationCount = async () => {
+  const response = await apiClient.get(`/user/notification-count`);
+  return response.data.count;
+};

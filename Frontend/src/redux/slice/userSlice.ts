@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User, UserState } from "../../types/redux/userSlicetypes";
+import { FollowDeitals, User, UserState } from "../../types/redux/userSlicetypes";
 const initialState: UserState = {
   currentUser: null,
+  followDetials: { follow: false, request: false },
 };
 
 const userSlice = createSlice({
@@ -14,9 +15,12 @@ const userSlice = createSlice({
     logout(state) {
       state.currentUser = null;
     },
+    setFollowDetials(state, action: PayloadAction<FollowDeitals>) {
+      state.followDetials = action.payload
+    }
   },
 });
 
-export const { loginSuccess, logout } = userSlice.actions;
+export const { loginSuccess, logout, setFollowDetials } = userSlice.actions;
 
 export default userSlice.reducer;
