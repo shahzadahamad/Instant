@@ -10,20 +10,22 @@ import GetUserDataByUsernameController from "../../../infrastructure/controllers
 import GetUserDataBySearchingUsernameController from "../../../infrastructure/controllers/user/user/getUserDataBySearchingUsernameController";
 import CheckUserByUsernameController from "../../../infrastructure/controllers/user/user/checkUserByUsernameController";
 import FollowUserController from "../../../infrastructure/controllers/user/user/followUserController";
+import GetUnreadNotificationCountController from "../../../infrastructure/controllers/user/user/getUnreadNotificationCountController";
+import GetFollowDetialsController from "../../../infrastructure/controllers/user/user/getFollowDetialsController";
 
 const userRouter = Router();
 
 const getUserDataController = new GetUserDataController();
 const editUserDataController = new EditUserDataController();
 const createPostGetUserDataController = new CretePostGetUserDataController();
-const createPostGetTaggedUserDataController =
-  new CreatePostGetTaggedUserDataController();
+const createPostGetTaggedUserDataController = new CreatePostGetTaggedUserDataController();
 const getCurrentUserController = new GetCurrentUserController();
 const getUserDataByUsernameController = new GetUserDataByUsernameController();
-const getUserDataBySearchingUsername =
-  new GetUserDataBySearchingUsernameController();
+const getUserDataBySearchingUsername = new GetUserDataBySearchingUsernameController();
 const checkUserByUsernameController = new CheckUserByUsernameController();
 const followUserController = new FollowUserController();
+const getUnreadNotificationCountController = new GetUnreadNotificationCountController();
+const getFollowDetialsController = new GetFollowDetialsController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get("/create-post/get-data", authMiddleware, createPostGetUserDataController.handle);
@@ -34,5 +36,7 @@ userRouter.get("/get-user-data-by-username/:username", authMiddleware, getUserDa
 userRouter.get("/get-user-data-by-search-username/:search", authMiddleware, getUserDataBySearchingUsername.handle);
 userRouter.get("/check-user/:username", authMiddleware, checkUserByUsernameController.handle);
 userRouter.post('/follow/:username', authMiddleware, followUserController.handle);
+userRouter.get('/notification-count', authMiddleware, getUnreadNotificationCountController.handle);
+userRouter.get('/follow-detials/:username', authMiddleware, getFollowDetialsController.handle);
 
 export default userRouter;

@@ -1,21 +1,20 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import FollowUser from "../../../../application/useCases/user/user/followUser";
 import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import GetFollowDetials from "../../../../application/useCases/user/user/getFollowDetials";
 
-export default class FollowUserController {
+export default class GetFollowDetialsController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { username } = req.params;
     const { userId } = req.user;
+    const { username } = req.params;
 
-    const followUser = new FollowUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new RequestRepository());
+    const getFollowDetials = new GetFollowDetials(new UserRepository(), new FriendsRepository(), new RequestRepository());
 
     try {
-      const actionStatus = await followUser.execute(userId, username);
+      const followDetials = await getFollowDetials.execute(userId, username);
 
-      res.status(200).json(actionStatus);
+      res.status(200).json(followDetials);
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });

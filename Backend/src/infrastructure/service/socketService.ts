@@ -26,11 +26,12 @@ export default class SocketService {
 
   public initialize(): void {
     this.io.on("connection", (socket: Socket) => {
-      console.log(`User connected: ${socket.id}`);
+      console.log(`User connected: ${socket.data.user.userId}`);
       this.userSocketMap.set(socket.data.user.userId, socket.id);
 
       socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.id}`);
+        console.log(`User disconnected: ${socket.data.user.userId}`);
+        this.userSocketMap.delete(socket.data.user.userId);
       });
 
     });
