@@ -130,7 +130,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             className={`${page === "home" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div onClick={() => navigate('/')} className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Home
           </div>
         </div>
@@ -141,7 +141,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             className={`${page === "search" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div onClick={() => navigate('/search')} className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Search
           </div>
         </div>
@@ -257,18 +257,19 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         </div>
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
+            onClick={() => navigate('/notification')}
             icon={page === "notification" ? faHearts : faHeart}
             className={`${page === "notification" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
           {
             notificationCount > 0 && (
-              <div className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
+              <div onClick={() => navigate('/notification')} className="cursor-pointer absolute top-0.5 right-0 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
                 {notificationCount}
               </div>
             )
           }
-          <div className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div onClick={() => navigate('/notification')} className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Notification
           </div>
         </div>

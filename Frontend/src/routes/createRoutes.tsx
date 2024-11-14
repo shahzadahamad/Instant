@@ -17,6 +17,7 @@ import Chats from "@/pages/user/ChatsInbox";
 import ChatInbox from "@/pages/user/ChatsInbox";
 import Search from "@/pages/user/Search";
 import AdminProfile from "@/pages/admin/AdminProfile";
+import Notification from "@/pages/user/Notification";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -70,6 +71,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/user/:username",
     element: currentUser ? <UserProfile /> : <Navigate to="/sign-in" replace />,
+  },
+  {
+    path: "/notification",
+    element: currentUser ? <Notification /> : <Navigate to="/sign-in" replace />,
   },
   {
     path: "/admin/sign-in",
