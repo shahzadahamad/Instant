@@ -14,6 +14,10 @@ export const MESSAGES = {
     UNAUTHORIZED: 'You are not authorized to perform this action.',
     UNKNOWN_ERROR: 'An unexpected error occurred.',
     INVALID_REFRESH_TOKEN: 'Invalid refresh token.',
+    OPERATION_NOT_AUTHORIZED: 'You\'re not authorised for this operation', 
+    INVALID_TOKEN: 'Invalid token',  
+    TOKEN_ERROR: 'Token error', 
+    NO_TOKEN_PROVIDED: 'No token provided',
   },
   INFO: {
     USER_BLOCKED: 'You have been blocked.',

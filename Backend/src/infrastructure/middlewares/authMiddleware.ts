@@ -3,20 +3,21 @@ import TokenManager from "../../application/providers/tokenManager";
 import VerifyIngUser from "../../application/useCases/user/user/verifyIngUser";
 import UserRepository from "../../application/repositories/user/userRepository";
 import { HttpStatusCode, UserRole } from "../enums/enums";
+import { MESSAGES } from "../constants/messages";
 
 const tokenManager = new TokenManager();
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "No token provided" });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: MESSAGES.ERROR.NO_TOKEN_PROVIDED });
     return;
   }
 
   const parts = authHeader.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "Token error" });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: MESSAGES.ERROR.TOKEN_ERROR });
     return;
   }
 
@@ -28,18 +29,18 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
       const verifyUser = new VerifyIngUser(new UserRepository());
       const user = await verifyUser.execute(req.user.userId);
       if (!user || user.isBlock) {
-        res.status(HttpStatusCode.FORBIDDEN).json({ message: "Your accout is blocked" });
+        res.status(HttpStatusCode.FORBIDDEN).json({ message: MESSAGES.INFO.USER_BLOCKED });
         return;
       }
       next();
     } else {
       res
         .status(HttpStatusCode.NOT_FOUND)
-        .json({ message: "You're not authorised for this operation" });
+        .json({ message: MESSAGES.ERROR.OPERATION_NOT_AUTHORIZED });
       return;
     }
   } catch (error) {
-    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "Invalid token", error });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: MESSAGES.ERROR.INVALID_TOKEN, error });
     return;
   }
 };
