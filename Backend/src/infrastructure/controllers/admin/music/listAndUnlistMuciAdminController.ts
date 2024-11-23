@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import MusicRepository from "../../../../application/repositories/admin/musicRepository";
 import ListAndUnlistMusicByAdmin from "../../../../application/useCases/admin/music/listAndUnlistMusicByAdmin";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class ListAndUnlistMuciAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -11,15 +13,14 @@ export default class ListAndUnlistMuciAdminController {
 
     try {
       const actionStatus = await listAndUnlistMusicByAdmin.execute(id, status);
-      res.status(200).json(actionStatus);
+      res.status(HttpStatusCode.OK).json(actionStatus);
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

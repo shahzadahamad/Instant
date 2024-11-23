@@ -14,7 +14,7 @@ export default class LikeOrUnlikePost {
     postId: string,
     userId: string,
     status: string
-  ): Promise<any> {
+  ): Promise<string> {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {

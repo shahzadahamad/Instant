@@ -3,6 +3,8 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import TokenManager from "../../../../application/providers/tokenManager";
 import ResetPassword from "../../../../application/useCases/user/authentication/resetPassword";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
+import { MESSAGES } from "../../../constants/messages";
+import { HttpStatusCode } from "../../../enums/enums";
 
 export default class ResetPasswordController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -17,13 +19,13 @@ export default class ResetPasswordController {
 
     try {
       const status = await resetPassword.execute(_id, token, password);
-      res.status(200).json({ message: status });
+      res.status(HttpStatusCode.OK).json({ message: status });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

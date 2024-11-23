@@ -4,6 +4,7 @@ export interface INotification extends Document {
   userId: string;
   fromId: string,
   relatedId: string
+  type: string;
   message: string;
   read: boolean;
 }
@@ -22,6 +23,10 @@ const notificationSchema: Schema = new Schema(
     postId: {
       type: String,
       ref: 'Post',
+    },
+    type: {
+      type: String,
+      required: true,
     },
     message: {
       type: String,

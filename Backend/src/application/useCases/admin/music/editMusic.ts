@@ -14,7 +14,7 @@ export default class EditMusic {
     id: string,
     title: string,
     file?: Express.Multer.File
-  ): Promise<any> {
+  ): Promise<void> {
     const music = await this.musicRepository.findMusicById(id);
 
     if (!music) {
@@ -28,7 +28,7 @@ export default class EditMusic {
       fileUrl = await this.awsS3Storage.uploadFile(file, "music-image");
     }
 
-    const updateMusic = await this.musicRepository.updateMusic(
+    await this.musicRepository.updateMusic(
       id,
       title,
       fileUrl

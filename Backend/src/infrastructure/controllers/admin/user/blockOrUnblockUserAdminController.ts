@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import BlockOrUnblockUserByAdmin from "../../../../application/useCases/admin/user/blockOrUnblockUserByAdmin";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class BlockOrUnblockUserAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -9,15 +11,14 @@ export default class BlockOrUnblockUserAdminController {
 
     try {
       const actionStatus = await blockOrUnblockUserByAdmin.execute(id, status);
-      res.status(200).json(actionStatus);
+      res.status(HttpStatusCode.OK).json(actionStatus);
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import GetUserDataAdmin from "../../../../application/useCases/admin/user/getUserDataAdmin";
 import UserRepository from "../../../../application/repositories/user/userRepository";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class GetUserDataAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -10,17 +12,16 @@ export default class GetUserDataAdminController {
     const getUserData = new GetUserDataAdmin(new UserRepository());
 
     try {
-      const userData = await getUserData.execute(pageNumber, search);
+      const userData = await getUserData.execute(pageNumber, search as string);
 
-      res.status(200).json(userData);
+      res.status(HttpStatusCode.OK).json(userData);
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

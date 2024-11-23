@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import AdminRepository from "../../../../application/repositories/admin/adminRepository";
 import EditAdminPassword from "../../../../application/useCases/admin/admin/editAdminPassword";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class EditAdminPasswordController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -13,15 +15,14 @@ export default class EditAdminPasswordController {
     try {
       const actionStatus = await editAdminPassword.execute(userId, currentPassword, newPassword);
 
-      res.status(200).json({ message: actionStatus });
+      res.status(HttpStatusCode.OK).json({ message: actionStatus });
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

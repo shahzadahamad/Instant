@@ -12,7 +12,7 @@ export default class PostRepository {
     hideLikeAndView: boolean,
     hideComment: boolean,
     aspectRatio: string
-  ): Promise<any> {
+  ): Promise<IPost> {
     try {
       const newPost = await new PostModal({
         userId,

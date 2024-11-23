@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class LogoutAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -9,12 +11,14 @@ export default class LogoutAdminController {
         sameSite: "strict",
       });
 
-      res.json({ message: "Logged out successfully" });
+      res.status(HttpStatusCode.OK).json({ message: MESSAGES.SUCCESS.LOGOUT });
       return;
     } catch (error) {
-      console.error("Logout error:", error);
-      res.status(500).json({ error: "An error occurred during logout" });
-      return;
+      if (error instanceof Error) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
+        return;
+      }
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

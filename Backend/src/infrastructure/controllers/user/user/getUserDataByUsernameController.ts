@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import PostRepository from "../../../../application/repositories/user/postRepository";
 import GetUserDataByUsername from "../../../../application/useCases/user/user/getUserDataByUsername";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class GetUserDataByUsernameController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -16,16 +18,16 @@ export default class GetUserDataByUsernameController {
     try {
       const userData = await getUserDataByUsername.execute(username, userId);
 
-      res.status(200).json({
+      res.status(HttpStatusCode.OK).json({
         postCount: userData.postCount,
         userData: userData.userWithoutSensitiveInfo,
       });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

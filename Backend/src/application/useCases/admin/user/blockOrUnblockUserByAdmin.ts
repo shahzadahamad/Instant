@@ -7,7 +7,7 @@ export default class BlockOrUnblockUserByAdmin {
     this.userRepository = userRepository;
   }
 
-  public async execute(id: string, status: string): Promise<any> {
+  public async execute(id: string, status: string): Promise<string> {
     if (status === "block") {
       await this.userRepository.blockAndUnBlockUser(id, true);
     } else if (status === "unblock") {

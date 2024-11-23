@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import TokenManager from "../../../../application/providers/tokenManager";
 import HandleRefreshToken from "../../../../application/useCases/user/authentication/handleRefreshToken";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class RefreshTokenController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -17,17 +19,17 @@ export default class RefreshTokenController {
       if (status.clearCookie) {
         res
           .clearCookie("refreshToken")
-          .status(403)
-          .json({ error: "Invalid refresh token" });
+          .status(HttpStatusCode.FORBIDDEN)
+          .json({ error: MESSAGES.ERROR.INVALID_REFRESH_TOKEN });
         return;
       }
-      res.status(200).json({ token: status.token });
+      res.status(HttpStatusCode.OK).json({ token: status.token });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

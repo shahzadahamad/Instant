@@ -1,3 +1,4 @@
+import { IMusic } from "../../../../infrastructure/database/models/musicModal";
 import MusicRepository from "../../../repositories/admin/musicRepository";
 
 export default class GetMusicData {
@@ -7,11 +8,13 @@ export default class GetMusicData {
     this.musicRepository = adminRepository;
   }
 
-  public async execute(pageVal: number, search: any): Promise<any> {
+  public async execute(pageVal: number, search: string): Promise<{ music: IMusic[]; totalPages: number; totalMusic: number }> {
     const page = pageVal || 1;
     const limit = 10;
     const startIndex = (page - 1) * limit;
-    let query = {};
+    let query: {
+      $or?: Array<{ title: { $regex: RegExp } }>;
+    } = {};
     if (search) {
       const searchRegex = new RegExp(search, "i");
       query = {

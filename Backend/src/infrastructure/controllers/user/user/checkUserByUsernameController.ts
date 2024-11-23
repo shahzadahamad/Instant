@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import CheckUserByUsername from "../../../../application/useCases/user/user/checkUserByUsername";
+import { MESSAGES } from "../../../constants/messages";
+import { HttpStatusCode } from "../../../enums/enums";
 
 export default class CheckUserByUsernameController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -11,13 +13,13 @@ export default class CheckUserByUsernameController {
     const data = await checkUserByUsername.execute(username);
 
     try {
-      res.status(200).json(data);
+      res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

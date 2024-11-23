@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import GetUnreadNotificationCount from "../../../../application/useCases/user/user/getUnreadNotificationCount";
-import { MESSAGES } from "../../../constants/messages";
+import GetNotificationData from "../../../../application/useCases/user/user/getNotificationData";
 import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
-export default class GetUnreadNotificationCountController {
+export default class GetNotificationDataController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
-    const getUnreadNotificationCount = new GetUnreadNotificationCount(new NotificationRepository());
+    const getNotificationData = new GetNotificationData(new NotificationRepository());
 
     try {
-      const count = await getUnreadNotificationCount.execute(userId);
+      const notificationData = await getNotificationData.execute(userId);
 
-      res.status(HttpStatusCode.OK).json({ status: true, count });
+      res.status(HttpStatusCode.OK).json(notificationData);
     } catch (error) {
       if (error instanceof Error) {
         res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });

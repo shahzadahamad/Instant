@@ -5,6 +5,8 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GoogleAuthenticateUser from "../../../../application/useCases/user/authentication/googleAuthenticateUser";
 import GeneratePassword from "../../../../application/providers/generatePassword";
 import GenerateUsername from "../../../../application/providers/generateUsername";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class LoginWithGoogleAuth {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -28,13 +30,13 @@ export default class LoginWithGoogleAuth {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.json({ token, user });
+      res.status(HttpStatusCode.OK).json({ token, user });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

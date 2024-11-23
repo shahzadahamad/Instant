@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import AdminRepository from "../../../../application/repositories/admin/adminRepository";
 import EditAdmin from "../../../../application/useCases/admin/admin/editAdmin";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class EditAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -14,15 +16,14 @@ export default class EditAdminController {
     try {
       const adminData = await editAdmin.execute(userId, username, email, file);
 
-      res.status(200).json(adminData);
+      res.status(HttpStatusCode.OK).json(adminData);
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

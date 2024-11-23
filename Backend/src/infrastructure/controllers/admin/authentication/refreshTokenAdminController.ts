@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import TokenManager from "../../../../application/providers/tokenManager";
 import AdminRepository from "../../../../application/repositories/admin/adminRepository";
 import HandleAdminRefreshToken from "../../../../application/useCases/admin/authentication/handleAdminRefreshToken";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class RefreshTokenAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -15,19 +17,18 @@ export default class RefreshTokenAdminController {
       if (status.clearCookie) {
         res
           .clearCookie("adminRefreshToken")
-          .status(403)
-          .json({ error: "Invalid refresh token" });
+          .status(HttpStatusCode.FORBIDDEN)
+          .json({ error: MESSAGES.ERROR.INVALID_REFRESH_TOKEN });
         return;
       }
-      res.status(200).json({ adminToken: status.adminToken });
+      res.status(HttpStatusCode.OK).json({ adminToken: status.adminToken });
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

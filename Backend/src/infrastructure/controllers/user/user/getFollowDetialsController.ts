@@ -3,6 +3,8 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import RequestRepository from "../../../../application/repositories/user/requrestRepository";
 import GetFollowDetials from "../../../../application/useCases/user/user/getFollowDetials";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class GetFollowDetialsController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -14,13 +16,13 @@ export default class GetFollowDetialsController {
     try {
       const followDetials = await getFollowDetials.execute(userId, username);
 
-      res.status(200).json(followDetials);
+      res.status(HttpStatusCode.OK).json(followDetials);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

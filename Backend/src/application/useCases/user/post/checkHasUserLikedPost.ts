@@ -10,7 +10,7 @@ export default class CheckHasUserLikedPost {
     this.likeRepository = likeRepository;
   }
 
-  public async execute(postId: string, userId: string): Promise<any> {
+  public async execute(postId: string, userId: string): Promise<boolean> {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {

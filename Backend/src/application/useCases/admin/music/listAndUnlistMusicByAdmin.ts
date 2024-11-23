@@ -7,11 +7,11 @@ export default class ListAndUnlistMusicByAdmin {
     this.musicRepository = musicRepository;
   }
 
-  public async execute(id: string, status: string): Promise<any> {
+  public async execute(id: string, status: string): Promise<string> {
     if (status === "list") {
-      await this.musicRepository.listAndUnlistMusic(id,true)
+      await this.musicRepository.listAndUnlistMusic(id, true)
     } else if (status === "unlist") {
-      await this.musicRepository.listAndUnlistMusic(id,false)
+      await this.musicRepository.listAndUnlistMusic(id, false)
     } else {
       throw new Error("Invalid action");
     }

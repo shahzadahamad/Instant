@@ -1,20 +1,20 @@
 import { Response, NextFunction, Request } from "express";
 import TokenManager from "../../application/providers/tokenManager";
-import { UserRole } from "../enums/userRoles";
+import { HttpStatusCode, UserRole } from "../enums/enums";
 
 const tokenManager = new TokenManager();
 
 const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(401).json({ message: "No token provided" });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "No token provided" });
     return;
   }
 
   const parts = authHeader.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    res.status(401).json({ message: "Token error" });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "Token error" });
     return;
   }
 
@@ -26,12 +26,12 @@ const adminAuthMiddleware = async (req: Request, res: Response, next: NextFuncti
       next();
     } else {
       res
-        .status(404)
+        .status(HttpStatusCode.NOT_FOUND)
         .json({ message: "You're not authorised for this operation" });
       return;
     }
   } catch (error) {
-    res.status(401).json({ message: "Invalid token", error });
+    res.status(HttpStatusCode.UNAUTHORIZED).json({ message: "Invalid token", error });
     return;
   }
 };

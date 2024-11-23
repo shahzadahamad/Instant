@@ -36,4 +36,28 @@ export default class RequestRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findFriendRequestById(userId: string): Promise<IRequest | null> {
+    try {
+      return await RequestModel.findOne({ userId }, { friendRequest: 1 });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already requested this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async updateFriendRequest(userId: string): Promise<void> {
+    try {
+      await RequestModel.updateOne({ userId }, { $set: { friendRequest: [] } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already requested this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
 }

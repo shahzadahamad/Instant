@@ -8,7 +8,7 @@ export default class GetCreatePostTaggedUserData {
     this.UserRepository = UserRepository;
   }
 
-  public async execute(taggedUsers: any): Promise<IUser[]> {
+  public async execute(taggedUsers: string[]): Promise<IUser[]> {
     const user = this.UserRepository.findTaggedUser(taggedUsers);
     return user;
   }

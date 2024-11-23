@@ -12,6 +12,7 @@ import CheckUserByUsernameController from "../../../infrastructure/controllers/u
 import FollowUserController from "../../../infrastructure/controllers/user/user/followUserController";
 import GetUnreadNotificationCountController from "../../../infrastructure/controllers/user/user/getUnreadNotificationCountController";
 import GetFollowDetialsController from "../../../infrastructure/controllers/user/user/getFollowDetialsController";
+import GetNotificationDataController from "../../../infrastructure/controllers/user/user/getNotificationDataController";
 
 const userRouter = Router();
 
@@ -26,6 +27,7 @@ const checkUserByUsernameController = new CheckUserByUsernameController();
 const followUserController = new FollowUserController();
 const getUnreadNotificationCountController = new GetUnreadNotificationCountController();
 const getFollowDetialsController = new GetFollowDetialsController();
+const getNotificationDataController = new GetNotificationDataController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get("/create-post/get-data", authMiddleware, createPostGetUserDataController.handle);
@@ -38,5 +40,6 @@ userRouter.get("/check-user/:username", authMiddleware, checkUserByUsernameContr
 userRouter.post('/follow/:username', authMiddleware, followUserController.handle);
 userRouter.get('/notification-count', authMiddleware, getUnreadNotificationCountController.handle);
 userRouter.get('/follow-detials/:username', authMiddleware, getFollowDetialsController.handle);
+userRouter.get('/notification', authMiddleware, getNotificationDataController.handle);
 
 export default userRouter;

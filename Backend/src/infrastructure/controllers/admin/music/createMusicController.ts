@@ -3,6 +3,8 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import CreateMusic from "../../../../application/useCases/admin/music/createMusic";
 import { FilesType } from "../../../../application/interface/fileTypes";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import { HttpStatusCode } from "../../../enums/enums";
+import { MESSAGES } from "../../../constants/messages";
 
 export default class CreateMusicController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -16,15 +18,14 @@ export default class CreateMusicController {
 
     try {
       await createMusic.execute(title, files as FilesType);
-      res.status(200).json({ message: "Music created successful." });
+      res.status(HttpStatusCode.OK).json({ message: MESSAGES.SUCCESS.MUSIC_CREATED });
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
-      return;
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

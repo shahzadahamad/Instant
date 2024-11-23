@@ -8,8 +8,11 @@ export default class GetCreatePostMusicData {
     this.musicRepository = musicRepository;
   }
 
-  public async execute(search: any): Promise<{}> {
-    let query: any = { isListed: true };
+  public async execute(search: string): Promise<{
+    musicData: IMusic[];
+    totalMusic: number;
+  }> {
+    let query: { title?: { $regex: RegExp }, isListed: boolean } = { isListed: true };
     if (search) {
       const searchRegex = new RegExp(search, "i");
       query = {

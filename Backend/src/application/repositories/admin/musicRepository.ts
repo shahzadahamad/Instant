@@ -39,8 +39,10 @@ export default class MusicRepository {
   public async getMusicData(
     startIndex: number,
     limit: number,
-    query: {}
-  ): Promise<{ music: any; totalPages: number; totalMusic: number }> {
+    query: {
+      $or?: Array<{ title: { $regex: RegExp } }>;
+    }
+  ): Promise<{ music: IMusic[]; totalPages: number; totalMusic: number }> {
     try {
       const totalMusic = await MusicModel.countDocuments();
       const searchTotalMusic = await MusicModel.countDocuments(query);
@@ -60,7 +62,7 @@ export default class MusicRepository {
     }
   }
 
-  public async find10Music(query: {}): Promise<{
+  public async find10Music(query: { title?: { $regex: RegExp }, isListed: boolean }): Promise<{
     musicData: IMusic[];
     totalMusic: number;
   }> {

@@ -1,13 +1,17 @@
+import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
+import RequestRepository from "../../../repositories/user/requrestRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class UpdateUserData {
   private userRepository: UserRepository;
   private awsS3Storage: AwsS3Storage;
+  private requestRepository: RequestRepository;
 
-  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage) {
+  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, requestRepository: RequestRepository) {
     this.userRepository = userRepository;
     this.awsS3Storage = awsS3Storage;
+    this.requestRepository = requestRepository;
   }
 
   public async execute(
@@ -22,7 +26,7 @@ export default class UpdateUserData {
     isPrivateAccount: boolean,
     bio: string,
     file?: Express.Multer.File
-  ): Promise<Object> {
+  ): Promise<Partial<IUser>> {
     const user = await this.userRepository.findById(userId);
     const isUsernameExist = await this.userRepository.findByUsernameEdit(
       username,
@@ -67,6 +71,10 @@ export default class UpdateUserData {
       bio,
       fileUrl
     );
+
+    if (!updatedUser?.isPrivateAccount) {
+      await this.requestRepository.updateFriendRequest(userId);
+    }
 
     if (!updatedUser) {
       throw new Error("cannot update user!");

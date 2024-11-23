@@ -5,6 +5,8 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { GenerateOTP } from "../../../../application/providers/otpGenerate";
 import { EmailService } from "../../../../application/providers/nodeMailer";
+import { MESSAGES } from "../../../constants/messages";
+import { HttpStatusCode } from "../../../enums/enums";
 
 
 export default class UserOtpVerificationController {
@@ -21,17 +23,17 @@ export default class UserOtpVerificationController {
 
     try {
       const otp = await otpSend.execute(email, fullname, username);
-      res.status(200).json({
-        message: "OTP send successfully",
+      res.status(HttpStatusCode.OK).json({
+        message: MESSAGES.SUCCESS.OTPSEND,
         id: otp._id,
       });
       return;
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
       return;
     }
   }

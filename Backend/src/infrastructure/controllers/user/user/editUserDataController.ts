@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import UpdateUserData from "../../../../application/useCases/user/user/updateUserData";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import { MESSAGES } from "../../../constants/messages";
+import { HttpStatusCode } from "../../../enums/enums";
 
 export default class EditUserDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -21,7 +24,8 @@ export default class EditUserDataController {
 
     const updateUserData = new UpdateUserData(
       new UserRepository(),
-      new AwsS3Storage()
+      new AwsS3Storage(),
+      new RequestRepository()
     );
 
     try {
@@ -40,14 +44,14 @@ export default class EditUserDataController {
       );
 
       res
-        .status(200)
-        .json({ message: "Profile Updated Successfully!", user: userData });
+        .status(HttpStatusCode.OK)
+        .json({ message: MESSAGES.SUCCESS.PROFILE_UPDATED, user: userData });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });
         return;
       }
-      res.status(400).json({ error: "Unknown error" });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: MESSAGES.ERROR.UNKNOWN_ERROR });
     }
   }
 }

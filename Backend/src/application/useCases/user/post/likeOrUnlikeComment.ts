@@ -22,7 +22,7 @@ export default class LikeOrUnlikeComment {
     commentId: string,
     userId: string,
     status: string
-  ): Promise<any> {
+  ): Promise<string> {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {

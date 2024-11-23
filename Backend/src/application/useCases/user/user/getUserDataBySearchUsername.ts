@@ -1,4 +1,5 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
+import { QueryType } from "../../../interface/post";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class GetUserDataBySearchUsername {
@@ -8,9 +9,9 @@ export default class GetUserDataBySearchUsername {
     this.UserRepository = UserRepository;
   }
 
-  public async execute(search: any): Promise<IUser[]> {
+  public async execute(search: string): Promise<IUser[]> {
     const searchRegex = new RegExp(search, "i");
-    const query = {
+    const query: QueryType = {
       $and: [
         {
           $or: [

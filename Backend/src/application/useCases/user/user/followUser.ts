@@ -35,8 +35,8 @@ export default class FollowUser {
 
         if (!isRequestExist) {
           await this.requestRepository.friendRequest(followingUserId, userToFollow._id.toString());
-          await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'request to follow you.');
-          SocketService.getInstance().sendNotification(userToFollow._id.toString());
+          await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'request to follow you.', 'request');
+          SocketService.getInstance().sendNotification(userToFollow._id.toString(),);
           return { follow: false, request: true };
 
         }
@@ -44,7 +44,7 @@ export default class FollowUser {
       } else {
 
         await this.friendsRepository.followUser(followingUserId, userToFollow._id.toString());
-        await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'started following you.');
+        await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'started following you.', 'follow');
         SocketService.getInstance().sendNotification(userToFollow._id.toString());
         return { follow: true, request: false };
 
