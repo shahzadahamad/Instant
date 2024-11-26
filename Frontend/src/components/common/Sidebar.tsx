@@ -76,17 +76,20 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         }
       }
     }
-    fetchUnreadNotificationCount();
 
-
-    socket.on("newNotification", () => {
-      setNotificationCount((prev) => prev + 1);
-    });
+    if (page !== 'notification') {
+      fetchUnreadNotificationCount();
+      socket.on("newNotification", () => {
+        setNotificationCount((prev) => prev + 1);
+      });
+    } else {
+      setNotificationCount(0);
+    }
 
     return () => {
       socket.off("newNotification");
     };
-  }, [])
+  }, [page]);
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

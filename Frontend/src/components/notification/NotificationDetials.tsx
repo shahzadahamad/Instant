@@ -1,66 +1,248 @@
-import FriendSuggetion from "../common/FriendSuggetion"
-
+import { useLayoutEffect, useState } from "react";
+import FriendSuggetion from "../common/FriendSuggetion";
+import { AxiosError } from "axios";
+import { acceptRequest, deleteRequest, followUser, getNotificationData } from "@/apis/api/userApi";
+import toast from "react-hot-toast";
+import { friendRequestType, NotificationType } from "@/types/notification/notification";
+import { timeSince } from "@/helperFuntions/dateFormat";
+import { socket } from "@/socket/socket";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import UnfollowModal from "../common/UnfollowModal";
 
 const NotificationDetials = () => {
-  return (
-    <div className="w-full h-screen flex items-start justify-between">
+  const [groupedNotifications, setGroupedNotifications] = useState({
+    today: [] as NotificationType[],
+    yesterday: [] as NotificationType[],
+    thisWeek: [] as NotificationType[],
+    thisMonth: [] as NotificationType[],
+  });
+  const [request, setRequest] = useState<friendRequestType | null>(null);
+  const navigate = useNavigate();
+  const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
 
-      <div className='w-1/2 h-screen flex flex-col items-center'>
-        <div className="w-full flex h-[13%] items-center justify-center p-3 border-b">
-          <h1 className="font-semibold text-xl">Notifications</h1>
-        </div>
+  const fetchNotificationData = async () => {
+    try {
+      const notificationData = await getNotificationData();
 
-        <div className="w-3/4 h-[90%] flex flex-col items-center overflow-auto scrollbar-hidden">
-          {[1, 2, 3, 4, 5, 7, 1, 2, 3, 4, 5, 7].map((user, index) => (
+      const today = moment().startOf("day");
+      const yesterday = moment().subtract(1, "days").startOf("day");
+      const startOfWeek = moment().startOf("week");
+      const startOfMonth = moment().startOf("month");
+
+      const grouped = {
+        today: [] as NotificationType[],
+        yesterday: [] as NotificationType[],
+        thisWeek: [] as NotificationType[],
+        thisMonth: [] as NotificationType[],
+      };
+
+      notificationData.notification.forEach((notification: NotificationType) => {
+        const createdAt = moment(notification.createdAt);
+
+        if (createdAt.isSameOrAfter(today)) {
+          grouped.today.push(notification);
+        } else if (createdAt.isSameOrAfter(yesterday)) {
+          grouped.yesterday.push(notification);
+        } else if (createdAt.isSameOrAfter(startOfWeek)) {
+          grouped.thisWeek.push(notification);
+        } else if (createdAt.isSameOrAfter(startOfMonth)) {
+          grouped.thisMonth.push(notification);
+        }
+      });
+
+      setGroupedNotifications(grouped);
+      setRequest(notificationData.friendRequest);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  };
+
+  useLayoutEffect(() => {
+    fetchNotificationData();
+
+    socket.on("newNotification", () => {
+      fetchNotificationData();
+    })
+
+    socket.on("clearNotification", () => {
+      fetchNotificationData();
+    })
+
+    return () => {
+      socket.off("newNotification");
+      socket.off("clearNotification");
+    };
+  }, []);
+
+  const handleUnfollowModal = (status: boolean) => {
+    if (status) {
+      setOpenUnfollowModal(!openUnfollowModal);
+      fetchNotificationData();
+    } else {
+      setOpenUnfollowModal(!openUnfollowModal);
+    }
+  }
+
+  const handleFollow = async (username: string, type: string, notificationId: string) => {
+    try {
+      if (type === 'followBack') {
+        await followUser(username);
+      } else if (type === 'acceptRequest') {
+        await acceptRequest(username, notificationId);
+      } else if (type === 'delete') {
+        await deleteRequest(username, notificationId);
+      }
+      fetchNotificationData();
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  };
+
+  const renderNotifications = (
+    category: string,
+    notifications: NotificationType[]
+  ) => (
+    <>
+      {notifications.length > 0 && (
+        <>
+          <div className="w-full text-left font-semibold text-lg py-2">
+            {category}
+          </div>
+          {notifications.map((notification) => (
             <div
-              key={index + user}
+              key={notification._id}
               className="w-full rounded-lg flex items-center justify-between p-4 dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={'./avatar.png'}
+                  onClick={() => navigate(`/user/${notification.fromId.username}`)}
+                  src={
+                    notification.fromId.profilePicture
+                      ? typeof notification.fromId.profilePicture === "string"
+                        ? notification.fromId.profilePicture
+                        : URL.createObjectURL(
+                          notification.fromId.profilePicture
+                        )
+                      : ""
+                  }
                   className="w-12 h-12 rounded-full object-cover"
                 />
-                <div className="flex justify-center flex-col">
-                  <h1 className="text-[15px] font-semibold max-w-[15rem] break-words">shahzad <span className='font-normal'>started following you.&nbsp;</span><span className='font-thin'>1d</span></h1>
+                {
+                  openUnfollowModal && (
+                    <UnfollowModal openUnfollowModal={openUnfollowModal} handleUnfollowModal={handleUnfollowModal} userData={notification.fromId} />
+                  )
+                }
+                <div className="flex flex-col">
+                  <h1 onClick={() => navigate(`/user/${notification.fromId.username}`)}
+                    className="text-[15px] font-semibold max-w-[15rem] break-words">
+                    {notification.fromId.username}{" "}
+                    <span className="font-normal">
+                      {notification.message}&nbsp;
+                    </span>
+                    <span className="font-thin">
+                      {timeSince(notification.createdAt)}
+                    </span>
+                  </h1>
                 </div>
               </div>
-              {
-                [1, 1].length ? (
-                  <button className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
-                    Follow
+              {notification.type === "follow" ? (
+                <button
+                  onClick={() => handleFollow(notification.fromId.username, 'followBack', notification._id)}
+                  className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center"
+                >
+                  {notification.fromId.isPrivateAccount ? "Request" : "Follow"}
+                </button>
+              ) : notification.type === "request" ? (
+                <div className="flex gap-2">
+                  <button onClick={() => handleFollow(notification.fromId.username, 'acceptRequest', notification._id)}
+                    className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
+                    Confirm
                   </button>
-
-                ) : [1, 1].length ? (
-                  <div className="flex flex-col gap-2">
-                    <button className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
-                      Confirm
-                    </button>
-                    <button className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                      Delete
-                    </button>
-                  </div>
-                ) : [1, 1].length ? (
-                  <button className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                    Following
+                  <button onClick={() => handleFollow(notification.fromId.username, 'delete', notification._id)} className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                    Delete
                   </button>
-                ) : (
-                  <div className="w-12 h-12 rounded-md border overflow-hidden cursor-pointer mr-4">
-                    <img
-                      src={'./car.jpg'}
-                      alt="Upload"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )
-              }
+                </div>
+              ) : notification.type === "followed" ? (
+                <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                  Following
+                </button>
+              ) : notification.type === 'requested' ? (
+                <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                  Requested
+                </button>
+              ) : ""}
             </div>
           ))}
-        </div>
-      </div>
-      <FriendSuggetion />
-    </div>
-  )
-}
+        </>
+      )}
+    </>
+  );
 
-export default NotificationDetials
+  return (
+    <>
+      <div className="w-full h-screen flex items-start justify-between">
+        <div className="w-1/2 h-screen flex flex-col items-center">
+          <div className="w-full flex h-[13%] items-center justify-center p-3 border-b">
+            <h1 className="font-semibold text-xl">Notifications</h1>
+          </div>
+
+          <div className="w-4/5 h-[90%] flex flex-col py-4 items-center overflow-auto scrollbar-hidden">
+            {
+              request && request.friendRequest.length > 0 && (
+                <button className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer self-end mr-4">
+                  Request ({request.friendRequest.length})
+                </button>
+              )
+            }
+            {groupedNotifications.today.length > 0 && (
+              <>{renderNotifications("Today", groupedNotifications.today)}</>
+            )}
+            {groupedNotifications.yesterday.length > 0 && (
+              <>
+                {renderNotifications("Yesterday", groupedNotifications.yesterday)}
+              </>
+            )}
+            {groupedNotifications.thisWeek.length > 0 && (
+              <>
+                {renderNotifications("This Week", groupedNotifications.thisWeek)}
+              </>
+            )}
+            {groupedNotifications.thisMonth.length > 0 && (
+              <>
+                {renderNotifications(
+                  "This Month",
+                  groupedNotifications.thisMonth
+                )}
+              </>
+            )}
+
+            {groupedNotifications.today.length === 0 &&
+              groupedNotifications.yesterday.length === 0 &&
+              groupedNotifications.thisWeek.length === 0 &&
+              groupedNotifications.thisMonth.length === 0 && (
+                <div className="w-full h-[90%] text-2xl font-bold flex items-center justify-center text-center mt-4">
+                  No Notifications Yet
+                </div>
+              )}
+          </div>
+        </div>
+        <FriendSuggetion />
+      </div>
+    </>
+  );
+};
+
+export default NotificationDetials;

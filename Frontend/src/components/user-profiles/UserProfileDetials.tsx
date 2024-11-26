@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setFollowDetials } from "@/redux/slice/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import UnfollowModal from "../common/UnfollowModal";
 
 const UserProfileDetials = () => {
   const { username } = useParams();
@@ -20,6 +21,7 @@ const UserProfileDetials = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { followDetials } = useSelector((state: RootState) => state.user);
+  const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
 
   const fetchUserData = async (username: string) => {
     try {
@@ -81,6 +83,15 @@ const UserProfileDetials = () => {
     }
   }
 
+
+  const handleUnfollowModal = (status: boolean) => {
+    if (status) {
+      setOpenUnfollowModal(!openUnfollowModal);
+    } else {
+      setOpenUnfollowModal(!openUnfollowModal);
+    }
+  }
+
   return (
     <>
       {userData ? (
@@ -103,19 +114,24 @@ const UserProfileDetials = () => {
                   <h1 className="text-3xl font-extrabold">
                     {userData.username}
                   </h1>
+                  {
+                    openUnfollowModal && (
+                      <UnfollowModal openUnfollowModal={openUnfollowModal} handleUnfollowModal={handleUnfollowModal} userData={userData} />
+                    )
+                  }
                   <div className="flex gap-3">
                     {
                       followDetials?.follow ? (
-                        <button className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                        <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
                           Following
                         </button>
                       ) : followDetials?.request ? (
-                        <button className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                        <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
                           Requested
                         </button>
                       ) : (
                         <button onClick={handleFollowUser} className="cursor-pointer w-28 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                          Follow
+                          {userData.isPrivateAccount ? "Request" : "Follow"}
                         </button>
                       )
                     }

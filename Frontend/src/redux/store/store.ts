@@ -9,6 +9,7 @@ const userPersistConfig = {
   key: "user",
   storage,
   version: 1,
+  blacklist: ["followDetials"],
 };
 
 const adminPersistConfig = {

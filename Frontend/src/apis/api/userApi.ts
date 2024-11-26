@@ -132,6 +132,21 @@ export const followUser = async (username: string) => {
   return response.data;
 };
 
+export const acceptRequest = async (username: string, notificationId: string) => {
+  const response = await apiClient.patch(`/user/accept-equest/${username}/${notificationId}`);
+  return response.data;
+};
+
+export const unfollowUser = async (userId: string) => {
+  const response = await apiClient.delete(`/user/unfollow/${userId}`);
+  return response.data;
+};
+
+export const deleteRequest = async (username: string, notificationId: string) => {
+  const response = await apiClient.delete(`/user/friend-request/${username}/${notificationId}`);
+  return response.data;
+};
+
 export const followData = async (username: string) => {
   const response = await apiClient.get(`/user/follow-detials/${username}`);
   return response.data;
@@ -140,4 +155,9 @@ export const followData = async (username: string) => {
 export const getUnreadNotificationCount = async () => {
   const response = await apiClient.get(`/user/notification-count`);
   return response.data.count;
+};
+
+export const getNotificationData = async () => {
+  const response = await apiClient.get(`/user/notification`);
+  return response.data;
 };

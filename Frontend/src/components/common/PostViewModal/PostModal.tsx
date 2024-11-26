@@ -866,10 +866,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
           )}
         </div>
 
-        <div className="w-full h-full dark:bg-black bg-white">
-          <div className="flex item-center justify-between p-3 border-b">
+        <div className="w-full h-full flex flex-col dark:bg-black bg-white">
+          <div className="flex item-center justify-between p-3 border-b h-[11%]">
             <div
-              className="flex gap-2 cursor-pointer"
+              className="flex gap-2 items-center justify-center cursor-pointer"
               onClick={() => {
                 const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
                 if (isCurrentUserPost) {
@@ -909,7 +909,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
               <FontAwesomeIcon icon={faEllipsis} className="text-lg" />
             </div>
           </div>
-          <div className="w-full h-[22rem] overflow-auto scrollbar-hidden dark:bg-black bg-white border-b">
+          <div className="w-full flex-1 h-[22rem] overflow-auto scrollbar-hidden dark:bg-black bg-white border-b">
             {comments.length > 0 || post[currentIndex].caption ? (
               <>
                 {post[currentIndex].caption && (
@@ -1313,7 +1313,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
             )}
           </div>
 
-          <div className="w-full h-[4.8rem] flex items-center justify-between border-b dark:bg-black bg-white">
+          <div className="w-full h-[15%] flex items-center justify-between border-b dark:bg-black bg-white">
             <div className="p-3 flex flex-col gap-2">
               <div className="dark:text-white text-black flex gap-3 text-2xl">
                 <FontAwesomeIcon
@@ -1383,7 +1383,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
               {formatDate(new Date(post[currentIndex].createdAt))}
             </span>
           </div>
-          <div className="flex items-center p-3 dark:bg-black bg-white h-[51px]">
+          <div className="flex items-center p-3 dark:bg-black bg-white h-[10%]">
             <div className="relative">
               <svg
                 aria-label="Emoji"
