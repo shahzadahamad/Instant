@@ -24,6 +24,10 @@ const notificationSchema: Schema = new Schema(
       type: String,
       ref: 'Post',
     },
+    relation: {
+      type: String,
+      required: true
+    },
     type: {
       type: String,
       required: true,

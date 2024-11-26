@@ -2,12 +2,13 @@ import NotificationModel, { INotification } from "../../../infrastructure/databa
 
 
 export default class NotificationRepository {
-  public async send(from: string, to: string, message: string, type: string): Promise<INotification> {
+  public async send(from: string, to: string, message: string, type: string, relation: string): Promise<INotification> {
     try {
       const newNotification = await new NotificationModel({
         userId: to,
         fromId: from,
         type,
+        relation,
         message,
         read: false
       });
@@ -35,7 +36,7 @@ export default class NotificationRepository {
 
   public async findAllById(userId: string): Promise<INotification[]> {
     try {
-      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture' });
+      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture isPrivateAccount' });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("count docuement");
@@ -56,4 +57,65 @@ export default class NotificationRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async editAllNotificationOfRelationFollow(userId: string, fromId: string, type: string, relation: string): Promise<void> {
+    try {
+      await NotificationModel.updateMany({ userId, fromId, relation }, { $set: { type } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("count docuement");
+      }
+      console.error("Unknown error count docuement");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async editMessageById(_id: string, message: string): Promise<void> {
+    try {
+      await NotificationModel.updateMany({ _id }, { $set: { message } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("count docuement");
+      }
+      console.error("Unknown error count docuement");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removeNotificationById(_id: string): Promise<void> {
+    try {
+      await NotificationModel.deleteOne({ _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("count docuement");
+      }
+      console.error("Unknown error count docuement");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removeAllNotificationOfSingleUser(userId: string, fromId: string, relation: string): Promise<void> {
+    try {
+      await NotificationModel.deleteMany({ userId, fromId, relation });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("count docuement");
+      }
+      console.error("Unknown error count docuement");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removeNotificationOfUserByMessage(userId: string, fromId: string, message: string): Promise<void> {
+    try {
+      await NotificationModel.deleteMany({ userId, fromId, message });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("count docuement");
+      }
+      console.error("Unknown error count docuement");
+      throw new Error("Unknown error");
+    }
+  }
+
 }

@@ -13,6 +13,9 @@ import FollowUserController from "../../../infrastructure/controllers/user/user/
 import GetUnreadNotificationCountController from "../../../infrastructure/controllers/user/user/getUnreadNotificationCountController";
 import GetFollowDetialsController from "../../../infrastructure/controllers/user/user/getFollowDetialsController";
 import GetNotificationDataController from "../../../infrastructure/controllers/user/user/getNotificationDataController";
+import AcceptRequestUserController from "../../../infrastructure/controllers/user/user/acceptRequestUserController";
+import DeleteFriendRequestController from "../../../infrastructure/controllers/user/user/deleteFriendRequestController";
+import UnfollowUserController from "../../../infrastructure/controllers/user/user/unfollowUserController";
 
 const userRouter = Router();
 
@@ -28,6 +31,9 @@ const followUserController = new FollowUserController();
 const getUnreadNotificationCountController = new GetUnreadNotificationCountController();
 const getFollowDetialsController = new GetFollowDetialsController();
 const getNotificationDataController = new GetNotificationDataController();
+const acceptRequestUserController = new AcceptRequestUserController();
+const deleteFriendRequestController = new DeleteFriendRequestController();
+const unfollowUserController = new UnfollowUserController();
 
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get("/create-post/get-data", authMiddleware, createPostGetUserDataController.handle);
@@ -38,8 +44,11 @@ userRouter.get("/get-user-data-by-username/:username", authMiddleware, getUserDa
 userRouter.get("/get-user-data-by-search-username/:search", authMiddleware, getUserDataBySearchingUsername.handle);
 userRouter.get("/check-user/:username", authMiddleware, checkUserByUsernameController.handle);
 userRouter.post('/follow/:username', authMiddleware, followUserController.handle);
+userRouter.patch('/accept-equest/:username/:notificationId', authMiddleware, acceptRequestUserController.handle);
 userRouter.get('/notification-count', authMiddleware, getUnreadNotificationCountController.handle);
 userRouter.get('/follow-detials/:username', authMiddleware, getFollowDetialsController.handle);
 userRouter.get('/notification', authMiddleware, getNotificationDataController.handle);
+userRouter.delete('/friend-request/:username/:notificationId', authMiddleware, deleteFriendRequestController.handle);
+userRouter.delete('/unfollow/:_id', authMiddleware, unfollowUserController.handle);
 
 export default userRouter;

@@ -21,9 +21,9 @@ export default class GetFollowDetials {
       throw new Error("User not found!");
     };
 
-    const isFriendAlready = await this.friendsRepository.isFriendAlready(followingUserId, userToFollow._id.toString());
+    const isAlreadyFollowing = await this.friendsRepository.isAlreadyFollowing(followingUserId, userToFollow._id.toString());
 
-    if (isFriendAlready) {
+    if (isAlreadyFollowing) {
       return { follow: true, request: false };
     }
 

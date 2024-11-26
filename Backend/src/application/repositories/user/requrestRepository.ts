@@ -60,4 +60,16 @@ export default class RequestRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async removeRequest(userId: string, userToRemove: string): Promise<void> {
+    try {
+       await RequestModel.updateOne({ userId }, { $pull: { friendRequest: userToRemove } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already requested this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
 }

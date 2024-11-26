@@ -25,26 +25,40 @@ export default class FollowUser {
       throw new Error("User not found!");
     };
 
-    const isFriendAlready = await this.friendsRepository.isFriendAlready(followingUserId, userToFollow._id.toString());
+    const isAlreadyFollowing = await this.friendsRepository.isAlreadyFollowing(followingUserId, userToFollow._id.toString());
 
-    if (!isFriendAlready) {
+    if (!isAlreadyFollowing) {
+
+      const isAlreadyFollowed = await this.friendsRepository.isAlreadyFollowed(followingUserId, userToFollow._id.toString());
 
       if (userToFollow.isPrivateAccount) {
 
         const isRequestExist = await this.requestRepository.isRequestExist(followingUserId, userToFollow._id.toString());
 
         if (!isRequestExist) {
+
+          if (isAlreadyFollowed) {
+            await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), 'requested', 'follow');
+          }
+
           await this.requestRepository.friendRequest(followingUserId, userToFollow._id.toString());
-          await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'request to follow you.', 'request');
-          SocketService.getInstance().sendNotification(userToFollow._id.toString(),);
+          await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'request to follow you.', 'request', 'follow');
+          SocketService.getInstance().sendNotification(userToFollow._id.toString());
           return { follow: false, request: true };
 
         }
 
+        return { follow: false, request: true };
+
       } else {
 
+        if (isAlreadyFollowed) {
+          await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), 'followed', 'follow');
+        }
+
+        const isRequestExist = await this.requestRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
         await this.friendsRepository.followUser(followingUserId, userToFollow._id.toString());
-        await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'started following you.', 'follow');
+        await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'started following you.', `${isRequestExist ? "requested" : isAlreadyFollowed ? "followed" : "follow"}`, 'follow');
         SocketService.getInstance().sendNotification(userToFollow._id.toString());
         return { follow: true, request: false };
 

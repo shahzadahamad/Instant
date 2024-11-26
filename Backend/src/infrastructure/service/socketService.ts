@@ -54,4 +54,13 @@ export default class SocketService {
       console.log(`User ${userId} not connected.`);
     }
   }
+
+  public clearNotification(userId: string): void {
+    const socketId = this.userSocketMap.get(userId);
+    if (socketId) {
+      this.io.to(socketId).emit("clearNotification");
+    } else {
+      console.log(`User ${userId} not connected.`);
+    }
+  }
 }
