@@ -4,12 +4,13 @@ import GetNotificationData from "../../../../application/useCases/user/user/getN
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserRepository from "../../../../application/repositories/user/userRepository";
 
 export default class GetNotificationDataController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
-    const getNotificationData = new GetNotificationData(new NotificationRepository(), new RequestRepository);
+    const getNotificationData = new GetNotificationData(new NotificationRepository(), new RequestRepository(), new UserRepository());
 
     try {
       const notificationData = await getNotificationData.execute(userId);

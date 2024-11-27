@@ -8,13 +8,13 @@ import DeleteFriendRequest from "../../../../application/useCases/user/user/dele
 
 export default class DeleteFriendRequestController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { username, notificationId } = req.params;
+    const { username } = req.params;
     const { userId } = req.user;
 
     const deleteFriendRequest = new DeleteFriendRequest(new UserRepository(), new NotificationRepository(), new RequestRepository());
 
     try {
-      const actionStatus = await deleteFriendRequest.execute(userId, username, notificationId);
+      const actionStatus = await deleteFriendRequest.execute(userId, username);
 
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {

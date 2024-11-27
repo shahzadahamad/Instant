@@ -70,9 +70,9 @@ export default class NotificationRepository {
     }
   }
 
-  public async editMessageById(_id: string, message: string): Promise<void> {
+  public async editMessageByIds(userId: string, fromId: string, type: string, message: string): Promise<void> {
     try {
-      await NotificationModel.updateMany({ _id }, { $set: { message } });
+      await NotificationModel.updateMany({ userId, fromId, type }, { $set: { message } });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("count docuement");
@@ -82,9 +82,9 @@ export default class NotificationRepository {
     }
   }
 
-  public async removeNotificationById(_id: string): Promise<void> {
+  public async removeNotificationByIds(userId: string, fromId: string, type: string): Promise<void> {
     try {
-      await NotificationModel.deleteOne({ _id });
+      await NotificationModel.deleteOne({ userId, fromId, type });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("count docuement");

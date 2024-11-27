@@ -231,7 +231,7 @@ export default class UserRepository {
 
   public async findUserDataWithIdInArray(data: string[]): Promise<IUser[]> {
     try {
-      const musicData = await UserModel.find(
+      return await UserModel.find(
         { _id: { $in: data } },
         {
           _id: 1,
@@ -240,7 +240,6 @@ export default class UserRepository {
           profilePicture: 1,
         }
       );
-      return musicData;
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

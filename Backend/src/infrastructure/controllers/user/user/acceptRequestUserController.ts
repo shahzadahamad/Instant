@@ -9,13 +9,13 @@ import RequestAcceptUser from "../../../../application/useCases/user/user/reques
 
 export default class AcceptRequestUserController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { username, notificationId } = req.params;
+    const { username } = req.params;
     const { userId } = req.user;
 
     const requestAcceptUser = new RequestAcceptUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new RequestRepository());
 
     try {
-      const actionStatus = await requestAcceptUser.execute(userId, username, notificationId);
+      const actionStatus = await requestAcceptUser.execute(userId, username);
 
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {

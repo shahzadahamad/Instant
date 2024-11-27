@@ -44,11 +44,11 @@ userRouter.get("/get-user-data-by-username/:username", authMiddleware, getUserDa
 userRouter.get("/get-user-data-by-search-username/:search", authMiddleware, getUserDataBySearchingUsername.handle);
 userRouter.get("/check-user/:username", authMiddleware, checkUserByUsernameController.handle);
 userRouter.post('/follow/:username', authMiddleware, followUserController.handle);
-userRouter.patch('/accept-equest/:username/:notificationId', authMiddleware, acceptRequestUserController.handle);
+userRouter.patch('/accept-equest/:username', authMiddleware, acceptRequestUserController.handle);
 userRouter.get('/notification-count', authMiddleware, getUnreadNotificationCountController.handle);
 userRouter.get('/follow-detials/:username', authMiddleware, getFollowDetialsController.handle);
 userRouter.get('/notification', authMiddleware, getNotificationDataController.handle);
-userRouter.delete('/friend-request/:username/:notificationId', authMiddleware, deleteFriendRequestController.handle);
+userRouter.delete('/friend-request/:username', authMiddleware, deleteFriendRequestController.handle);
 userRouter.delete('/unfollow/:_id', authMiddleware, unfollowUserController.handle);
 
 export default userRouter;

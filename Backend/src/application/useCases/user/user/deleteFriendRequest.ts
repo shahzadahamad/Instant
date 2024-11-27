@@ -13,7 +13,7 @@ export default class DeleteFriendRequest {
     this.requestRepository = requestRepository;
   }
 
-  public async execute(currentUser: string, requestUserUsername: string, notificationId: string): Promise<{ status: true }> {
+  public async execute(currentUser: string, requestUserUsername: string): Promise<{ status: true }> {
 
     const requestUser = await this.userRepository.findByUsername(requestUserUsername);
 
@@ -22,7 +22,7 @@ export default class DeleteFriendRequest {
     };
 
     await this.requestRepository.removeRequest(currentUser, requestUser._id);
-    await this.notificationRepository.removeNotificationById(notificationId);
+    await this.notificationRepository.removeNotificationByIds(currentUser, requestUser._id.toString(), 'request');
 
     return { status: true };
 

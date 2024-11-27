@@ -17,7 +17,7 @@ export default class RequestAcceptUser {
     this.requestRepository = requestRepository;
   }
 
-  public async execute(followingUserId: string, followerUserUsername: string, notificationId: string): Promise<{ status: true }> {
+  public async execute(followingUserId: string, followerUserUsername: string): Promise<{ status: true }> {
 
     const userToFollow = await this.userRepository.findByUsername(followerUserUsername);
 
@@ -31,8 +31,8 @@ export default class RequestAcceptUser {
     const isRequestExist = await this.requestRepository.isRequestExist(followingUserId, userToFollow._id.toString());
     const isRequestExistOtherUser = await this.requestRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
     await this.friendsRepository.followUser(userToFollow._id.toString(), followingUserId);
+    await this.notificationRepository.editMessageByIds(followingUserId, userToFollow._id.toString(), 'request', 'started following you.');
     await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), `${isRequestExist ? "requested" : isAlreadyFollowing ? "followed" : "follow"}`, 'follow');
-    await this.notificationRepository.editMessageById(notificationId, 'started following you.');
     await this.notificationRepository.editAllNotificationOfRelationFollow(userToFollow._id.toString(), followingUserId, `${isRequestExist ? "request" : isRequestExistOtherUser ? "requested" : isAlreadyFollowed ? "followed" : "follow"}`, 'follow');
     await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'accepted your follow request.', 'followed', 'follow');
     SocketService.getInstance().sendNotification(userToFollow._id.toString());
