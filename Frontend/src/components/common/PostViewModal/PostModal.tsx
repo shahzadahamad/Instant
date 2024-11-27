@@ -1464,13 +1464,13 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
         onOpenChange={onOpenChange}
         className="relative flex items-center preventbutton justify-center"
       >
-        <ModalContent>
+        <ModalContent className="max-h-[70vh] w-full overflow-hidden rounded-lg">
           <ModalHeader>
             <div className="w-full flex justify-between items-center">
               <h1 className="text-lg font-semibold">Tagged Users</h1>
             </div>
           </ModalHeader>
-          <ModalBody className="w-full h-[70vh] overflow-y-auto flex flex-col border-t relative">
+          <ModalBody className="w-full h-full overflow-y-auto border-t">
             {post[currentIndex].post[index].tagUsers.length > 0 ? (
               <div className="w-full">
                 {taggedUser.map((user) => (

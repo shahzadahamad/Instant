@@ -3,12 +3,14 @@ import FriendSuggetion from "../common/FriendSuggetion";
 import { AxiosError } from "axios";
 import { acceptRequest, deleteRequest, followUser, getNotificationData } from "@/apis/api/userApi";
 import toast from "react-hot-toast";
-import { friendRequestType, NotificationType } from "@/types/notification/notification";
+import { NotificationType } from "@/types/notification/notification";
 import { timeSince } from "@/helperFuntions/dateFormat";
 import { socket } from "@/socket/socket";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import UnfollowModal from "../common/UnfollowModal";
+import FriendRequestModal from "./FriendRequestModal";
+import { GetUserDataForPost } from "@/types/profile/profile";
 
 const NotificationDetials = () => {
   const [groupedNotifications, setGroupedNotifications] = useState({
@@ -17,9 +19,10 @@ const NotificationDetials = () => {
     thisWeek: [] as NotificationType[],
     thisMonth: [] as NotificationType[],
   });
-  const [request, setRequest] = useState<friendRequestType | null>(null);
+  const [request, setRequest] = useState<GetUserDataForPost[] | null>(null);
   const navigate = useNavigate();
   const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
+  const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false);
 
   const fetchNotificationData = async () => {
     try {
@@ -90,14 +93,23 @@ const NotificationDetials = () => {
     }
   }
 
-  const handleFollow = async (username: string, type: string, notificationId: string) => {
+  const handleFriendRequest = (status: boolean) => {
+    if (status) {
+      setOpenFriendRequestModal(!openFriendRequestModal);
+      fetchNotificationData();
+    } else {
+      setOpenFriendRequestModal(!openFriendRequestModal);
+    }
+  }
+
+  const handleFollow = async (username: string, type: string) => {
     try {
       if (type === 'followBack') {
         await followUser(username);
       } else if (type === 'acceptRequest') {
-        await acceptRequest(username, notificationId);
+        await acceptRequest(username);
       } else if (type === 'delete') {
-        await deleteRequest(username, notificationId);
+        await deleteRequest(username);
       }
       fetchNotificationData();
     } catch (error) {
@@ -110,6 +122,7 @@ const NotificationDetials = () => {
       }
     }
   };
+
 
   const renderNotifications = (
     category: string,
@@ -160,18 +173,18 @@ const NotificationDetials = () => {
               </div>
               {notification.type === "follow" ? (
                 <button
-                  onClick={() => handleFollow(notification.fromId.username, 'followBack', notification._id)}
+                  onClick={() => handleFollow(notification.fromId.username, 'followBack')}
                   className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center"
                 >
                   {notification.fromId.isPrivateAccount ? "Request" : "Follow"}
                 </button>
               ) : notification.type === "request" ? (
                 <div className="flex gap-2">
-                  <button onClick={() => handleFollow(notification.fromId.username, 'acceptRequest', notification._id)}
+                  <button onClick={() => handleFollow(notification.fromId.username, 'acceptRequest')}
                     className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
                     Confirm
                   </button>
-                  <button onClick={() => handleFollow(notification.fromId.username, 'delete', notification._id)} className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                  <button onClick={() => handleFollow(notification.fromId.username, 'delete')} className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
                     Delete
                   </button>
                 </div>
@@ -201,10 +214,17 @@ const NotificationDetials = () => {
 
           <div className="w-4/5 h-[90%] flex flex-col py-4 items-center overflow-auto scrollbar-hidden">
             {
-              request && request.friendRequest.length > 0 && (
-                <button className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer self-end mr-4">
-                  Request ({request.friendRequest.length})
-                </button>
+              request && request.length > 0 && (
+                <>
+                  {
+                    openFriendRequestModal && (
+                      <FriendRequestModal openFriendRequestModal={openFriendRequestModal} handleFriendRequest={handleFriendRequest} friendRequest={request} />
+                    )
+                  }
+                  <button onClick={() => setOpenFriendRequestModal(true)} className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer self-end mr-4">
+                    Request ({request.length})
+                  </button>
+                </>
               )
             }
             {groupedNotifications.today.length > 0 && (

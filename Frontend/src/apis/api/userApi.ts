@@ -132,8 +132,8 @@ export const followUser = async (username: string) => {
   return response.data;
 };
 
-export const acceptRequest = async (username: string, notificationId: string) => {
-  const response = await apiClient.patch(`/user/accept-equest/${username}/${notificationId}`);
+export const acceptRequest = async (username: string) => {
+  const response = await apiClient.patch(`/user/accept-equest/${username}`);
   return response.data;
 };
 
@@ -142,8 +142,8 @@ export const unfollowUser = async (userId: string) => {
   return response.data;
 };
 
-export const deleteRequest = async (username: string, notificationId: string) => {
-  const response = await apiClient.delete(`/user/friend-request/${username}/${notificationId}`);
+export const deleteRequest = async (username: string) => {
+  const response = await apiClient.delete(`/user/friend-request/${username}`);
   return response.data;
 };
 

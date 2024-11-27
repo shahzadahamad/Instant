@@ -10,13 +10,14 @@ export interface NotificationType {
   createdAt: Date,
 }
 
-export interface friendRequestType {
-  _id: string;
-  friendRequest: string[]
-}
-
 export interface UnfollowModalProps {
   openUnfollowModal: boolean,
   handleUnfollowModal: (status: boolean) => void;
   userData: GetUserDataForPost;
+}
+
+export interface FriendRequestModalProps {
+  openFriendRequestModal: boolean
+  handleFriendRequest: (status: boolean) => void;
+  friendRequest: GetUserDataForPost[];
 }
