@@ -7,6 +7,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import CommentRepository from "../../../../application/repositories/user/commentRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 
 export default class DeletePostController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -18,7 +19,8 @@ export default class DeletePostController {
       new AwsS3Storage(),
       new LikeRepository(),
       new UserRepository(),
-      new CommentRepository()
+      new CommentRepository(),
+      new NotificationRepository()
     );
 
     try {

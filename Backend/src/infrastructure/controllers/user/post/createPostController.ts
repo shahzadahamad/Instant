@@ -5,6 +5,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import PostRepository from "../../../../application/repositories/user/postRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 
 export default class CreatePostController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -23,7 +24,8 @@ export default class CreatePostController {
     const createPost = new CreatePost(
       new UserRepository(),
       new AwsS3Storage(),
-      new PostRepository()
+      new PostRepository(),
+      new NotificationRepository()
     );
 
     try {

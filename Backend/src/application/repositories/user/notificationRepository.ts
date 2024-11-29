@@ -22,6 +22,96 @@ export default class NotificationRepository {
     }
   }
 
+  public async sendPostNotification(from: string, to: string, postId: string, message: string, type: string, relation: string): Promise<INotification> {
+    try {
+      const newNotification = await new NotificationModel({
+        userId: to,
+        fromId: from,
+        postId,
+        type,
+        relation,
+        message,
+        read: false
+      });
+      return await newNotification.save();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("error follow user!");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async sendPostCommentNotification(from: string, to: string, postId: string, commentId: string, message: string, type: string, relation: string): Promise<INotification> {
+    try {
+      const newNotification = await new NotificationModel({
+        userId: to,
+        fromId: from,
+        postId,
+        commentId,
+        type,
+        relation,
+        message,
+        read: false
+      });
+      return await newNotification.save();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("error follow user!");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removeCommentNotificationByCommentId(commentId: string): Promise<void> {
+    try {
+      await NotificationModel.deleteMany({
+        commentId
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("error follow user!");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removePostNotification(from: string, to: string, postId: string, message: string, type: string, relation: string): Promise<void> {
+    try {
+      await NotificationModel.deleteOne({
+        userId: to,
+        fromId: from,
+        postId,
+        type,
+        relation,
+        message,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("error follow user!");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async removePostNotificationByPostId(postId: string): Promise<void> {
+    try {
+      await NotificationModel.deleteMany({
+        postId
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("error follow user!");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async unReadNotificationCount(userId: string): Promise<number> {
     try {
       return await NotificationModel.countDocuments({ userId, read: false });
@@ -36,7 +126,7 @@ export default class NotificationRepository {
 
   public async findAllById(userId: string): Promise<INotification[]> {
     try {
-      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture isPrivateAccount' });
+      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture isPrivateAccount' }).populate({ path: 'postId', select: 'post' });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("count docuement");

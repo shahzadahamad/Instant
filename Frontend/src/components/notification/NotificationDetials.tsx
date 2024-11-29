@@ -1,7 +1,12 @@
 import { useLayoutEffect, useState } from "react";
 import FriendSuggetion from "../common/FriendSuggetion";
 import { AxiosError } from "axios";
-import { acceptRequest, deleteRequest, followUser, getNotificationData } from "@/apis/api/userApi";
+import {
+  acceptRequest,
+  deleteRequest,
+  followUser,
+  getNotificationData,
+} from "@/apis/api/userApi";
 import toast from "react-hot-toast";
 import { NotificationType } from "@/types/notification/notification";
 import { timeSince } from "@/helperFuntions/dateFormat";
@@ -40,19 +45,21 @@ const NotificationDetials = () => {
         thisMonth: [] as NotificationType[],
       };
 
-      notificationData.notification.forEach((notification: NotificationType) => {
-        const createdAt = moment(notification.createdAt);
+      notificationData.notification.forEach(
+        (notification: NotificationType) => {
+          const createdAt = moment(notification.createdAt);
 
-        if (createdAt.isSameOrAfter(today)) {
-          grouped.today.push(notification);
-        } else if (createdAt.isSameOrAfter(yesterday)) {
-          grouped.yesterday.push(notification);
-        } else if (createdAt.isSameOrAfter(startOfWeek)) {
-          grouped.thisWeek.push(notification);
-        } else if (createdAt.isSameOrAfter(startOfMonth)) {
-          grouped.thisMonth.push(notification);
+          if (createdAt.isSameOrAfter(today)) {
+            grouped.today.push(notification);
+          } else if (createdAt.isSameOrAfter(yesterday)) {
+            grouped.yesterday.push(notification);
+          } else if (createdAt.isSameOrAfter(startOfWeek)) {
+            grouped.thisWeek.push(notification);
+          } else if (createdAt.isSameOrAfter(startOfMonth)) {
+            grouped.thisMonth.push(notification);
+          }
         }
-      });
+      );
 
       setGroupedNotifications(grouped);
       setRequest(notificationData.friendRequest);
@@ -72,11 +79,11 @@ const NotificationDetials = () => {
 
     socket.on("newNotification", () => {
       fetchNotificationData();
-    })
+    });
 
     socket.on("clearNotification", () => {
       fetchNotificationData();
-    })
+    });
 
     return () => {
       socket.off("newNotification");
@@ -91,24 +98,23 @@ const NotificationDetials = () => {
     } else {
       setOpenUnfollowModal(!openUnfollowModal);
     }
-  }
+  };
 
   const handleFriendRequest = (status: boolean) => {
     if (status) {
       setOpenFriendRequestModal(!openFriendRequestModal);
-      fetchNotificationData();
     } else {
-      setOpenFriendRequestModal(!openFriendRequestModal);
+      fetchNotificationData();
     }
-  }
+  };
 
   const handleFollow = async (username: string, type: string) => {
     try {
-      if (type === 'followBack') {
+      if (type === "followBack") {
         await followUser(username);
-      } else if (type === 'acceptRequest') {
+      } else if (type === "acceptRequest") {
         await acceptRequest(username);
-      } else if (type === 'delete') {
+      } else if (type === "delete") {
         await deleteRequest(username);
       }
       fetchNotificationData();
@@ -123,7 +129,7 @@ const NotificationDetials = () => {
     }
   };
 
-
+  console.log(groupedNotifications);
   const renderNotifications = (
     category: string,
     notifications: NotificationType[]
@@ -141,26 +147,34 @@ const NotificationDetials = () => {
             >
               <div className="flex items-center gap-3">
                 <img
-                  onClick={() => navigate(`/user/${notification.fromId.username}`)}
+                  onClick={() =>
+                    navigate(`/user/${notification.fromId.username}`)
+                  }
                   src={
                     notification.fromId.profilePicture
                       ? typeof notification.fromId.profilePicture === "string"
                         ? notification.fromId.profilePicture
                         : URL.createObjectURL(
-                          notification.fromId.profilePicture
-                        )
+                            notification.fromId.profilePicture
+                          )
                       : ""
                   }
                   className="w-12 h-12 rounded-full object-cover"
                 />
-                {
-                  openUnfollowModal && (
-                    <UnfollowModal openUnfollowModal={openUnfollowModal} handleUnfollowModal={handleUnfollowModal} userData={notification.fromId} />
-                  )
-                }
+                {openUnfollowModal && (
+                  <UnfollowModal
+                    openUnfollowModal={openUnfollowModal}
+                    handleUnfollowModal={handleUnfollowModal}
+                    userData={notification.fromId}
+                  />
+                )}
                 <div className="flex flex-col">
-                  <h1 onClick={() => navigate(`/user/${notification.fromId.username}`)}
-                    className="text-[15px] font-semibold max-w-[15rem] break-words">
+                  <h1
+                    onClick={() =>
+                      navigate(`/user/${notification.fromId.username}`)
+                    }
+                    className="text-[15px] font-semibold max-w-[15rem] break-words"
+                  >
                     {notification.fromId.username}{" "}
                     <span className="font-normal">
                       {notification.message}&nbsp;
@@ -171,32 +185,65 @@ const NotificationDetials = () => {
                   </h1>
                 </div>
               </div>
-              {notification.type === "follow" ? (
-                <button
-                  onClick={() => handleFollow(notification.fromId.username, 'followBack')}
-                  className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center"
-                >
-                  {notification.fromId.isPrivateAccount ? "Request" : "Follow"}
-                </button>
-              ) : notification.type === "request" ? (
-                <div className="flex gap-2">
-                  <button onClick={() => handleFollow(notification.fromId.username, 'acceptRequest')}
-                    className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
-                    Confirm
+              {notification.relation === "follow" &&
+                (notification.type === "follow" ? (
+                  <button
+                    onClick={() =>
+                      handleFollow(notification.fromId.username, "followBack")
+                    }
+                    className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center"
+                  >
+                    {notification.fromId.isPrivateAccount
+                      ? "Request"
+                      : "Follow"}
                   </button>
-                  <button onClick={() => handleFollow(notification.fromId.username, 'delete')} className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                    Delete
+                ) : notification.type === "request" ? (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        handleFollow(
+                          notification.fromId.username,
+                          "acceptRequest"
+                        )
+                      }
+                      className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleFollow(notification.fromId.username, "delete")
+                      }
+                      className="cursor-pointer w-20 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : notification.type === "followed" ? (
+                  <button
+                    onClick={() => handleUnfollowModal(false)}
+                    className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center"
+                  >
+                    Following
                   </button>
-                </div>
-              ) : notification.type === "followed" ? (
-                <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                  Following
-                </button>
-              ) : notification.type === 'requested' ? (
-                <button onClick={() => handleUnfollowModal(false)} className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
-                  Requested
-                </button>
-              ) : ""}
+                ) : notification.type === "requested" ? (
+                  <button
+                    onClick={() => handleUnfollowModal(false)}
+                    className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center"
+                  >
+                    Requested
+                  </button>
+                ) : (
+                  ""
+                ))}
+              {notification.relation === "post" && (
+                <img
+                  className="w-12 h-12 rounded-lg object-cover"
+                  onClick={() => navigate(`/post/${notification.postId._id}`)}
+                  src={notification.postId.post[0].url}
+                  alt=""
+                />
+              )}
             </div>
           ))}
         </>
@@ -213,31 +260,40 @@ const NotificationDetials = () => {
           </div>
 
           <div className="w-4/5 h-[90%] flex flex-col py-4 items-center overflow-auto scrollbar-hidden">
-            {
-              request && request.length > 0 && (
-                <>
-                  {
-                    openFriendRequestModal && (
-                      <FriendRequestModal openFriendRequestModal={openFriendRequestModal} handleFriendRequest={handleFriendRequest} friendRequest={request} />
-                    )
-                  }
-                  <button onClick={() => setOpenFriendRequestModal(true)} className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer self-end mr-4">
-                    Request ({request.length})
-                  </button>
-                </>
-              )
-            }
+            {request && request.length > 0 && (
+              <>
+                {openFriendRequestModal && (
+                  <FriendRequestModal
+                    openFriendRequestModal={openFriendRequestModal}
+                    handleFriendRequest={handleFriendRequest}
+                    friendRequest={request}
+                  />
+                )}
+                <button
+                  onClick={() => setOpenFriendRequestModal(true)}
+                  className="text-end font-semibold text-blue-500 hover:opacity-70 transition-colors cursor-pointer self-end mr-4"
+                >
+                  Request ({request.length})
+                </button>
+              </>
+            )}
             {groupedNotifications.today.length > 0 && (
               <>{renderNotifications("Today", groupedNotifications.today)}</>
             )}
             {groupedNotifications.yesterday.length > 0 && (
               <>
-                {renderNotifications("Yesterday", groupedNotifications.yesterday)}
+                {renderNotifications(
+                  "Yesterday",
+                  groupedNotifications.yesterday
+                )}
               </>
             )}
             {groupedNotifications.thisWeek.length > 0 && (
               <>
-                {renderNotifications("This Week", groupedNotifications.thisWeek)}
+                {renderNotifications(
+                  "This Week",
+                  groupedNotifications.thisWeek
+                )}
               </>
             )}
             {groupedNotifications.thisMonth.length > 0 && (

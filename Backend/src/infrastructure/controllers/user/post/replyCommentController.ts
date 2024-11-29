@@ -5,6 +5,7 @@ import CommentRepository from "../../../../application/repositories/user/comment
 import ReplyComment from "../../../../application/useCases/user/post/replyComment";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 
 export default class ReplyCommentController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -15,7 +16,8 @@ export default class ReplyCommentController {
     const replyComment = new ReplyComment(
       new PostRepository(),
       new UserRepository(),
-      new CommentRepository()
+      new CommentRepository(),
+      new NotificationRepository()
     );
 
     try {

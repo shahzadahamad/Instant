@@ -24,6 +24,10 @@ const notificationSchema: Schema = new Schema(
       type: String,
       ref: 'Post',
     },
+    commentId: {
+      type: String,
+      ref: "Comment"
+    },
     relation: {
       type: String,
       required: true

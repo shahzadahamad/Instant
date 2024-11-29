@@ -13,7 +13,7 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({ openFriendReque
       } else if (type === 'delete') {
         await deleteRequest(username);
       }
-      handleFriendRequest(true);
+      handleFriendRequest(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.error(error.response.data?.error || "An error occurred");
@@ -29,7 +29,7 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({ openFriendReque
     <Modal
       isOpen={openFriendRequestModal}
       size="lg"
-      onOpenChange={handleFriendRequest}
+      onOpenChange={() => handleFriendRequest(true)}
       className="relative flex items-center justify-center preventbutton"
     >
       <ModalContent className="max-h-[70vh] w-full overflow-hidden rounded-lg">

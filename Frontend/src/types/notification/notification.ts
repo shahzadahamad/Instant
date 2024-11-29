@@ -1,11 +1,16 @@
-import { GetUserDataForPost } from "../profile/profile"
+import { GetUserDataForPost, PostData } from "../profile/profile"
 
 export interface NotificationType {
   _id: string
   userId: string,
   fromId: GetUserDataForPost,
+  postId: {
+    _id: string,
+    post: PostData[]
+  }
   type: string,
   message: string,
+  relation: string,
   read: boolean,
   createdAt: Date,
 }

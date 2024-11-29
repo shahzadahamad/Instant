@@ -1,6 +1,7 @@
 import SocketService from "../../../../infrastructure/service/socketService";
 import { PostData } from "../../../interface/post";
 import AwsS3Storage from "../../../providers/awsS3Storage";
+import NotificationRepository from "../../../repositories/user/notificationRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -8,15 +9,18 @@ export default class CreatePost {
   private awsS3Storage: AwsS3Storage;
   private userRepository: UserRepository;
   private postRepository: PostRepository;
+  private notificationRepository: NotificationRepository;
 
   constructor(
     userRepository: UserRepository,
     awsS3Storage: AwsS3Storage,
     postRepository: PostRepository,
+    notificationRepository: NotificationRepository
   ) {
     this.awsS3Storage = awsS3Storage;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
+    this.notificationRepository = notificationRepository;
   }
 
   public async execute(
@@ -79,8 +83,18 @@ export default class CreatePost {
       aspectRatio
     );
 
-    SocketService.getInstance().sendNewPost(id, newPost, "Post created successfully");
+    const notifiedUsers = new Set();
+    newPost.post.forEach((post) => {
+      post.tagUsers.forEach(async (user) => {
+        if (!notifiedUsers.has(user)) {
+          notifiedUsers.add(user);
+          await this.notificationRepository.sendPostNotification(id, user, newPost._id, 'tagged you in a post.', 'tagged', 'post');
+          SocketService.getInstance().sendNotification(user.toString());
+        }
+      });
+    });
 
+    SocketService.getInstance().sendNewPost(id, newPost, "Post created successfully");
     return "Post created successfully";
   }
 }
