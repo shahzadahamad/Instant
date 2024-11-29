@@ -57,9 +57,8 @@ export default class CommentRepository {
 
   public async findCommentReplyById(_id: string): Promise<IComment | null> {
     try {
-      return await CommentModel.findOne({
-        reply: { $elemMatch: { _id: _id } },
-      });
+      return await CommentModel.findOne({ "reply._id": _id },
+        { reply: { $elemMatch: { _id: _id } } });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

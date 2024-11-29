@@ -5,6 +5,7 @@ import CommentRepository from "../../../../application/repositories/user/comment
 import LikeOrUnlikeComment from "../../../../application/useCases/user/post/likeOrUnlikeComment";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 
 export default class LikeOrUnlikeCommentController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -13,7 +14,8 @@ export default class LikeOrUnlikeCommentController {
     const likeOrUnlikeComment = new LikeOrUnlikeComment(
       new PostRepository(),
       new LikeRepository(),
-      new CommentRepository()
+      new CommentRepository(),
+      new NotificationRepository()
     );
 
     try {

@@ -1,20 +1,25 @@
+import SocketService from "../../../../infrastructure/service/socketService";
 import CommentRepository from "../../../repositories/user/commentRepository";
 import LikeRepository from "../../../repositories/user/likeRepository";
+import NotificationRepository from "../../../repositories/user/notificationRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 
 export default class LikeOrUnlikeComment {
   private postRepository: PostRepository;
   private likeRepository: LikeRepository;
   private commentRepository: CommentRepository;
+  private notificationRepository: NotificationRepository;
 
   constructor(
     postRepository: PostRepository,
     likeRepository: LikeRepository,
-    commentRepository: CommentRepository
+    commentRepository: CommentRepository,
+    notificationRepository: NotificationRepository
   ) {
     this.postRepository = postRepository;
     this.likeRepository = likeRepository;
     this.commentRepository = commentRepository;
+    this.notificationRepository = notificationRepository;
   }
 
   public async execute(
@@ -45,6 +50,13 @@ export default class LikeOrUnlikeComment {
         userId,
         true
       );
+      if (comment && userId !== comment.userId) {
+        await this.notificationRepository.sendPostNotification(userId, comment.userId.toString(), postId, `liked you comment: ${comment.comment}.`, 'comment-liked', 'post');
+        SocketService.getInstance().sendNotification(comment.userId.toString());
+      } else if (replyComment && userId !== replyComment.userId) {
+        await this.notificationRepository.sendPostNotification(userId, post.userId, postId, `liked you comment: ${replyComment.reply[0].comment}.`, 'comment-liked', 'post');
+        SocketService.getInstance().sendNotification(replyComment.reply[0].userId.toString());
+      }
     } else if (status === "dislike") {
       await this.likeRepository.likeAndDisLikeComment(
         postId,
@@ -52,6 +64,13 @@ export default class LikeOrUnlikeComment {
         userId,
         false
       );
+      if (comment && userId !== comment.userId) {
+        await this.notificationRepository.removePostNotification(userId, comment.userId.toString(), postId, `liked you comment: ${comment.comment}.`, 'comment-liked', 'post');
+        SocketService.getInstance().sendNotification(comment.userId.toString());
+      } else if (replyComment && userId !== replyComment.userId) {
+        await this.notificationRepository.removePostNotification(userId, post.userId, postId, `liked you comment: ${replyComment.reply[0].comment}.`, 'comment-liked', 'post');
+        SocketService.getInstance().sendNotification(replyComment.reply[0].userId.toString());
+      }
     } else {
       throw new Error("Invalid action");
     }
