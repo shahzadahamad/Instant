@@ -1,0 +1,43 @@
+import mongoose, { Schema, Document } from "mongoose";
+
+export interface IChat extends Document {
+  _id: string;
+  type: string;
+  members: string[];
+  lastMessage: string;
+}
+
+const chatSchema: Schema = new Schema(
+  {
+    name: {
+      type: String,
+      trim: true
+    },
+    members: [{
+      userId: {
+        type: String,
+        ref: 'User',
+        required: true
+      },
+      seen: {
+        type: Boolean,
+        required: true,
+      }
+    }],
+    type: {
+      type: String,
+      enum: ['personal', 'group'],
+      required: true
+    },
+    lastMessage: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const ChatModel = mongoose.model<IChat>("Chat", chatSchema);
+
+export default ChatModel;
