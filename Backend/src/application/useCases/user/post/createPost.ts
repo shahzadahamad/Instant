@@ -48,26 +48,26 @@ export default class CreatePost {
           files.map(async (file, index) => {
             const fileUrl = await this.awsS3Storage.uploadFile(file, "post");
             postData[index].url = fileUrl;
-            if (postData[index].type === "image") {
-              const checkImageModeration =
-                await this.awsS3Storage.checkImageModeration(fileUrl);
-              postData[index].isSensitive =
-                checkImageModeration.isInappropriate;
-              postData[index].sensitiveContentType =
-                checkImageModeration.labels;
-            } else if (postData[index].type === "video") {
-              const jobId = await this.awsS3Storage.checkVideoModeration(
-                fileUrl
-              );
-              if (jobId) {
-                const videoModerationLabels =
-                  await this.awsS3Storage.getVideoModerationResults(jobId);
-                postData[index].isSensitive =
-                  videoModerationLabels.isInappropriate;
-                postData[index].sensitiveContentType =
-                  videoModerationLabels.labels;
-              }
-            }
+            // if (postData[index].type === "image") {
+            //   const checkImageModeration =
+            //     await this.awsS3Storage.checkImageModeration(fileUrl);
+            //   postData[index].isSensitive =
+            //     checkImageModeration.isInappropriate;
+            //   postData[index].sensitiveContentType =
+            //     checkImageModeration.labels;
+            // } else if (postData[index].type === "video") {
+            //   const jobId = await this.awsS3Storage.checkVideoModeration(
+            //     fileUrl
+            //   );
+            //   if (jobId) {
+            //     const videoModerationLabels =
+            //       await this.awsS3Storage.getVideoModerationResults(jobId);
+            //     postData[index].isSensitive =
+            //       videoModerationLabels.isInappropriate;
+            //     postData[index].sensitiveContentType =
+            //       videoModerationLabels.labels;
+            //   }
+            // }
           })
         );
       }

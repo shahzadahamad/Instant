@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 
-const MessageMenu = () => {
+const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
@@ -116,7 +116,7 @@ const MessageMenu = () => {
       {isMenuOpen && (
         <div
           ref={menuRef}
-          className="absolute p-1 top-full mt-2 right-0 w-32 bg-white dark:bg-[#191919] rounded-md shadow-lg z-10"
+          className="absolute p-1 top-full mt-2 right-0 w-36 bg-white dark:bg-[#191919] rounded-md shadow-lg z-10"
         >
           <ul className="text-sm">
             <div className="flex justify-between items-center p-3 cursor-pointer rounded-md hover:bg-[#f0f0f0] dark:hover:bg-[#2c2c2c]">
@@ -136,7 +136,7 @@ const MessageMenu = () => {
             </div>
 
             <div className="flex justify-between items-center p-3 cursor-pointer rounded-md hover:bg-[#f0f0f0] dark:hover:bg-[#2c2c2c]">
-              <li className="text-red-500">Unsend</li>
+              <li className="text-red-500">{value ? "Delete for you" : "Unsend"}</li>
               <FontAwesomeIcon
                 className="hover:cursor-pointer text-red-500 transition-colors hover:opacity-70"
                 icon={faTrashCan}

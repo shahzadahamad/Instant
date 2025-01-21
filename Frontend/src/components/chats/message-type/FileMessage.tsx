@@ -17,11 +17,11 @@ const FileMessage = () => {
           />
         </div>
         <EmojiReaction value={true} />
-        <MessageMenu />
+        <MessageMenu value={true} />
       </div>
 
       <div className="relative flex items-center group justify-end gap-3 px-3 pb-7">
-        <MessageMenu />
+        <MessageMenu value={false} />
         <div className="w-48">
           <img
             src="/neymar.jpg"
@@ -44,11 +44,11 @@ const FileMessage = () => {
           </div>
         </div>
         <EmojiReaction value={true} />
-        <MessageMenu />
+        <MessageMenu value={true} />
       </div>
 
       <div className="relative flex group items-center justify-end gap-3 px-3 pb-7">
-        <MessageMenu />
+        <MessageMenu value={false} />
         <div className="relative w-48">
           <video
             src="/suisui.mp4"

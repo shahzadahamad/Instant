@@ -34,11 +34,11 @@ const SharePostMessage = () => {
           </div>
         </div>
         <EmojiReaction value={true} />
-        <MessageMenu />
+        <MessageMenu value={true} />
       </div>
 
       <div className="relative flex group items-center justify-end gap-3 px-3 pb-7">
-        <MessageMenu />
+        <MessageMenu value={false} />
         <div className="w-72 flex flex-col">
           <div className="flex items-center gap-2 rounded-t-2xl p-3 bg-[#262626]">
             <div className="w-8">
@@ -95,11 +95,11 @@ const SharePostMessage = () => {
           </div>
         </div>
         <EmojiReaction value={true} />
-        <MessageMenu />
+        <MessageMenu value={true} />
       </div>
 
       <div className="relative flex group items-center justify-end gap-3 px-3 pb-7">
-        <MessageMenu />
+        <MessageMenu value={false} />
         <div className="w-72 flex flex-col">
           <div className="flex items-center gap-2 rounded-t-2xl p-3 bg-[#262626]">
             <div className="w-8">

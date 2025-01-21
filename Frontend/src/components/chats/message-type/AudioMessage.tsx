@@ -27,11 +27,11 @@ const AudioMessage = () => {
           </div>
         </div>
         <EmojiReaction value={true} />
-        <MessageMenu />
+        <MessageMenu value={true} />
       </div>
 
       <div className="relative flex group items-center justify-end gap-3 px-3 pb-7">
-        <MessageMenu />
+        <MessageMenu value={false} />
         <div className="w-48 bg-[#0084ff] text-white flex items-center justify-start gap-5 border rounded-2xl p-3">
           <div className="flex items-center gap-2">
             <Button

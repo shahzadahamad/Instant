@@ -61,10 +61,12 @@ const postSchema: Schema = new Schema(
         },
         isSensitive: {
           type: Boolean,
+          default: false,
           required: true,
         },
         sensitiveContentType: {
           type: [],
+          default: [],
           required: true,
         },
       },
