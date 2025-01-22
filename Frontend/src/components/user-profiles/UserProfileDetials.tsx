@@ -1,4 +1,4 @@
-import { followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
+import { cheackingChatAlreadyExist, followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import { useLayoutEffect, useState } from "react";
@@ -92,6 +92,18 @@ const UserProfileDetials = () => {
     }
   }
 
+  const handleMessageBtn = async () => {
+    if (userData) {
+
+      const chatId = await cheackingChatAlreadyExist(userData?._id);
+
+      if (chatId) {
+        navigate(`/chats/${chatId}`);
+      }
+
+    }
+  }
+
   return (
     <>
       {userData ? (
@@ -137,7 +149,7 @@ const UserProfileDetials = () => {
                     }
                     {
                       (followDetials?.follow || !userData.isPrivateAccount) && (
-                        <button onClick={() => navigate(`/chats/${userData._id}`)} className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
+                        <button onClick={handleMessageBtn} className="cursor-pointer w-28 font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center">
                           Message
                         </button>
                       )

@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 const ChatInboxDetials = () => {
   const [tab, setTab] = useState("chats");
   const { chatId } = useParams();
+
   return (
     <div className="w-full flex overflow-auto scrollbar-hidden">
       <div className="w-1/3 h-full border-r flex flex-col">
@@ -28,9 +29,8 @@ const ChatInboxDetials = () => {
           <div className="flex border-b">
             <div
               onClick={() => setTab("chats")}
-              className={`w-1/2 text-center p-2 transition-colors border-r cursor-pointer ${
-                tab === "chats" && "dark:bg-[#191919] bg-[#f0f0f0]"
-              } dark:hover:bg-[#191919] hover:bg-[#f0f0f0]`}
+              className={`w-1/2 text-center p-2 transition-colors border-r cursor-pointer ${tab === "chats" && "dark:bg-[#191919] bg-[#f0f0f0]"
+                } dark:hover:bg-[#191919] hover:bg-[#f0f0f0]`}
             >
               <h1
                 className={`${tab === "chats" ? "font-bold" : "font-semibold"}`}
@@ -40,14 +40,12 @@ const ChatInboxDetials = () => {
             </div>
             <div
               onClick={() => setTab("group-chats")}
-              className={`w-1/2 text-center p-2 transition-colors cursor-pointer ${
-                tab === "group-chats" && "dark:bg-[#191919] bg-[#f0f0f0]"
-              } dark:hover:bg-[#191919] hover:bg-[#f0f0f0]`}
+              className={`w-1/2 text-center p-2 transition-colors cursor-pointer ${tab === "group-chats" && "dark:bg-[#191919] bg-[#f0f0f0]"
+                } dark:hover:bg-[#191919] hover:bg-[#f0f0f0]`}
             >
               <h1
-                className={`${
-                  tab === "group-chats" ? "font-bold" : "font-semibold"
-                }`}
+                className={`${tab === "group-chats" ? "font-bold" : "font-semibold"
+                  }`}
               >
                 Group chats
               </h1>
@@ -78,13 +76,12 @@ const ChatInboxDetials = () => {
             <div className="text-center flex gap-1 flex-col">
               <h1 className="text-2xl font-bold">Your messages</h1>
               <h1 className="text-sm font-base text-[#8b949b]">
-                {`Send messages and private photos ${
-                  tab === "chats"
-                    ? "to a friend."
-                    : tab === "group-chats"
+                {`Send messages and private photos ${tab === "chats"
+                  ? "to a friend."
+                  : tab === "group-chats"
                     ? "to a group."
                     : ""
-                }`}
+                  }`}
               </h1>
             </div>
           </div>

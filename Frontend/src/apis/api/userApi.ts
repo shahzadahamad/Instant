@@ -161,3 +161,18 @@ export const getNotificationData = async () => {
   const response = await apiClient.get(`/user/notification`);
   return response.data;
 };
+
+export const getChatData = async (chatId: string) => {
+  const response = await apiClient.get(`/user/chats/data/${chatId}`);
+  return response.data;
+}
+
+export const cheackingChatAlreadyExist = async (userId: string) => {
+  const response = await apiClient.post(`/user/chats/create/${userId}`);
+  return response.data;
+}
+
+export const getChatList = async (type:string) => {
+  const response = await apiClient.get(`/user/chats/list/${type}`);
+  return response.data;
+}

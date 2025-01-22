@@ -1,17 +1,20 @@
-const ChatMessageHeader = () => {
+import { Member } from "@/types/chat/chat";
+
+const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
+
   return (
     <div className="w-full flex items-center justify-between p-4 group border-b">
       <div className="flex">
         <div className="w-11 h-11 cursor-pointer">
           <img
-            src="/avatar.png"
+            src={userData.profilePicture}
             className="w-full h-full rounded-full object-cover"
-            alt=""
+            alt="Profile Picture"
           />
         </div>
         <div className="flex justify-between items-center flex-grow ml-3">
           <div>
-            <h1 className="text-base font-semibold cursor-pointer">Shahzad</h1>
+            <h1 className="text-base font-semibold cursor-pointer">{userData.username}</h1>
             <h1 className="text-xs text-[#8a8a8a]">Active 38m ago</h1>
           </div>
         </div>
