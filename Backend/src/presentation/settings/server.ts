@@ -14,6 +14,7 @@ import adminRouter from "../routes/admin/admin";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import SocketService from "../../infrastructure/service/socketService";
+import chatRouter from "../routes/user/chat";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/admin/users', adminUsersRouter);
 app.use('/api/admin/music', musicRouter);
 app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
+app.use('/api/user/chats', chatRouter);
 
 const port: number | string = process.env.PORT || 3000;
 server.listen(port, () => {

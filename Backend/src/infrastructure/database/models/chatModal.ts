@@ -13,17 +13,16 @@ const chatSchema: Schema = new Schema(
       type: String,
       trim: true
     },
-    members: [{
-      userId: {
+    profilePicture: {
+      type: String,
+    },
+    members: {
+      type: [{
         type: String,
-        ref: 'User',
-        required: true
-      },
-      seen: {
-        type: Boolean,
-        required: true,
-      }
-    }],
+        ref: 'User'
+      }],
+      required: true,
+    },
     type: {
       type: String,
       enum: ['personal', 'group'],
