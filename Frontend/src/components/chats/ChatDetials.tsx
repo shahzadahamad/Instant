@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ChatMessageHeader from "./ChatMessageHeader";
 import TextMessage from "./message-type/TextMessage";
-import FileMessage from "./message-type/FileMessage";
-import AudioMessage from "./message-type/AudioMessage";
-import SharePostMessage from "./message-type/SharePostMessage";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
@@ -11,24 +8,31 @@ import { getChatData } from "@/apis/api/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChatData } from "@/types/chat/chat";
+import { ChatData, ChatDatas, MessageData } from "@/types/chat/chat";
+import { socket } from "@/socket/socket";
+import { useDispatch } from "react-redux";
+import { updatelastMessage } from "@/redux/slice/chatSlice";
 
 const ChatDetials = () => {
-  const [message, setMessage] = useState("");
+  const [sendMessage, setSendMessage] = useState("");
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const { chatId } = useParams();
   const [chatData, setChatData] = useState<ChatData | null>(null);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [messages, setMessages] = useState<MessageData[] | null>(null);
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const dispatch = useDispatch();
 
   const fetchChatData = useCallback(
     async (chatId: string) => {
 
       try {
-        const chatData: ChatData = await getChatData(chatId);
-        chatData.members = chatData.members.filter(member => member._id.toString() !== currentUser?._id.toString());
-        setChatData(chatData);
+        const res: ChatDatas = await getChatData(chatId);
+        res.chatData.members = res.chatData.members.filter(member => member._id.toString() !== currentUser?._id.toString());
+        setChatData(res.chatData);
+        setMessages(res.messageData);
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           console.log(error);
@@ -52,9 +56,28 @@ const ChatDetials = () => {
     return () => { }
   }, [chatId, fetchChatData]);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    socket.on("send_message", (data) => {
+      setMessages((prevMessages) => (prevMessages ? [...prevMessages, data.messageData] : [data.messageData]));
+      dispatch(updatelastMessage({ _id: data.messageData.chatId, lastMessage: data.lastMessage }));
+    });
+
+    return () => {
+      socket.off("send_message");
+    };
+  }, [dispatch])
+
 
   const handleEmojiClick = (emoji: string) => {
-    setMessage((prev) => prev + emoji);
+    setSendMessage((prev) => prev + emoji);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -74,6 +97,15 @@ const ChatDetials = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
+  const handleMessageSend = (chatId: string, targetUserId: string, message: string) => {
+    const data = {
+      chatId,
+      targetUserId, message
+    }
+    socket.emit('send_message', data);
+    setSendMessage("");
+  }
 
   return (
     <>
@@ -102,17 +134,24 @@ const ChatDetials = () => {
                   </button>
                 </div>
               </div>
-              <TextMessage />
-              <FileMessage />
-              <AudioMessage />
-              <SharePostMessage />
+              {messages && messages.map((message) => (
+                message.type === 'text' ? (
+                  <TextMessage key={message._id} message={message} />
+                ) : ""
+              ))}
+              <div ref={messagesEndRef} />
             </div>
             <div className="h-[5rem] p-3 content-center ">
               <div className="relative">
                 <input
                   type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={sendMessage}
+                  onChange={(e) => setSendMessage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleMessageSend(chatData._id, chatData.members[0]._id, sendMessage)
+                    }
+                  }}
                   className="w-full p-3 rounded-md border bg-transparent outline-none pl-10 pr-10"
                   placeholder="Type here..."
                 />
@@ -143,8 +182,8 @@ const ChatDetials = () => {
                   </svg>
                 </div>
 
-                {message ? (
-                  <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
+                {sendMessage ? (
+                  <button onClick={() => handleMessageSend(chatData._id, chatData.members[0]._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
                     Send
                   </button>
                 ) : (

@@ -1,11 +1,16 @@
+import { UpdateWriteOpResult } from "mongoose";
 import ChatModel, { IChat } from "../../../infrastructure/database/models/chatModal";
 
 export default class ChatRepository {
 
-  public async findChatById(_id: string): Promise<IChat | null> {
+  public async findChatById(_id: string, populate: boolean): Promise<IChat | null> {
     try {
 
-      return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname');
+      if (populate) {
+        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname');
+      }
+
+      return await ChatModel.findOne({ _id });
 
     } catch (error) {
       if (error instanceof Error) {
@@ -22,7 +27,6 @@ export default class ChatRepository {
       const newChat = await new ChatModel({
         members,
         type: 'personal',
-        lastMessage: ""
       });
 
       return await newChat.save();
@@ -49,7 +53,24 @@ export default class ChatRepository {
 
   public async findChatsList(userId: string, type: string): Promise<IChat[] | null> {
     try {
-      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname')
+      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline');
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async updateLastMessage(_id: string, fromId: string, message: string): Promise<UpdateWriteOpResult> {
+    try {
+      return await ChatModel.updateOne({ _id }, {
+        $set: {
+          'lastMessage.fromId': fromId,
+          'lastMessage.message': message,
+        },
+      }, { new: true });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

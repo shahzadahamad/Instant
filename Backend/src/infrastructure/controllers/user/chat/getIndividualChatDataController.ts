@@ -3,6 +3,7 @@ import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
 import GetIndividualChatData from "../../../../application/useCases/user/chat/getIndividualChatData";
+import MessageRepository from "../../../../application/repositories/user/messageRepository";
 
 export default class GetIndividualChatDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -10,6 +11,7 @@ export default class GetIndividualChatDataController {
 
     const getIndividualChatData = new GetIndividualChatData(
       new ChatRepository(),
+      new MessageRepository(),
     );
 
 

@@ -5,19 +5,15 @@ interface Reactions {
   reaction: string
 }
 
-interface Messages {
+export interface IMessage extends Document {
+  _id: string;
+  chatId: string;
   type: string,
   message: string,
   reactions: Reactions[],
   senderId: string;
   deletedFrom: string[]
   seen: [{ userId: string, readAt: Date }]
-}
-
-export interface IMessage extends Document {
-  _id: string;
-  chatId: string;
-  message: Messages[];
 }
 
 const messageSchema: Schema = new Schema(
@@ -27,45 +23,40 @@ const messageSchema: Schema = new Schema(
       ref: "Chat",
       required: true
     },
-    message: [{
-      type: {
+    type: {
+      type: String,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    senderId: {
+      type: String,
+      required: true,
+      ref: "User"
+    },
+    reactions: [{
+      fromId: {
         type: String,
         required: true,
       },
-      message: {
+      reaction: {
         type: String,
         required: true,
-      },
-      senderId: {
+      }
+    }],
+    deletedFrom: [{
+      type: String,
+      ref: 'User',
+      required: true
+    }],
+    seen: [{
+      userId: {
         type: String,
-        required: true,
-      },
-      reactions: [{
-        fromId: {
-          type: String,
-          required: true,
-        },
-        reaction: {
-          type: String,
-          required: true,
-        }
-      }],
-      deletedFrom: [{
-        type: String,
-        ref: 'User',
         required: true
-      }],
-      seen: [{
-        userId: {
-          type: String,
-          required: true
-        },
-        readAt: {
-          type: Date,
-          required: true,
-        }
-      }],
-      createdAt: {
+      },
+      readAt: {
         type: Date,
         required: true,
       }

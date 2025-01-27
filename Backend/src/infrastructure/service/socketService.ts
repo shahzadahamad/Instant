@@ -1,6 +1,12 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import socketAuthMiddleware from "../middlewares/socketAuthMiddleware";
 import { IPost } from "../database/models/postModel";
+import ChatRepository from "../../application/repositories/user/chatRepository";
+import MessageRepository from "../../application/repositories/user/messageRepository";
+import sendMessage from "../../application/useCases/user/chat/sendMessage";
+import { IMessage } from "../database/models/messageModal";
+import UserRepository from "../../application/repositories/user/userRepository";
+import ChangeOnlineStatus from "../../application/useCases/user/user/changeOnlineStatus";
 
 export default class SocketService {
   private static instance: SocketService | null = null;
@@ -25,12 +31,25 @@ export default class SocketService {
   }
 
   public initialize(): void {
-    this.io.on("connection", (socket: Socket) => {
+    this.io.on("connection", async (socket: Socket) => {
       console.log(`User connected: ${socket.data.user.userId}`);
       this.userSocketMap.set(socket.data.user.userId, socket.id);
+      const sendMessaege = new ChangeOnlineStatus(new UserRepository());
+      await sendMessaege.execute(socket.data.user.userId, true);
+      this.io.emit("online", { userId: socket.data.user.userId });
 
-      socket.on("disconnect", () => {
+      socket.on("send_message", async (data) => {
+        const { chatId, targetUserId, message } = data;
+        const userId = socket.data.user.userId;
+        const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository());
+        await sendMessaege.execute(chatId, userId, targetUserId, message);
+      });
+
+      socket.on("disconnect", async () => {
         console.log(`User disconnected: ${socket.data.user.userId}`);
+        const sendMessaege = new ChangeOnlineStatus(new UserRepository());
+        await sendMessaege.execute(socket.data.user.userId, false);
+        this.io.emit("offline", { userId: socket.data.user.userId });
         this.userSocketMap.delete(socket.data.user.userId);
       });
 
@@ -59,6 +78,19 @@ export default class SocketService {
     const socketId = this.userSocketMap.get(userId);
     if (socketId) {
       this.io.to(socketId).emit("clearNotification");
+    } else {
+      console.log(`User ${userId} not connected.`);
+    }
+  }
+
+  public sendMessage(userId: string, messageData: IMessage, lastMessage: { fromId: string, message: string }): void {
+    const socketId = this.userSocketMap.get(userId);
+    const data = {
+      messageData,
+      lastMessage
+    };
+    if (socketId) {
+      this.io.to(socketId).emit("send_message", data);
     } else {
       console.log(`User ${userId} not connected.`);
     }

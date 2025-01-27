@@ -29,7 +29,12 @@ const chatSchema: Schema = new Schema(
       required: true
     },
     lastMessage: {
-      type: String,
+      fromId: {
+        type: String,
+      },
+      message: {
+        type: String,
+      }
     },
   },
   {

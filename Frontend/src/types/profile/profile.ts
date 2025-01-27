@@ -40,6 +40,13 @@ export interface GetUserDataPostDetials {
   blockerUser: string[];
 }
 
+export interface userData {
+  _id: string,
+  username: string,
+  fullname: string,
+  profilePicture: string
+}
+
 interface CustomFilter {
   contrast: number;
   brightness: number;

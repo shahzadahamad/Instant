@@ -1,24 +1,27 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
-  faPhone,
-  faVideo,
+  // faPhone,
+  // faVideo,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { getChatList } from "@/apis/api/userApi";
 import { ChatData } from "@/types/chat/chat";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { useDispatch } from "react-redux";
+import { setChatList, updateUserOnlineStatus } from "@/redux/slice/chatSlice";
+import { socket } from "@/socket/socket";
 
 const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
   const navigate = useNavigate();
-  const [chatList, setChatList] = useState<ChatData[] | []>([]);
   const { currentUser } = useSelector((state: RootState) => state.user);
-
+  const { chatList } = useSelector((state: RootState) => state.chat);
+  const dispatch = useDispatch();
 
   const fetchChatList = useCallback(async (tab: string) => {
 
@@ -34,7 +37,7 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
           members: opositeUser
         }
       });
-      setChatList(updatedChatList);
+      dispatch(setChatList(updatedChatList));
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -45,7 +48,7 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
         toast.error("An unexpected error occurred");
       }
     }
-  }, [currentUser])
+  }, [currentUser, dispatch])
 
   useEffect(() => {
 
@@ -54,6 +57,21 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
     return () => { }
   }, [tab, fetchChatList]);
 
+
+  useEffect(() => {
+    socket.on("online", (data) => {
+      dispatch(updateUserOnlineStatus({ userId: data.userId, status: true }));
+    });
+
+    socket.on("offline", (data) => {
+      dispatch(updateUserOnlineStatus({ userId: data.userId, status: false }));
+    });
+
+    return () => {
+      socket.off("online");
+      socket.off("offline");
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -95,17 +113,17 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                     className="w-full h-full rounded-full object-cover"
                     alt=""
                   />
-                  {tab === "chats" && (
+                  {(tab === "chats" && chat.members[0].isOnline) && (
                     <FontAwesomeIcon
                       icon={faCircle}
                       className="text-[#1cd14f] rounded-full border-3 dark:border-[#09090b] border-white bg-white absolute bottom-0 -right-1 w-[14px] h-[14px]"
                     />
                   )}
                 </div>
-                <div className="flex justify-between items-center flex-grow ml-3">
+                <div className="flex justify-between items-center flex-grow ml-4">
                   <div>
-                    <h1 className="text-sm">{chat.members[0].fullname}</h1>
-                    <h1 className="text-xs text-[#8a8a8a]">{chat.lastMessage}</h1>
+                    <h1 className="text-sm font-semibold">{chat.members[0].fullname}</h1>
+                    <h1 className="text-sm text-[#8a8a8a]">{chat.lastMessage?.fromId === currentUser?._id ? "You: " + chat.lastMessage?.message : chat.lastMessage?.message}</h1>
                   </div>
                   <FontAwesomeIcon
                     icon={faCircle}

@@ -249,5 +249,18 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async changeUserOnlineStatus(userId: string, isOnline: boolean): Promise<UpdateWriteOpResult> {
+    try {
+      return await UserModel.updateOne({ _id: userId }, { $set: { isOnline } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
 
