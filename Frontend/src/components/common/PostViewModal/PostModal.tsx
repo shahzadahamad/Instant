@@ -1360,10 +1360,14 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                     Liked by {post[currentIndex].likeCount}{" "}
                     {post[currentIndex].likeCount <= 1 ? "user" : "users"}
                   </p> */}
-                  <p className="text-xs">
-                    {post[currentIndex].likeCount}{" "}
-                    {post[currentIndex].likeCount <= 1 ? "like" : "likes"}
-                  </p>
+                  {
+                    (((currentUser === post[currentIndex].userId._id)) || !post[currentIndex].hideLikeAndView) && (
+                      <p className="text-xs">
+                        {post[currentIndex].likeCount}{" "}
+                        {post[currentIndex].likeCount <= 1 ? "like" : "likes"}
+                      </p>
+                    )
+                  }
                 </div>
               ) : (
                 <div className="flex items-center transition-all">
@@ -1384,77 +1388,82 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
             </span>
           </div>
           <div className="flex items-center p-3 dark:bg-black bg-white h-[10%]">
-            <div className="relative">
-              <svg
-                aria-label="Emoji"
-                className="x1lliihq x1n2onr6 x5n08af cursor-pointer mr-3"
-                fill="currentColor"
-                height="24"
-                role="img"
-                viewBox="0 0 24 24"
-                width="24"
-                onClick={() => setOpen(!open)}
-              >
-                <title>Emoji</title>
-                <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
-              </svg>
-              <div ref={emojiPickerRef} className="absolute bottom-[25px]">
-                <EmojiPicker
-                  open={open}
-                  autoFocusSearch={false}
-                  theme={Theme.DARK}
-                  emojiStyle={EmojiStyle.GOOGLE}
-                  onEmojiClick={(e) => handleEmojiClick(e.emoji)}
-                />
-              </div>
-            </div>
-            <form onSubmit={handleFormSubmit} className="w-full flex">
-              <input
-                type="text"
-                ref={commentInputRef}
-                disabled={loading}
-                placeholder="Add a comment..."
-                className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
-                value={comment}
-                onChange={handleInputChange}
-              />
-              {suggestions.length > 0 && (
-                <div
-                  className={`absolute dark:bg-[#09090b] bottom-14 bg-[#ffffff] border rounded-md mt-1 w-96 m-h-96 overflow-y-auto scrollbar-hidden z-10`}
-                >
-                  {suggestions.map((user) => (
-                    <div
-                      key={user.username}
-                      onClick={() => insertUsername(user.username)}
-                      className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+            {
+              post[currentIndex].hideComment ? <h1 className="w-full text-center text-[#8a8a8a] text-sm">Comments on this post have been turned off.</h1> :
+                <>
+                  <div className="relative">
+                    <svg
+                      aria-label="Emoji"
+                      className="x1lliihq x1n2onr6 x5n08af cursor-pointer mr-3"
+                      fill="currentColor"
+                      height="24"
+                      role="img"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      onClick={() => setOpen(!open)}
                     >
-                      <img
-                        src={user.profilePicture}
-                        alt={user.username}
-                        className="w-10 h-10 rounded-full object-cover mr-2"
+                      <title>Emoji</title>
+                      <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
+                    </svg>
+                    <div ref={emojiPickerRef} className="absolute bottom-[25px]">
+                      <EmojiPicker
+                        open={open}
+                        autoFocusSearch={false}
+                        theme={Theme.DARK}
+                        emojiStyle={EmojiStyle.GOOGLE}
+                        onEmojiClick={(e) => handleEmojiClick(e.emoji)}
                       />
-                      <div className="flex flex-col">
-                        <span className="text-[13px]">{user.username}</span>
-                        <span className="text-[12px] text-[#a9a6a4]">
-                          {user.fullname}
-                        </span>
-                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-              {comment &&
-                (loading ? (
-                  <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-blue-500 border-t-transparent"></div>
-                ) : (
-                  <button
-                    type="submit"
-                    className="text-blue-500 font-bold ml-3"
-                  >
-                    Post
-                  </button>
-                ))}
-            </form>
+                  </div>
+                  <form onSubmit={handleFormSubmit} className="w-full flex">
+                    <input
+                      type="text"
+                      ref={commentInputRef}
+                      disabled={loading}
+                      placeholder="Add a comment..."
+                      className="bg-transparent w-full placeholder:text-[#8a8a8a] placeholder:font-semibold placeholder:text-[12px] focus:outline-none"
+                      value={comment}
+                      onChange={handleInputChange}
+                    />
+                    {suggestions.length > 0 && (
+                      <div
+                        className={`absolute dark:bg-[#09090b] bottom-14 bg-[#ffffff] border rounded-md mt-1 w-96 m-h-96 overflow-y-auto scrollbar-hidden z-10`}
+                      >
+                        {suggestions.map((user) => (
+                          <div
+                            key={user.username}
+                            onClick={() => insertUsername(user.username)}
+                            className="flex items-center p-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+                          >
+                            <img
+                              src={user.profilePicture}
+                              alt={user.username}
+                              className="w-10 h-10 rounded-full object-cover mr-2"
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-[13px]">{user.username}</span>
+                              <span className="text-[12px] text-[#a9a6a4]">
+                                {user.fullname}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {comment &&
+                      (loading ? (
+                        <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-blue-500 border-t-transparent"></div>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="text-blue-500 font-bold ml-3"
+                        >
+                          Post
+                        </button>
+                      ))}
+                  </form>
+                </>
+            }
           </div>
         </div>
       </div>
