@@ -12,6 +12,10 @@ export interface IUser extends Document {
   dateOfBirth?: string;
   bio?: string;
   isPrivateAccount?: boolean;
+  isOnline?: {
+    status: boolean,
+    date: Date;
+  };
   isBlock?: boolean;
   role?: string;
 }
@@ -72,9 +76,16 @@ const userSchema: Schema = new Schema(
       default: false,
     },
     isOnline: {
-      type: Boolean,
-      required: true,
-      default: false,
+      status: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      date: {
+        type: Date,
+        requried: true,
+        default: new Date()
+      }
     }
   },
   {

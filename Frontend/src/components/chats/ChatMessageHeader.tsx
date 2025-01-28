@@ -1,6 +1,9 @@
 import { Member } from "@/types/chat/chat";
+import { useNavigate } from "react-router-dom";
 
 const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
+
+  const navigate = useNavigate();
 
   return (
     <div className="w-full flex items-center justify-between p-4 group border-b">
@@ -8,14 +11,21 @@ const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
         <div className="w-11 h-11 cursor-pointer">
           <img
             src={userData.profilePicture}
+            onClick={() => navigate(`/user/${userData.username}`)}
             className="w-full h-full rounded-full object-cover"
             alt="Profile Picture"
           />
         </div>
         <div className="flex justify-between items-center flex-grow ml-3">
           <div>
-            <h1 className="text-base font-semibold cursor-pointer">{userData.username}</h1>
-            <h1 className="text-xs text-[#8a8a8a]">Active 38m ago</h1>
+            <h1
+              onClick={() => navigate(`/user/${userData.username}`)}
+              className="text-base font-semibold cursor-pointer">{userData.username}</h1>
+            {/* {
+              (!userData.isOnline.status && isMoreThanFiveMinutes) && (
+                <h1 className="text-xs text-[#8a8a8a]">Active {timeSince(userData.isOnline.date)} ago</h1>
+              )
+            } */}
           </div>
         </div>
       </div>

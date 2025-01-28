@@ -39,16 +39,16 @@ export default class sendMessage {
         lastMessage = newMessage.message;
         break;
       case 'audio':
-        lastMessage = 'audio';
+        lastMessage = 'seat an attachment';
         break;
       case 'photo':
-        lastMessage = 'photo';
+        lastMessage = 'seat an attachment';
         break;
       case 'video':
-        lastMessage = 'video';
+        lastMessage = 'seat an attachment';
         break;
       case 'shared':
-        lastMessage = 'shared';
+        lastMessage = 'seat an attachment';
         break;
       default:
         lastMessage = '';

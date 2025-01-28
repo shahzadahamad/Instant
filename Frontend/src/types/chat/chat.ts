@@ -5,7 +5,10 @@ export interface Member {
   username: string,
   fullname: string,
   profilePicture: string,
-  isOnline: boolean;
+  isOnline: {
+    status: boolean,
+    date: Date,
+  };
 }
 
 export interface ChatDatas {

@@ -7,7 +7,7 @@ export default class ChatRepository {
     try {
 
       if (populate) {
-        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname');
+        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname isOnline');
       }
 
       return await ChatModel.findOne({ _id });

@@ -5,7 +5,7 @@ export default class MessageRepository {
   public async createMessage(messageData: Partial<IMessage>): Promise<IMessage> {
     try {
       const newMessage = await new MessageModel(messageData);
-      return (await newMessage.save()).populate('senderId', 'username profilePicture fullname');
+      return (await newMessage.save()).populate('senderId', 'username profilePicture fullname isOnline');
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("message not found!");
@@ -17,7 +17,7 @@ export default class MessageRepository {
 
   public async findMessageByChatId(chatId: string): Promise<IMessage[] | null> {
     try {
-      return await MessageModel.find({ chatId }).populate('senderId', 'username profilePicture fullname');
+      return await MessageModel.find({ chatId }).populate('senderId', 'username profilePicture fullname isOnline');
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Chat not found!");

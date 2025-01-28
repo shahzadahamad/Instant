@@ -28,7 +28,7 @@ export default class GoogleAuthenticateUser {
   public async execute(
     fullname: string,
     email: string
-  ): Promise<{ token: string; refreshToken: string; user: Object }> {
+  ): Promise<{ token: string; refreshToken: string; user: Partial<IUser> }> {
     const userExist = await this.userRepository.findByEmail(email);
 
     if (userExist) {

@@ -16,6 +16,8 @@ import { RootState } from "@/redux/store/store";
 import { useDispatch } from "react-redux";
 import { setChatList, updateUserOnlineStatus } from "@/redux/slice/chatSlice";
 import { socket } from "@/socket/socket";
+import { timeBetween } from "@/helperFuntions/timeBetween";
+import { timeSince } from "@/helperFuntions/dateFormat";
 
 const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
   const navigate = useNavigate();
@@ -60,11 +62,11 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
 
   useEffect(() => {
     socket.on("online", (data) => {
-      dispatch(updateUserOnlineStatus({ userId: data.userId, status: true }));
+      dispatch(updateUserOnlineStatus({ userId: data.userId, isOnline: { status: true, date: new Date() } }));
     });
 
     socket.on("offline", (data) => {
-      dispatch(updateUserOnlineStatus({ userId: data.userId, status: false }));
+      dispatch(updateUserOnlineStatus({ userId: data.userId, isOnline: { status: false, date: new Date() } }));
     });
 
     return () => {
@@ -113,7 +115,7 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                     className="w-full h-full rounded-full object-cover"
                     alt=""
                   />
-                  {(tab === "chats" && chat.members[0].isOnline) && (
+                  {(tab === "chats" && chat.members[0].isOnline.status) && (
                     <FontAwesomeIcon
                       icon={faCircle}
                       className="text-[#1cd14f] rounded-full border-3 dark:border-[#09090b] border-white bg-white absolute bottom-0 -right-1 w-[14px] h-[14px]"
@@ -123,7 +125,8 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                 <div className="flex justify-between items-center flex-grow ml-4">
                   <div>
                     <h1 className="text-sm font-semibold">{chat.members[0].fullname}</h1>
-                    <h1 className="text-sm text-[#8a8a8a]">{chat.lastMessage?.fromId === currentUser?._id ? "You: " + chat.lastMessage?.message : chat.lastMessage?.message}</h1>
+                    <h1 className="text-sm text-[#8a8a8a]">{chat.members[0].isOnline.status ? "Active now" : timeBetween(chat.members[0].isOnline.date) ? `Active ${timeSince(chat.members[0].isOnline.date)} ago` :
+                      chat.lastMessage?.fromId === currentUser?._id ? "You: " + chat.lastMessage?.message : chat.lastMessage?.message}</h1>
                   </div>
                   <FontAwesomeIcon
                     icon={faCircle}

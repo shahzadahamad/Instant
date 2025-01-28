@@ -252,7 +252,7 @@ export default class UserRepository {
 
   public async changeUserOnlineStatus(userId: string, isOnline: boolean): Promise<UpdateWriteOpResult> {
     try {
-      return await UserModel.updateOne({ _id: userId }, { $set: { isOnline } });
+      return await UserModel.updateOne({ _id: userId }, { $set: { isOnline: { status: isOnline, date: new Date() } } });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

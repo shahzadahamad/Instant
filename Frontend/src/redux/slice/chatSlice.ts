@@ -19,7 +19,7 @@ const chatSlice = createSlice({
       }
     },
     updateUserOnlineStatus(state, action) {
-      const { userId, status } = action.payload;
+      const { userId, isOnline } = action.payload;
       const chat = state.chatList.find((chat) =>
         chat.members.some(member => member._id.toString() === userId.toString())
       );
@@ -29,7 +29,7 @@ const chatSlice = createSlice({
         );
 
         if (memberIndex) {
-          memberIndex.isOnline = status;
+          memberIndex.isOnline = isOnline;
         }
       }
     }

@@ -73,7 +73,7 @@ const ChatDetials = () => {
     return () => {
       socket.off("send_message");
     };
-  }, [dispatch])
+  }, [dispatch]);
 
 
   const handleEmojiClick = (emoji: string) => {
