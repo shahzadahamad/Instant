@@ -8,7 +8,7 @@ const ErrorPage = () => {
             <span>0</span>
             <span>4</span>
           </h1>
-          <h2 className="text-2xl font-bold">Oops! Page not found</h2>
+          <h2 className="text-2xl font-bold">Oops! User not found</h2>
         </div>
       </div>
     </div>

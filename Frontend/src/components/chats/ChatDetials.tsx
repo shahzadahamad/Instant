@@ -12,6 +12,7 @@ import { ChatData, ChatDatas, MessageData } from "@/types/chat/chat";
 import { socket } from "@/socket/socket";
 import { useDispatch } from "react-redux";
 import { updatelastMessage } from "@/redux/slice/chatSlice";
+import { format, isToday, isYesterday } from "date-fns";
 
 const ChatDetials = () => {
   const [sendMessage, setSendMessage] = useState("");
@@ -98,26 +99,43 @@ const ChatDetials = () => {
     };
   }, []);
 
-  const handleMessageSend = (chatId: string, targetUserId: string, message: string) => {
+  const handleMessageSend = (chatId: string, message: string) => {
     const data = {
-      chatId,
-      targetUserId, message
+      chatId, message
     }
     socket.emit('send_message', data);
     setSendMessage("");
   }
+
+  const groupMessagesByDate = (messages: MessageData[]) => {
+    return messages.reduce((acc: Record<string, MessageData[]>, message) => {
+      const messageDate = new Date(message.createdAt);
+      const dateKey = isToday(messageDate)
+        ? "Today"
+        : isYesterday(messageDate)
+          ? "Yesterday"
+          : format(messageDate, "MMMM d, yyyy");
+
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(message);
+      return acc;
+    }, {});
+  };
+
 
   return (
     <>
       {
         chatData ? (
           <div className="w-2/3 h-full flex flex-col ">
-            <ChatMessageHeader userData={chatData.members[0]} />
+            <ChatMessageHeader userData={chatData.type === 'personal' ? chatData.members[0] : chatData} />
             <div className="w-full flex-1 flex flex-col border-b overflow-y-auto scrollbar-hidden">
               <div className="flex flex-col items-center justify-center gap-2 p-10 pb-20">
                 <div className="w-24 h-24 cursor-pointer">
                   <img
-                    src={chatData.members[0].profilePicture}
+                    src={chatData.type === 'personal' ? chatData.members[0].profilePicture : chatData.profilePicture}
                     className="w-full h-full rounded-full object-cover"
                     alt=""
                   />
@@ -125,20 +143,37 @@ const ChatDetials = () => {
                 <div className="flex flex-col items-center text-center gap-2">
                   <div>
                     <h1 className="text-xl font-semibold cursor-pointer">
-                      {chatData.members[0].fullname}
+                      {chatData.type === 'personal' ? chatData.members[0].fullname : chatData.name}
                     </h1>
-                    <h1 className="text-base text-[#8a8a8a]">{chatData.members[0].username}</h1>
+                    {
+                      chatData.type === 'personal' ? (
+                        <h1 className="text-base text-[#8a8a8a]">{chatData.members[0].username}</h1>
+                      ) :
+                        <h1 className="text-base text-[#8a8a8a]">{chatData.createdBy._id === currentUser?._id ? "You created this group" : chatData.createdBy.username + " created this group"}</h1>
+                    }
                   </div>
-                  <button onClick={() => navigate(`/user/${chatData.members[0].username}`)} className="dark:hover:bg-[#191919] text-sm hover:bg-[#f0f0f0] font-semibold transition-colors px-3 py-1.5 border rounded-md">
-                    View Profile
-                  </button>
+                  {
+                    chatData.type === 'personal' && (
+                      <button onClick={() => navigate(`/user/${chatData.members[0].username}`)} className="dark:hover:bg-[#191919] text-sm hover:bg-[#f0f0f0] font-semibold transition-colors px-3 py-1.5 border rounded-md">
+                        View Profile
+                      </button>
+                    )
+                  }
                 </div>
               </div>
-              {messages && messages.map((message) => (
-                message.type === 'text' ? (
-                  <TextMessage key={message._id} message={message} />
-                ) : ""
-              ))}
+              {messages &&
+                Object.entries(groupMessagesByDate(messages)).map(
+                  ([date, messagesForDate]) => (
+                    <div key={date}>
+                      <div className="text-center text-base text-[#8a8a8a] my-4">
+                        {date}
+                      </div>
+                      {messagesForDate.map((message) => (
+                        <TextMessage key={message._id} message={message} />
+                      ))}
+                    </div>
+                  )
+                )}
               <div ref={messagesEndRef} />
             </div>
             <div className="h-[5rem] p-3 content-center ">
@@ -149,7 +184,7 @@ const ChatDetials = () => {
                   onChange={(e) => setSendMessage(e.target.value)}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
-                      handleMessageSend(chatData._id, chatData.members[0]._id, sendMessage)
+                      handleMessageSend(chatData._id, sendMessage)
                     }
                   }}
                   className="w-full p-3 rounded-md border bg-transparent outline-none pl-10 pr-10"
@@ -183,7 +218,7 @@ const ChatDetials = () => {
                 </div>
 
                 {sendMessage ? (
-                  <button onClick={() => handleMessageSend(chatData._id, chatData.members[0]._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
+                  <button onClick={() => handleMessageSend(chatData._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
                     Send
                   </button>
                 ) : (

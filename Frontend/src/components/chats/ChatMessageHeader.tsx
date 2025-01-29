@@ -1,9 +1,13 @@
-import { Member } from "@/types/chat/chat";
+import { ChatData, Member } from "@/types/chat/chat";
 import { useNavigate } from "react-router-dom";
 
-const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
+const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData }) => {
 
   const navigate = useNavigate();
+
+  const isMember = (data: Member | ChatData): data is Member => {
+    return (data as Member).username !== undefined;
+  };
 
   return (
     <div className="w-full flex items-center justify-between p-4 group border-b">
@@ -11,7 +15,7 @@ const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
         <div className="w-11 h-11 cursor-pointer">
           <img
             src={userData.profilePicture}
-            onClick={() => navigate(`/user/${userData.username}`)}
+            onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
             className="w-full h-full rounded-full object-cover"
             alt="Profile Picture"
           />
@@ -19,13 +23,10 @@ const ChatMessageHeader: React.FC<{ userData: Member }> = ({ userData }) => {
         <div className="flex justify-between items-center flex-grow ml-3">
           <div>
             <h1
-              onClick={() => navigate(`/user/${userData.username}`)}
-              className="text-base font-semibold cursor-pointer">{userData.username}</h1>
-            {/* {
-              (!userData.isOnline.status && isMoreThanFiveMinutes) && (
-                <h1 className="text-xs text-[#8a8a8a]">Active {timeSince(userData.isOnline.date)} ago</h1>
-              )
-            } */}
+              onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
+              className="text-base font-semibold cursor-pointer">
+              {isMember(userData) ? userData.username : userData.name}
+            </h1>
           </div>
         </div>
       </div>

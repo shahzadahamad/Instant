@@ -16,6 +16,8 @@ const chatSlice = createSlice({
       const chat = state.chatList.find((chat) => chat._id.toString() === _id.toString());
       if (chat) {
         chat.lastMessage = lastMessage;
+        chat.updatedAt = new Date();
+        state.chatList.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
       }
     },
     updateUserOnlineStatus(state, action) {

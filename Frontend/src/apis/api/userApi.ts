@@ -167,12 +167,12 @@ export const getChatData = async (chatId: string) => {
   return response.data;
 }
 
-export const cheackingChatAlreadyExist = async (userId: string) => {
-  const response = await apiClient.post(`/user/chats/create/${userId}`);
+export const createNewChat = async (formData: FormData) => {
+  const response = await apiClient.post(`/user/chats/create`, formData);
   return response.data;
 }
 
-export const getChatList = async (type:string) => {
+export const getChatList = async (type: string) => {
   const response = await apiClient.get(`/user/chats/list/${type}`);
   return response.data;
 }

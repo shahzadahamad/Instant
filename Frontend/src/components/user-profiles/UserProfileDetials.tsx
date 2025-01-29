@@ -1,4 +1,4 @@
-import { cheackingChatAlreadyExist, followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
+import { createNewChat, followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import { useLayoutEffect, useState } from "react";
@@ -93,14 +93,26 @@ const UserProfileDetials = () => {
   }
 
   const handleMessageBtn = async () => {
-    if (userData) {
+    try {
+      if (userData) {
+        const formData = new FormData();
+        formData.append("userIds", JSON.stringify(userData._id));
+        const chatId = await createNewChat(formData);
 
-      const chatId = await cheackingChatAlreadyExist(userData?._id);
+        if (chatId) {
+          navigate(`/chats/${chatId}`);
+        }
 
-      if (chatId) {
-        navigate(`/chats/${chatId}`);
       }
-
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
     }
   }
 

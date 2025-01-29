@@ -129,7 +129,6 @@ const NotificationDetials = () => {
     }
   };
 
-  console.log(groupedNotifications);
   const renderNotifications = (
     category: string,
     notifications: NotificationType[]
