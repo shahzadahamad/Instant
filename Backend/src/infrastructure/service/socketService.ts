@@ -7,6 +7,7 @@ import sendMessage from "../../application/useCases/user/chat/sendMessage";
 import { IMessage } from "../database/models/messageModal";
 import UserRepository from "../../application/repositories/user/userRepository";
 import ChangeOnlineStatus from "../../application/useCases/user/user/changeOnlineStatus";
+import { IUser } from "../database/models/userModel";
 
 export default class SocketService {
   private static instance: SocketService | null = null;
@@ -39,10 +40,10 @@ export default class SocketService {
       this.io.emit("online", { userId: socket.data.user.userId });
 
       socket.on("send_message", async (data) => {
-        const { chatId, targetUserId, message } = data;
+        const { chatId, message } = data;
         const userId = socket.data.user.userId;
-        const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository());
-        await sendMessaege.execute(chatId, userId, targetUserId, message);
+        const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
+        await sendMessaege.execute(chatId, userId, message);
       });
 
       socket.on("disconnect", async () => {
@@ -83,7 +84,7 @@ export default class SocketService {
     }
   }
 
-  public sendMessage(userId: string, messageData: IMessage, lastMessage: { fromId: string, message: string }): void {
+  public sendMessage(userId: string, messageData: IMessage, lastMessage: { fromId: Partial<IUser>, message: string }): void {
     const socketId = this.userSocketMap.get(userId);
     const data = {
       messageData,

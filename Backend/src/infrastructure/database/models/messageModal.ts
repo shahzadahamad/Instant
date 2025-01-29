@@ -51,16 +51,6 @@ const messageSchema: Schema = new Schema(
       ref: 'User',
       required: true
     }],
-    seen: [{
-      userId: {
-        type: String,
-        required: true
-      },
-      readAt: {
-        type: Date,
-        required: true,
-      }
-    }],
   },
   {
     timestamps: true,

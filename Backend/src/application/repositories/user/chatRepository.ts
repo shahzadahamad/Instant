@@ -7,7 +7,13 @@ export default class ChatRepository {
     try {
 
       if (populate) {
-        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname isOnline');
+        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname isOnline').populate('createdBy', 'username profilePicture fullname isOnline').populate({
+          path: 'lastMessage',
+          populate: {
+            path: 'fromId',
+            select: 'username profilePicture fullname isOnline',
+          }
+        });
       }
 
       return await ChatModel.findOne({ _id });
@@ -39,6 +45,29 @@ export default class ChatRepository {
     }
   }
 
+
+  public async createGroupChat(members: string[], name: string, profilePicture: string, admins: string): Promise<IChat> {
+    try {
+
+      const newChat = await new ChatModel({
+        members,
+        name,
+        profilePicture,
+        admins,
+        createdBy: admins,
+        type: 'group',
+      });
+
+      return await newChat.save();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findChatsOfUser(user1: string, user2: string): Promise<IChat | null> {
     try {
       return await ChatModel.findOne({ members: { $all: [user1, user2] }, type: 'personal' });
@@ -53,7 +82,13 @@ export default class ChatRepository {
 
   public async findChatsList(userId: string, type: string): Promise<IChat[] | null> {
     try {
-      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline');
+      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline').populate({
+        path: 'lastMessage',
+        populate: {
+          path: 'fromId',
+          select: 'username profilePicture fullname isOnline',
+        }
+      }).sort({ updatedAt: -1 });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

@@ -1,17 +1,20 @@
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
 import SocketService from "../../../../infrastructure/service/socketService";
 import MessageRepository from "../../../repositories/user/messageRepository";
+import UserRepository from "../../../repositories/user/userRepository";
 
 export default class sendMessage {
   private chatRepository: ChatRepository;
   private messageRepository: MessageRepository;
+  private userRepository: UserRepository;
 
-  constructor(chatRepository: ChatRepository, messageRepository: MessageRepository) {
+  constructor(chatRepository: ChatRepository, messageRepository: MessageRepository, userRepository: UserRepository) {
     this.chatRepository = chatRepository;
     this.messageRepository = messageRepository;
+    this.userRepository = userRepository;
   }
 
-  public async execute(chatId: string, userId: string, targetUserId: string, message: string): Promise<void> {
+  public async execute(chatId: string, userId: string, message: string): Promise<void> {
 
     const chat = await this.chatRepository.findChatById(chatId, false);
 
@@ -21,8 +24,8 @@ export default class sendMessage {
       throw new Error("Chat not found.");
     }
 
-    if (!chat.members.includes(userId && targetUserId)) {
-      throw new Error('User is not a member of this chat.');
+    if (!chat.members.includes(userId)) {
+      throw new Error('You are not a member of this chat.');
     }
 
     const messageData = {
@@ -54,9 +57,17 @@ export default class sendMessage {
         lastMessage = '';
     }
     await this.chatRepository.updateLastMessage(chat._id, userId, lastMessage);
-    const updateLastMessage = { fromId: userId, message: lastMessage };
-    SocketService.getInstance().sendMessage(userId, newMessage, updateLastMessage);
-    SocketService.getInstance().sendMessage(targetUserId, newMessage, updateLastMessage);
-
+    const userData = await this.userRepository.findById(userId);
+    const data = {
+      _id: userData?._id,
+      fullname: userData?.fullname,
+      username: userData?.username,
+      profilePicture: userData?.profilePicture,
+      isOnline: userData?.isOnline
+    };
+    const updateLastMessage = { fromId: data, message: lastMessage };
+    chat.members.forEach((member) => {
+      SocketService.getInstance().sendMessage(member, newMessage, updateLastMessage);
+    });
   }
 }
