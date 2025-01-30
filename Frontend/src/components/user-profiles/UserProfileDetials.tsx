@@ -96,7 +96,7 @@ const UserProfileDetials = () => {
     try {
       if (userData) {
         const formData = new FormData();
-        formData.append("userIds", JSON.stringify(userData._id));
+        formData.append("userIds", JSON.stringify([userData._id]));
         const chatId = await createNewChat(formData);
 
         if (chatId) {

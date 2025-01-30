@@ -56,7 +56,10 @@ export default class SocketService {
       });
 
       socket.on('answerCall', (data) => {
-        this.io.to(data.to).emit('callAccepted', data.signal);
+        const socketId = this.userSocketMap.get(data.userId);
+        if (socketId) {
+          this.io.to(socketId).emit('callAccepted', { signal: data.signal, isVideoOff: data.isVideoOff });
+        }
       });
 
       socket.on("disconnect", async () => {

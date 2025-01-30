@@ -44,7 +44,6 @@ const chatSchema: Schema = new Schema(
     readBy: {
       userId: {
         type: String,
-        required: true
       },
     },
     lastMessage: {

@@ -29,13 +29,12 @@ const VideoAudioCall = () => {
   const [isAudioBlocked, setIsAudioBlocked] = useState(false);
   const [isVideoBlocked, setIsVideoBlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [inCall, setInCall] = useState(false);
 
   const [me, setMe] = useState();
   const [userData, setUserData] = useState<userData>();
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [callAccepted, setCallAccepted] = useState(false)
-  const [callEnded, setCallEnded] = useState(true)
   const myVideo = useRef<HTMLVideoElement>(null);
   const userVideo = useRef<HTMLVideoElement>(null)
   const connectionRef = useRef<Peer.Instance | null>(null);
@@ -97,7 +96,7 @@ const VideoAudioCall = () => {
     if (stream && myVideo.current) {
       myVideo.current.srcObject = stream;
     }
-  }, [stream, isVideoOff, isAudioBlocked, callAccepted]);
+  }, [stream, isVideoOff, callAccepted, inCall]);
 
   const toggleAudio = () => {
     if (stream) {
@@ -141,18 +140,19 @@ const VideoAudioCall = () => {
     })
 
     peer.on('stream', (stream) => {
-      console.log('call user stream')
       if (userVideo.current) {
         userVideo.current.srcObject = stream;
       }
     });
 
-    socket.on('callAccepted', (signal) => {
+    socket.on('callAccepted', (data) => {
       setCallAccepted(true);
-      peer.signal(signal);
+      peer.signal(data.signal);
     })
 
     connectionRef.current = peer;
+
+    setInCall(true);
   }
 
   const answerCall = () => {
@@ -164,18 +164,19 @@ const VideoAudioCall = () => {
     const peer = new Peer({
       initiator: false,
       trickle: false,
-      stream: stream
+      stream: stream as MediaStream
     });
 
     peer.on('signal', (data) => {
       socket.emit("answerCall", {
+        userId: userData?._id,
         signal: data,
+        isVideoOff: isVideoOff,
         to: callerDetials.callerSocketId,
       })
     });
 
     peer.on('stream', (stream) => {
-      console.log('reciver user stream')
       if (userVideo.current) {
         userVideo.current.srcObject = stream;
       }
@@ -185,10 +186,12 @@ const VideoAudioCall = () => {
       peer.signal(callerDetials.callerSignal);
     }
     connectionRef.current = peer;
+    setInCall(true);
   }
 
   const leaveCall = () => {
-    setCallEnded(true);
+    setCallAccepted(false);
+    setInCall(false);
     dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false }))
     if (connectionRef && connectionRef.current) {
       connectionRef.current.destroy();
@@ -198,20 +201,20 @@ const VideoAudioCall = () => {
   return (
     <div className="flex gap-4 items-center justify-center w-screen h-screen p-4">
       {
-        callAccepted ?
+        inCall ?
           <div className="relative w-full h-full">
             {/* Main video (other user) */}
             <div className="relative w-full h-full bg-gray-800 flex items-center justify-center rounded-lg">
+
               {
-                !isVideoOff ? (
-                  <>
-                    <video ref={userVideo} playsInline muted={isMuted} autoPlay className="w-full h-full object-contain rounded-lg" />
-                  </>
-                ) : <CameraOff className="w-1/2 h-1/2 text-gray-500" />
+                callAccepted && (
+                  <video ref={userVideo} playsInline autoPlay className="w-full h-full object-contain rounded-lg" />
+                )
               }
+
               {/* Self video (draggable) */}
               <div
-                className="absolute bottom-3 right-3 w-64 h-44 flex items-center text-center justify-center bg-gray-700 cursor-grab rounded-lg overflow-hidden shadow-lg select-none"
+                className="absolute bottom-3 right-3 w-64 h-44 flex items-center text-center justify-center bg-gray-700 rounded-lg overflow-hidden shadow-lg select-none"
               >
                 {/* Show loading while waiting for permissions */}
                 {isLoading ? (
@@ -249,7 +252,7 @@ const VideoAudioCall = () => {
 
               </button>
               {
-                callAccepted && !callEnded && (
+                callAccepted && (
                   <button
                     onClick={leaveCall}
                     className="p-4 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
@@ -311,20 +314,20 @@ const VideoAudioCall = () => {
                 </div>
                 <div className="flex flex-col gap-1 text-center">
                   <h2 className="text-white text-2xl font-bold">{userData?.fullname}</h2>
-                  <p className="text-gray-400 text-sm">Ready to call?</p>
+                  <p className="text-gray-400 text-sm">Ready to {callerDetials.receivingCall ? "Join" : "Ready"}?</p>
                 </div>
 
 
                 <button onClick={() => {
                   if (userData) {
-                    if (callerDetials.receivingCall && !callAccepted) {
+                    if (callerDetials.receivingCall) {
                       answerCall();
-                    } else if (!callAccepted && callEnded) {
+                    } else {
                       callUser(userData._id);
                     }
                   }
                 }} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                  {!callAccepted && callerDetials.receivingCall ? "Join Call" : callEnded && !callAccepted && "Start Call"}
+                  {callerDetials.receivingCall ? "Join Call" : "Start Call"}
                 </button>
 
 
