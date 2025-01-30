@@ -31,7 +31,7 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
         </div>
       </div>
       <div className="flex gap-4 text-xl">
-        <div className="cursor-pointer">
+        <div onClick={() => navigate(`/calls?isVideo=false&userId=${userData._id}`)} className="cursor-pointer">
           <svg
             aria-label="Audio Call"
             className="x1lliihq x1n2onr6 x5n08af"
@@ -46,7 +46,7 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
           </svg>
         </div>
 
-        <div className="cursor-pointer">
+        <div onClick={() => navigate(`/calls?isVideo=true&userId=${userData._id}`)} className="cursor-pointer">
           <svg
             aria-label="Video Call"
             className="x1lliihq x1n2onr6 x5n08af"

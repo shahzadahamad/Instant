@@ -46,6 +46,19 @@ export default class SocketService {
         await sendMessaege.execute(chatId, userId, message);
       });
 
+      socket.emit("me", socket.id);
+
+      socket.on('callUser', (data) => {
+        const socketId = this.userSocketMap.get(data.userId);
+        if (socketId) {
+          this.io.to(socketId).emit('callUser', { signal: data.signalData, from: data.from, userId: data._id, isVideo: data.isVideo });
+        }
+      });
+
+      socket.on('answerCall', (data) => {
+        this.io.to(data.to).emit('callAccepted', data.signal);
+      });
+
       socket.on("disconnect", async () => {
         console.log(`User disconnected: ${socket.data.user.userId}`);
         const sendMessaege = new ChangeOnlineStatus(new UserRepository());

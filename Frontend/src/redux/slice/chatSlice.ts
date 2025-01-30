@@ -2,6 +2,14 @@ import { ChatDatas } from "@/types/redux/chatSlice";
 import { createSlice } from "@reduxjs/toolkit";
 const initialState: ChatDatas = {
   chatList: [],
+  callerDetials: {
+    receivingCall: false,
+    callerSocketId: "",
+    callerSignal: null,
+    callerId: "",
+    isVideo: false,
+    isViewModal: false,
+  }
 };
 
 const chatSlice = createSlice({
@@ -34,10 +42,16 @@ const chatSlice = createSlice({
           memberIndex.isOnline = isOnline;
         }
       }
+    },
+    setCallerState(state, action) {
+      state.callerDetials = action.payload;
+    },
+    changeViewModal(state) {
+      state.callerDetials.isViewModal = false;
     }
   },
 });
 
-export const { setChatList, updatelastMessage, updateUserOnlineStatus } = chatSlice.actions;
+export const { setChatList, updatelastMessage, updateUserOnlineStatus, setCallerState, changeViewModal } = chatSlice.actions;
 
 export default chatSlice.reducer;

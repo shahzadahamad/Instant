@@ -17,6 +17,18 @@ export default class UserRepository {
     }
   }
 
+  public async findById1(_id: string): Promise<IUser | null> {
+    try {
+      return await UserModel.findOne({ _id }).select('_id profilePicture username fullname');
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findByEmail(email: string): Promise<IUser | null> {
     try {
       return await UserModel.findOne({ email });

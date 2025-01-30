@@ -16,6 +16,7 @@ import GetNotificationDataController from "../../../infrastructure/controllers/u
 import AcceptRequestUserController from "../../../infrastructure/controllers/user/user/acceptRequestUserController";
 import DeleteFriendRequestController from "../../../infrastructure/controllers/user/user/deleteFriendRequestController";
 import UnfollowUserController from "../../../infrastructure/controllers/user/user/unfollowUserController";
+import UserDataController from "../../../infrastructure/controllers/user/user/userDataController";
 
 const userRouter = Router();
 
@@ -34,7 +35,9 @@ const getNotificationDataController = new GetNotificationDataController();
 const acceptRequestUserController = new AcceptRequestUserController();
 const deleteFriendRequestController = new DeleteFriendRequestController();
 const unfollowUserController = new UnfollowUserController();
+const userDataController = new UserDataController();
 
+userRouter.get('/data/:_id', authMiddleware, userDataController.handle);
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
 userRouter.get("/create-post/get-data", authMiddleware, createPostGetUserDataController.handle);
 userRouter.get("/get-tagged-user-data", authMiddleware, createPostGetTaggedUserDataController.handle);

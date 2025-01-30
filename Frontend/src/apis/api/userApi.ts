@@ -74,6 +74,13 @@ export const getUserProfileDates = async (username: string) => {
   return response.data;
 };
 
+export const getUserDataById = async (userId: string) => {
+  const response = await apiClient.get(
+    `/user/data/${userId}`
+  );
+  return response.data;
+};
+
 export const commentPost = async (postId: string, comment: string) => {
   const response = await apiClient.post(`/user/post/comment/${postId}`, {
     comment,
