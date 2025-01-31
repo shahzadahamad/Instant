@@ -19,14 +19,22 @@ const adminPersistConfig = {
   version: 1,
 };
 
+const chatPersistConfig = {
+  key: "chat",
+  storage,
+  version: 1,
+  blacklist: ["chatList"],
+};
+
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
 const persistedAdminReducer = persistReducer(adminPersistConfig, adminReducer);
+const persistedChatReducer = persistReducer(chatPersistConfig, chatReducer);
 
 const rootReducer = combineReducers({
   user: persistedUserReducer, // This will be persisted
   admin: persistedAdminReducer, // This will be persisted
   post: postReducer, // This will not be persisted
-  chat: chatReducer, // This will not be persisted
+  chat: persistedChatReducer, // This will not be persisted
 });
 
 const store = configureStore({

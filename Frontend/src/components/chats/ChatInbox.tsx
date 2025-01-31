@@ -3,8 +3,6 @@ import {
   faCircle,
   faPhone,
   faVideo,
-  // faPhone,
-  // faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -465,7 +463,7 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                           ? `Active ${timeSince(chat.members[0].isOnline.date)} ago`
                           : chat.lastMessage?.fromId._id === currentUser?._id
                             ? "You: " + chat.lastMessage?.message
-                            : chat.lastMessage?.message : checkHowManyMemberAreOnline(chat.members) > 0 ? checkHowManyMemberAreOnline(chat.members) + ' Member are active now'
+                            : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message : checkHowManyMemberAreOnline(chat.members) > 0 ? checkHowManyMemberAreOnline(chat.members) + ' Member are active now'
                         : chat.lastMessage?.fromId._id === currentUser?._id
                           ? "You: " + chat.lastMessage?.message
                           : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message}
@@ -477,7 +475,10 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                   /> */}
                   {
                     callerDetials.receivingCall && callerDetials.callerId === chat.members[0]._id && (
-                      <div className="bg-[#1cd14f] hover:bg-[#58c322] transition-colors p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer">
+                      <div onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/calls?isVideo=${callerDetials.isVideo}&userId=${callerDetials.callerId}`);
+                      }} className="bg-[#1cd14f] hover:bg-[#58c322] transition-colors p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer">
                         {
                           callerDetials.isVideo ? (
                             <FontAwesomeIcon icon={faVideo} className="text-sm" />

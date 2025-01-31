@@ -33,6 +33,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
   }, [currentUser, dispatch]);
 
+  useEffect(() => {
+    socket.on("endCall", () => {
+      dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false, isViewModal: false }))
+    })
+  }, [dispatch]);
+
   return <SocketContext.Provider value={socketInstance}>
     {children}
     {/* Render the CallModal if receiving a call */}

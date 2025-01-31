@@ -172,8 +172,9 @@ const ChatDetials = () => {
                         message.type === "callText" ? (
                           <p key={message._id} className="text-center pb-7 text-[#8a8a8a] text-sm">
                             {
-                              message.message.split(" ")[0].toString() === currentUser?._id.toString() ? "You " + message.message.split(" ").slice(1).join(" ") :
-                                message.senderId.username + " " + message.message.split(" ").slice(1).join(" ")
+                              (message.message === 'Audio call ended' || message.message === 'Video chat ended') ? message.message :
+                                message.senderId._id === currentUser?._id.toString() ? "You " + message.message.split(" ").slice(1).join(" ") :
+                                  message.senderId.username + " " + message.message.split(" ").slice(1).join(" ")
                             }
                           </p>
                         ) : (

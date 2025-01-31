@@ -1,6 +1,7 @@
 import { getUserDataById } from "@/apis/api/userApi";
 import { changeViewModal, setCallerState } from "@/redux/slice/chatSlice";
 import { RootState } from "@/redux/store/store";
+import { socket } from "@/socket/socket";
 import { userData } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import { Phone, X } from "lucide-react"
@@ -42,7 +43,11 @@ const CallModal = () => {
   }, [callerDetials.callerId]);
 
   const callDecline = () => {
-    dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false, isViewModal: false }))
+    socket.emit("endCall", {
+      userId: userData?._id,
+      isVideo: callerDetials.isVideo
+    })
+    dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false, isViewModal: false }));
   }
 
   const closeModal = () => {
@@ -51,7 +56,7 @@ const CallModal = () => {
 
   const callAccpect = () => {
     dispatch(changeViewModal())
-    navigate(`/calls?isVideo=false&userId=${callerDetials.callerId}`)
+    navigate(`/calls?isVideo=${callerDetials.isVideo}&userId=${callerDetials.callerId}`)
   }
 
   return (

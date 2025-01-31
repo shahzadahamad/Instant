@@ -64,8 +64,9 @@ export default class sendMessage {
       case 'shared':
         lastMessage = 'seat an attachment';
         break;
-      case 'chatText':
-        lastMessage = message;
+      case 'callText':
+        lastMessage = (newMessage.message === 'Audio call ended' || newMessage.message === 'Video call ended') ?
+          newMessage.message : newMessage.message.split(' ').slice(1).join(" ");
         break;
       default:
         lastMessage = '';

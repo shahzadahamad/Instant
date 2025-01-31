@@ -18,7 +18,7 @@ const VideoAudioCall = () => {
   const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
-  const isVideo = Boolean(queryParams.get('isVideo'));
+  const isVideo = queryParams.get('isVideo') === 'true';
   const userId = queryParams.get('userId');
 
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -41,6 +41,39 @@ const VideoAudioCall = () => {
   const userVideo = useRef<HTMLVideoElement>(null)
   const connectionRef = useRef<Peer.Instance | null>(null);
 
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    socket.on("endCall", (data) => {
+      if (data.userId === userData?._id) {
+        setCallAccepted(false);
+        setInCall(false);
+        dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false }))
+        if (connectionRef && connectionRef.current) {
+          connectionRef.current.destroy();
+        }
+        setCallEnded(true);
+      }
+    })
+  }, [callAccepted, dispatch, userData?._id]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | undefined
+    if (callAccepted && !isVideo && !callEnded) {
+      timer = setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setSeconds(0);
+    }
+
+    return () => clearInterval(timer);
+  }, [callAccepted, isVideo, callEnded]);
+
+  const minutes = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  const formattedTime = `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+
   const fetchUserData = async (userId: string) => {
     try {
       const userData = await getUserDataById(userId);
@@ -59,6 +92,33 @@ const VideoAudioCall = () => {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (callAccepted || inCall) {
+        event.preventDefault();
+        event.returnValue = "Your call will end if you reload this page. Are you sure you want to continue?";
+      }
+    };
+
+    const handleUnload = () => {
+      if (callAccepted || inCall) {
+        console.log("Page is being reloaded during a call. Cleaning up...");
+        socket.emit("endCall", {
+          userId: userData?._id,
+          isVideo: isVideo
+        })
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("unload", handleUnload);
+    };
+  }, [callAccepted, inCall, userData?._id, isVideo]);
+
+  useEffect(() => {
     if (userId) {
       fetchUserData(userId);
     }
@@ -66,7 +126,7 @@ const VideoAudioCall = () => {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: isVideo, audio: true })
       .then((stream) => {
         setStream(stream);
         setIsLoading(false);
@@ -91,7 +151,7 @@ const VideoAudioCall = () => {
       setMe(id)
     });
 
-  }, [callerDetials]);
+  }, [callerDetials, isVideo]);
 
   // Assign stream to video element after rendering
   useEffect(() => {
@@ -202,6 +262,10 @@ const VideoAudioCall = () => {
     } else {
       setInCall(false);
     }
+    socket.emit("endCall", {
+      userId: userData?._id,
+      isVideo: isVideo
+    })
     setCallEnded(true);
   }
 
@@ -214,9 +278,9 @@ const VideoAudioCall = () => {
             <div className="relative w-full h-full bg-gray-800 flex items-center justify-center rounded-lg">
 
               {
-                callAccepted ? (
+                callAccepted && isVideo ? (
                   <video ref={userVideo} playsInline autoPlay className="w-full h-full object-contain rounded-lg" />
-                ) :
+                ) : (
                   <div className="bg-gray-800 rounded-lg p-8 flex flex-col items-center gap-4 w-96">
                     {/* Avatar */}
                     <div className="w-36 h-36 rounded-full bg-blue-600 flex items-center justify-center">
@@ -231,40 +295,48 @@ const VideoAudioCall = () => {
                     <div className="text-white text-xl font-medium">{userData?.fullname}</div>
 
                     {/* Call Status */}
-                    <div className="text-gray-400 text-sm">Calling…</div>
+                    <div className="text-gray-400 text-sm">{callAccepted && !isVideo ? formattedTime : "Calling…"}</div>
                   </div>
+                )
               }
 
-              {/* Self video (draggable) */}
-              <div
-                className="absolute bottom-3 right-3 w-64 h-44 flex items-center text-center justify-center bg-gray-700 rounded-lg overflow-hidden shadow-lg select-none"
-              >
-                {/* Show loading while waiting for permissions */}
-                {isLoading ? (
-                  <div className="flex flex-col items-center">
-                    <div className="loader w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                    <h1 className="text-white text-lg mt-2">Loading...</h1>
+              {
+                isVideo && (
+                  <div
+                    className="absolute bottom-3 right-3 w-64 h-44 flex items-center text-center justify-center bg-gray-700 rounded-lg overflow-hidden shadow-lg select-none"
+                  >
+                    {/* Show loading while waiting for permissions */}
+                    {isLoading ? (
+                      <div className="flex flex-col items-center">
+                        <div className="loader w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                        <h1 className="text-white text-lg mt-2">Loading...</h1>
+                      </div>
+                    ) : isVideoBlocked || isAudioBlocked ? (
+                      <h1 className="text-white text-lg">You've blocked access to your camera or microphone</h1>
+                    ) : stream && !isVideoOff ? (
+                      <video ref={myVideo} playsInline muted={isMuted} autoPlay className="w-full h-full object-contain" />
+                    ) : (
+                      <CameraOff className="w-1/2 h-1/2 text-gray-500" />
+                    )}
                   </div>
-                ) : isVideoBlocked || isAudioBlocked ? (
-                  <h1 className="text-white text-lg">You've blocked access to your camera or microphone</h1>
-                ) : stream && !isVideoOff ? (
-                  <video ref={myVideo} playsInline muted={isMuted} autoPlay className="w-full h-full object-contain" />
-                ) : (
-                  <CameraOff className="w-1/2 h-1/2 text-gray-500" />
-                )}
-              </div>
+                )
+              }
             </div>
 
             {/* Control buttons */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
-              <button
-                onClick={toggleVideo}
-                disabled={isVideoBlocked}
-                className={`p-4 rounded-full ${!isVideoOff ? 'bg-gray-700' : 'bg-red-600'
-                  } hover:bg-opacity-90 transition-colors`}
-              >
-                {isVideoOff ? <CameraOff className="w-6 h-6 text-white" /> : <Camera className="w-6 h-6 text-white" />}
-              </button>
+              {
+                isVideo && (
+                  <button
+                    onClick={toggleVideo}
+                    disabled={isVideoBlocked}
+                    className={`p-4 rounded-full ${!isVideoOff ? 'bg-gray-700' : 'bg-red-600'
+                      } hover:bg-opacity-90 transition-colors`}
+                  >
+                    {isVideoOff ? <CameraOff className="w-6 h-6 text-white" /> : <Camera className="w-6 h-6 text-white" />}
+                  </button>
+                )
+              }
               <button
                 onClick={toggleAudio}
                 disabled={isAudioBlocked}
@@ -275,7 +347,7 @@ const VideoAudioCall = () => {
 
               </button>
               <button
-                onClick={() => callAccepted ? leaveCall(true) : leaveCall(false)}
+                onClick={() => leaveCall(callAccepted)}
                 className="p-4 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
               >
                 <Phone className="w-6 h-6 text-white" />
@@ -308,7 +380,10 @@ const VideoAudioCall = () => {
                 </button>
 
                 <button
-                  onClick={() => setCallEnded(false)}
+                  onClick={() => {
+                    setCallEnded(false);
+                    setInCall(false);
+                  }}
                   className="cursor-pointer font-bold border text-sm px-3 py-1.5 rounded-md bg-[#1cd14f] hover:bg-[#58c322] transition-colors text-center"
                 >
                   Call Again
@@ -326,9 +401,9 @@ const VideoAudioCall = () => {
                       <div className="loader w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
                       <h1 className="text-white text-lg mt-2">Loading...</h1>
                     </div>
-                  ) : isVideoBlocked || isAudioBlocked ? (
+                  ) : (isVideoBlocked || isAudioBlocked) && isVideo ? (
                     <h1 className="text-white text-lg">You've blocked access to your camera or microphone</h1>
-                  ) : stream && !isVideoOff ? (
+                  ) : stream && !isVideoOff && isVideo ? (
                     <video ref={myVideo} playsInline muted={isMuted} autoPlay className="w-full h-full object-cover" />
                   ) : (
                     <CameraOff className="w-1/2 h-1/2 text-gray-500" />
@@ -338,14 +413,18 @@ const VideoAudioCall = () => {
                 {/* Control Buttons */}
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
                   {/* Video Toggle Button */}
-                  <button
-                    className={`p-3 rounded-full ${isVideoOff ? "bg-red-500 hover:bg-red-400" : "bg-gray-800 hover:bg-gray-700"
-                      } transition-colors`}
-                    onClick={toggleVideo}
-                    disabled={isVideoBlocked}
-                  >
-                    {isVideoOff ? <CameraOff className="w-5 h-5 text-white" /> : <Camera className="w-5 h-5 text-white" />}
-                  </button>
+                  {
+                    isVideo && (
+                      <button
+                        className={`p-3 rounded-full ${isVideoOff ? "bg-red-500 hover:bg-red-400" : "bg-gray-800 hover:bg-gray-700"
+                          } transition-colors`}
+                        onClick={toggleVideo}
+                        disabled={isVideoBlocked}
+                      >
+                        {isVideoOff ? <CameraOff className="w-5 h-5 text-white" /> : <Camera className="w-5 h-5 text-white" />}
+                      </button>
+                    )
+                  }
 
                   {/* Audio Toggle Button */}
                   <button

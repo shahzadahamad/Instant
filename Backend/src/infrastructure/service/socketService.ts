@@ -65,6 +65,17 @@ export default class SocketService {
         }
       });
 
+      socket.on('endCall', async (data) => {
+        const socketId = this.userSocketMap.get(data.userId);
+        const userId = socket.data.user.userId;
+        console.log(data.userId);
+        const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
+        await sendMessaege.execute(data.userId, userId, `${data.isVideo ? "Video chat ended" : "Audio call ended"}`, 'callText');
+        if (socketId) {
+          this.io.to(socketId).emit('endCall', { userId: userId });
+        }
+      });
+
       socket.on("disconnect", async () => {
         console.log(`User disconnected: ${socket.data.user.userId}`);
         const sendMessaege = new ChangeOnlineStatus(new UserRepository());
