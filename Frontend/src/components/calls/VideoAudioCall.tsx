@@ -9,12 +9,13 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Peer from "simple-peer"
 
 const VideoAudioCall = () => {
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
   const isVideo = Boolean(queryParams.get('isVideo'));
@@ -24,6 +25,7 @@ const VideoAudioCall = () => {
   const { callerDetials } = useSelector((state: RootState) => state.chat);
   const dispatch = useDispatch();
 
+  const [callEnded, setCallEnded] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [isAudioBlocked, setIsAudioBlocked] = useState(false);
@@ -96,7 +98,7 @@ const VideoAudioCall = () => {
     if (stream && myVideo.current) {
       myVideo.current.srcObject = stream;
     }
-  }, [stream, isVideoOff, callAccepted, inCall]);
+  }, [stream, isVideoOff, callAccepted, inCall, callEnded]);
 
   const toggleAudio = () => {
     if (stream) {
@@ -189,13 +191,18 @@ const VideoAudioCall = () => {
     setInCall(true);
   }
 
-  const leaveCall = () => {
-    setCallAccepted(false);
-    setInCall(false);
-    dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false }))
-    if (connectionRef && connectionRef.current) {
-      connectionRef.current.destroy();
+  const leaveCall = (callAccepted: boolean) => {
+    if (callAccepted) {
+      setCallAccepted(false);
+      setInCall(false);
+      dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false }))
+      if (connectionRef && connectionRef.current) {
+        connectionRef.current.destroy();
+      }
+    } else {
+      setInCall(false);
     }
+    setCallEnded(true);
   }
 
   return (
@@ -207,9 +214,25 @@ const VideoAudioCall = () => {
             <div className="relative w-full h-full bg-gray-800 flex items-center justify-center rounded-lg">
 
               {
-                callAccepted && (
+                callAccepted ? (
                   <video ref={userVideo} playsInline autoPlay className="w-full h-full object-contain rounded-lg" />
-                )
+                ) :
+                  <div className="bg-gray-800 rounded-lg p-8 flex flex-col items-center gap-4 w-96">
+                    {/* Avatar */}
+                    <div className="w-36 h-36 rounded-full bg-blue-600 flex items-center justify-center">
+                      <img
+                        src={userData?.profilePicture}
+                        alt="Avatar"
+                        className="rounded-full w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* Caller Name */}
+                    <div className="text-white text-xl font-medium">{userData?.fullname}</div>
+
+                    {/* Call Status */}
+                    <div className="text-gray-400 text-sm">Calling…</div>
+                  </div>
               }
 
               {/* Self video (draggable) */}
@@ -251,19 +274,48 @@ const VideoAudioCall = () => {
                 {isMuted ? <MicOff className="w-6 h-6 text-white" /> : <Mic className="w-6 h-6 text-white" />}
 
               </button>
-              {
-                callAccepted && (
-                  <button
-                    onClick={leaveCall}
-                    className="p-4 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
-                  >
-                    <Phone className="w-6 h-6 text-white" />
-                  </button>
-                )
-              }
+              <button
+                onClick={() => callAccepted ? leaveCall(true) : leaveCall(false)}
+                className="p-4 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
+              >
+                <Phone className="w-6 h-6 text-white" />
+              </button>
             </div>
           </div>
-          : (
+          : callEnded ? (
+            <div className="rounded-lg p-8 flex flex-col items-center gap-4 w-96">
+              {/* Avatar */}
+              <div className="w-36 h-36 rounded-full bg-blue-600 flex items-center justify-center">
+                <img
+                  src={userData?.profilePicture}
+                  alt="Avatar"
+                  className="rounded-full w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Caller Name */}
+              <div className="text-xl font-medium">{userData?.fullname}</div>
+
+              {/* Call Status */}
+              <div className="text-gray-400 font-semibold">Call Ended</div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => navigate('/chats')}
+                  className="cursor-pointer font-bold bg-transparent border text-sm px-3 py-1.5 rounded-md dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors text-center"
+                >
+                  Back to chat
+                </button>
+
+                <button
+                  onClick={() => setCallEnded(false)}
+                  className="cursor-pointer font-bold border text-sm px-3 py-1.5 rounded-md bg-[#1cd14f] hover:bg-[#58c322] transition-colors text-center"
+                >
+                  Call Again
+                </button>
+              </div>
+            </div>
+          ) : (
             <>
               {/* Video Section */}
               <div className="relative bg-gray-900 rounded-lg overflow-hidden w-3/5 h-4/5 flex flex-col justify-end">

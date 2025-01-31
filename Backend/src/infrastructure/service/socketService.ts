@@ -43,13 +43,16 @@ export default class SocketService {
         const { chatId, message } = data;
         const userId = socket.data.user.userId;
         const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
-        await sendMessaege.execute(chatId, userId, message);
+        await sendMessaege.execute(chatId, userId, message, 'text');
       });
 
       socket.emit("me", socket.id);
 
-      socket.on('callUser', (data) => {
+      socket.on('callUser', async (data) => {
         const socketId = this.userSocketMap.get(data.userId);
+        const userId = socket.data.user.userId;
+        const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
+        await sendMessaege.execute(data.userId, userId, `${userId} started a ${data.isVideo ? 'video' : "audio"} call`, 'callText');
         if (socketId) {
           this.io.to(socketId).emit('callUser', { signal: data.signalData, from: data.from, userId: data._id, isVideo: data.isVideo });
         }

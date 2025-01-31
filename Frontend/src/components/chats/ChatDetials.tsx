@@ -168,9 +168,18 @@ const ChatDetials = () => {
                       <div className="text-center text-base text-[#8a8a8a] my-4">
                         {date}
                       </div>
-                      {messagesForDate.map((message) => (
-                        <TextMessage key={message._id} message={message} />
-                      ))}
+                      {messagesForDate.map((message) =>
+                        message.type === "callText" ? (
+                          <p key={message._id} className="text-center pb-7 text-[#8a8a8a] text-sm">
+                            {
+                              message.message.split(" ")[0].toString() === currentUser?._id.toString() ? "You " + message.message.split(" ").slice(1).join(" ") :
+                                message.senderId.username + " " + message.message.split(" ").slice(1).join(" ")
+                            }
+                          </p>
+                        ) : (
+                          <TextMessage key={message._id} message={message} />
+                        )
+                      )}
                     </div>
                   )
                 )}

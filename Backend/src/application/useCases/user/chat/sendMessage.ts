@@ -14,22 +14,33 @@ export default class sendMessage {
     this.userRepository = userRepository;
   }
 
-  public async execute(chatId: string, userId: string, message: string): Promise<void> {
+  public async execute(chatId: string, userId: string, message: string, type: string): Promise<void> {
 
     const chat = await this.chatRepository.findChatById(chatId, false);
+    const userChat = await this.chatRepository.findChatsOfUser(chatId, userId);
 
-    const type = 'text';
-
-    if (!chat) {
+    if (!chat && !userChat) {
       throw new Error("Chat not found.");
     }
 
-    if (!chat.members.includes(userId)) {
-      throw new Error('You are not a member of this chat.');
+    const officalChat = chat ? chat : userChat;
+
+    if (!officalChat) {
+      throw new Error("Chat not found.");
+    }
+
+    if (chat) {
+      if (!chat?.members.includes(userId)) {
+        throw new Error('You are not a member of this chat.');
+      }
+    } else {
+      if (!userChat?.members.includes(userId) && !userChat?.members.includes(chatId)) {
+        throw new Error('You are not a member of this chat.');
+      }
     }
 
     const messageData = {
-      chatId,
+      chatId: officalChat._id,
       type,
       message,
       senderId: userId,
@@ -53,10 +64,13 @@ export default class sendMessage {
       case 'shared':
         lastMessage = 'seat an attachment';
         break;
+      case 'chatText':
+        lastMessage = message;
+        break;
       default:
         lastMessage = '';
     }
-    await this.chatRepository.updateLastMessage(chat._id, userId, lastMessage);
+    await this.chatRepository.updateLastMessage(officalChat._id, userId, lastMessage);
     const userData = await this.userRepository.findById(userId);
     const data = {
       _id: userData?._id,
@@ -66,7 +80,7 @@ export default class sendMessage {
       isOnline: userData?.isOnline
     };
     const updateLastMessage = { fromId: data, message: lastMessage };
-    chat.members.forEach((member) => {
+    officalChat.members.forEach((member) => {
       SocketService.getInstance().sendMessage(member, newMessage, updateLastMessage);
     });
   }

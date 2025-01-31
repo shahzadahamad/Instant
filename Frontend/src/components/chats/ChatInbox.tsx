@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
+  faPhone,
+  faVideo,
   // faPhone,
   // faVideo,
 } from "@fortawesome/free-solid-svg-icons";
@@ -38,6 +40,8 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
   const [groupName, setGroupName] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
+  const { callerDetials } = useSelector((state: RootState) => state.chat);
+
 
   const handleUserSelection = (user: Member) => {
     if (selectedUsers.find(u => u._id === user._id)) {
@@ -471,11 +475,20 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                     icon={faCircle}
                     className="text-[#0095f6] rounded-full border-2 text-xs"
                   /> */}
-                  {/* <div className="bg-[#1cd14f] hover:bg-[#58c322] transition-colors p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer">
-                    <FontAwesomeIcon icon={faPhone} className="text-sm" />
-                    <FontAwesomeIcon icon={faVideo} className="text-sm" />
-                    <h1>Join</h1>
-                  </div> */}
+                  {
+                    callerDetials.receivingCall && callerDetials.callerId === chat.members[0]._id && (
+                      <div className="bg-[#1cd14f] hover:bg-[#58c322] transition-colors p-1 px-3 rounded-lg flex items-center gap-2 cursor-pointer">
+                        {
+                          callerDetials.isVideo ? (
+                            <FontAwesomeIcon icon={faVideo} className="text-sm" />
+                          ) : (
+                            <FontAwesomeIcon icon={faPhone} className="text-sm" />
+                          )
+                        }
+                        <h1>Join</h1>
+                      </div>
+                    )
+                  }
                 </div>
               </div>
             )

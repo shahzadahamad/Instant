@@ -45,14 +45,32 @@ const CallModal = () => {
     dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false, isViewModal: false }))
   }
 
+  const closeModal = () => {
+    dispatch(changeViewModal());
+  };
+
   const callAccpect = () => {
     dispatch(changeViewModal())
     navigate(`/calls?isVideo=false&userId=${callerDetials.callerId}`)
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div className="bg-gray-800 rounded-lg p-8 flex flex-col items-center gap-6 w-96">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center"
+      onClick={closeModal} // Close modal when clicking outside
+    >
+      <div
+        className="bg-gray-800 rounded-lg p-8 flex flex-col items-center gap-6 w-96 relative"
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+      >
+        {/* Close Button */}
+        <button
+          className="absolute top-3 right-3 p-2 rounded-full transition-colors"
+          onClick={closeModal}
+        >
+          <X className="text-white w-6 h-6" />
+        </button>
+
         {/* Avatar */}
         <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center">
           <img
