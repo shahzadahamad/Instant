@@ -461,12 +461,12 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                         ? "Active now"
                         : timeBetween(chat.members[0].isOnline.date)
                           ? `Active ${timeSince(chat.members[0].isOnline.date)} ago`
-                          : chat.lastMessage?.fromId._id === currentUser?._id
+                          : chat.lastMessage ? chat.lastMessage?.fromId._id === currentUser?._id
                             ? "You: " + chat.lastMessage?.message
-                            : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message : checkHowManyMemberAreOnline(chat.members) > 0 ? checkHowManyMemberAreOnline(chat.members) + ' Member are active now'
-                        : chat.lastMessage?.fromId._id === currentUser?._id
+                            : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message : checkHowManyMemberAreOnline(chat.members) > 0 ? checkHowManyMemberAreOnline(chat.members) + ' Member are active now' : ""
+                        : chat.lastMessage ? chat.lastMessage?.fromId._id === currentUser?._id
                           ? "You: " + chat.lastMessage?.message
-                          : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message}
+                          : chat.lastMessage?.fromId.username + ": " + chat.lastMessage?.message : ""}
                     </h1>
                   </div>
                   {/* <FontAwesomeIcon

@@ -67,14 +67,16 @@ const ChatDetials = () => {
 
   useEffect(() => {
     socket.on("send_message", (data) => {
-      setMessages((prevMessages) => (prevMessages ? [...prevMessages, data.messageData] : [data.messageData]));
-      dispatch(updatelastMessage({ _id: data.messageData.chatId, lastMessage: data.lastMessage }));
+      if (data.messageData.chatId === chatId) {
+        setMessages((prevMessages) => (prevMessages ? [...prevMessages, data.messageData] : [data.messageData]));
+        dispatch(updatelastMessage({ _id: data.messageData.chatId, lastMessage: data.lastMessage }));
+      }
     });
 
     return () => {
       socket.off("send_message");
     };
-  }, [dispatch]);
+  }, [dispatch, chatId]);
 
 
   const handleEmojiClick = (emoji: string) => {
@@ -178,7 +180,9 @@ const ChatDetials = () => {
                             }
                           </p>
                         ) : (
-                          <TextMessage key={message._id} message={message} />
+                          <>
+                            <TextMessage key={message._id} message={message} />
+                          </>
                         )
                       )}
                     </div>

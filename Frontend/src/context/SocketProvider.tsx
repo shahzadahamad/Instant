@@ -14,6 +14,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { callerDetials } = useSelector((state: RootState) => state.chat);
   const dispatch = useDispatch();
 
+  const excludedRoutes = ["/login", "/signup", "/calls"];
+
   useEffect(() => {
 
     if (currentUser) {
@@ -41,8 +43,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   return <SocketContext.Provider value={socketInstance}>
     {children}
-    {/* Render the CallModal if receiving a call */}
-    {callerDetials.isViewModal && (
+    {callerDetials.isViewModal && !excludedRoutes.includes(location.pathname) && (
       <CallModal />
     )}
   </SocketContext.Provider>;

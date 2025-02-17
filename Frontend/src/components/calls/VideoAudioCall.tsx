@@ -42,6 +42,7 @@ const VideoAudioCall = () => {
   const connectionRef = useRef<Peer.Instance | null>(null);
 
   const [seconds, setSeconds] = useState(0);
+  const [countDown, setCountDown] = useState(3);
 
   useEffect(() => {
     socket.on("endCall", (data) => {
@@ -56,6 +57,23 @@ const VideoAudioCall = () => {
       }
     })
   }, [callAccepted, dispatch, userData?._id]);
+
+  useEffect(() => {
+    const stopMediaStream = () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+    };
+
+    return () => {
+      stopMediaStream();
+      if (connectionRef.current) {
+        connectionRef.current.destroy();
+      }
+    };
+  }, [stream]);
+
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | undefined
@@ -101,7 +119,6 @@ const VideoAudioCall = () => {
 
     const handleUnload = () => {
       if (callAccepted || inCall) {
-        console.log("Page is being reloaded during a call. Cleaning up...");
         socket.emit("endCall", {
           userId: userData?._id,
           isVideo: isVideo
@@ -116,13 +133,19 @@ const VideoAudioCall = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       window.removeEventListener("unload", handleUnload);
     };
-  }, [callAccepted, inCall, userData?._id, isVideo]);
+  }, [callAccepted, inCall, userData?._id, isVideo, dispatch]);
 
   useEffect(() => {
     if (userId) {
       fetchUserData(userId);
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (callEnded) {
+      countdownStart();
+    }
+  }, [callEnded]);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -269,8 +292,21 @@ const VideoAudioCall = () => {
     setCallEnded(true);
   }
 
+  const countdownStart = () => {
+    setCountDown(3);
+    const interval = setInterval(() => {
+      setCountDown((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          setCallEnded(false);
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   return (
-    <div className="flex gap-4 items-center justify-center w-screen h-screen p-4">
+    <div className="flex gap-4 items-center justify-center w-screen h-screen p-3">
       {
         inCall ?
           <div className="relative w-full h-full">
@@ -303,7 +339,7 @@ const VideoAudioCall = () => {
               {
                 isVideo && (
                   <div
-                    className="absolute bottom-3 right-3 w-64 h-44 flex items-center text-center justify-center bg-gray-700 rounded-lg overflow-hidden shadow-lg select-none"
+                    className="absolute bottom-3 right-3 w-64 h-44 flex items-center border-2 border-white text-center justify-center bg-gray-700 rounded-lg overflow-hidden shadow-lg select-none"
                   >
                     {/* Show loading while waiting for permissions */}
                     {isLoading ? (
@@ -364,31 +400,12 @@ const VideoAudioCall = () => {
                   className="rounded-full w-full h-full object-cover"
                 />
               </div>
-
               {/* Caller Name */}
               <div className="text-xl font-medium">{userData?.fullname}</div>
 
               {/* Call Status */}
               <div className="text-gray-400 font-semibold">Call Ended</div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => navigate('/chats')}
-                  className="cursor-pointer font-bold bg-transparent border text-sm px-3 py-1.5 rounded-md dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors text-center"
-                >
-                  Back to chat
-                </button>
-
-                <button
-                  onClick={() => {
-                    setCallEnded(false);
-                    setInCall(false);
-                  }}
-                  className="cursor-pointer font-bold border text-sm px-3 py-1.5 rounded-md bg-[#1cd14f] hover:bg-[#58c322] transition-colors text-center"
-                >
-                  Call Again
-                </button>
-              </div>
+              <p className="text-gray-400 text-sm">Redirecting in {countDown}...</p>
             </div>
           ) : (
             <>
@@ -445,22 +462,31 @@ const VideoAudioCall = () => {
                 </div>
                 <div className="flex flex-col gap-1 text-center">
                   <h2 className="text-white text-2xl font-bold">{userData?.fullname}</h2>
-                  <p className="text-gray-400 text-sm">Ready to {callerDetials.receivingCall ? "Join" : "Ready"}?</p>
+                  <p className="text-gray-400 text-sm">Ready to {callerDetials.receivingCall ? "Join" : "Call"}?</p>
                 </div>
 
 
-                <button onClick={() => {
-                  if (userData) {
-                    if (callerDetials.receivingCall) {
-                      answerCall();
-                    } else {
-                      callUser(userData._id);
-                    }
-                  }
-                }} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                  {callerDetials.receivingCall ? "Join Call" : "Start Call"}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      navigate(-1)
+                    }}
+                    className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                    Back
+                  </button>
 
+                  <button onClick={() => {
+                    if (userData) {
+                      if (callerDetials.receivingCall) {
+                        answerCall();
+                      } else {
+                        callUser(userData._id);
+                      }
+                    }
+                  }} className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                    {callerDetials.receivingCall ? "Join Call" : "Start Call"}
+                  </button>
+                </div>
 
               </div>
             </>

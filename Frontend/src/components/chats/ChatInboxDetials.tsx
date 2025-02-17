@@ -1,6 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatDetials from "./ChatDetials";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import ChatsInbox from "./ChatInbox";
 import { useParams } from "react-router-dom";
@@ -13,7 +11,7 @@ const ChatInboxDetials = () => {
     <div className="w-full flex overflow-auto scrollbar-hidden">
       <div className="w-1/3 h-full border-r flex flex-col">
         <div className="flex flex-col">
-          <div className="p-3 max-w-md border-b">
+          {/* <div className="p-3 max-w-md border-b">
             <div className="relative">
               <input
                 type="text"
@@ -25,7 +23,7 @@ const ChatInboxDetials = () => {
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </button>
             </div>
-          </div>
+          </div> */}
           <div className="flex border-b">
             <div
               onClick={() => setTab("chats")}
