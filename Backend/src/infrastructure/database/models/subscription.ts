@@ -1,18 +1,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ISubscription extends Document {
-  userId: string,
+  _id: string;
   period: string;
   price: number;
-  offer: string;
+  offer: number;
+  isListed: boolean;
 }
 
 const subscriptionSchema: Schema = new Schema(
   {
-    userId: {
-      type: String,
-      required: true,
-    },
     period: {
       type: String,
       required: true,
@@ -22,9 +19,14 @@ const subscriptionSchema: Schema = new Schema(
       required: true,
     },
     offer: {
-      type: String,
+      type: Number,
       required: true,
-    }
+    },
+    isListed: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
   {
     timestamps: true,

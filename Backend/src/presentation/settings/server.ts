@@ -15,6 +15,7 @@ import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import SocketService from "../../infrastructure/service/socketService";
 import chatRouter from "../routes/user/chat";
+import subscriptionRouter from "../routes/admin/subscription";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/admin/auth", adminAuthRouter);
 app.use("/api/admin", adminRouter);
 app.use('/api/admin/users', adminUsersRouter);
 app.use('/api/admin/music', musicRouter);
+app.use('/api/admin/subscription', subscriptionRouter);
 app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
 app.use('/api/user/chats', chatRouter);

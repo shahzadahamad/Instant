@@ -8,6 +8,8 @@ export const MESSAGES = {
     PROFILE_UPDATED: 'Profile updated successfully.',
     MUSIC_CREATED: 'Music created successfully.',
     MUSIC_UPDATED: 'Music updated successfully.',
+    SUBSCRIPTION_CREATED: 'Subscription created successfully.',
+    SUBSCRIPTION_UPDATED: 'Subscription updated successfully.',
   },
   ERROR: {
     INVALID_REQUEST: 'Invalid request.',
