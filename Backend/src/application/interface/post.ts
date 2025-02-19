@@ -39,3 +39,11 @@ export type QueryTypeGetUserDataAdin = {
     phoneNumber?: { $regex: RegExp };
   }>;
 };
+
+export type QueryTypeGetSubscriptionDataAdmin = {
+  $or?: Array<{
+    period?: { $regex: RegExp };
+    price?: { $regex: RegExp } | { $eq: number } | { $gte: number } | { $lte: number };
+    offer?: { $regex: RegExp } | { $eq: number } | { $gte: number } | { $lte: number };
+  }>;
+};
