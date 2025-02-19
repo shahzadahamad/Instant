@@ -19,6 +19,7 @@ import Search from "@/pages/user/Search";
 import AdminProfile from "@/pages/admin/AdminProfile";
 import Notification from "@/pages/user/Notification";
 import Calls from "@/pages/user/Calls";
+import Verification from "@/pages/user/Verification";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -80,6 +81,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/calls",
     element: currentUser ? <Calls /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/verification",
+    element: currentUser ? <Verification /> : <Navigate to='/sign-in' replace />
   },
   {
     path: "/admin/sign-in",

@@ -6,7 +6,6 @@ import {
 import { faEllipsis, faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 
 const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,18 +21,6 @@ const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
         block: "center",
       });
       const inputElement = menuRef.current;
-      inputElement?.focus();
-    }, 100);
-  };
-
-  const handleEmojiButtonClick = () => {
-    setOpen((prev) => !prev);
-    setTimeout(() => {
-      emojiPickerRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      const inputElement = emojiPickerRef.current;
       inputElement?.focus();
     }, 100);
   };
@@ -149,34 +136,6 @@ const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
         className="cursor-pointer rounded-full p-2 dark:hover:bg-[#191919] hover:bg-[#f0f0f0]"
         icon={faReply}
       />
-      <div className="p-2 cursor-pointer preventbuttonEmoji rounded-full dark:hover:bg-[#191919] hover:bg-[#f0f0f0]">
-        <svg
-          onClick={handleEmojiButtonClick}
-          aria-label="Emoji"
-          className="x1lliihq x1n2onr6 x5n08af"
-          fill="currentColor"
-          height="18"
-          role="img"
-          viewBox="0 0 24 24"
-          width="18"
-        >
-          <title>Emoji</title>
-          <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
-        </svg>
-      </div>
-
-      {open && (
-        <div ref={emojiPickerRef} className="absolute bottom-[35px] z-10">
-          <EmojiPicker
-            open={open}
-            width={300}
-            height={400}
-            autoFocusSearch={false}
-            theme={Theme.DARK}
-            emojiStyle={EmojiStyle.GOOGLE}
-          />
-        </div>
-      )}
     </div>
   );
 };

@@ -179,7 +179,7 @@ const ChatDetials = () => {
                                   message.senderId.username + " " + message.message.split(" ").slice(1).join(" ")
                             }
                           </p>
-                        ) : (
+                        ) : message.type === 'text' && (
                           <>
                             <TextMessage key={message._id} message={message} />
                           </>

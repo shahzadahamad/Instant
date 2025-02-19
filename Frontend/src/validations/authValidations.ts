@@ -5,13 +5,13 @@ export const signUpSchema = z
     fullname: z
       .string()
       .min(1, "Fullname is required")
-      .min(6, "Fullname must be at least 6 letters")
+      .min(3, "Fullname must be at least 3 letters")
       .max(30, "Fullname must be at most 30 letters")
       .regex(/^(?!.*\s{2,})[a-zA-Z ]+$/, "Fullname should only contain letter"),
     username: z
       .string()
       .min(1, "Username is required")
-      .min(6, "Username must be at least 6 characters")
+      .min(3, "Username must be at least 3 characters")
       .max(20, "Username must be at most 20 characters")
       .regex(
         /^[a-z0-9_]+$/,
@@ -57,7 +57,7 @@ export const signInSchema = z.object({
   usernameOrEmail: z
     .string()
     .min(1, "Username or email is required")
-    .min(6, "Username or email must be at least 6 characters"),
+    .min(3, "Username or email must be at least 3 characters"),
   password: z
     .string()
     .min(1, "Password is required")
@@ -99,13 +99,13 @@ export const editProfileSchema = z.object({
   fullname: z
     .string()
     .min(1, "Fullname is required")
-    .min(6, "Fullname must be at least 6 letters")
+    .min(3, "Fullname must be at least 3 letters")
     .max(30, "Fullname must be at most 30 letters")
     .regex(/^(?!.*\s{2,})[a-zA-Z ]+$/, "Fullname should only contain letter"),
   username: z
     .string()
     .min(1, "Username is required")
-    .min(6, "Username must be at least 6 characters")
+    .min(3, "Username must be at least 3 characters")
     .max(20, "Username must be at most 20 characters")
     .regex(
       /^[a-z0-9_]+$/,
@@ -145,7 +145,7 @@ export const AdminSignInSchema = z.object({
   usernameOrEmail: z
     .string()
     .min(1, "Username or email is required")
-    .min(6, "Username or email must be at least 6 characters"),
+    .min(3, "Username or email must be at least 3 characters"),
   password: z
     .string()
     .min(1, "Password is required")
@@ -166,7 +166,7 @@ export const adminEditProfile = z.object({
   username: z
     .string()
     .min(1, "Username is required")
-    .min(6, "Username must be at least 6 characters")
+    .min(3, "Username must be at least 3 characters")
     .max(20, "Username must be at most 20 characters")
     .regex(
       /^[a-z0-9_]+$/,
@@ -175,8 +175,6 @@ export const adminEditProfile = z.object({
   email: z
     .string()
     .min(1, "Email is required")
-    .min(6, "Email must be at least 6 characters")
-    .max(30, "Email must be at most 30 letters")
     .email("Invalid email address")
     .regex(/^\S+$/, "Email should not contain spaces"),
 });
