@@ -60,4 +60,16 @@ export default class SubscriptionRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async listAndUnlist(_id: string, status: boolean) {
+    try {
+      await SubscriptionModel.updateOne({ _id: _id }, { $set: { isListed: status } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error edit subscription");
+      throw new Error("Unknown error");
+    }
+  }
 }
