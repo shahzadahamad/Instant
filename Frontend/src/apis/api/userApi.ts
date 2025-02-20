@@ -183,3 +183,8 @@ export const getChatList = async (type: string) => {
   const response = await apiClient.get(`/user/chats/list/${type}`);
   return response.data;
 }
+
+export const getSubsriptionPlans = async () => {
+  const response = await apiClient.get(`/user/subscription`);
+  return response.data;
+}
