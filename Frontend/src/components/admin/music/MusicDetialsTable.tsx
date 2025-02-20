@@ -64,8 +64,12 @@ const MusicDetialsTable = () => {
       });
       return newValues;
     });
-    fetchMusic(page);
-    return () => { };
+    const timer = setTimeout(() => {
+      fetchMusic(page);
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [page, searchVal]);
 
   useEffect(() => {
@@ -177,7 +181,7 @@ const MusicDetialsTable = () => {
             <>
               <>
                 <ModalHeader className="flex flex-col gap-1 text-center border-1">
-                  View Profile
+                  View Image
                 </ModalHeader>
                 <ModalBody className="p-10 border-1 w-full h-full flex justify-center items-center">
                   <div className="w-[200px] h-[200px] rounded-md border overflow-hidden">
@@ -335,7 +339,7 @@ const MusicDetialsTable = () => {
               </tfoot>
             </table>
           ) : totalMusic === 0 ? (
-            <h1>User Not found in Database</h1>
+            <h1>Music Not found in Database</h1>
           ) : (
             <h1>No search result</h1>
           )}

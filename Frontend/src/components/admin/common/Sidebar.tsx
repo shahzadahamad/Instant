@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
+  faCircleCheck,
   faHouse,
   faImage,
   faMusic,
@@ -69,14 +70,14 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   };
 
   return (
-    <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232]">
+    <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232] overflow-auto scrollbar-hidden">
       <h1
         className="font-bold text-3xl pt-6 mx-auto text-center cursor-pointer"
         onClick={() => navigate("/admin/dashboard")}
       >
         Instant
       </h1>
-      <div className="flex flex-col items-center gap-14 mt-9 text-[#787878] text-3xl">
+      <div className="flex flex-col items-center gap-12 mt-9 text-[#787878] text-3xl">
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faHouse}
@@ -118,6 +119,17 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           />
           <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Music
+          </div>
+        </div>
+        <div className="relative group flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faCircleCheck}
+            onClick={() => navigate("/admin/subscription")}
+            className={`${page === "subscription" && "dark:text-white text-black"
+              } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
+          />
+          <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 px-2 py-1 dark:text-white text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Subscription
           </div>
         </div>
         <div className="relative group flex items-center justify-center">

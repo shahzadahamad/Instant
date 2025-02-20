@@ -166,7 +166,7 @@ const MusicAction: React.FC<{
           {() => (
             <>
               <ModalHeader className="flex flex-col gap-1 text-center border-1">
-                Add Music
+                Edit Music
               </ModalHeader>
               <ModalBody className="p-8 border-1 w-full h-full flex flex-col gap-6">
                 <div className="flex items-center">

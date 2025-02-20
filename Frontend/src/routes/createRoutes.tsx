@@ -20,6 +20,7 @@ import AdminProfile from "@/pages/admin/AdminProfile";
 import Notification from "@/pages/user/Notification";
 import Calls from "@/pages/user/Calls";
 import Verification from "@/pages/user/Verification";
+import Subscription from "@/pages/admin/Subscription";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -122,6 +123,14 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     path: "/admin/profile",
     element: currentAdmin ? (
       <AdminProfile />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
+  },
+  {
+    path: "/admin/subscription",
+    element: currentAdmin ? (
+      <Subscription />
     ) : (
       <Navigate to="/admin/sign-in" replace />
     ),

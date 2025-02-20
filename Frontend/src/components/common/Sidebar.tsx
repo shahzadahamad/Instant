@@ -118,7 +118,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   };
 
   return (
-    <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232]">
+    <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232] overflow-auto scrollbar-hidden">
       <h1
         className="font-bold text-3xl pt-6 mx-auto text-center cursor-pointer"
         onClick={() => navigate("/")}

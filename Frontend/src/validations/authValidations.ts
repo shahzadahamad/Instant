@@ -162,6 +162,22 @@ export const createMusicSchema = z.object({
     .max(32, "Title must be at most 32 characters"),
 });
 
+export const createSubcriptionSchema = z.object({
+  period: z
+    .string()
+    .min(1, "Period is required"),
+  price: z.string().min(1, "Price is required").refine((value) => {
+    const numValue = Number(value);
+
+    return !isNaN(numValue) && numValue > 0;
+  }, "Enter a valid price greater than 0"),
+  offer: z.string().min(1, "Offer is required").refine((value) => {
+    const numValue = Number(value);
+
+    return !isNaN(numValue) && (numValue >= 0 && numValue < 100);
+  }, "Enter a valid offer lessthan than 100"),
+});
+
 export const adminEditProfile = z.object({
   username: z
     .string()
