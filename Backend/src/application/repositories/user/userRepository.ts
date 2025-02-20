@@ -173,7 +173,7 @@ export default class UserRepository {
       const searchTotalUser = await UserModel.countDocuments(query);
       const users = await UserModel.find(query, { password: 0 })
         .skip(startIndex)
-        .limit(limit);
+        .limit(limit).sort({ createdAt: -1 });
       return {
         users,
         totalPages: Math.ceil(searchTotalUser / limit),

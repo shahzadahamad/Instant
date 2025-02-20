@@ -10,7 +10,7 @@ export default class EditSubscription {
 
   public async execute(_id: string, period: string, price: number, offer: number): Promise<ISubscription> {
 
-    const subscription = await this.subscriptionRepository.findMusicById(_id);
+    const subscription = await this.subscriptionRepository.findSubcriptionById(_id);
 
     if (!subscription) {
       throw new Error("subscription not found!");

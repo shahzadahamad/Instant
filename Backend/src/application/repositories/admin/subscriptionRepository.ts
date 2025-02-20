@@ -12,9 +12,22 @@ export default class SubscriptionRepository {
     return await newSubscription.save();
   }
 
-  public async findMusicById(_id: string): Promise<ISubscription | null> {
+  public async findSubcriptionById(_id: string): Promise<ISubscription | null> {
     try {
       return await SubscriptionModel.findOne({ _id: _id });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find subscription: ${error.message}`);
+        throw new Error("Failed to find subscription");
+      }
+      console.error("Unknown error finding subscription");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findListedSubscriptionData(): Promise<ISubscription[]> {
+    try {
+      return await SubscriptionModel.find({ isListed: true });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find subscription: ${error.message}`);
@@ -45,7 +58,7 @@ export default class SubscriptionRepository {
     try {
       const totalSubscription = await SubscriptionModel.countDocuments();
       const searchTotalSubscription = await SubscriptionModel.countDocuments(query);
-      const subscription = await SubscriptionModel.find(query).skip(startIndex).limit(limit);
+      const subscription = await SubscriptionModel.find(query).skip(startIndex).limit(limit).sort({ createdAt: -1 });
       return {
         subscription,
         totalPages: Math.ceil(searchTotalSubscription / limit),

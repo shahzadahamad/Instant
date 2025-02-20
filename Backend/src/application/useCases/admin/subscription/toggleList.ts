@@ -9,9 +9,9 @@ export default class ToggleList {
 
   public async execute(id: string, status: string): Promise<string> {
     if (status === "list") {
-      await this.subscriptionRepository.listAndUnlist(id, true)
+      await this.subscriptionRepository.listAndUnlist(id, true);
     } else if (status === "unlist") {
-      await this.subscriptionRepository.listAndUnlist(id, false)
+      await this.subscriptionRepository.listAndUnlist(id, false);
     } else {
       throw new Error("Invalid action");
     }

@@ -46,7 +46,7 @@ export default class MusicRepository {
     try {
       const totalMusic = await MusicModel.countDocuments();
       const searchTotalMusic = await MusicModel.countDocuments(query);
-      const music = await MusicModel.find(query).skip(startIndex).limit(limit);
+      const music = await MusicModel.find(query).skip(startIndex).limit(limit).sort({ createdAt: -1 });
       return {
         music,
         totalPages: Math.ceil(searchTotalMusic / limit),

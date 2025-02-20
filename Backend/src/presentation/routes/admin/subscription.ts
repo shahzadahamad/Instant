@@ -5,16 +5,16 @@ import EditSubscriptionController from "../../../infrastructure/controllers/admi
 import GetSubscriptionDataController from "../../../infrastructure/controllers/admin/subscription/getSubscriptionDataController";
 import ToggleListController from "../../../infrastructure/controllers/admin/subscription/toggleListController";
 
-const subscriptionRouter = Router();
+const adminSubscriptionRouter = Router();
 
 const createSubscriptionController = new CreateSubscriptionController();
 const editSubscriptionController = new EditSubscriptionController();
 const getSubscriptionDataController = new GetSubscriptionDataController();
 const toggleListController = new ToggleListController(); 
 
-subscriptionRouter.get('/', adminAuthMiddleware, getSubscriptionDataController.handle);
-subscriptionRouter.post('/create', adminAuthMiddleware, createSubscriptionController.handle);
-subscriptionRouter.put('/edit/:_id', adminAuthMiddleware, editSubscriptionController.handle);
-subscriptionRouter.patch("/toggle-list/:id/:status", adminAuthMiddleware, toggleListController.handle);
+adminSubscriptionRouter.get('/', adminAuthMiddleware, getSubscriptionDataController.handle);
+adminSubscriptionRouter.post('/create', adminAuthMiddleware, createSubscriptionController.handle);
+adminSubscriptionRouter.put('/edit/:_id', adminAuthMiddleware, editSubscriptionController.handle);
+adminSubscriptionRouter.patch("/toggle-list/:id/:status", adminAuthMiddleware, toggleListController.handle);
 
-export default subscriptionRouter;
+export default adminSubscriptionRouter;

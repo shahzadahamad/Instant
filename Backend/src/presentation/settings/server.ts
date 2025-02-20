@@ -15,7 +15,8 @@ import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import SocketService from "../../infrastructure/service/socketService";
 import chatRouter from "../routes/user/chat";
-import subscriptionRouter from "../routes/admin/subscription";
+import adminSubscriptionRouter from "../routes/admin/subscription";
+import subscriptionRouter from "../routes/user/subscription";
 
 const app = express();
 
@@ -41,16 +42,20 @@ app.use(
   })
 );
 
+// User
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-app.use("/api/admin/auth", adminAuthRouter);
-app.use("/api/admin", adminRouter);
-app.use('/api/admin/users', adminUsersRouter);
-app.use('/api/admin/music', musicRouter);
-app.use('/api/admin/subscription', subscriptionRouter);
 app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
 app.use('/api/user/chats', chatRouter);
+app.use('/api/user/subscription', subscriptionRouter);
+
+// Admin
+app.use("/api/admin", adminRouter);
+app.use("/api/admin/auth", adminAuthRouter);
+app.use('/api/admin/users', adminUsersRouter);
+app.use('/api/admin/music', musicRouter);
+app.use('/api/admin/subscription', adminSubscriptionRouter);
 
 const port: number | string = process.env.PORT || 3000;
 server.listen(port, () => {
