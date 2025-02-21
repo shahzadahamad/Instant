@@ -127,8 +127,8 @@ const SubscriptionActions: React.FC<{
                       setPeriodInput(e.target.value)
                     }}
                       value={periodInput} className="p-3 border outline-none bg-transparent shadow text-sm rounded-md">
-                      <option value="monthly" className="bg-gray-200 text-black">Monthly</option>
-                      <option value="yearly" className="bg-gray-200 text-black">Yearly</option>
+                      <option value="Monthly" className="bg-gray-200 text-black">Monthly</option>
+                      <option value="Yearly" className="bg-gray-200 text-black">Yearly</option>
                     </select>
                   </div>
                 </div>

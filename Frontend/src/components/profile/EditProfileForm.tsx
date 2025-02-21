@@ -117,12 +117,10 @@ const EditProfileForm = () => {
     try {
       const response = await apiClient.post(`/user/edit-profile`, formData);
       const updatedUser = response.data.user;
-      setTimeout(() => {
-        dispatch(loginSuccess(updatedUser));
-        navigate("/profile");
-        toast.success(response.data.message);
-        setLoading(false);
-      }, 1000);
+      dispatch(loginSuccess(updatedUser));
+      navigate("/profile");
+      toast.success(response.data.message);
+      setLoading(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -308,11 +306,10 @@ const EditProfileForm = () => {
           </button>
           <button
             type="submit"
-            className={` w-44 bg-transparent transition-colors p-2 border text-sm rounded-md ${
-              loading
+            className={` w-44 bg-transparent transition-colors p-2 border text-sm rounded-md ${loading
                 ? "opacity-60 cursor-not-allowed"
                 : "opacity-100 cursor-pointer hover:bg-white hover:text-black"
-            }`}
+              }`}
           >
             {loading ? <div className="spinner"></div> : "Confirm"}
           </button>

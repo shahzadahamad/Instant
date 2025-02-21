@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { SubscriptionData } from '@/types/admin/subscription';
-import { getSubsriptionPlans } from '@/apis/api/userApi';
+import { createCheckoutSession, getSubsriptionPlans } from '@/apis/api/userApi';
 import { Check } from 'lucide-react';
+import { loadStripe } from '@stripe/stripe-js'
 
 const VerificationContent = () => {
 
   const [plans, setPlans] = useState<SubscriptionData[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionData | null>(null);
+  const [loading, setloading] = useState(false);
 
   useEffect(() => {
     const fetchSubcriptionData = async () => {
@@ -38,6 +40,25 @@ const VerificationContent = () => {
       setSelectedPlan(chosenPlan);
     }
   };
+
+  const handlePayment = async (plan: SubscriptionData) => {
+    try {
+      setloading(true);
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY!);
+      const session = await createCheckoutSession(plan);
+      stripe?.redirectToCheckout({ sessionId: session.id })
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setloading(false)
+    }
+  }
 
   return (
     <>
@@ -108,8 +129,8 @@ const VerificationContent = () => {
           <span className="text-6xl font-bold">₹{selectedPlan?.price}</span>
           <span className="opacity-90">/{selectedPlan?.period}</span>
         </div>
-        <button className="w-1/3 rounded-full p-3 text-white bg-[#2e9bf0]">
-          Confirm & Pay
+        <button onClick={() => handlePayment(selectedPlan!)} disabled={!selectedPlan || loading} className="w-1/3 rounded-full p-3 text-white bg-[#2e9bf0]">
+          {loading ? <div className='spinner'></div> : 'Confirm & Pay'}
         </button>
       </div>
     </>

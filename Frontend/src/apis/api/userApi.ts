@@ -1,5 +1,6 @@
 import { PostUpdateFormData } from "@/types/profile/profile";
 import apiClient from "../apiClient";
+import { SubscriptionData } from "@/types/admin/subscription";
 
 export const checkHasUserLikedThePost = async (postId: string) => {
   const response = await apiClient.get(
@@ -186,5 +187,10 @@ export const getChatList = async (type: string) => {
 
 export const getSubsriptionPlans = async () => {
   const response = await apiClient.get(`/user/subscription`);
+  return response.data;
+}
+
+export const createCheckoutSession = async (plan: SubscriptionData) => {
+  const response = await apiClient.post(`/user/subscription/create-checkout-session`, plan);
   return response.data;
 }

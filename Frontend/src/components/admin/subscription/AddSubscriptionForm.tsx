@@ -50,6 +50,7 @@ const AddSubscriptionForm: React.FC<{ fetchSubscriptionPlans: (page: number) => 
         price: Number(price),
         offer: Number(offer),
       }
+      console.log(formData)
       const response = await createSubcription(formData);
       fetchSubscriptionPlans(1);
       handleModalChange();
@@ -91,8 +92,8 @@ const AddSubscriptionForm: React.FC<{ fetchSubscriptionPlans: (page: number) => 
                       setPeriod(e.target.value)
                     }}
                       value={period} className="p-3 border outline-none bg-transparent shadow text-sm rounded-md">
-                      <option value="monthly" className="bg-gray-200 text-black">Monthly</option>
-                      <option value="yearly" className="bg-gray-200 text-black">Yearly</option>
+                      <option value="Monthly" className="bg-gray-200 text-black">Monthly</option>
+                      <option value="Yearly" className="bg-gray-200 text-black">Yearly</option>
                     </select>
                   </div>
                 </div>
