@@ -1,5 +1,6 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
+import Sharp from "../../../providers/sharp";
 import RequestRepository from "../../../repositories/user/requrestRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -7,11 +8,13 @@ export default class UpdateUserData {
   private userRepository: UserRepository;
   private awsS3Storage: AwsS3Storage;
   private requestRepository: RequestRepository;
+  private sharp: Sharp;
 
-  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, requestRepository: RequestRepository) {
+  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, requestRepository: RequestRepository, sharp: Sharp) {
     this.userRepository = userRepository;
     this.awsS3Storage = awsS3Storage;
     this.requestRepository = requestRepository;
+    this.sharp = sharp;
   }
 
   public async execute(
@@ -47,8 +50,13 @@ export default class UpdateUserData {
 
     let fileUrl;
     if (file) {
+      const processedBuffer = await this.sharp.makeCircularImage(file.buffer);
+      const updatedFile = {
+        ...file,
+        buffer: processedBuffer,
+      };
       await this.awsS3Storage.deleteFile(user.profilePicture);
-      fileUrl = await this.awsS3Storage.uploadFile(file, "profile");
+      fileUrl = await this.awsS3Storage.uploadFile(updatedFile, "profile");
     } else {
       if (
         profilePicture ===

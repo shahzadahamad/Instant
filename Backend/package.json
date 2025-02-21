@@ -26,6 +26,7 @@
     "nodemailer": "^6.9.14",
     "sharp": "^0.33.5",
     "socket.io": "^4.8.1",
+    "stripe": "^17.6.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

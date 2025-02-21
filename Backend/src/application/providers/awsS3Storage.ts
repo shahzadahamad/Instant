@@ -21,7 +21,7 @@ export default class AwsS3Storage {
     file: Express.Multer.File,
     uploadPath: string
   ): Promise<string> {
-    const uniqueName = `${uuidv4()}-${file.originalname}`;
+    const uniqueName = `${uuidv4()}-${Date.now()}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `uploads/${uploadPath}/${uniqueName}`,

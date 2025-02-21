@@ -5,6 +5,7 @@ import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import RequestRepository from "../../../../application/repositories/user/requrestRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import Sharp from "../../../../application/providers/sharp";
 
 export default class EditUserDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -25,7 +26,8 @@ export default class EditUserDataController {
     const updateUserData = new UpdateUserData(
       new UserRepository(),
       new AwsS3Storage(),
-      new RequestRepository()
+      new RequestRepository(),
+      new Sharp(),
     );
 
     try {
