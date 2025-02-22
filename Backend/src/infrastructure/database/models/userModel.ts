@@ -88,7 +88,6 @@ const userSchema: Schema = new Schema(
       },
       paymentId: {
         type: String,
-        required: true,
         default: "",
       },
       createdAt: {

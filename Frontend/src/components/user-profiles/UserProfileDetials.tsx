@@ -13,6 +13,7 @@ import { setFollowDetials } from "@/redux/slice/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import UnfollowModal from "../common/UnfollowModal";
+import VerificationIcon from "../common/VerificationIcon";
 
 const UserProfileDetials = () => {
   const { username } = useParams();
@@ -177,7 +178,16 @@ const UserProfileDetials = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1 ps-[115px]">
-              <h1 className="font-bold">{userData?.fullname}</h1>
+              <div className={`flex items-center ${userData?.isVerified.status ? "gap-2" : "gap-4"}`}>
+                <h1 className="font-bold">{userData?.fullname}</h1>
+                {
+                  userData?.isVerified.status ?
+                    <VerificationIcon size={'20'} /> : <div onClick={() => navigate('/verification')} className="flex gap-2 items-center border px-3 py-1 rounded-2xl cursor-pointer">
+                      <VerificationIcon size={"18"} />
+                      <h1 className="font-bold text-sm">Get verified</h1>
+                    </div>
+                }
+              </div>
               <p
                 dangerouslySetInnerHTML={{
                   __html: (userData?.bio ?? "").replace(/\n/g, "<br />"),

@@ -126,7 +126,7 @@ export default class NotificationRepository {
 
   public async findAllById(userId: string): Promise<INotification[]> {
     try {
-      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture isPrivateAccount' }).populate({ path: 'postId', select: 'post' });
+      return await NotificationModel.find({ userId }).sort({ createdAt: -1 }).populate({ path: 'fromId', select: 'username fullname profilePicture isPrivateAccount isVerified' }).populate({ path: 'postId', select: 'post' });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("count docuement");

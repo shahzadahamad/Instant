@@ -9,6 +9,11 @@ export interface Member {
     status: boolean,
     date: Date,
   };
+  isVerified: {
+    status: boolean;
+    createdAt: Date,
+    expireAt: Date;
+  }
 }
 
 export interface ChatDatas {
@@ -42,6 +47,11 @@ export interface ChatDataHeader {
     status: boolean,
     date: Date,
   };
+  isVerified: {
+    status: boolean;
+    createdAt: Date,
+    expireAt: Date;
+  }
 }
 
 export interface MessageData {

@@ -7,7 +7,7 @@ export default class ChatRepository {
     try {
 
       if (populate) {
-        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname isOnline').populate('createdBy', 'username profilePicture fullname isOnline').populate({
+        return await ChatModel.findOne({ _id }).populate('members', 'username profilePicture fullname isOnline isVerified').populate('createdBy', 'username profilePicture fullname isOnline isVerified').populate({
           path: 'lastMessage',
           populate: {
             path: 'fromId',
@@ -82,7 +82,7 @@ export default class ChatRepository {
 
   public async findChatsList(userId: string, type: string): Promise<IChat[] | null> {
     try {
-      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline').populate({
+      return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline isVerified').populate({
         path: 'lastMessage',
         populate: {
           path: 'fromId',

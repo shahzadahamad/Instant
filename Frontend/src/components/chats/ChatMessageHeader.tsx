@@ -1,5 +1,8 @@
 import { ChatData, Member } from "@/types/chat/chat";
 import { useNavigate } from "react-router-dom";
+import VerificationIcon from "../common/VerificationIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData }) => {
 
@@ -12,21 +15,30 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
   return (
     <div className="w-full flex items-center justify-between p-4 group border-b">
       <div className="flex">
-        <div className="w-11 h-11 cursor-pointer">
+        <div className="w-11 relative h-11 cursor-pointer">
           <img
             src={userData.profilePicture}
             onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
             className="w-full h-full rounded-full object-cover"
             alt="Profile Picture"
           />
+          {isMember(userData) && userData.isOnline.status &&
+            <FontAwesomeIcon
+              icon={faCircle}
+              className="text-[#1cd14f] rounded-full border-3 dark:border-[#09090b] border-white bg-white absolute bottom-0 -right-1 w-[14px] h-[14px]"
+            />
+          }
         </div>
         <div className="flex justify-between items-center flex-grow ml-3">
-          <div>
+          <div className="flex items-center justify-center gap-2">
             <h1
               onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
               className="text-base font-semibold cursor-pointer">
               {isMember(userData) ? userData.username : userData.name}
             </h1>
+            {
+              isMember(userData) && userData.isVerified.status && <VerificationIcon size={'18'} />
+            }
           </div>
         </div>
       </div>

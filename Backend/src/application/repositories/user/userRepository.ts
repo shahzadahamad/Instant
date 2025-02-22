@@ -293,5 +293,19 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+
+  public async setVerificationStatusFalse(userId: string): Promise<UpdateWriteOpResult> {
+    try {
+      return await UserModel.updateOne({ _id: userId }, { $set: { isVerified: { status: false } } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
 

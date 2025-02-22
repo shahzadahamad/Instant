@@ -21,6 +21,7 @@ import { Modal, ModalContent, ModalBody, ModalHeader, useDisclosure } from "@nex
 import { Upload, X } from "lucide-react";
 import apiClient from "@/apis/apiClient";
 import { debounce } from 'lodash';
+import VerificationIcon from "../common/VerificationIcon";
 
 const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
   const navigate = useNavigate();
@@ -384,7 +385,14 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                               alt={user.username}
                               className="w-10 h-10 rounded-full object-cover"
                             />
-                            <span className="">{user.username}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="">{user.username}</span>
+                              {
+                                user.isVerified.status && (
+                                  <VerificationIcon size={'18'} />
+                                )
+                              }
+                            </div>
                           </div>
                           <div className="w-5 h-5 rounded-full border-2 border-gray-400 flex items-center justify-center">
                             {selectedUsers.find((u) => u._id === user._id) && (
@@ -444,11 +452,17 @@ const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
                         className="text-[#1cd14f] rounded-full border-3 dark:border-[#09090b] border-white bg-white absolute bottom-0 -right-1 w-[14px] h-[14px]"
                       />
                     )}
-
                 </div>
                 <div className="flex justify-between items-center flex-grow ml-4">
                   <div>
-                    <h1 className="text-sm font-semibold">{chat.type === 'personal' ? chat.members[0].fullname : chat.name}</h1>
+                    <div className="flex gap-2 items-center">
+                      <h1 className="text-sm font-semibold">{chat.type === 'personal' ? chat.members[0].fullname : chat.name}</h1>
+                      {
+                        chat.type === 'personal' && chat.members[0].isVerified.status && (
+                          <VerificationIcon size={"18"} />
+                        )
+                      }
+                    </div>
                     <h1
                       className="text-sm text-[#8a8a8a] truncate max-w-[200px]"
                       title={

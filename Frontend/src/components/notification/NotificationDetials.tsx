@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import UnfollowModal from "../common/UnfollowModal";
 import FriendRequestModal from "./FriendRequestModal";
 import { GetUserDataForPost } from "@/types/profile/profile";
+import VerificationIcon from "../common/VerificationIcon";
 
 const NotificationDetials = () => {
   const [groupedNotifications, setGroupedNotifications] = useState({
@@ -144,7 +145,7 @@ const NotificationDetials = () => {
               key={notification._id}
               className="w-full rounded-lg flex items-center justify-between p-4 dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors cursor-pointer"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-start gap-3">
                 <img
                   onClick={() =>
                     navigate(`/user/${notification.fromId.username}`)
@@ -154,8 +155,8 @@ const NotificationDetials = () => {
                       ? typeof notification.fromId.profilePicture === "string"
                         ? notification.fromId.profilePicture
                         : URL.createObjectURL(
-                            notification.fromId.profilePicture
-                          )
+                          notification.fromId.profilePicture
+                        )
                       : ""
                   }
                   className="w-12 h-12 rounded-full object-cover"
@@ -168,20 +169,25 @@ const NotificationDetials = () => {
                   />
                 )}
                 <div className="flex flex-col">
-                  <h1
+                  <div
                     onClick={() =>
                       navigate(`/user/${notification.fromId.username}`)
                     }
                     className="text-[15px] font-semibold max-w-[15rem] break-words"
                   >
-                    {notification.fromId.username}{" "}
+                    <div className="flex gap-2 items-center">
+                      {notification.fromId.username}{" "}
+                      {
+                        notification.fromId.isVerified.status && <VerificationIcon size={'18'} />
+                      }
+                    </div>
                     <span className="font-normal">
                       {notification.message}&nbsp;
                     </span>
                     <span className="font-thin">
                       {timeSince(notification.createdAt)}
                     </span>
-                  </h1>
+                  </div>
                 </div>
               </div>
               {notification.relation === "follow" &&
