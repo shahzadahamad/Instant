@@ -1,7 +1,7 @@
 import { ISubscription } from "../../../../infrastructure/database/models/subscription";
-import Stripe from 'stripe';
 import UserRepository from "../../../repositories/user/userRepository";
 import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import { stripe } from "../../../../infrastructure/configs/stripe";
 
 export default class CreateCheckoutSession {
   private userRepository: UserRepository;
@@ -20,13 +20,15 @@ export default class CreateCheckoutSession {
       throw new Error("user not found!");
     }
 
+    if (user.isVerified.status) {
+      throw new Error("user already verified");
+    }
+
     const subscription = await this.subscriptionRepository.findSubcriptionById(plan._id);
 
     if (!subscription) {
       throw new Error("subscription not found!");
     }
-
-    const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
     const subscriptionPlan = [{
       price_data: {
@@ -44,7 +46,13 @@ export default class CreateCheckoutSession {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: subscriptionPlan,
+      customer_email: user.email,
+      allow_promotion_codes: true,
       mode: 'payment',
+      metadata: {
+        userId: user._id.toString(),
+        plan: JSON.stringify(plan),
+      },
       success_url: process.env.SUCCESS_URL!,
       cancel_url: process.env.CANCEL_URL!
     });

@@ -17,6 +17,7 @@ import SocketService from "../../infrastructure/service/socketService";
 import chatRouter from "../routes/user/chat";
 import adminSubscriptionRouter from "../routes/admin/subscription";
 import subscriptionRouter from "../routes/user/subscription";
+import webhookRoute from "../routes/user/webhook";
 
 const app = express();
 
@@ -30,6 +31,9 @@ const io = new SocketIOServer(server, {
 });
 
 SocketService.getInstance().setUpIO(io);
+
+//webhook 
+app.use('/webhook', express.raw({ type: 'application/json' }), webhookRoute);
 
 app.use(express.json());
 app.use(cookieParser());

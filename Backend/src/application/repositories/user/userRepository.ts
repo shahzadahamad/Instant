@@ -274,5 +274,24 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async updateVerification(userId: string, period: string, status: boolean, paymentId: string): Promise<UpdateWriteOpResult> {
+    try {
+      const expireAt = new Date();
+      if (period === "Monthly") {
+        expireAt.setMonth(expireAt.getMonth() + 1);
+      } else if (period === "Yearly") {
+        expireAt.setFullYear(expireAt.getFullYear() + 1);
+      }
+      return await UserModel.updateOne({ _id: userId }, { $set: { isVerified: { status, createdAt: new Date(), expireAt, paymentId } } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
 

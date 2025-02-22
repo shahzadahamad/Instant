@@ -16,6 +16,11 @@ export interface IUser extends Document {
     status: boolean,
     date: Date;
   };
+  isVerified: {
+    status: boolean,
+    expireAt: Date;
+    createdAt: Date;
+  };
   isBlock?: boolean;
   role?: string;
 }
@@ -74,6 +79,28 @@ const userSchema: Schema = new Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    isVerified: {
+      status: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      paymentId: {
+        type: String,
+        required: true,
+        default: "",
+      },
+      createdAt: {
+        type: Date,
+        required: true,
+        default: new Date(),
+      },
+      expireAt: {
+        type: Date,
+        required: true,
+        default: new Date(),
+      }
     },
     isOnline: {
       status: {

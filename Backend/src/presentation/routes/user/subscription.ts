@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authMiddleware from "../../../infrastructure/middlewares/authMiddleware";
 import GetSubscriptionListedDataController from "../../../infrastructure/controllers/user/subscription/getSubscriptionListedDataController";
-import CreateCheckoutSessionStripe from "../../../infrastructure/controllers/user/subscription/CreateCheckoutSessionStripe";
+import CreateCheckoutSessionStripe from "../../../infrastructure/controllers/user/subscription/createCheckoutSessionStripe";
 
 const subscriptionRouter = Router();
 
