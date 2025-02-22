@@ -208,6 +208,7 @@ export default class UserRepository {
         username: 1,
         fullname: 1,
         profilePicture: 1,
+        isVerified: 1
       }).limit(10);
       return userData;
     } catch (error) {
@@ -228,6 +229,7 @@ export default class UserRepository {
           username: 1,
           fullname: 1,
           profilePicture: 1,
+          isVerified: 1
         }
       );
       return musicData;
@@ -250,6 +252,7 @@ export default class UserRepository {
           username: 1,
           fullname: 1,
           profilePicture: 1,
+          isVerified: 1
         }
       );
     } catch (error) {
@@ -279,7 +282,7 @@ export default class UserRepository {
     try {
       const expireAt = new Date();
       if (period === "Monthly") {
-        expireAt.setMonth(expireAt.getMonth() + 1);
+        expireAt.setMinutes(expireAt.getMinutes() + 1);
       } else if (period === "Yearly") {
         expireAt.setFullYear(expireAt.getFullYear() + 1);
       }
@@ -297,7 +300,7 @@ export default class UserRepository {
 
   public async setVerificationStatusFalse(userId: string): Promise<UpdateWriteOpResult> {
     try {
-      return await UserModel.updateOne({ _id: userId }, { $set: { isVerified: { status: false } } });
+      return await UserModel.updateOne({ _id: userId }, { $set: { "isVerified.status": false } });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);
