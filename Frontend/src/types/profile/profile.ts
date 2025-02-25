@@ -11,6 +11,12 @@ export interface GetUserData {
   isPrivateAccount: boolean;
 }
 
+export interface isVerified {
+  status: boolean;
+  createdAt: Date,
+  expireAt: Date;
+}
+
 export interface GetUserDataForPost {
   _id: string;
   fullname: string;
@@ -22,11 +28,7 @@ export interface GetUserDataForPost {
   dateOfBirth: string;
   bio: string;
   isPrivateAccount: boolean;
-  isVerified: {
-    status: boolean;
-    createdAt: Date,
-    expireAt: Date;
-  };
+  isVerified: isVerified;
 }
 
 export interface GetUserDataPostDetials {
@@ -136,13 +138,15 @@ interface CommentUserData {
   _id: string;
   username: string;
   profilePicture: string;
+  isVerified: isVerified
 }
 
 interface Replies {
   _id: string;
-  userId: string;
+  userId: CommentUserData;
   username: string;
   profilePicture: string;
+  isVerified: isVerified;
   comment: string;
   createdAt: string;
 }

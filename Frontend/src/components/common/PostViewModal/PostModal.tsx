@@ -48,6 +48,7 @@ import {
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
+import VerificationIcon from "../VerificationIcon";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhileTouchOutsideModal }) => {
   const navigate = useNavigate();
@@ -896,9 +897,16 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                   alt=""
                 />
               </div>
-              <h1 className="text-sm font-semibold flex items-center">
-                {post[currentIndex].userId.username}
-              </h1>
+              <div className="flex items-end gap-2">
+                <h1 className="text-sm font-semibold">
+                  {post[currentIndex].userId.username}
+                </h1>
+                {
+                  post[currentIndex].userId.isVerified.status && (
+                    <VerificationIcon size={'18'} />
+                  )
+                }
+              </div>
             </div>
             <div
               className="flex cursor-pointer items-center"
@@ -940,21 +948,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                       />
                     </div>
                     <div className="flex flex-col">
-                      <div className="flex text-sm font-semibold">
-                        <h1
-                          className="cursor-pointer"
-                          onClick={() => {
-                            const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
-                            if (isCurrentUserPost) {
-                              handleDeletePostData(isCurrentUserPost);
-                            } else {
-                              handleDeletePostData();
-                              navigate(`/user/${post[currentIndex].userId.username}`)
-                            }
-                          }}
-                        >
-                          {post[currentIndex].userId.username}&nbsp;
-                        </h1>
+                      <div className="flex text-sm font-semibold items-center gap-1">
+                        <div className="flex items-center gap-1">
+                          <h1
+                            className="cursor-pointer"
+                            onClick={() => {
+                              const isCurrentUserPost = currentUser === post[currentIndex].userId?._id;
+                              if (isCurrentUserPost) {
+                                handleDeletePostData(isCurrentUserPost);
+                              } else {
+                                handleDeletePostData();
+                                navigate(`/user/${post[currentIndex].userId.username}`)
+                              }
+                            }}
+                          >
+                            {post[currentIndex].userId.username}
+                          </h1>
+                          {
+                            post[currentIndex].userId.isVerified.status && (
+                              <VerificationIcon size={'16'} />
+                            )
+                          }
+                        </div>
                         <span className="font-normal">
                           {renderCommentWithLinks(post[currentIndex].caption)}
                         </span>
@@ -989,21 +1004,28 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                           />
                         </div>
                         <div className="flex flex-col">
-                          <div className="flex gap-2 text-sm">
-                            <h1
-                              onClick={() => {
-                                const isCurrentUserPost = currentUser === item.userId._id;
-                                if (isCurrentUserPost) {
-                                  handleDeletePostData(isCurrentUserPost);
-                                } else {
-                                  handleDeletePostData();
-                                  navigate(`/user/${item.userId.username}`)
-                                }
-                              }}
-                              className="font-semibold cursor-pointer"
-                            >
-                              {item.userId.username}
-                            </h1>
+                          <div className="flex text-sm items-center gap-1">
+                            <div className="flex items-center gap-1">
+                              <h1
+                                onClick={() => {
+                                  const isCurrentUserPost = currentUser === item.userId._id;
+                                  if (isCurrentUserPost) {
+                                    handleDeletePostData(isCurrentUserPost);
+                                  } else {
+                                    handleDeletePostData();
+                                    navigate(`/user/${item.userId.username}`)
+                                  }
+                                }}
+                                className="font-semibold cursor-pointer"
+                              >
+                                {item.userId.username}
+                              </h1>
+                              {
+                                item.userId.isVerified.status && (
+                                  <VerificationIcon size={'16'} />
+                                )
+                              }
+                            </div>
                             <h1 className="font-normal">
                               {renderCommentWithLinks(item.comment)}
                             </h1>
@@ -1019,14 +1041,18 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                                 like
                               </h1>
                             )}
-                            <h1
-                              onClick={() =>
-                                toggleReplyInput(item._id, item.userId.username)
-                              }
-                              className="text-xs reply-div cursor-pointer"
-                            >
-                              Reply
-                            </h1>
+                            {
+                              !post[currentIndex].hideComment &&
+                              <h1
+                                onClick={() =>
+                                  toggleReplyInput(item._id, item.userId.username)
+                                }
+                                className="text-xs reply-div cursor-pointer"
+                              >
+                                Reply
+                              </h1>
+                            }
+
                             {(currentUser === item.userId._id ||
                               post[currentIndex].userId._id ===
                               currentUser) && (
@@ -1058,7 +1084,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                         }
                       />
                     </div>
-                    {replyVisible === item._id && (
+                    {replyVisible === item._id && !post[currentIndex].hideComment && (
                       <div ref={replyRef} className="w-full p-3 py-3 pl-[54px]">
                         <div className="w-full flex text-sm gap-3">
                           <input
@@ -1143,7 +1169,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                                   <div className="w-8 h-8">
                                     <img
                                       onClick={() => {
-                                        const isCurrentUserPost = currentUser === reply.userId;
+                                        const isCurrentUserPost = currentUser === reply.userId._id;
                                         if (isCurrentUserPost) {
                                           handleDeletePostData(isCurrentUserPost);
                                         } else {
@@ -1151,27 +1177,34 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                                           navigate(`/user/${reply.username}`)
                                         }
                                       }}
-                                      src={reply.profilePicture}
+                                      src={reply.userId.profilePicture}
                                       className="max-w-[27px] h-[27px] rounded-full cursor-pointer object-cover"
                                       alt="Profile"
                                     />
                                   </div>
                                   <div className="flex flex-col">
-                                    <div className="flex gap-2 text-sm">
-                                      <h1
-                                        onClick={() => {
-                                          const isCurrentUserPost = currentUser === reply.userId;
-                                          if (isCurrentUserPost) {
-                                            handleDeletePostData(isCurrentUserPost);
-                                          } else {
-                                            handleDeletePostData();
-                                            navigate(`/user/${reply.username}`)
-                                          }
-                                        }}
-                                        className="font-semibold cursor-pointer"
-                                      >
-                                        {reply.username}
-                                      </h1>
+                                    <div className="flex text-sm items-center gap-1">
+                                      <div className="flex items-center gap-1">
+                                        <h1
+                                          onClick={() => {
+                                            const isCurrentUserPost = currentUser === reply.userId._id;
+                                            if (isCurrentUserPost) {
+                                              handleDeletePostData(isCurrentUserPost);
+                                            } else {
+                                              handleDeletePostData();
+                                              navigate(`/user/${reply.username}`)
+                                            }
+                                          }}
+                                          className="font-semibold cursor-pointer"
+                                        >
+                                          {reply.username}
+                                        </h1>
+                                        {
+                                          reply.userId.isVerified.status && (
+                                            <VerificationIcon size={'16'} />
+                                          )
+                                        }
+                                      </div>
                                       <h1 className="font-normal">
                                         {renderCommentWithLinks(reply.comment)}
                                       </h1>
@@ -1189,18 +1222,20 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                                             like
                                           </h1>
                                         )}
-                                      <h1
-                                        onClick={() =>
-                                          toggleReplyReplyInput(
-                                            reply._id,
-                                            reply.username
-                                          )
-                                        }
-                                        className="text-xs reply-div cursor-pointer"
-                                      >
-                                        Reply
-                                      </h1>
-                                      {(currentUser === reply.userId ||
+                                      {
+                                        !post[currentIndex].hideComment && <h1
+                                          onClick={() =>
+                                            toggleReplyReplyInput(
+                                              reply._id,
+                                              reply.username
+                                            )
+                                          }
+                                          className="text-xs reply-div cursor-pointer"
+                                        >
+                                          Reply
+                                        </h1>
+                                      }
+                                      {(currentUser === reply.userId._id ||
                                         post[currentIndex].userId._id ===
                                         currentUser) && (
                                           <FontAwesomeIcon
@@ -1233,7 +1268,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                               </div>
                             )}
 
-                            {replyReplyVisible === reply._id && (
+                            {replyReplyVisible === reply._id && !post[currentIndex].hideComment && (
                               <div
                                 ref={replyReplyRef}
                                 className="w-full p-3 py-3 pl-[54px]"
