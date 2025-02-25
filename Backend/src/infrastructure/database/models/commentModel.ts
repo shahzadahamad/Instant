@@ -36,6 +36,7 @@ const commentSchema: Schema = new Schema(
         userId: {
           type: String,
           required: true,
+          ref: "User",
         },
         username: {
           type: String,

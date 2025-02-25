@@ -282,7 +282,7 @@ export default class UserRepository {
     try {
       const expireAt = new Date();
       if (period === "Monthly") {
-        expireAt.setMinutes(expireAt.getMinutes() + 1);
+        expireAt.setMonth(expireAt.getMonth() + 1);
       } else if (period === "Yearly") {
         expireAt.setFullYear(expireAt.getFullYear() + 1);
       }

@@ -16,8 +16,13 @@ export default class CommentRepository {
         comment,
         reply: [],
       });
-      await newComment.save();
-      return await newComment.populate("userId", "username profilePicture");
+      const saveComment = await newComment.save();
+      await saveComment.populate("userId", "username profilePicture isVerified");
+      await saveComment.populate({
+        path: "reply.userId",
+        select: "username profilePicture isVerified",
+      });
+      return saveComment;
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error creating comment: ${error.message}`);
@@ -32,7 +37,11 @@ export default class CommentRepository {
     try {
       return await CommentModel.find({ postId: id })
         .sort({ createdAt: -1 })
-        .populate("userId", "username profilePicture");
+        .populate("userId", "username profilePicture isVerified")
+        .populate({
+          path: "reply.userId",
+          select: "username profilePicture isVerified",
+        });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error creating comment: ${error.message}`);
@@ -91,7 +100,11 @@ export default class CommentRepository {
           },
         },
         { new: true }
-      ).populate("userId", "username profilePicture");
+      ).populate("userId", "username profilePicture isVerified")
+        .populate({
+          path: "reply.userId",
+          select: "username profilePicture isVerified",
+        });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error creating comment: ${error.message}`);
