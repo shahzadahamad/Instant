@@ -89,6 +89,7 @@ export interface GetUserPostData {
   likeCount: number;
   commentCount: number;
   createdAt: Date;
+  isArchive: boolean
 }
 
 export interface PostModalProps {
@@ -104,6 +105,7 @@ export interface PostActionModalProps {
   postUserId: string;
   postId: string;
   handleDeletePostData: () => void;
+  postArchived: boolean
 }
 
 export interface PostEditModalProps {

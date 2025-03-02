@@ -52,6 +52,11 @@ export const deletePost = async (postId: string) => {
   return response.data;
 };
 
+export const archivePost = async (postId: string) => {
+  const response = await apiClient.patch(`/user/post/archive/${postId}`);
+  return response.data;
+};
+
 export const getPostData = async (postId: string) => {
   const response = await apiClient.get(`/user/post/get-post-data/${postId}`);
   return response.data;

@@ -720,6 +720,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
           postUserId={post[currentIndex].userId._id}
           postId={post[currentIndex]._id}
           handleDeletePostData={handleDeletePostData}
+          postArchived={post[currentIndex].isArchive}
         />
       )}
 

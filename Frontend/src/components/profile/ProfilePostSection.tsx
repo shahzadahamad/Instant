@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faBorderAll,
+  faClockRotateLeft,
   faComment,
   faHeart,
   faPlay,
@@ -25,7 +26,7 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
 }) => {
   const navigate = useNavigate();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
-  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED">(
+  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED" | "ARCHIVED">(
     "POSTS"
   );
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
@@ -57,8 +58,12 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
     } else if (activeTab === "LIKED") {
       const res = await apiClient.get(`/user/post/liked`);
       setPostData(res.data);
+    } else if (activeTab === 'ARCHIVED') {
+      const res = await apiClient.get(`/user/post/archived`);
+      setPostData(res.data);
     }
   };
+
   useLayoutEffect(() => {
     fetchUserData();
   }, [activeTab]);
@@ -113,6 +118,17 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
         >
           <FontAwesomeIcon icon={faHeartRegular} />
           <h1>LIKED</h1>
+        </div>
+
+        <div
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "ARCHIVED"
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
+            }`}
+          onClick={() => setActiveTab("ARCHIVED")}
+        >
+          <FontAwesomeIcon icon={faClockRotateLeft} />
+          <h1>ARCHIVED</h1>
         </div>
       </div>
       {(selectedPost || selectedPost === 0) && (
@@ -273,7 +289,7 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
                 Share your first photo
               </p>
             </>
-          ) : activeTab === "LIKED" || activeTab === "TAGGED" ? (
+          ) : activeTab === "LIKED" || activeTab === "TAGGED" || activeTab === 'ARCHIVED' ? (
             <h1 className="font-extrabold text-3xl">No posts</h1>
           ) : (
             ""

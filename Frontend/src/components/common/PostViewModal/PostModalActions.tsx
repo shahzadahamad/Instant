@@ -1,4 +1,4 @@
-import { deletePost, getCurrentUser } from "@/apis/api/userApi";
+import { archivePost, deletePost, getCurrentUser } from "@/apis/api/userApi";
 import { PostActionModalProps } from "@/types/profile/profile";
 import { Modal, ModalContent, ModalBody, ModalHeader } from "@nextui-org/modal";
 import { useLayoutEffect, useState } from "react";
@@ -15,6 +15,7 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
   postUserId,
   postId,
   handleDeletePostData,
+  postArchived
 }) => {
   const [currentUser, setCurrentUser] = useState("");
   const navigate = useNavigate();
@@ -78,6 +79,24 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
     }
   };
 
+  const handleArchivePost = async (postId: string) => {
+    try {
+      const res = await archivePost(postId);
+      handleEditAndDelete();
+      navigate("/profile");
+      toast.success(res);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error);
+        const errorMsg = error.response.data?.error || "An error occurred";
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
+
   return (
     <>
       {openEditModal && (
@@ -109,13 +128,19 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
         hideCloseButton={true}
       >
         <ModalContent>
-          {currentUser === postUserId || currentUser === postUserId ? (
+          {currentUser === postUserId ? (
             <ModalBody className="w-full p-0 flex flex-col gap-0">
               <div
                 onClick={() => setOpenDeleteModal(true)}
                 className="w-full text-center border-b p-3 cursor-pointer"
               >
                 <h1 className="text-[#ed4956] font-bold">Delete</h1>
+              </div>
+              <div
+                onClick={() => handleArchivePost(postId)}
+                className="w-full text-center border-b p-3 cursor-pointer"
+              >
+                <h1>{postArchived ? "Show on profile" : "Archive"}</h1>
               </div>
               <div
                 onClick={() => setOpenEditModal(true)}
