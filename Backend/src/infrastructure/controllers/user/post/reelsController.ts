@@ -3,15 +3,17 @@ import PostRepository from "../../../../application/repositories/user/postReposi
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import Reels from "../../../../application/useCases/user/post/reels";
+import UserRepository from "../../../../application/repositories/user/userRepository";
 
 export default class ReelsController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
+    const { username = "" } = req.query;
 
-    const reels = new Reels(new PostRepository());
+    const reels = new Reels(new PostRepository(), new UserRepository());
 
     try {
-      const data = await reels.execute(userId);
+      const data = await reels.execute(userId, username as string);
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {

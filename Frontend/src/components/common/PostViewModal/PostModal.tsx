@@ -774,10 +774,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
         ref={modalRef}
         className="relative flex w-[85vw] h-[90vh] border dark:bg-black bg-white"
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full border-r">
           {post[currentIndex].post[index].type === "video" || post[currentIndex].post[index].type === 'reel' ? (
             <div
-              className="w-full h-full border-r"
+              className="w-full h-full"
               style={{
                 filter: `
                   contrast(${post[currentIndex].post[index].customFilter.contrast}%)

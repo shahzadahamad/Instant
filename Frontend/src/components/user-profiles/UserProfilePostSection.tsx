@@ -21,7 +21,7 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
   const navigate = useNavigate();
   const { username } = useParams();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
-  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED">("POSTS");
+  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "REELS">("POSTS");
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
   const { followDetials } = useSelector((state: RootState) => state.user);
 
@@ -32,10 +32,15 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
         params: { username: username },
       });
       setPostData(res.data);
-    } else if (activeTab == "TAGGED") {
+    } else if (activeTab === "TAGGED") {
       const res = await apiClient.get(`/user/post/tagged`, {
         params: { username: username },
       });
+      setPostData(res.data);
+    } else if (activeTab === 'REELS') {
+      const res = await apiClient.get('/user/post/reels', {
+        params: { username: username }
+      })
       setPostData(res.data);
     }
   };
@@ -118,7 +123,16 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
                 <FontAwesomeIcon icon={faBorderAll} />
                 <h1>POSTS</h1>
               </div>
-
+              <div
+                className={`flex items-center gap-1 cursor-pointer ${activeTab === "REELS"
+                  ? "font-bold border-b-1 py-1 dark:border-white border-black"
+                  : ""
+                  }`}
+                onClick={() => setActiveTab("REELS")}
+              >
+                <FontAwesomeIcon icon={faBorderAll} />
+                <h1>REELS</h1>
+              </div>
               <div
                 className={`flex items-center gap-1 cursor-pointer ${activeTab === "TAGGED"
                   ? "font-bold border-b-1 py-1 dark:border-white border-black"

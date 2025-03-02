@@ -124,8 +124,11 @@ const SelectAspectRatioAndUplaod = () => {
         video.onloadedmetadata = () => {
           const durationInMinutes = video.duration / 60;
 
-          if (durationInMinutes > 5) {
+          if (fileType === 'video' && durationInMinutes > 5) {
             toast.error("The video duration cannot exceed 5 minutes!");
+            return;
+          } else if (fileType === 'reel' && durationInMinutes > 1) {
+            toast.error("The reel duration cannot exceed 1 minutes!");
             return;
           }
 
