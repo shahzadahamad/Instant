@@ -19,6 +19,7 @@ import DeleteCommentOrReplyController from "../../../infrastructure/controllers/
 import GetTaggedPostDataController from "../../../infrastructure/controllers/user/post/getTaggedPostDataController";
 import GetLikedPostDataController from "../../../infrastructure/controllers/user/post/getLikedPostDataController";
 import ArchiveController from "../../../infrastructure/controllers/user/post/archiveController";
+import ArchivedPostController from "../../../infrastructure/controllers/user/post/archivedPostController";
 
 const userPostRouter = Router();
 
@@ -40,6 +41,7 @@ const deleteCommentOrReplyController = new DeleteCommentOrReplyController();
 const getTaggedPostDataController = new GetTaggedPostDataController();
 const getLikedPostDataController = new GetLikedPostDataController();
 const archiveController = new ArchiveController();
+const archivedPostController = new ArchivedPostController();
 
 userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
 userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
@@ -59,5 +61,6 @@ userPostRouter.delete("/comment-or-reply/:commentOrReplyId/:actionFor", authMidd
 userPostRouter.get('/tagged', authMiddleware, getTaggedPostDataController.handle);
 userPostRouter.get('/liked', authMiddleware, getLikedPostDataController.handle);
 userPostRouter.patch('/archive/:postId', authMiddleware, archiveController.handle);
+userPostRouter.get('/archived', authMiddleware, archivedPostController.handle);
 
 export default userPostRouter;
