@@ -10,6 +10,8 @@ export const MESSAGES = {
     MUSIC_UPDATED: 'Music updated successfully.',
     SUBSCRIPTION_CREATED: 'Subscription created successfully.',
     SUBSCRIPTION_UPDATED: 'Subscription updated successfully.',
+    POST_ARCHIVED: 'Post archived',
+    POST_UNARCHIVED: 'Post unarchived',
   },
   ERROR: {
     INVALID_REQUEST: 'Invalid request.',

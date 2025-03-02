@@ -18,6 +18,7 @@ import CheckingHasUserLikedCommentController from "../../../infrastructure/contr
 import DeleteCommentOrReplyController from "../../../infrastructure/controllers/user/post/deleteCommentOrReplyController";
 import GetTaggedPostDataController from "../../../infrastructure/controllers/user/post/getTaggedPostDataController";
 import GetLikedPostDataController from "../../../infrastructure/controllers/user/post/getLikedPostDataController";
+import ArchiveController from "../../../infrastructure/controllers/user/post/archiveController";
 
 const userPostRouter = Router();
 
@@ -38,6 +39,7 @@ const likeOrUnlikeCommentController = new LikeOrUnlikeCommentController();
 const deleteCommentOrReplyController = new DeleteCommentOrReplyController();
 const getTaggedPostDataController = new GetTaggedPostDataController();
 const getLikedPostDataController = new GetLikedPostDataController();
+const archiveController = new ArchiveController();
 
 userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
 userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
@@ -56,5 +58,6 @@ userPostRouter.post("/reply-to-comment/:commentId/:postId", authMiddleware, repl
 userPostRouter.delete("/comment-or-reply/:commentOrReplyId/:actionFor", authMiddleware, deleteCommentOrReplyController.handle);
 userPostRouter.get('/tagged', authMiddleware, getTaggedPostDataController.handle);
 userPostRouter.get('/liked', authMiddleware, getLikedPostDataController.handle);
+userPostRouter.patch('/archive/:postId', authMiddleware, archiveController.handle);
 
 export default userPostRouter;

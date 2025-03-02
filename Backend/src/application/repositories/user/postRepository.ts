@@ -220,4 +220,20 @@ export default class PostRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async archiveToggle(_id: string): Promise<IPost | null> {
+    try {
+      return await PostModal.findOneAndUpdate(
+        { _id },
+        [{ $set: { isArchive: { $not: "$isArchive" } } }],
+        { new: true }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error updating post");
+      throw new Error("Unknown error");
+    }
+  }
 }

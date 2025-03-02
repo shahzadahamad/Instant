@@ -12,6 +12,7 @@ export interface IPost extends Document {
   hideComment: boolean;
   likeCount: number;
   commentCount: number;
+  isArchive: boolean;
 }
 
 const postSchema: Schema = new Schema(
@@ -97,6 +98,11 @@ const postSchema: Schema = new Schema(
     commentCount: {
       type: Number,
       default: 0,
+      required: true,
+    },
+    isArchive: {
+      type: Boolean,
+      default: false,
       required: true,
     },
     reportDetials: [
