@@ -20,6 +20,7 @@ import GetTaggedPostDataController from "../../../infrastructure/controllers/use
 import GetLikedPostDataController from "../../../infrastructure/controllers/user/post/getLikedPostDataController";
 import ArchiveController from "../../../infrastructure/controllers/user/post/archiveController";
 import ArchivedPostController from "../../../infrastructure/controllers/user/post/archivedPostController";
+import ReelsController from "../../../infrastructure/controllers/user/post/reelsController";
 
 const userPostRouter = Router();
 
@@ -42,6 +43,7 @@ const getTaggedPostDataController = new GetTaggedPostDataController();
 const getLikedPostDataController = new GetLikedPostDataController();
 const archiveController = new ArchiveController();
 const archivedPostController = new ArchivedPostController();
+const reelsController = new ReelsController();
 
 userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
 userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
@@ -62,5 +64,6 @@ userPostRouter.get('/tagged', authMiddleware, getTaggedPostDataController.handle
 userPostRouter.get('/liked', authMiddleware, getLikedPostDataController.handle);
 userPostRouter.patch('/archive/:postId', authMiddleware, archiveController.handle);
 userPostRouter.get('/archived', authMiddleware, archivedPostController.handle);
+userPostRouter.get('/reels', authMiddleware, reelsController.handle);
 
 export default userPostRouter;

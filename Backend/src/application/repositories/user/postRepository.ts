@@ -57,7 +57,8 @@ export default class PostRepository {
           $elemMatch: {
             tagUsers: userId
           }
-        }
+        },
+        isArchive: false
       })
         .populate("userId")
         .sort({ createdAt: -1 });
@@ -74,7 +75,7 @@ export default class PostRepository {
   public async findLikedPostData(postIds: string[]): Promise<IPost[]> {
     try {
       return await PostModal.find({
-        _id: { $in: postIds }
+        _id: { $in: postIds }, isArchive: false
       })
         .populate("userId")
         .sort({ createdAt: -1 });
@@ -242,6 +243,25 @@ export default class PostRepository {
       return await PostModal.find({ userId, isArchive: true })
         .populate("userId")
         .sort({ createdAt: -1 });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findUserReelsPost(userId: string): Promise<IPost[]> {
+    try {
+      const postData = await PostModal.find({ userId, isArchive: false })
+        .populate("userId")
+        .sort({ createdAt: -1 });
+
+      return postData.filter((post) => {
+        return post.post[0].type === 'reel';
+      });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding post: ${error.message}`);
