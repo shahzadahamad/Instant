@@ -48,7 +48,7 @@ import {
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
-import VerificationIcon from "../VerificationIcon";
+import VerificationIcon from "../svg/VerificationIcon";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhileTouchOutsideModal }) => {
   const navigate = useNavigate();
@@ -775,7 +775,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
         className="relative flex w-[85vw] h-[90vh] border dark:bg-black bg-white"
       >
         <div className="relative w-full h-full">
-          {post[currentIndex].post[index].type === "video" ? (
+          {post[currentIndex].post[index].type === "video" || post[currentIndex].post[index].type === 'reel' ? (
             <div
               className="w-full h-full border-r"
               style={{

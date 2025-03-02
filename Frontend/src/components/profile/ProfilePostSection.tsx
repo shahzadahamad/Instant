@@ -20,13 +20,14 @@ import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate } from "react-router-dom";
 import { socket } from "@/socket/socket";
 import toast from "react-hot-toast";
+import Reel from "../common/svg/Reel";
 
 const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
   fetchPostDetialData,
 }) => {
   const navigate = useNavigate();
   const [postData, setPostData] = useState<GetUserPostData[] | []>([]);
-  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED" | "ARCHIVED">(
+  const [activeTab, setActiveTab] = useState<"POSTS" | "TAGGED" | "LIKED" | "ARCHIVED" | "REELS">(
     "POSTS"
   );
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
@@ -60,6 +61,9 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
       setPostData(res.data);
     } else if (activeTab === 'ARCHIVED') {
       const res = await apiClient.get(`/user/post/archived`);
+      setPostData(res.data);
+    } else if (activeTab === 'REELS') {
+      const res = await apiClient.get(`/user/post/reels`);
       setPostData(res.data);
     }
   };
@@ -96,6 +100,17 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
         >
           <FontAwesomeIcon icon={faBorderAll} />
           <h1>POSTS</h1>
+        </div>
+
+        <div
+          className={`flex items-center gap-1 cursor-pointer ${activeTab === "REELS"
+            ? "font-bold border-b-1 py-1 dark:border-white border-black"
+            : ""
+            }`}
+          onClick={() => setActiveTab("REELS")}
+        >
+          <Reel size={"12"} />
+          <h1>REELS</h1>
         </div>
 
         <div
@@ -159,7 +174,7 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
                   }
                 }}
               >
-                {item.post[0].type === "video" ? (
+                {item.post[0].type === "video" || item.post[0].type === 'reel' ? (
                   <div
                     key={item._id}
                     className=" w-80 h-80 cursor-pointer transition-opacity hover:opacity-60"
@@ -220,6 +235,12 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
                 {item.post[0].type === "video" && (
                   <div className="absolute top-1 right-1 group-hover:opacity-60 transition-opacity text-white px-1">
                     <FontAwesomeIcon icon={faPlay} />
+                  </div>
+                )}
+
+                {item.post[0].type === "reel" && (
+                  <div className="absolute top-2 right-1 group-hover:opacity-60 transition-opacity text-white px-1">
+                    <Reel size={"17"} />
                   </div>
                 )}
 
@@ -289,8 +310,8 @@ const ProfilePostSection: React.FC<ProifilePostSectionProps> = ({
                 Share your first photo
               </p>
             </>
-          ) : activeTab === "LIKED" || activeTab === "TAGGED" || activeTab === 'ARCHIVED' ? (
-            <h1 className="font-extrabold text-3xl">No posts</h1>
+          ) : activeTab === "LIKED" || activeTab === "TAGGED" || activeTab === 'ARCHIVED' || activeTab === 'REELS' ? (
+            <h1 className="font-extrabold text-3xl">No {activeTab === 'LIKED' ? "liked" : activeTab === 'TAGGED' ? "tagged" : activeTab === 'ARCHIVED' ? 'archived' : activeTab === 'REELS' ? "reels" : ""} {activeTab !== 'REELS' && 'posts'}</h1>
           ) : (
             ""
           )}

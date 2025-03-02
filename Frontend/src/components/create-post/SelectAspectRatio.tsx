@@ -99,12 +99,15 @@ const SelectAspectRatioAndUplaod = () => {
     const files = e.target.files;
     if (files && files.length === 1) {
       const file = files[0];
-      const fileType = file.type.startsWith("video") ? "video" : "image";
+      const fileType = postType === 'reel' ? "reel" : file.type.startsWith("video") ? "video" : "image";
 
       if (fileType == "video" && postType == "image") {
         toast.error("Upload Image");
         return;
       } else if (fileType === "image" && postType === "video") {
+        toast.error("Upload Video");
+        return;
+      } else if (fileType === 'image' && postType === 'reel') {
         toast.error("Upload Video");
         return;
       }
@@ -114,7 +117,7 @@ const SelectAspectRatioAndUplaod = () => {
         return;
       }
 
-      if (fileType === "video") {
+      if (fileType === "video" || fileType === 'reel') {
         const video = document.createElement("video");
         video.src = URL.createObjectURL(file);
 
@@ -210,7 +213,7 @@ const SelectAspectRatioAndUplaod = () => {
         onClick={handleUplaodClick}
         className={`bg-transparent transition-colors p-2 border text-sm rounded-md dark:hover:bg-white dark:hover:text-black hover:bg-black hover:text-white`}
       >
-        Upload Post
+        Upload {postType === 'image' || postType === 'video' ? "Post" : postType === 'reel' ? 'Reel' : "Live"}
       </button>
       <input
         onChange={handleInputChange}

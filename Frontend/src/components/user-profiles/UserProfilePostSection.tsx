@@ -13,6 +13,7 @@ import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
+import Reel from "../common/svg/Reel";
 
 const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
   isPrivate,
@@ -38,6 +39,7 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
       setPostData(res.data);
     }
   };
+
   useLayoutEffect(() => {
     if (username) {
       fetchUserData();
@@ -160,7 +162,7 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
                         }
                       }}
                     >
-                      {item.post[0].type === "video" ? (
+                      {item.post[0].type === "video" || item.post[0].type === 'reel' ? (
                         <div
                           key={item._id}
                           className=" w-80 h-80 cursor-pointer transition-opacity hover:opacity-60"
@@ -221,6 +223,13 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
                       {item.post[0].type === "video" && (
                         <div className="absolute top-1 right-1 group-hover:opacity-60 transition-opacity text-white px-1">
                           <FontAwesomeIcon icon={faPlay} />
+                        </div>
+                      )}
+
+
+                      {item.post[0].type === "reel" && (
+                        <div className="absolute top-2 right-1 group-hover:opacity-60 transition-opacity text-white px-1">
+                          <Reel size={"17"} />
                         </div>
                       )}
 
@@ -289,7 +298,7 @@ const UserProfilePostSection: React.FC<{ isPrivate: boolean }> = ({
                 {activeTab === "POSTS" ? (
                   <h1 className="font-extrabold text-3xl">No posts yet</h1>
                 ) : activeTab === "TAGGED" ? (
-                  <h1 className="font-extrabold text-3xl">No posts</h1>
+                  <h1 className="font-extrabold text-3xl">No tagged posts</h1>
                 ) : (
                   ""
                 )}

@@ -1,6 +1,6 @@
 import { ChatData, Member } from "@/types/chat/chat";
 import { useNavigate } from "react-router-dom";
-import VerificationIcon from "../common/VerificationIcon";
+import VerificationIcon from "../common/svg/VerificationIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 

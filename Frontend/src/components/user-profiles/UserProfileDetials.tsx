@@ -13,7 +13,7 @@ import { setFollowDetials } from "@/redux/slice/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import UnfollowModal from "../common/UnfollowModal";
-import VerificationIcon from "../common/VerificationIcon";
+import VerificationIcon from "../common/svg/VerificationIcon";
 
 const UserProfileDetials = () => {
   const { username } = useParams();

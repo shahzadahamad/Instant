@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import UnfollowModal from "../common/UnfollowModal";
 import FriendRequestModal from "./FriendRequestModal";
 import { GetUserDataForPost } from "@/types/profile/profile";
-import VerificationIcon from "../common/VerificationIcon";
+import VerificationIcon from "../common/svg/VerificationIcon";
 
 const NotificationDetials = () => {
   const [groupedNotifications, setGroupedNotifications] = useState({

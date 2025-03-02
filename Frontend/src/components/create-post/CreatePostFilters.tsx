@@ -35,7 +35,7 @@ const CreatePostFilters = () => {
             >
               Custom Filter
             </TabsTrigger>
-            {post && post[postIndex] && post[postIndex].type !== "video" && (
+            {post && post[postIndex] && post[postIndex].type !== "video" && post[postIndex].type !== "reel" && (
               <TabsTrigger value="music" onClick={() => setTabs("music")}>
                 Music
               </TabsTrigger>
@@ -47,61 +47,58 @@ const CreatePostFilters = () => {
           {tab === "instantFilter" ? (
             <TabsContent
               value="instant-filter"
-              className={`${
-                post && post.length > 0
-                  ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-start mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                  : ""
-              }`}
+              className={`${post && post.length > 0
+                ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-start mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+                }`}
             >
               {post && post.length > 0
                 ? filterValues.map((filter) => (
-                    <>
-                      <div key={filter.class}>
-                        <div
-                          className="w-28 h-36 cursor-pointer"
-                          onMouseOver={() => {
-                            dispatch(onHoverUpFilter(filter.class));
-                          }}
-                          onMouseOut={() => {
-                            dispatch(onHoverOutFilter(""));
-                          }}
-                          onClick={() => {
-                            dispatch(
-                              setPostFilterClass({
-                                postIndex,
-                                filter: filter.class,
-                              })
-                            );
-                          }}
-                        >
-                          <img
-                            src={
-                              post[postIndex].type === "image"
-                                ? post[postIndex].url
-                                : "/view.jpg"
-                            }
-                            alt=""
-                            className={`${filter.class} ${
-                              post[postIndex].filterClass === filter.class
-                                ? "border-2 border-black dark:border-white"
-                                : ""
+                  <>
+                    <div key={filter.class}>
+                      <div
+                        className="w-28 h-36 cursor-pointer"
+                        onMouseOver={() => {
+                          dispatch(onHoverUpFilter(filter.class));
+                        }}
+                        onMouseOut={() => {
+                          dispatch(onHoverOutFilter(""));
+                        }}
+                        onClick={() => {
+                          dispatch(
+                            setPostFilterClass({
+                              postIndex,
+                              filter: filter.class,
+                            })
+                          );
+                        }}
+                      >
+                        <img
+                          src={
+                            post[postIndex].type === "image"
+                              ? post[postIndex].url
+                              : "/view.jpg"
+                          }
+                          alt=""
+                          className={`${filter.class} ${post[postIndex].filterClass === filter.class
+                            ? "border-2 border-black dark:border-white"
+                            : ""
                             } rounded-md w-full h-full object-cover`}
-                          />
-                        </div>
-                        <h1>{filter.name}</h1>
+                        />
                       </div>
-                    </>
-                  ))
+                      <h1>{filter.name}</h1>
+                    </div>
+                  </>
+                ))
                 : "Upload a Post to Select Filter"}
             </TabsContent>
           ) : tab === "customFilter" ? (
             <TabsContent
               value="custom-filter"
-              className={`${
-                post && post.length > 0
-                  ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-start mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                  : ""
-              }`}
+              className={`${post && post.length > 0
+                ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-start mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+                }`}
             >
               <div>
                 {post && post.length > 0 ? (
@@ -116,11 +113,10 @@ const CreatePostFilters = () => {
           ) : tab === "music" ? (
             <TabsContent
               value="music"
-              className={`${
-                post && post.length > 0
-                  ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                  : ""
-              }`}
+              className={`${post && post.length > 0
+                ? "w-[24rem] h-[70vh] transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+                }`}
             >
               {post && post.length > 0 ? (
                 <CreatePostMusic />
@@ -131,11 +127,10 @@ const CreatePostFilters = () => {
           ) : (
             <TabsContent
               value="caption"
-              className={`${
-                post && post.length > 0
-                  ? "w-[24rem] h-[70vh] scrollbar-hidden transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
-                  : ""
-              }`}
+              className={`${post && post.length > 0
+                ? "w-[24rem] h-[70vh] scrollbar-hidden transition-transform flex flex-wrap gap-3 justify-center mt-4 border rounded-md p-2 scrollbar-style overflow-auto"
+                : ""
+                }`}
             >
               {post && post.length > 0 ? (
                 <CreatePostFormSubmit />

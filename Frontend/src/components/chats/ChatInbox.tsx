@@ -21,7 +21,7 @@ import { Modal, ModalContent, ModalBody, ModalHeader, useDisclosure } from "@nex
 import { Upload, X } from "lucide-react";
 import apiClient from "@/apis/apiClient";
 import { debounce } from 'lodash';
-import VerificationIcon from "../common/VerificationIcon";
+import VerificationIcon from "../common/svg/VerificationIcon";
 
 const ChatsInbox: React.FC<{ tab: string }> = ({ tab }) => {
   const navigate = useNavigate();

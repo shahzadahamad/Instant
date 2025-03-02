@@ -23,7 +23,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { Image, LogOut, Moon, Settings, Sun, VideoIcon } from "lucide-react";
+import { Image, LogOut, Moon, Settings, Sun, Tv, VideoIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,6 +50,8 @@ import {
 } from "@nextui-org/modal";
 import { getUnreadNotificationCount } from "@/apis/api/userApi";
 import { socket } from "@/socket/socket";
+import Reel from "./svg/Reel";
+import { setPostType } from "@/redux/slice/postSlice";
 
 const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -116,6 +118,11 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
       }
     }
   };
+
+  const handlePostType = (type: string) => {
+    navigate(`/create-post/${type}`);
+    dispatch(setPostType(type));
+  }
 
   return (
     <div className="w-[155px] h-full flex flex-col items-center border-r-[1px] border-[#333232] overflow-auto scrollbar-hidden">
@@ -296,18 +303,31 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
                   <ModalBody className="!p-0 border-1 w-full h-full">
                     <div className="text-center p-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 justify-center">
                       <div
-                        onClick={() => navigate("/create-post/image")}
+                        onClick={() => handlePostType('image')}
                         className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
                       >
                         <Image className="w-10 h-10 mb-2" />
                         <span className="text-base font-semibold">Image</span>
                       </div>
                       <div
-                        onClick={() => navigate("/create-post/video")}
+                        onClick={() => handlePostType('video')}
                         className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
                       >
                         <VideoIcon className="w-10 h-10 mb-2" />
                         <span className="text-base font-semibold">Video</span>
+                      </div>
+                      <div
+                        onClick={() => handlePostType('reel')}
+                        className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
+                      >
+                        <Reel size={"40"} />
+                        <span className="text-base font-semibold mt-2">Reels</span>
+                      </div>
+                      <div
+                        className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
+                      >
+                        <Tv className="w-10 h-10 mb-2" />
+                        <span className="text-base font-semibold">Go live</span>
                       </div>
                     </div>
                   </ModalBody>
@@ -319,7 +339,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Create
           </div>
-        </div>
+        </div >
         <div className="relative group flex items-center justify-center">
           <img
             src={currentUser?.profilePicture}
@@ -397,8 +417,8 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

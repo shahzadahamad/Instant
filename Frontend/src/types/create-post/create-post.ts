@@ -1,6 +1,6 @@
 interface PostItem {
   url: string;
-  type: "image" | "video";
+  type: "image" | "video" | "reel";
   filterClass: string;
   customFilter: [
     {

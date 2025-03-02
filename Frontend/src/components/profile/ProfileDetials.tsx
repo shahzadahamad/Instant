@@ -3,7 +3,7 @@ import { useLayoutEffect, useState } from "react";
 import apiClient from "@/apis/apiClient";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import ProfilePostSection from "./ProfilePostSection";
-import VerificationIcon from "../common/VerificationIcon";
+import VerificationIcon from "../common/svg/VerificationIcon";
 
 const ProfileDetials = () => {
   const navigate = useNavigate();
