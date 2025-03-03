@@ -224,3 +224,8 @@ export const clearHistory = async () => {
   const response = await apiClient.delete(`/user/search-history/all`);
   return response.data;
 }
+
+export const getSinglePost = async (postId: string) => {
+  const response = await apiClient.get(`/user/post/single/${postId}`);
+  return response.data;
+}

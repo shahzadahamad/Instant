@@ -1,10 +1,9 @@
 import { createNewChat, followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import { AxiosError } from "axios";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import ErrorPage from "../common/ErrorPage";
 import UserProfilePostSection from "./UserProfilePostSection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
@@ -31,6 +30,7 @@ const UserProfileDetials = () => {
         setUserData({ ...res.userData });
       } else {
         setUserData(null);
+        navigate('/profile');
       }
       setCount(res.postCount);
     } catch (error) {
@@ -38,7 +38,7 @@ const UserProfileDetials = () => {
         console.log(error);
         const errorMsg = error.response.data?.error || "An error occurred";
         console.error(errorMsg);
-        toast.error("Page not found.");
+        navigate('/error?message=User not found.&statusCode=404');
       } else {
         console.error("Unexpected error:", error);
         toast.error("An unexpected error occurred");
@@ -46,7 +46,7 @@ const UserProfileDetials = () => {
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
 
     const fetchFollowData = async () => {
       if (username) {
@@ -60,7 +60,7 @@ const UserProfileDetials = () => {
     };
   }, [username, dispatch])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (username) {
       fetchUserData(username);
     }
@@ -119,7 +119,7 @@ const UserProfileDetials = () => {
 
   return (
     <>
-      {userData ? (
+      {userData && (
         <>
           <div className="flex flex-col h-1/2 border-b border-[#363636]">
             <div className="flex items-center gap-8 pt-10 pb-8 px-28">
@@ -197,8 +197,6 @@ const UserProfileDetials = () => {
           </div>
           <UserProfilePostSection isPrivate={userData.isPrivateAccount} />
         </>
-      ) : (
-        <ErrorPage />
       )
       }
     </>

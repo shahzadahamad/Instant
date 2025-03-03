@@ -21,6 +21,8 @@ import Notification from "@/pages/user/Notification";
 import Calls from "@/pages/user/Calls";
 import Verification from "@/pages/user/Verification";
 import Subscription from "@/pages/admin/Subscription";
+import Post from "@/pages/user/Post";
+import Error from "@/pages/user/Error";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -86,6 +88,14 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/verification",
     element: currentUser ? <Verification /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/post/:postId",
+    element: currentUser ? <Post /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/error",
+    element: currentUser ? <Error /> : <Navigate to='/sign-in' replace />
   },
   {
     path: "/admin/sign-in",
