@@ -219,3 +219,8 @@ export const removeFromSearchHistory = async (id: string) => {
   const response = await apiClient.delete(`/user/search-history/${id}`);
   return response.data;
 }
+
+export const clearHistory = async () => {
+  const response = await apiClient.delete(`/user/search-history/all`);
+  return response.data;
+}

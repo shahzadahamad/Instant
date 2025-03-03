@@ -5,7 +5,7 @@ import FriendSuggetion from "../common/FriendSuggetion";
 import { GetUserDataForPost } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { addNewSearch, removeFromSearchHistory, searchHistory, searchUser } from "@/apis/api/userApi";
+import { addNewSearch, clearHistory, removeFromSearchHistory, searchHistory, searchUser } from "@/apis/api/userApi";
 import VerificationIcon from "../common/svg/VerificationIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -70,7 +70,7 @@ const SearchDetials = () => {
     return () => {
       clearTimeout(timer);
     }
-  }, [search]);
+  }, [search, cacheSearchData]);
 
   useEffect(() => {
 
@@ -83,7 +83,7 @@ const SearchDetials = () => {
       fetchSearchHistory();
     }
 
-  }, [!search])
+  }, [search, cacheHistory])
 
   const handleClickSeach = async (id: string, username: string) => {
     try {
@@ -117,6 +117,23 @@ const SearchDetials = () => {
     }
   }
 
+  const handleClearHistory = async () => {
+    try {
+      const res = await clearHistory();
+      setSeachData([]);
+      setCacheHistory([]);
+      toast.success(res);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
+
 
   return (
     <div className="w-full h-screen flex items-start justify-between">
@@ -135,7 +152,6 @@ const SearchDetials = () => {
             <button className="absolute left-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </button>
-
             <button onClick={() => setSearch("")} className="absolute right-2 top-1 p-2 transition-colors hover:text-gray-500 focus:outline-none">
               <FontAwesomeIcon icon={faCircleXmark} />
             </button>
@@ -146,46 +162,54 @@ const SearchDetials = () => {
             !search.trim() && (
               <div className="w-full px-4 py-3 flex justify-between transition-all">
                 <h1 className="font-bold">Recent</h1>
-                <button className="font-base text-blue-500">Clear All</button>
+                {
+                  searchData.length > 0 && (
+                    <button onClick={handleClearHistory} className="font-base text-blue-500">Clear All</button>
+                  )
+                }
               </div>
             )
           }
-          {searchData.map((user) => (
-            <div
-              key={user._id}
-              onClick={() => handleClickSeach(user._id, user.username)}
-              className="w-full rounded-lg flex items-center justify-between p-4 dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors cursor-pointer"
-            >
-              <div className="flex gap-3">
-                <img
-                  src={user.profilePicture as string}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-1">
-                    <span className="text-[15px] font-semibold">{user.username}</span>
-                    {
-                      user.isVerified.status && (
-                        <VerificationIcon size={'16'} />
-                      )
-                    }
-                  </div>
-                  <span className="text-[14px] text-[#a9a6a4]">
-                    {user.fullname} {user.isFollowed && <>&bull; Following</>}
-                  </span>
-                </div>
-              </div>
-              {
-                !search.trim() && (
-                  <button onClick={(e) => handleRemove(e, user._id)} className="text-[#7e7e7e] text-lg hover:text-opacity-70 transition-colors">
-                    <FontAwesomeIcon
-                      icon={faXmark}
+          {
+            searchData.length > 0 ? (
+              searchData.map((user) => (
+                <div
+                  key={user._id}
+                  onClick={() => handleClickSeach(user._id, user.username)}
+                  className="w-full rounded-lg flex items-center justify-between p-4 dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors cursor-pointer"
+                >
+                  <div className="flex gap-3">
+                    <img
+                      src={user.profilePicture as string}
+                      className="w-12 h-12 rounded-full object-cover"
                     />
-                  </button>
-                )
-              }
-            </div>
-          ))}
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-1">
+                        <span className="text-[15px] font-semibold">{user.username}</span>
+                        {
+                          user.isVerified.status && (
+                            <VerificationIcon size={'16'} />
+                          )
+                        }
+                      </div>
+                      <span className="text-[14px] text-[#a9a6a4]">
+                        {user.fullname} {user.isFollowed && <>&bull; Following</>}
+                      </span>
+                    </div>
+                  </div>
+                  {
+                    !search.trim() && (
+                      <button onClick={(e) => handleRemove(e, user._id)} className="text-[#7e7e7e] text-lg hover:text-opacity-70 transition-colors">
+                        <FontAwesomeIcon
+                          icon={faXmark}
+                        />
+                      </button>
+                    )
+                  }
+                </div>
+              ))
+            ) : <h1 className="font-semibold text-[#9d9d9d]">No recent searches.</h1>
+          }
         </div>
       </div>
       <FriendSuggetion />
