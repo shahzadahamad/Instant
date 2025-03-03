@@ -5,23 +5,20 @@ import FriendSuggetion from "../common/FriendSuggetion";
 import { GetUserDataForPost } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { searchUser } from "@/apis/api/userApi";
+import { addNewSearch, searchHistory, searchUser } from "@/apis/api/userApi";
 import VerificationIcon from "../common/svg/VerificationIcon";
+import { useNavigate } from "react-router-dom";
 
 const SearchDetials = () => {
 
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchData, setSeachData] = useState<GetUserDataForPost[]>([])
   const [cacheSearchData, setCacheSearchData] = useState<Record<string, GetUserDataForPost[]>>({});
+  const [cacheHistory, setCacheHistory] = useState<[] | null>(null);
 
   const fetchSearchData = async (search: string) => {
     try {
-
-      if (cacheSearchData[search]) {
-        setSeachData(cacheSearchData[search]);
-        return;
-      }
-
       const res = await searchUser(search);
       setSeachData(res);
       setCacheSearchData((prev) => ({ ...prev, [search]: res }));
@@ -36,10 +33,33 @@ const SearchDetials = () => {
     }
   }
 
+  const fetchSearchHistory = async () => {
+    try {
+      const res = await searchHistory();
+      if (res) {
+        setSeachData(res.history);
+        setCacheHistory(res.history);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
+
   useEffect(() => {
 
-    if (!search.trim()) {
+    if (!search) {
       setSeachData([]);
+      return;
+    }
+
+    if (cacheSearchData[search]) {
+      setSeachData(cacheSearchData[search]);
       return;
     }
 
@@ -50,7 +70,35 @@ const SearchDetials = () => {
     return () => {
       clearTimeout(timer);
     }
-  }, [search])
+  }, [search]);
+
+  useEffect(() => {
+
+    if (!search) {
+      if (cacheHistory) {
+        setSeachData(cacheHistory);
+        return;
+      }
+
+      fetchSearchHistory();
+    }
+
+  }, [!search])
+
+  const handleClickSeach = async (id: string, username: string) => {
+    try {
+      await addNewSearch(id);
+      navigate(`/user/${username}`)
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
 
 
   return (
@@ -71,7 +119,7 @@ const SearchDetials = () => {
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </button>
 
-            <button className="absolute right-2 top-1 p-2 transition-colors hover:text-gray-500 focus:outline-none">
+            <button onClick={() => setSearch("")} className="absolute right-2 top-1 p-2 transition-colors hover:text-gray-500 focus:outline-none">
               <FontAwesomeIcon icon={faCircleXmark} />
             </button>
           </div>
@@ -88,6 +136,7 @@ const SearchDetials = () => {
           {searchData.map((user) => (
             <div
               key={user._id}
+              onClick={() => handleClickSeach(user._id, user.username)}
               className="w-full rounded-lg flex items-center justify-between p-4 dark:hover:bg-[#191919] hover:bg-[#f0f0f0] transition-colors cursor-pointer"
             >
               <div className="flex gap-3">

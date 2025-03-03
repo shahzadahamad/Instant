@@ -201,6 +201,16 @@ export const createCheckoutSession = async (plan: SubscriptionData) => {
 }
 
 export const searchUser = async (search: string) => {
-  const response = await apiClient.get(`/user/search/${search}`);
+  const response = await apiClient.get(`/user/search-history/${search}`);
+  return response.data;
+}
+
+export const searchHistory = async () => {
+  const response = await apiClient.get(`/user/search-history`);
+  return response.data;
+}
+
+export const addNewSearch = async (id: string) => {
+  const response = await apiClient.post(`/user/search-history/add/${id}`);
   return response.data;
 }
