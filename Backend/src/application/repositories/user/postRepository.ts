@@ -142,6 +142,18 @@ export default class PostRepository {
     }
   }
 
+  public async findPostByIdWithUserData1(_id: string): Promise<IPost | null> {
+    try {
+      return await PostModal.findOne({ _id: _id }).populate("userId",'_id username profilePicture fullname isOnline isVerified isPrivateAccount');
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Invalid Access!");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async deletePost(_id: string) {
     try {
       return await PostModal.deleteOne({ _id: _id });
