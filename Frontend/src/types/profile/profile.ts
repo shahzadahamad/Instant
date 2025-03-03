@@ -29,6 +29,7 @@ export interface GetUserDataForPost {
   bio: string;
   isPrivateAccount: boolean;
   isVerified: isVerified;
+  isFollowed?: boolean;
 }
 
 export interface GetUserDataPostDetials {
@@ -45,11 +46,7 @@ export interface GetUserDataPostDetials {
   followings: string[];
   followers: string[];
   blockerUser: string[];
-  isVerified: {
-    status: boolean,
-    expireAt: Date;
-    createdAt: Date;
-  };
+  isVerified: isVerified
 }
 
 export interface userData {

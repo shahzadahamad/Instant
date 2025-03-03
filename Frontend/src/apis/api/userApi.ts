@@ -199,3 +199,8 @@ export const createCheckoutSession = async (plan: SubscriptionData) => {
   const response = await apiClient.post(`/user/subscription/create-checkout-session`, plan);
   return response.data;
 }
+
+export const searchUser = async (search: string) => {
+  const response = await apiClient.get(`/user/search/${search}`);
+  return response.data;
+}
