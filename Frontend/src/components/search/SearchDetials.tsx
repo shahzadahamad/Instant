@@ -5,7 +5,7 @@ import FriendSuggetion from "../common/FriendSuggetion";
 import { GetUserDataForPost } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { addNewSearch, searchHistory, searchUser } from "@/apis/api/userApi";
+import { addNewSearch, removeFromSearchHistory, searchHistory, searchUser } from "@/apis/api/userApi";
 import VerificationIcon from "../common/svg/VerificationIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const SearchDetials = () => {
   const [search, setSearch] = useState("");
   const [searchData, setSeachData] = useState<GetUserDataForPost[]>([])
   const [cacheSearchData, setCacheSearchData] = useState<Record<string, GetUserDataForPost[]>>({});
-  const [cacheHistory, setCacheHistory] = useState<[] | null>(null);
+  const [cacheHistory, setCacheHistory] = useState<GetUserDataForPost[]>([]);
 
   const fetchSearchData = async (search: string) => {
     try {
@@ -75,7 +75,7 @@ const SearchDetials = () => {
   useEffect(() => {
 
     if (!search) {
-      if (cacheHistory) {
+      if (cacheHistory && cacheHistory.length > 1) {
         setSeachData(cacheHistory);
         return;
       }
@@ -89,6 +89,23 @@ const SearchDetials = () => {
     try {
       await addNewSearch(id);
       navigate(`/user/${username}`)
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
+
+  const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
+    try {
+      e.stopPropagation();
+      const removeId = await removeFromSearchHistory(id);
+      setSeachData((prevItems) => prevItems.filter((item) => item._id !== removeId));
+      setCacheHistory((prevItems) => prevItems.filter((item) => item._id !== removeId));
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.error(error.response.data?.error || "An error occurred");
@@ -158,11 +175,15 @@ const SearchDetials = () => {
                   </span>
                 </div>
               </div>
-              <button className="text-[#7e7e7e] text-lg hover:text-opacity-70 transition-colors">
-                <FontAwesomeIcon
-                  icon={faXmark}
-                />
-              </button>
+              {
+                !search.trim() && (
+                  <button onClick={(e) => handleRemove(e, user._id)} className="text-[#7e7e7e] text-lg hover:text-opacity-70 transition-colors">
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                    />
+                  </button>
+                )
+              }
             </div>
           ))}
         </div>

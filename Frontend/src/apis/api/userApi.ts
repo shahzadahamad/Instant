@@ -214,3 +214,8 @@ export const addNewSearch = async (id: string) => {
   const response = await apiClient.post(`/user/search-history/add/${id}`);
   return response.data;
 }
+
+export const removeFromSearchHistory = async (id: string) => {
+  const response = await apiClient.delete(`/user/search-history/${id}`);
+  return response.data;
+}
