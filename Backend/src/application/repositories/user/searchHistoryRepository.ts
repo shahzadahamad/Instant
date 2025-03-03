@@ -39,6 +39,24 @@ export default class SearchHistoryRepository {
     }
   }
 
+  public async removeAll(userId: string): Promise<void> {
+    try {
+      await SearchHistoryModel.updateOne(
+        { userId },
+        {
+          $set: { history: [] },
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding user history: ${error.message}`);
+        throw new Error("Failed to find user history");
+      }
+      console.error("Unknown error finding user history");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async create(userId: string, addId: string): Promise<ISearchHistory> {
     try {
 
