@@ -9,7 +9,7 @@ export default class GetCreatePostTaggedUserData {
   }
 
   public async execute(taggedUsers: string[]): Promise<IUser[]> {
-    const user = this.UserRepository.findTaggedUser(taggedUsers);
+    const user = this.UserRepository.findUsers(taggedUsers);
     return user;
   }
 }

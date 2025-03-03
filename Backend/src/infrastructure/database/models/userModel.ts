@@ -23,6 +23,7 @@ export interface IUser extends Document {
   };
   isBlock?: boolean;
   role?: string;
+  isFollowed?: boolean;
 }
 
 const userSchema: Schema = new Schema(

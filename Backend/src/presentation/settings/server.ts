@@ -18,6 +18,7 @@ import chatRouter from "../routes/user/chat";
 import adminSubscriptionRouter from "../routes/admin/subscription";
 import subscriptionRouter from "../routes/user/subscription";
 import webhookRoute from "../routes/user/webhook";
+import searchRoute from "../routes/user/search";
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
 app.use('/api/user/chats', chatRouter);
 app.use('/api/user/subscription', subscriptionRouter);
+app.use('/api/user/search', searchRoute);
 
 // Admin
 app.use("/api/admin", adminRouter);

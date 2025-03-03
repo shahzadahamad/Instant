@@ -220,9 +220,9 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
-  public async findTaggedUser(data: string[]): Promise<IUser[]> {
+  public async findUsers(data: string[]): Promise<IUser[]> {
     try {
-      const musicData = await UserModel.find(
+      const userData = await UserModel.find(
         { _id: { $in: data } },
         {
           _id: 1,
@@ -232,7 +232,7 @@ export default class UserRepository {
           isVerified: 1
         }
       );
-      return musicData;
+      return userData;
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);
@@ -301,6 +301,19 @@ export default class UserRepository {
   public async setVerificationStatusFalse(userId: string): Promise<UpdateWriteOpResult> {
     try {
       return await UserModel.updateOne({ _id: userId }, { $set: { "isVerified.status": false } });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findSearchUsers(userId: string, search: string): Promise<IUser[]> {
+    try {
+      return await UserModel.find({ _id: { $ne: userId }, username: { $regex: search, $options: "i" }, fullname: { $regex: search, $options: "i" } }).limit(10);
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

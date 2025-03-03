@@ -82,4 +82,16 @@ export default class FriendsRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findUserDoc(userId: string): Promise<IFriends | null> {
+    try {
+      return await FriendsModel.findOne({ userId });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already following this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
 }

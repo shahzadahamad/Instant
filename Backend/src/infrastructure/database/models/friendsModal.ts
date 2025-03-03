@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IFriends extends Document {
   userId: string,
   followers: string[];
-  following: string[];
+  followings: string[];
   blockedUser: string[];
 }
 
