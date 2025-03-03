@@ -313,7 +313,10 @@ export default class UserRepository {
 
   public async findSearchUsers(userId: string, search: string): Promise<IUser[]> {
     try {
-      return await UserModel.find({ _id: { $ne: userId }, username: { $regex: search, $options: "i" }, fullname: { $regex: search, $options: "i" } }).limit(10);
+      return await UserModel.find({
+        _id: { $ne: userId }, $or: [{ username: { $regex: search, $options: "i" } },
+        { fullname: { $regex: search, $options: "i" } },]
+      }).limit(5);
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error find user: ${error.message}`);

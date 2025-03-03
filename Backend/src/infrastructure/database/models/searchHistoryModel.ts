@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface ISearchHistory extends Document {
+export interface ISearchHistory<T = string> extends Document {
   _id: string;
   userId: string;
-  history: string[];
+  history: T[]
 }
 
 const searchHistorySchema: Schema = new Schema(
@@ -16,6 +16,7 @@ const searchHistorySchema: Schema = new Schema(
     history: {
       type: [String],
       required: true,
+      ref: "User",
       default: []
     }
   },
@@ -23,13 +24,6 @@ const searchHistorySchema: Schema = new Schema(
     timestamps: true,
   }
 );
-
-searchHistorySchema.pre<ISearchHistory>("save", function (next) {
-  if (this.history.length > 10) {
-    this.history = this.history.slice(-10);
-  }
-  next();
-});
 
 const SearchHistoryModel = mongoose.model<ISearchHistory>("SearchHistory", searchHistorySchema);
 

@@ -54,7 +54,7 @@ app.use('/api/user/music', userMusicRouter);
 app.use('/api/user/post', userPostRouter);
 app.use('/api/user/chats', chatRouter);
 app.use('/api/user/subscription', subscriptionRouter);
-app.use('/api/user/search', searchRoute);
+app.use('/api/user/search-history', searchRoute);
 
 // Admin
 app.use("/api/admin", adminRouter);
