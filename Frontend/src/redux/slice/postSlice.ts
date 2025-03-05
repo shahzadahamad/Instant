@@ -74,7 +74,10 @@ const postSlice = createSlice({
     },
     setReels(state, action) {
       state.reels = action.payload;
-    }
+    },
+    newReelsPush(state, action) {
+      state.reels = [...state.reels, ...action.payload];
+    }    
   },
 });
 
@@ -95,6 +98,7 @@ export const {
   pushPost,
   setStateDefualt,
   setReels,
+  newReelsPush
 } = postSlice.actions;
 
 export default postSlice.reducer;

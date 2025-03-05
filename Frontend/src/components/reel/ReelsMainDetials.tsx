@@ -16,7 +16,7 @@ const ReelsMainDetials = () => {
     const fetchReels = async () => {
 
       try {
-        const reelData = await getReels(import.meta.env.VITE_REEL_ID, 0);
+        const reelData = await getReels("", 1, true);
         dispatch(setReels(reelData));
         navigate(`/reels/${reelData[0]._id}`)
       } catch (error) {

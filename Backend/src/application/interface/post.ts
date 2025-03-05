@@ -52,7 +52,7 @@ export type QueryTypeGetSubscriptionDataAdmin = {
 export interface PostFilter {
   isArchive: boolean;
   userId?: { $in: string[] } | { $nin: string[] };
-  postId?: { $nin: string[] };
+  postId?: { $nin: string[] } | { $in: string[] }
   ["post.0.type"]?: string;
 }
 

@@ -8,9 +8,10 @@ import UserMoreDataRepository from "../../../../application/repositories/user/us
 
 export default class FilterReelsController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { reelId = "", page = 0 } = req.query;
+    const { reelId = "", page = 0, load = false } = req.query;
     const { userId } = req.user;
 
+    const boolLoad = (load === 'true');
     const pageNumber = parseInt(page as string);
 
     const filterReels = new FilterReels(
@@ -20,7 +21,7 @@ export default class FilterReelsController {
     );
 
     try {
-      const postData = await filterReels.execute(reelId as string, userId, pageNumber);
+      const postData = await filterReels.execute(reelId as string, userId, pageNumber, boolLoad);
       res.status(HttpStatusCode.OK).json(postData);
     } catch (error) {
       if (error instanceof Error) {

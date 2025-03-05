@@ -230,11 +230,12 @@ export const getSinglePost = async (postId: string) => {
   return response.data;
 }
 
-export const getReels = async (reelId: string, page: number) => {
+export const getReels = async (reelId: string, page: number, load: boolean) => {
   const response = await apiClient.get(`/user/post/reels-all`, {
     params: {
       reelId,
-      page
+      page,
+      load,
     }
   });
   return response.data;

@@ -1,5 +1,5 @@
 import { getReels } from "@/apis/api/userApi";
-import { setReels } from "@/redux/slice/postSlice";
+import { newReelsPush, setReels } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";
 import { faComment, faHeart, faPaperPlane } from "@fortawesome/free-regular-svg-icons"
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
@@ -24,29 +24,34 @@ const ReelsDetials = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [scrolling, setScrolling] = useState(false);
   const { reels } = useSelector((state: RootState) => state.post);
+  const [page, setPage] = useState(1);
+
+  const fetchReels = async (load: boolean, page: number, status: boolean) => {
+    try {
+      const reelData = await getReels(reelId as string, page, status);
+      if (load) {
+        dispatch(setReels(reelData));
+        setPage(0);
+        navigate(`/reels/${reelData[0]._id}`);
+      } else {
+        return reelData;
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        navigate('/error?message=Page not found.&statusCode=404');
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  };
 
   useEffect(() => {
-
-    const fetchReels = async () => {
-      try {
-        const reelData = await getReels(reelId as string, 0);
-        dispatch(setReels(reelData));
-        navigate(`/reels/${reelData[0]._id}`)
-      } catch (error) {
-        if (error instanceof AxiosError && error.response) {
-          console.error(error.response.data?.error || "An error occurred");
-          toast.error(error.response.data?.error || "An error occurred");
-        } else {
-          console.error("Unexpected error:", error);
-          toast.error("An unexpected error occurred");
-        }
-      }
-    };
-
     if (reels.length <= 0) {
-      fetchReels();
+      fetchReels(true, page, false);
     }
-  }, [reelId, reels.length, dispatch, navigate]);
+  }, [reelId, page, dispatch, navigate]);
 
 
   const handleVideoClick = () => {
@@ -69,7 +74,7 @@ const ReelsDetials = () => {
 
   useEffect(() => {
 
-    const handleScroll = (event: WheelEvent) => {
+    const handleScroll = async (event: WheelEvent) => {
       if (scrolling) return;
       setScrolling(true);
 
@@ -90,7 +95,11 @@ const ReelsDetials = () => {
       navigate(`/reels/${newReelId}`);
 
       if (newIndex === reels.length - 1) {
-        dispatch(setReels([]))
+        setPage(prev => prev + 1);
+        const newReels = await fetchReels(false, page + 1, true);
+        if (newReels && newReels.length > 0) {
+          dispatch(newReelsPush(newReels));
+        }
       }
 
       setTimeout(() => setScrolling(false), 300);
@@ -110,7 +119,7 @@ const ReelsDetials = () => {
         document.body.style.overflow = "auto";
       };
     }
-  }, [reels, scrolling, currentVideoIndex, reels.length, navigate, dispatch]);
+  }, [reels, scrolling, currentVideoIndex, page, navigate, dispatch]);
 
   useEffect(() => {
     if (videoRefs.current[currentVideoIndex]) {
@@ -121,18 +130,18 @@ const ReelsDetials = () => {
 
   return (
     <div ref={containerRef} className='w-full h-screen scrollbar-hidden'>
-      <div
-        className="w-full h-full flex flex-col transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateY(-${currentVideoIndex * 100}%)` }}
-      >
-        {reels.map((reel, index) => (
-          <div key={index} className="w-full h-full flex items-center justify-center gap-4">
+      {reels.map((reel, index) => (
+        <div
+          className="w-full h-full flex flex-col transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateY(-${currentVideoIndex * 100}%)` }}
+        >
+          <div key={reel._id} className="w-full h-full flex items-center justify-center gap-4">
             <div onClick={handleVideoClick} className="w-1/3 h-[95%] border rounded-lg relative cursor-pointer">
               <video
                 ref={(el) => (videoRefs.current[index] = el)}
                 muted={muted}
                 src={reel.post[0].url}
-                autoPlay
+                autoPlay={index === currentVideoIndex}
                 playsInline
                 className={`object-contain w-full h-full`}
               />
@@ -144,13 +153,6 @@ const ReelsDetials = () => {
               {
                 !play && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPlay(true);
-                      if (videoRefs.current[currentVideoIndex]) {
-                        videoRefs.current[currentVideoIndex].play();
-                      }
-                    }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     <div className="w-20 h-20 text-3xl rounded-full flex items-center justify-center bg-[#000000] bg-opacity-30 cursor-pointer">
@@ -177,8 +179,8 @@ const ReelsDetials = () => {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }

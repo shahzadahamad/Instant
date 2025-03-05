@@ -15,18 +15,19 @@ export default class FilterReels {
     this.friendsRepository = friendsRepository;
   }
 
-  public async execute(reelId: string, userId: string, pageVal: number): Promise<IPostWithUserData[]> {
+  public async execute(reelId: string, userId: string, pageVal: number, load: boolean): Promise<IPostWithUserData[]> {
 
+    const newReelId = load ? MESSAGES.OTHER.REEL_ID : reelId;
 
-    const reelExist = await this.postRepository.findReelById(reelId);
+    const reelExist = await this.postRepository.findReelById(newReelId.toString());
     const followings = await this.friendsRepository.findUserDoc(userId);
     const userFollowings = followings?.followings ?? [];
 
-    if (reelId !== MESSAGES.OTHER.REEL_ID) {
+    if (!load) {
       if (!reelExist) {
         throw new Error('Reel not found.');
       }
-      if (reelExist.userId.isPrivateAccount && !userFollowings.includes(reelExist.userId._id)) {
+      if (reelExist.userId.isPrivateAccount && ![...userFollowings, userId].includes(reelExist.userId._id.toString())) {
         throw new Error('Reel not found.');
       }
     }
@@ -35,28 +36,30 @@ export default class FilterReels {
     const limit = 2;
     const startIndex = (page - 1) * limit;
     const watchedReels = await this.userMoreDataRepository.findWatchedPostsById(userId);
+    const userWatchedReels = watchedReels?.watchedPost ?? [];
 
-    if (!watchedReels) {
-      const reels = await this.postRepository.findPosts(startIndex, limit, true);
-      return reels.filter((post) => {
-        return !post.userId.isPrivateAccount || userFollowings.includes(post.userId._id);
-      });
-    } else {
+    const reelsOfFriendAndNonWatched = await this.postRepository.findPostsOfFriendAndNonWatched([...userFollowings, userId], userWatchedReels, true);
+    const reelsOfNonFriendAndNonWatched = await this.postRepository.findPostsOfNonFriendAndNonWatched([...userFollowings, userId], userWatchedReels, true);
+    const otherReels = await this.postRepository.findPostOfWatched(userWatchedReels, true);
 
-      const reelsOfFriendAndNonWatched = await this.postRepository.findPostsOfFriendAndNonWatched(startIndex, limit, userFollowings, watchedReels.watchedPost, true);
-      const reelsOfNonFriendAndNonWatched = await this.postRepository.findPostsOfNonFriendAndNonWatched(startIndex, limit, userFollowings, watchedReels.watchedPost, true);
-      const otherReels = await this.postRepository.findPostOfWatched(startIndex, limit, watchedReels.watchedPost, true);
+    let reels: IPostWithUserData[] = [...reelsOfFriendAndNonWatched, ...reelsOfNonFriendAndNonWatched, ...otherReels];
 
-      const reels: IPostWithUserData[] = [...reelsOfFriendAndNonWatched, ...reelsOfNonFriendAndNonWatched, ...otherReels];
+    if (reelExist) {
+      const index = reels.findIndex(reel => reel._id.toString() === reelExist._id.toString());
 
-      if (reelExist) {
-        reels.unshift(reelExist);
-      }
+      if (index !== -1) {
+        reels.splice(index, 1);
+      };
 
-      return reels.filter((post) => {
-        return !post.userId.isPrivateAccount || userFollowings.includes(post.userId._id);
-      });
-
+      reels.unshift(reelExist);
     }
+
+    console.log('ini');
+
+    reels = reels.filter((post) => {
+      return !post.userId.isPrivateAccount || [...userFollowings, userId].includes(post.userId._id.toString());
+    });
+
+    return reels.slice(startIndex, startIndex + limit);
   }
 }
