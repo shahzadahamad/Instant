@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
@@ -12,7 +12,7 @@ export default class UnfollowUserController {
     const { _id } = req.params;
     const { userId } = req.user;
 
-    const unfollowUser = new UnfollowUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new RequestRepository());
+    const unfollowUser = new UnfollowUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new UserMoreDataRepository());
 
     try {
       const actionStatus = await unfollowUser.execute(userId, _id);

@@ -1,20 +1,20 @@
 import SocketService from "../../../../infrastructure/service/socketService";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
-import RequestRepository from "../../../repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class RequestAcceptUser {
   private userRepository: UserRepository;
   private friendsRepository: FriendsRepository;
   private notificationRepository: NotificationRepository;
-  private requestRepository: RequestRepository;
+  private UserMoreDataRepository: UserMoreDataRepository;
 
-  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, requestRepository: RequestRepository) {
+  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, UserMoreDataRepository: UserMoreDataRepository) {
     this.userRepository = userRepository;
     this.friendsRepository = friendsRepository;
     this.notificationRepository = notificationRepository;
-    this.requestRepository = requestRepository;
+    this.UserMoreDataRepository = UserMoreDataRepository;
   }
 
   public async execute(followingUserId: string, followerUserUsername: string): Promise<{ status: true }> {
@@ -27,9 +27,9 @@ export default class RequestAcceptUser {
 
     const isAlreadyFollowing = await this.friendsRepository.isAlreadyFollowing(followingUserId, userToFollow._id.toString());
     const isAlreadyFollowed = await this.friendsRepository.isAlreadyFollowing(followingUserId, userToFollow._id.toString());
-    await this.requestRepository.removeRequest(followingUserId, userToFollow._id.toString());
-    const isRequestExist = await this.requestRepository.isRequestExist(followingUserId, userToFollow._id.toString());
-    const isRequestExistOtherUser = await this.requestRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
+    await this.UserMoreDataRepository.removeRequest(followingUserId, userToFollow._id.toString());
+    const isRequestExist = await this.UserMoreDataRepository.isRequestExist(followingUserId, userToFollow._id.toString());
+    const isRequestExistOtherUser = await this.UserMoreDataRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
     await this.friendsRepository.followUser(userToFollow._id.toString(), followingUserId);
     await this.notificationRepository.editMessageByIds(followingUserId, userToFollow._id.toString(), 'request', 'started following you.');
     await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), `${isRequestExist ? "requested" : isAlreadyFollowing ? "followed" : "follow"}`, 'follow');

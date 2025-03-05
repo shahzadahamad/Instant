@@ -1,19 +1,19 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import Sharp from "../../../providers/sharp";
-import RequestRepository from "../../../repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class UpdateUserData {
   private userRepository: UserRepository;
   private awsS3Storage: AwsS3Storage;
-  private requestRepository: RequestRepository;
+  private UserMoreDataRepository: UserMoreDataRepository;
   private sharp: Sharp;
 
-  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, requestRepository: RequestRepository, sharp: Sharp) {
+  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, UserMoreDataRepository: UserMoreDataRepository, sharp: Sharp) {
     this.userRepository = userRepository;
     this.awsS3Storage = awsS3Storage;
-    this.requestRepository = requestRepository;
+    this.UserMoreDataRepository = UserMoreDataRepository;
     this.sharp = sharp;
   }
 
@@ -81,7 +81,7 @@ export default class UpdateUserData {
     );
 
     if (!updatedUser?.isPrivateAccount) {
-      await this.requestRepository.updateFriendRequest(userId);
+      await this.UserMoreDataRepository.updateFriendRequest(userId);
     }
 
     if (!updatedUser) {

@@ -45,7 +45,7 @@ export default class CommentPost {
       comment
     );
 
-    await this.postRepository.updateCommentCount(id);
+    await this.postRepository.updateCommentCount(id,true);
     if (postData.userId !== userId) {
       await this.notificationRepository.sendPostCommentNotification(userId, postData.userId, postData._id, newComment._id, `commented on your post: ${newComment.comment}`, 'commented', 'post');
       SocketService.getInstance().sendNotification(postData.userId.toString());

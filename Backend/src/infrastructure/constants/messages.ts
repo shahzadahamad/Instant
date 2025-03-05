@@ -27,4 +27,7 @@ export const MESSAGES = {
   INFO: {
     USER_BLOCKED: 'You have been blocked.',
   },
+  OTHER: {
+    REEL_ID: 'a1b2c3d4e5f678901234abcd',
+  }
 };

@@ -242,12 +242,17 @@ const NotificationDetials = () => {
                   ""
                 ))}
               {notification.relation === "post" && (
-                <img
-                  className="w-12 h-12 rounded-lg object-cover"
-                  onClick={() => navigate(`/post/${notification.postId._id}`)}
-                  src={notification.postId.post[0].url}
-                  alt=""
-                />
+                notification.postId.post[0].type === 'image' ?
+                  <img
+                    className="w-12 h-12 rounded-lg object-cover"
+                    onClick={() => navigate(`/post/${notification.postId._id}`)}
+                    src={notification.postId.post[0].url}
+                    alt=""
+                  /> : <video
+                    className="w-12 h-12 rounded-lg object-cover"
+                    onClick={() => navigate(`/post/${notification.postId._id}`)}
+                    src={notification.postId.post[0].url}
+                  />
               )}
             </div>
           ))}

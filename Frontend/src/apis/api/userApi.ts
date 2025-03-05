@@ -229,3 +229,13 @@ export const getSinglePost = async (postId: string) => {
   const response = await apiClient.get(`/user/post/single/${postId}`);
   return response.data;
 }
+
+export const getReels = async (reelId: string, page: number) => {
+  const response = await apiClient.get(`/user/post/reels-all`, {
+    params: {
+      reelId,
+      page
+    }
+  });
+  return response.data;
+}

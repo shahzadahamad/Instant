@@ -1,17 +1,17 @@
 import { INotification } from "../../../../infrastructure/database/models/notificationModal";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
-import RequestRepository from "../../../repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class GetNotificationData {
   private notificationRepository: NotificationRepository;
-  private requestRepository: RequestRepository;
+  private UserMoreDataRepository: UserMoreDataRepository;
   private userRepository: UserRepository;
 
-  constructor(notificationRepository: NotificationRepository, requestRepository: RequestRepository, userRepository: UserRepository) {
+  constructor(notificationRepository: NotificationRepository, UserMoreDataRepository: UserMoreDataRepository, userRepository: UserRepository) {
     this.notificationRepository = notificationRepository;
-    this.requestRepository = requestRepository;
+    this.UserMoreDataRepository = UserMoreDataRepository;
     this.userRepository = userRepository;
   }
 
@@ -19,7 +19,7 @@ export default class GetNotificationData {
 
     await this.notificationRepository.makeNotificationAsRead(userId);
     const notificationData = await this.notificationRepository.findAllById(userId);
-    const friendRequests = await this.requestRepository.findFriendRequestById(userId);
+    const friendRequests = await this.UserMoreDataRepository.findFriendRequestById(userId);
 
     if (friendRequests) {
       const populatedFriendRequests = await this.userRepository.findUserDataWithIdInArray(friendRequests.friendRequest);

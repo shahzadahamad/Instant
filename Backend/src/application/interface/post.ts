@@ -1,4 +1,5 @@
 import { ContentModerationDetection, ModerationLabel } from "@aws-sdk/client-rekognition";
+import { IUser } from "../../infrastructure/database/models/userModel";
 
 interface CustomFilter {
   label: string;
@@ -47,3 +48,24 @@ export type QueryTypeGetSubscriptionDataAdmin = {
     offer?: { $regex: RegExp } | { $eq: number } | { $gte: number } | { $lte: number };
   }>;
 };
+
+export interface PostFilter {
+  isArchive: boolean;
+  userId?: { $in: string[] } | { $nin: string[] };
+  postId?: { $nin: string[] };
+  ["post.0.type"]?: string;
+}
+
+export interface IPostWithUserData {
+  _id: string;
+  userId: IUser;
+  post: PostData[];
+  caption: string;
+  musicId: string;
+  aspectRatio: string;
+  hideLikeAndView: boolean;
+  hideComment: boolean;
+  likeCount: number;
+  commentCount: number;
+  isArchive: boolean;
+}

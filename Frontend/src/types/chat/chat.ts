@@ -1,4 +1,4 @@
-import { userData } from "../profile/profile";
+import { isVerified, userData } from "../profile/profile";
 
 export interface Member {
   _id: string,
@@ -9,11 +9,7 @@ export interface Member {
     status: boolean,
     date: Date,
   };
-  isVerified: {
-    status: boolean;
-    createdAt: Date,
-    expireAt: Date;
-  }
+  isVerified: isVerified
 }
 
 export interface ChatDatas {
@@ -47,11 +43,7 @@ export interface ChatDataHeader {
     status: boolean,
     date: Date,
   };
-  isVerified: {
-    status: boolean;
-    createdAt: Date,
-    expireAt: Date;
-  }
+  isVerified: isVerified
 }
 
 export interface MessageData {

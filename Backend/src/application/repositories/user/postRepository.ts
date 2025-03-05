@@ -1,7 +1,7 @@
 import PostModal, {
   IPost,
 } from "../../../infrastructure/database/models/postModel";
-import { PostData } from "../../interface/post";
+import { IPostWithUserData, PostData, PostFilter } from "../../interface/post";
 
 export default class PostRepository {
   public async createPost(
@@ -38,7 +38,7 @@ export default class PostRepository {
   public async findUserPostData(userId: string): Promise<IPost[]> {
     try {
       return await PostModal.find({ userId, isArchive: false })
-        .populate("userId")
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
         .sort({ createdAt: -1 });
     } catch (error) {
       if (error instanceof Error) {
@@ -60,7 +60,7 @@ export default class PostRepository {
         },
         isArchive: false
       })
-        .populate("userId")
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
         .sort({ createdAt: -1 });
     } catch (error) {
       if (error instanceof Error) {
@@ -77,7 +77,7 @@ export default class PostRepository {
       return await PostModal.find({
         _id: { $in: postIds }, isArchive: false
       })
-        .populate("userId")
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
         .sort({ createdAt: -1 });
     } catch (error) {
       if (error instanceof Error) {
@@ -105,9 +105,9 @@ export default class PostRepository {
     }
   }
 
-  public async updateCommentCount(postId: string) {
+  public async updateCommentCount(postId: string, status: boolean) {
     try {
-      await PostModal.updateOne({ _id: postId }, { $inc: { commentCount: 1 } });
+      await PostModal.updateOne({ _id: postId }, { $inc: { commentCount: status ? 1 : -1 } });
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error likeCount increment post: ${error.message}`);
@@ -132,7 +132,7 @@ export default class PostRepository {
 
   public async findPostByIdWithUserData(_id: string): Promise<IPost | null> {
     try {
-      return await PostModal.findOne({ _id: _id }).populate("userId");
+      return await PostModal.findOne({ _id: _id }).populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount');
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");
@@ -144,7 +144,7 @@ export default class PostRepository {
 
   public async findPostByIdWithUserData1(_id: string): Promise<IPost | null> {
     try {
-      return await PostModal.findOne({ _id: _id }).populate("userId",'_id username profilePicture fullname isOnline isVerified isPrivateAccount');
+      return await PostModal.findOne({ _id: _id }).populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount');
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");
@@ -253,7 +253,7 @@ export default class PostRepository {
   public async findUserArchivedPost(userId: string): Promise<IPost[]> {
     try {
       return await PostModal.find({ userId, isArchive: true })
-        .populate("userId")
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
         .sort({ createdAt: -1 });
     } catch (error) {
       if (error instanceof Error) {
@@ -267,13 +267,126 @@ export default class PostRepository {
 
   public async findUserReelsPost(userId: string): Promise<IPost[]> {
     try {
-      const postData = await PostModal.find({ userId, isArchive: false })
-        .populate("userId")
+      return await PostModal.find({ userId, isArchive: false, "post.0.type": "reel" })
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
         .sort({ createdAt: -1 });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
 
-      return postData.filter((post) => {
-        return post.post[0].type === 'reel';
-      });
+  public async findReelById(postId: string): Promise<IPostWithUserData | null> {
+    try {
+      return await PostModal.findOne({ _id: postId, isArchive: false, "post.0.type": "reel" })
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData | null;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPostsOfFriendAndNonWatched(startIndex: number, limit: number, userIds: string[], watchedPost: string[], reel: boolean): Promise<IPostWithUserData[]> {
+    try {
+
+      const filter: PostFilter = {
+        isArchive: false,
+        userId: { $in: userIds },
+        postId: { $nin: watchedPost },
+      };
+
+      if (reel) {
+        filter["post.0.type"] = "reel";
+      }
+
+      return await PostModal.find(filter).skip(startIndex).limit(limit)
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPostsOfNonFriendAndNonWatched(startIndex: number, limit: number, userIds: string[], watchedPost: string[], reel: boolean): Promise<IPostWithUserData[]> {
+    try {
+
+      const filter: PostFilter = {
+        isArchive: false,
+        userId: { $nin: userIds },
+        postId: { $nin: watchedPost },
+      };
+
+      if (reel) {
+        filter["post.0.type"] = "reel";
+      }
+
+      return await PostModal.find(filter).skip(startIndex).limit(limit)
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPostOfWatched(startIndex: number, limit: number, watchedPost: string[], reel: boolean): Promise<IPostWithUserData[]> {
+    try {
+
+      const filter: PostFilter = {
+        isArchive: false,
+        postId: { $nin: watchedPost },
+      };
+
+      if (reel) {
+        filter["post.0.type"] = "reel";
+      }
+
+      return await PostModal.find(filter).skip(startIndex).limit(limit)
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding post: ${error.message}`);
+        throw new Error("Failed to find post");
+      }
+      console.error("Unknown error finding post");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPosts(startIndex: number, limit: number, reel: boolean): Promise<IPostWithUserData[]> {
+    try {
+
+      const filter: PostFilter = {
+        isArchive: false,
+      };
+
+      if (reel) {
+        filter["post.0.type"] = "reel";
+      }
+
+      return await PostModal.find(filter).skip(startIndex).limit(limit)
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding post: ${error.message}`);
@@ -285,3 +398,4 @@ export default class PostRepository {
   }
 
 }
+

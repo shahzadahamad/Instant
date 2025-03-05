@@ -8,6 +8,7 @@ const initialState: PostState = {
   aspectRatio: null,
   postHoverFilterClass: "",
   postType: "",
+  reels: [],
 };
 
 const postSlice = createSlice({
@@ -71,6 +72,9 @@ const postSlice = createSlice({
     setPostIndex(state, action) {
       state.postIndex = action.payload;
     },
+    setReels(state, action) {
+      state.reels = action.payload;
+    }
   },
 });
 
@@ -90,6 +94,7 @@ export const {
   removePost,
   pushPost,
   setStateDefualt,
+  setReels,
 } = postSlice.actions;
 
 export default postSlice.reducer;

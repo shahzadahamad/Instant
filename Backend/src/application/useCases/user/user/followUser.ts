@@ -1,20 +1,20 @@
 import SocketService from "../../../../infrastructure/service/socketService";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
-import RequestRepository from "../../../repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class FollowUser {
   private userRepository: UserRepository;
   private friendsRepository: FriendsRepository;
   private notificationRepository: NotificationRepository;
-  private requestRepository: RequestRepository;
+  private UserMoreDataRepository: UserMoreDataRepository;
 
-  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, requestRepository: RequestRepository) {
+  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, UserMoreDataRepository: UserMoreDataRepository) {
     this.userRepository = userRepository;
     this.friendsRepository = friendsRepository;
     this.notificationRepository = notificationRepository;
-    this.requestRepository = requestRepository;
+    this.UserMoreDataRepository = UserMoreDataRepository;
   }
 
   public async execute(followingUserId: string, followerUserUsername: string): Promise<{ follow: boolean, request: boolean }> {
@@ -33,7 +33,7 @@ export default class FollowUser {
 
       if (userToFollow.isPrivateAccount) {
 
-        const isRequestExist = await this.requestRepository.isRequestExist(followingUserId, userToFollow._id.toString());
+        const isRequestExist = await this.UserMoreDataRepository.isRequestExist(followingUserId, userToFollow._id.toString());
 
         if (!isRequestExist) {
 
@@ -41,7 +41,7 @@ export default class FollowUser {
             await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), 'requested', 'follow');
           }
 
-          await this.requestRepository.friendRequest(followingUserId, userToFollow._id.toString());
+          await this.UserMoreDataRepository.friendRequest(followingUserId, userToFollow._id.toString());
           await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'request to follow you.', 'request', 'follow');
           SocketService.getInstance().sendNotification(userToFollow._id.toString());
           return { follow: false, request: true };
@@ -56,7 +56,7 @@ export default class FollowUser {
           await this.notificationRepository.editAllNotificationOfRelationFollow(followingUserId, userToFollow._id.toString(), 'followed', 'follow');
         }
 
-        const isRequestExist = await this.requestRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
+        const isRequestExist = await this.UserMoreDataRepository.isRequestExist(userToFollow._id.toString(), followingUserId);
         await this.friendsRepository.followUser(followingUserId, userToFollow._id.toString());
         await this.notificationRepository.send(followingUserId, userToFollow._id.toString(), 'started following you.', `${isRequestExist ? "requested" : isAlreadyFollowed ? "followed" : "follow"}`, 'follow');
         SocketService.getInstance().sendNotification(userToFollow._id.toString());

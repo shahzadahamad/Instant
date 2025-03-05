@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import GetFollowDetials from "../../../../application/useCases/user/user/getFollowDetials";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
@@ -11,7 +11,7 @@ export default class GetFollowDetialsController {
     const { userId } = req.user;
     const { username } = req.params;
 
-    const getFollowDetials = new GetFollowDetials(new UserRepository(), new FriendsRepository(), new RequestRepository());
+    const getFollowDetials = new GetFollowDetials(new UserRepository(), new FriendsRepository(), new UserMoreDataRepository());
 
     try {
       const followDetials = await getFollowDetials.execute(userId, username);

@@ -52,7 +52,7 @@ export default class ReplyComment {
       userData.username,
       userData.profilePicture
     );
-    await this.postRepository.updateCommentCount(id);
+    await this.postRepository.updateCommentCount(id, true);
     if (postData.userId !== userId && replyComment) {
       await this.notificationRepository.sendPostCommentNotification(userId, postData.userId, postData._id.toString(), replyComment._id.toString(), `commented on your post: ${comment}`, 'commented', 'post');
       SocketService.getInstance().sendNotification(postData.userId.toString());

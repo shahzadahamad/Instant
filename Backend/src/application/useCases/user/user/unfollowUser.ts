@@ -1,20 +1,20 @@
 import SocketService from "../../../../infrastructure/service/socketService";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
-import RequestRepository from "../../../repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class UnfollowUser {
   private userRepository: UserRepository;
   private friendsRepository: FriendsRepository;
   private notificationRepository: NotificationRepository;
-  private requestRepository: RequestRepository;
+  private UserMoreDataRepository: UserMoreDataRepository;
 
-  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, requestRepository: RequestRepository) {
+  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository, notificationRepository: NotificationRepository, UserMoreDataRepository: UserMoreDataRepository) {
     this.userRepository = userRepository;
     this.friendsRepository = friendsRepository;
     this.notificationRepository = notificationRepository;
-    this.requestRepository = requestRepository;
+    this.UserMoreDataRepository = UserMoreDataRepository;
   }
 
   public async execute(currentUserId: string, unfollowUserId: string): Promise<void> {
@@ -25,11 +25,11 @@ export default class UnfollowUser {
       throw new Error("User not found!");
     };
 
-    const result = await this.requestRepository.findFriendRequestById(unfollowingUser._id.toString());
+    const result = await this.UserMoreDataRepository.findFriendRequestById(unfollowingUser._id.toString());
     await this.notificationRepository.removeAllNotificationOfSingleUser(unfollowingUser._id.toString(), currentUserId, 'follow');
 
     if (result?.friendRequest.includes(currentUserId)) {
-      await this.requestRepository.removeRequest(unfollowingUser._id.toString(), currentUserId);
+      await this.UserMoreDataRepository.removeRequest(unfollowingUser._id.toString(), currentUserId);
     }
 
     await this.notificationRepository.removeNotificationOfUserByMessage(currentUserId, unfollowingUser._id, 'accepted your follow request.');

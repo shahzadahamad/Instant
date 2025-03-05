@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import UpdateUserData from "../../../../application/useCases/user/user/updateUserData";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import Sharp from "../../../../application/providers/sharp";
@@ -26,7 +26,7 @@ export default class EditUserDataController {
     const updateUserData = new UpdateUserData(
       new UserRepository(),
       new AwsS3Storage(),
-      new RequestRepository(),
+      new UserMoreDataRepository(),
       new Sharp(),
     );
 

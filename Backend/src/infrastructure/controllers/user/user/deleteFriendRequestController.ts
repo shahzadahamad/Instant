@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import DeleteFriendRequest from "../../../../application/useCases/user/user/deleteFriendRequest";
@@ -11,7 +11,7 @@ export default class DeleteFriendRequestController {
     const { username } = req.params;
     const { userId } = req.user;
 
-    const deleteFriendRequest = new DeleteFriendRequest(new UserRepository(), new NotificationRepository(), new RequestRepository());
+    const deleteFriendRequest = new DeleteFriendRequest(new UserRepository(), new NotificationRepository(), new UserMoreDataRepository());
 
     try {
       const actionStatus = await deleteFriendRequest.execute(userId, username);

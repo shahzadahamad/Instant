@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IRequest extends Document {
+export interface IUserMoreData extends Document {
   userId: string,
   friendRequest: string[];
-  messageRequest: string[];
+  watchedPost: string[];
 }
 
-const requestSchema: Schema = new Schema(
+const userMoreDataSchema: Schema = new Schema(
   {
     userId: {
       type: String,
@@ -18,9 +18,10 @@ const requestSchema: Schema = new Schema(
       required: true,
       default: [],
     },
-    messageRequest: {
+    watchedPost: {
       type: [String],
       required: true,
+      ref: 'Post',
       default: [],
     }
   },
@@ -29,6 +30,6 @@ const requestSchema: Schema = new Schema(
   }
 );
 
-const RequestModel = mongoose.model<IRequest>("Request", requestSchema);
+const UserMoreDataModel = mongoose.model<IUserMoreData>("UserMoreData", userMoreDataSchema);
 
-export default RequestModel;
+export default UserMoreDataModel;

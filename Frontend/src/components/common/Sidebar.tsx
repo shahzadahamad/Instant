@@ -155,7 +155,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             Search
           </div>
         </div>
-        <div className="relative group flex items-center justify-center">
+        <div onClick={() => navigate('/reels')} className="relative group flex items-center justify-center">
           {page === "reel" ? (
             <svg
               aria-label="Reels"

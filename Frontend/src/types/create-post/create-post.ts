@@ -1,3 +1,5 @@
+import { GetUserDataForPost, PostData } from "../profile/profile";
+
 interface PostItem {
   url: string;
   type: "image" | "video" | "reel";
@@ -24,6 +26,20 @@ interface PostItem {
   tagUsers: string[];
 }
 
+export interface IPostWithUserData {
+  _id: string;
+  userId: GetUserDataForPost;
+  post: PostData[];
+  caption: string;
+  musicId: string;
+  aspectRatio: string;
+  hideLikeAndView: boolean;
+  hideComment: boolean;
+  likeCount: number;
+  commentCount: number;
+  isArchive: boolean;
+}
+
 export interface PostState {
   post: PostItem[];
   postIndex: number;
@@ -31,6 +47,7 @@ export interface PostState {
   musicId: string;
   postHoverFilterClass: string;
   postType: string;
+  reels: IPostWithUserData[]
 }
 
 export interface GetCreatePostMusicData {

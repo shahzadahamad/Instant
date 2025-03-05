@@ -3,7 +3,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 import FollowUser from "../../../../application/useCases/user/user/followUser";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 
@@ -12,7 +12,7 @@ export default class FollowUserController {
     const { username } = req.params;
     const { userId } = req.user;
 
-    const followUser = new FollowUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new RequestRepository());
+    const followUser = new FollowUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new UserMoreDataRepository());
 
     try {
       const actionStatus = await followUser.execute(userId, username);

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface CommentReplyData {
   _id: string
   userId: string;
+  postId: string;
   username: string;
   profilePicture: string;
   comment: string;
@@ -37,6 +38,10 @@ const commentSchema: Schema = new Schema(
           type: String,
           required: true,
           ref: "User",
+        },
+        postId: {
+          type: String,
+          required: true
         },
         username: {
           type: String,

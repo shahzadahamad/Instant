@@ -92,6 +92,7 @@ export default class CommentRepository {
           $push: {
             reply: {
               userId,
+              postId: id,
               username,
               profilePicture,
               comment,

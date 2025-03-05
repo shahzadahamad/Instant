@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import RequestRepository from "../../../../application/repositories/user/requrestRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import RequestAcceptUser from "../../../../application/useCases/user/user/requestAcceptUser";
@@ -12,7 +12,7 @@ export default class AcceptRequestUserController {
     const { username } = req.params;
     const { userId } = req.user;
 
-    const requestAcceptUser = new RequestAcceptUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new RequestRepository());
+    const requestAcceptUser = new RequestAcceptUser(new UserRepository(), new FriendsRepository(), new NotificationRepository(), new UserMoreDataRepository());
 
     try {
       const actionStatus = await requestAcceptUser.execute(userId, username);

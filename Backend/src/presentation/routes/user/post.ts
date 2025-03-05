@@ -22,6 +22,7 @@ import ArchiveController from "../../../infrastructure/controllers/user/post/arc
 import ArchivedPostController from "../../../infrastructure/controllers/user/post/archivedPostController";
 import ReelsController from "../../../infrastructure/controllers/user/post/reelsController";
 import SinglePostController from "../../../infrastructure/controllers/user/post/singlePostController";
+import FilterReelsController from "../../../infrastructure/controllers/user/post/filterReelsController";
 
 const userPostRouter = Router();
 
@@ -46,6 +47,7 @@ const archiveController = new ArchiveController();
 const archivedPostController = new ArchivedPostController();
 const reelsController = new ReelsController();
 const singlePostController = new SinglePostController();
+const filterReelsController = new FilterReelsController();
 
 userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
 userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
@@ -68,5 +70,6 @@ userPostRouter.patch('/archive/:postId', authMiddleware, archiveController.handl
 userPostRouter.get('/archived', authMiddleware, archivedPostController.handle);
 userPostRouter.get('/reels', authMiddleware, reelsController.handle);
 userPostRouter.get('/single/:postId', authMiddleware, singlePostController.handle);
+userPostRouter.get('/reels-all', authMiddleware, filterReelsController.handle);
 
 export default userPostRouter;

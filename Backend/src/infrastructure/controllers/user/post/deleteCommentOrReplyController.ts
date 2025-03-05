@@ -5,6 +5,7 @@ import DeleteCommentOrReply from "../../../../application/useCases/user/post/del
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import PostRepository from "../../../../application/repositories/user/postRepository";
 
 export default class DeleteCommentOrReplyController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -14,7 +15,8 @@ export default class DeleteCommentOrReplyController {
     const deleteCommentOrReply = new DeleteCommentOrReply(
       new LikeRepository(),
       new CommentRepository(),
-      new NotificationRepository()
+      new NotificationRepository(),
+      new PostRepository()
     );
 
     try {
