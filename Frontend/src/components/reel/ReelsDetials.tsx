@@ -1,4 +1,4 @@
-import { checkHasUserLikedThePost, getReels, likeAndDisLikePost } from "@/apis/api/userApi";
+import { checkHasUserLikedThePost, getReels, likeAndDisLikePost, watchedPostAdd } from "@/apis/api/userApi";
 import { newReelsPush, setReels, setReelTotalPage, updateLikeCount } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";
 import { faComment, faHeart, faPaperPlane } from "@fortawesome/free-regular-svg-icons"
@@ -55,10 +55,39 @@ const ReelsDetials = () => {
   };
 
   useEffect(() => {
+    let watchTimer: NodeJS.Timeout | null = null;
+
+    const markReelAsWatched = async (reelId: string) => {
+      try {
+        await watchedPostAdd(reelId);
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          console.error(error.response.data?.error || "An error occurred");
+        } else {
+          console.error("Unexpected error:", error);
+          toast.error("An unexpected error occurred");
+        }
+      }
+    };
+
+    if (reels.length > 0 && reels[currentVideoIndex]) {
+      watchTimer = setTimeout(() => {
+        markReelAsWatched(reels[currentVideoIndex]._id);
+      }, 3000);
+    }
+
+    return () => {
+      if (watchTimer) {
+        clearTimeout(watchTimer);
+      }
+    };
+  }, [currentVideoIndex, reels]);
+
+  useEffect(() => {
     if (reels.length <= 0) {
       fetchReels(true, page, false);
     }
-  }, [reelId, page, dispatch, navigate]);
+  }, [reelId, page, dispatch, navigate, reels.length]);
 
   useEffect(() => {
     const checkHasuserLikedCurrentPost = async (id: string) => {
@@ -91,12 +120,47 @@ const ReelsDetials = () => {
   };
 
   useEffect(() => {
+    const handleSpacebar = (event: KeyboardEvent) => {
 
-    const handleScroll = async (event: WheelEvent) => {
+      if (mainPost) {
+        return;
+      }
+
+      if (event.key === " " || event.code === "Space") {
+        event.preventDefault();
+
+        const video = videoRefs.current[currentVideoIndex];
+        if (video) {
+          if (video.paused) {
+            video.play();
+            setPlay(true);
+          } else {
+            video.pause();
+            setPlay(false);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleSpacebar);
+    return () => {
+      window.removeEventListener("keydown", handleSpacebar);
+    };
+  }, [currentVideoIndex, play, mainPost]);
+
+
+  useEffect(() => {
+
+    const handleNavigation = async (direction: "up" | "down") => {
+
+      if (mainPost) {
+        return;
+      }
+
       if (scrolling) return;
       setScrolling(true);
 
-      const newIndex = event.deltaY > 0
+      const newIndex = direction === "down"
         ? Math.min(currentVideoIndex + 1, reels.length - 1)
         : Math.max(currentVideoIndex - 1, 0);
 
@@ -106,26 +170,42 @@ const ReelsDetials = () => {
           prevVideo.pause();
           prevVideo.currentTime = 0;
         }
+
         setCurrentVideoIndex(newIndex);
-      }
+        navigate(`/reels/${reels[newIndex]._id}`);
 
-      const newReelId = reels[newIndex]._id;
-      navigate(`/reels/${newReelId}`);
-
-      if (newIndex === reels.length - 1 && page < reelTotalPage) {
-        setPage(prev => prev + 1);
-        const newReels = await fetchReels(false, page + 1, true);
-        if (newReels && newReels.length > 0) {
-          dispatch(newReelsPush(newReels));
+        if (newIndex === reels.length - 1 && page < reelTotalPage) {
+          setPage(prev => prev + 1);
+          const newReels = await fetchReels(false, page + 1, true);
+          if (newReels && newReels.length > 0) {
+            dispatch(newReelsPush(newReels));
+          }
         }
       }
 
       setTimeout(() => setScrolling(false), 300);
     };
 
+    const handleScroll = (event: WheelEvent) => {
+      if (event.deltaY > 0) {
+        handleNavigation("down");
+      } else {
+        handleNavigation("up");
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowDown") {
+        handleNavigation("down");
+      } else if (event.key === "ArrowUp") {
+        handleNavigation("up");
+      }
+    };
+
     const container = containerRef.current;
     if (container) {
       container.addEventListener("wheel", handleScroll);
+      window.addEventListener("keydown", handleKeyDown);
 
       const preventPageScroll = (e: Event) => e.preventDefault();
       document.body.style.overflow = "hidden";
@@ -133,11 +213,12 @@ const ReelsDetials = () => {
 
       return () => {
         container.removeEventListener("wheel", handleScroll);
+        window.removeEventListener("keydown", handleKeyDown);
         container.removeEventListener("touchmove", preventPageScroll);
         document.body.style.overflow = "auto";
       };
     }
-  }, [reels, scrolling, currentVideoIndex, page, navigate, dispatch]);
+  }, [reels, scrolling, currentVideoIndex, reelTotalPage, page, navigate, dispatch, mainPost]);
 
   useEffect(() => {
     setShowFullCaption(false);
@@ -252,10 +333,10 @@ const ReelsDetials = () => {
                     }} className="font-semibold text-sm text-white">{reel.userId.username}</p>
                   </div>
                   <p className="text-white text-sm w-[90%] font-normal">
-                    {showFullCaption ? reel.caption : reel.caption.length > 30 ? `${reel.caption.slice(0, 30)}... ` : ""}
+                    {showFullCaption ? reel.caption : reel.caption.length > 0 ? `${reel.caption.slice(0, 30)}` : ""}
                     {reel.caption.length > 20 && (
                       <button onClick={(e) => toggleCaption(e)} className="text-[#c8c2c2] font-semibold">
-                        {showFullCaption ? "less" : "more"}
+                        {showFullCaption ? "less" : "... more"}
                       </button>
                     )}
                   </p>

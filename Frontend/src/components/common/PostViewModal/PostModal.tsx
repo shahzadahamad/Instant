@@ -45,6 +45,7 @@ import {
   likeAndDisLikeComment,
   likeAndDisLikePost,
   userExist,
+  watchedPostAdd,
 } from "../../../apis/api/userApi";
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
@@ -111,6 +112,35 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    let watchTimer: NodeJS.Timeout | null = null;
+
+    const markReelAsWatched = async (postId: string) => {
+      try {
+        await watchedPostAdd(postId);
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          console.error(error.response.data?.error || "An error occurred");
+        } else {
+          console.error("Unexpected error:", error);
+          toast.error("An unexpected error occurred");
+        }
+      }
+    };
+
+    if (post.length > 0 && post[currentIndex]) {
+      watchTimer = setTimeout(() => {
+        markReelAsWatched(post[currentIndex]._id);
+      }, 1000);
+    }
+
+    return () => {
+      if (watchTimer) {
+        clearTimeout(watchTimer);
+      }
+    };
+  }, [currentIndex, post]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (

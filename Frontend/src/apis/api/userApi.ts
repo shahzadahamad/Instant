@@ -249,3 +249,8 @@ export const getUserSeggestions = async (_id: string, user: boolean) => {
   });
   return response.data;
 }
+
+export const watchedPostAdd = async (postId: string) => {
+  const response = await apiClient.patch(`/user/watched-post/${postId}`);
+  return response.data;
+}
