@@ -34,7 +34,8 @@ export interface GetUserDataForPost {
 
 export interface UserSuggestionData {
   user: GetUserDataForPost,
-  mutualFriends: string[]
+  mutualFriends: string[],
+  isFollow?: boolean,
 }
 
 export interface GetUserDataPostDetials {

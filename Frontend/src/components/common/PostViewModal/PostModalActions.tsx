@@ -175,9 +175,6 @@ const PostModalActions: React.FC<PostActionModalProps> = ({
             </ModalBody>
           ) : (
             <ModalBody className="w-full p-0 flex flex-col gap-0">
-              <div className="w-full text-center border-b p-3 cursor-pointer">
-                <h1 className="text-[#ed4956] font-bold">Unfollow</h1>
-              </div>
               <div
                 onClick={() => setOpenReportModal(true)}
                 className="w-full text-center border-b p-3 cursor-pointer"

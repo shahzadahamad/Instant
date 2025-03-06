@@ -29,6 +29,7 @@ const NotificationDetials = () => {
   const navigate = useNavigate();
   const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
   const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false);
+  const [unfollowId, setUnFollowId] = useState<GetUserDataForPost | null>(null);
 
   const fetchNotificationData = async () => {
     try {
@@ -161,11 +162,11 @@ const NotificationDetials = () => {
                   }
                   className="w-12 h-12 rounded-full object-cover"
                 />
-                {openUnfollowModal && (
+                {openUnfollowModal && unfollowId && (
                   <UnfollowModal
                     openUnfollowModal={openUnfollowModal}
                     handleUnfollowModal={handleUnfollowModal}
-                    userData={notification.fromId}
+                    userData={unfollowId}
                   />
                 )}
                 <div className="flex flex-col">
@@ -226,14 +227,20 @@ const NotificationDetials = () => {
                   </div>
                 ) : notification.type === "followed" ? (
                   <button
-                    onClick={() => handleUnfollowModal(false)}
+                    onClick={() => {
+                      handleUnfollowModal(false)
+                      setUnFollowId(notification.fromId)
+                    }}
                     className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center"
                   >
                     Following
                   </button>
                 ) : notification.type === "requested" ? (
                   <button
-                    onClick={() => handleUnfollowModal(false)}
+                    onClick={() => {
+                      handleUnfollowModal(false)
+                      setUnFollowId(notification.fromId)
+                    }}
                     className="cursor-pointer font-bold dark:bg-[#363636] bg-[#efefef] dark:hover:bg-opacity-70 hover:bg-opacity-70 border text-sm px-3 py-1.5 rounded-lg transition-colors text-center"
                   >
                     Requested

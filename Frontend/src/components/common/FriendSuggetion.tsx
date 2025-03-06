@@ -1,4 +1,4 @@
-import { getUserSeggestions } from "@/apis/api/userApi";
+import { followUser, getUserSeggestions, unfollowUser } from "@/apis/api/userApi";
 import { UserSuggestionData } from "@/types/profile/profile";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react"
@@ -14,7 +14,6 @@ const FriendSuggetion = () => {
     const fetchUserSuggestions = async () => {
       try {
         const suggestions = await getUserSeggestions("", false);
-        console.log(suggestions)
         setSuggestions(suggestions);
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
@@ -30,6 +29,44 @@ const FriendSuggetion = () => {
     fetchUserSuggestions();
   }, [])
 
+  const handleFollow = async (username: string, userId: string) => {
+    try {
+      await followUser(username);
+      setSuggestions((prevSuggestions) =>
+        prevSuggestions.map((user) =>
+          user.user._id === userId ? { ...user, isFollow: true } : user
+        )
+      );
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  };
+
+  const handleUnfollow = async (userId: string) => {
+    try {
+      await unfollowUser(userId);
+      setSuggestions((prevSuggestions) =>
+        prevSuggestions.map((user) =>
+          user.user._id === userId ? { ...user, isFollow: false } : user
+        )
+      );
+      console.log(suggestions)
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+        toast.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
 
   return (
     <div className='w-1/2 h-screen flex flex-col items-center'>
@@ -39,7 +76,6 @@ const FriendSuggetion = () => {
 
       <div className="w-3/4 h-[90%] flex py-4 flex-col items-center overflow-auto scrollbar-hidden">
         {suggestions.map((user) => {
-          console.log(user.mutualFriends)
           const displayedFriends = user.mutualFriends.slice(0, 2);
           const remainingCount = user.mutualFriends.length - displayedFriends.length;
           return (
@@ -66,17 +102,18 @@ const FriendSuggetion = () => {
                   )}
                 </div>
               </div>
-              {
-                [1, 1].length ? (
-                  <button className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
-                    Follow
-                  </button>
-                ) : (
-                  <button className="cursor-pointer w-20 font-bold bg-[#0095f6] hover:bg-opacity-70 text-white border text-sm px-1 py-1.5 rounded-lg transition-colors text-center">
-                    Request
-                  </button>
-                )
-              }
+              <button onClick={(e) => {
+                e.stopPropagation()
+                if (!user.isFollow) {
+                  handleFollow(user.user.username, user.user._id);
+                } else {
+                  handleUnfollow(user.user._id);
+                }
+              }} className={`cursor-pointer w-20 font-bold ${user.isFollow ? "dark:bg-[#363636] bg-[#efefef]" : "bg-[#0095f6]"} hover:bg-opacity-70 border text-sm px-1 py-1.5 rounded-lg transition-colors text-center`}>
+                {
+                  user.isFollow ? "Following" : "Follow"
+                }
+              </button>
             </div>
           )
 
