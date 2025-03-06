@@ -334,7 +334,8 @@ export default class UserRepository {
         username: 1,
         fullname: 1,
         profilePicture: 1,
-        isVerified: 1
+        isVerified: 1,
+        isPrivateAccount: 1
       }).limit(limit);
     } catch (error) {
       if (error instanceof Error) {

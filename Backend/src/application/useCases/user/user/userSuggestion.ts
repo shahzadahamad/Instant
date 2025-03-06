@@ -21,7 +21,8 @@ export default class UserSuggestion {
 
     const mutualFriendMap = await this.findMutualFriends(userFriendIds, user ? followingIds : userFriendIds, userId);
 
-    const suggestedUsers = await this.userRepository.findUsersByIds([...mutualFriendMap.keys()], limit);
+    let suggestedUsers = await this.userRepository.findUsersByIds([...mutualFriendMap.keys()], limit);
+    suggestedUsers = suggestedUsers.filter(user => !user.isPrivateAccount);
     const suggestionsWithMutuals = suggestedUsers.map(user => ({
       user,
       mutualFriends: mutualFriendMap.get(user._id.toString()) || []
@@ -34,7 +35,8 @@ export default class UserSuggestion {
         [...userFriendIds, ...mutualFriendMap.keys()],
         remainingLimit - suggestedUsers.length
       );
-      const additionalUsers = await this.userRepository.findUsersByIds(popularUsers.map(userId => userId.userId), limit);
+      let additionalUsers = await this.userRepository.findUsersByIds(popularUsers.map(userId => userId.userId), limit);
+      additionalUsers = additionalUsers.filter(user => !user.isPrivateAccount);
       suggestionsWithMutuals.push(
         ...additionalUsers.map(user => ({ user, mutualFriends: [] }))
       );
