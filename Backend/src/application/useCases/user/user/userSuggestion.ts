@@ -11,7 +11,7 @@ export default class UserSuggestion {
     this.friendsRepository = friendsRepository;
   }
 
-  public async execute(userId: string, targetUserId: string, user: string): Promise<IUser[] | void> {
+  public async execute(userId: string, targetUserId: string, user: boolean): Promise<{ user: IUser, mutualFriends: string[] }[]> {
 
     const limit = 10;
     const userFriend = await this.friendsRepository.findUserDoc(userId);
@@ -19,36 +19,45 @@ export default class UserSuggestion {
     const userFriends = await this.friendsRepository.findUserDoc(targetUserId);
     const followingIds = userFriends?.followings || [];
 
-    const mutualFriendIds = await this.findMutualFriends(userFriendIds, user ? followingIds : userFriendIds, userId);
+    const mutualFriendMap = await this.findMutualFriends(userFriendIds, user ? followingIds : userFriendIds, userId);
 
-    const suggestedUsers = await this.userRepository.findUsersByIds(mutualFriendIds, limit);
+    const suggestedUsers = await this.userRepository.findUsersByIds([...mutualFriendMap.keys()], limit);
+    const suggestionsWithMutuals = suggestedUsers.map(user => ({
+      user,
+      mutualFriends: mutualFriendMap.get(user._id.toString()) || []
+    }));
 
-    if (suggestedUsers.length < limit) {
-      const remainingLimit = limit - suggestedUsers.length;
+    if (suggestionsWithMutuals.length < limit) {
+      const remainingLimit = limit - suggestionsWithMutuals.length;
       const popularUsers = await this.friendsRepository.findMostFollowedUsers(
         user ? [targetUserId, userId] : [userId],
-        [...userFriendIds, ...mutualFriendIds],
+        [...userFriendIds, ...mutualFriendMap.keys()],
         remainingLimit - suggestedUsers.length
       );
       const additionalUsers = await this.userRepository.findUsersByIds(popularUsers.map(userId => userId.userId), limit);
-      suggestedUsers.push(...additionalUsers);
+      suggestionsWithMutuals.push(
+        ...additionalUsers.map(user => ({ user, mutualFriends: [] }))
+      );
     }
 
-    return suggestedUsers;
+    return suggestionsWithMutuals;
   }
 
-  private async findMutualFriends(userFriendIds: string[], followingIds: string[], userId: string): Promise<string[]> {
+  private async findMutualFriends(userFriendIds: string[], followingIds: string[], userId: string): Promise<Map<string, string[]>> {
     const mutualFriends = await this.friendsRepository.findUsersWithFollowing(followingIds, userId);
-    const uniqueFriendIds = new Set<string>();
+    const mutualFriendMap = new Map<string, string[]>();
 
     mutualFriends.forEach(friend => {
       friend.followings.forEach(followedId => {
         if (!userFriendIds.includes(followedId) && followedId !== userId) {
-          uniqueFriendIds.add(followedId);
+          if (!mutualFriendMap.has(followedId)) {
+            mutualFriendMap.set(followedId, []);
+          }
+          mutualFriendMap.get(followedId)!.push(friend.userId.username);
         }
       });
     });
 
-    return Array.from(uniqueFriendIds);
+    return mutualFriendMap;
   }
 }

@@ -1,4 +1,5 @@
 import FriendsModel, { IFriends } from "../../../infrastructure/database/models/friendsModal";
+import { IFriendsWithUserData } from "../../interface/post";
 
 export default class FriendsRepository {
   public async followUser(followingUserId: string, followerUserId: string): Promise<void> {
@@ -95,9 +96,9 @@ export default class FriendsRepository {
     }
   }
 
-  public async findUsersWithFollowing(followingIds: string[], userId: string): Promise<IFriends[]> {
+  public async findUsersWithFollowing(followingIds: string[], userId: string): Promise<IFriendsWithUserData[] | []> {
     try {
-      return await FriendsModel.find({ followings: { $in: followingIds }, userId: { $ne: userId } });
+      return await FriendsModel.find({ followings: { $in: followingIds }, userId: { $ne: userId } }).populate("userId", 'username') as IFriendsWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("You have already following this user.");

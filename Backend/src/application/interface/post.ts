@@ -69,3 +69,10 @@ export interface IPostWithUserData {
   commentCount: number;
   isArchive: boolean;
 }
+
+export interface IFriendsWithUserData {
+  userId: IUser,
+  followers: string[];
+  followings: string[];
+  blockedUser: string[];
+}

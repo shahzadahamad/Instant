@@ -12,6 +12,7 @@ const friendsSchema: Schema = new Schema(
     userId: {
       type: String,
       required: true,
+      ref: 'User',
       unique: true,
     },
     followers: {

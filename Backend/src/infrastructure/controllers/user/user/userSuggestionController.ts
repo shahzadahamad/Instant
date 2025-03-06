@@ -10,11 +10,12 @@ export default class UserSuggestionController {
     const { userId } = req.user;
     const { _id = '' } = req.query;
     const { user } = req.params;
+    const isUser = user === "true";
 
     const userSuggestion = new UserSuggestion(new UserRepository(), new FriendsRepository());
 
     try {
-      const data = await userSuggestion.execute(userId, _id as string, user);
+      const data = await userSuggestion.execute(userId, _id as string, isUser);
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {
