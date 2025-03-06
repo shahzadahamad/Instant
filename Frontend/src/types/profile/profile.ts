@@ -32,6 +32,11 @@ export interface GetUserDataForPost {
   isFollowed?: boolean;
 }
 
+export interface UserSuggestionData {
+  user: GetUserDataForPost,
+  mutualFriends: string[]
+}
+
 export interface GetUserDataPostDetials {
   _id: string;
   fullname: string;

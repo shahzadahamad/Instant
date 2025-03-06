@@ -240,3 +240,12 @@ export const getReels = async (reelId: string, page: number, load: boolean) => {
   });
   return response.data;
 }
+
+export const getUserSeggestions = async (_id: string, user: boolean) => {
+  const response = await apiClient.get(`/user/suggestion/${user}`, {
+    params: {
+      _id
+    }
+  });
+  return response.data;
+}

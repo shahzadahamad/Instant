@@ -181,11 +181,9 @@ const UserProfileDetials = () => {
               <div className={`flex items-center ${userData?.isVerified.status ? "gap-2" : "gap-4"}`}>
                 <h1 className="font-bold">{userData?.fullname}</h1>
                 {
-                  userData?.isVerified.status ?
-                    <VerificationIcon size={'20'} /> : <div onClick={() => navigate('/verification')} className="flex gap-2 items-center border px-3 py-1 rounded-2xl cursor-pointer">
-                      <VerificationIcon size={"18"} />
-                      <h1 className="font-bold text-sm">Get verified</h1>
-                    </div>
+                  userData?.isVerified.status &&
+                  <VerificationIcon size={'20'} />
+
                 }
               </div>
               <p
