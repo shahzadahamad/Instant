@@ -98,7 +98,7 @@ export default class FriendsRepository {
 
   public async findUsersWithFollowing(followingIds: string[], userId: string): Promise<IFriendsWithUserData[] | []> {
     try {
-      return await FriendsModel.find({ followings: { $in: followingIds }, userId: { $ne: userId } }).populate("userId", 'username') as IFriendsWithUserData[] | [];
+      return await FriendsModel.find({ userId: { $in: followingIds, $ne: userId } }).populate("userId", 'username') as IFriendsWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("You have already following this user.");
