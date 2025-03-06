@@ -15,7 +15,7 @@ export default class FilterReels {
     this.friendsRepository = friendsRepository;
   }
 
-  public async execute(reelId: string, userId: string, pageVal: number, load: boolean): Promise<IPostWithUserData[]> {
+  public async execute(reelId: string, userId: string, pageVal: number, load: boolean): Promise<{ reels: IPostWithUserData[], totalPage: number }> {
 
     const newReelId = load ? MESSAGES.OTHER.REEL_ID : reelId;
 
@@ -33,7 +33,7 @@ export default class FilterReels {
     }
 
     const page = pageVal || 1;
-    const limit = 2;
+    const limit = 10;
     const startIndex = (page - 1) * limit;
     const watchedReels = await this.userMoreDataRepository.findWatchedPostsById(userId);
     const userWatchedReels = watchedReels?.watchedPost ?? [];
@@ -54,12 +54,13 @@ export default class FilterReels {
       reels.unshift(reelExist);
     }
 
-    console.log('ini');
-
     reels = reels.filter((post) => {
       return !post.userId.isPrivateAccount || [...userFollowings, userId].includes(post.userId._id.toString());
     });
 
-    return reels.slice(startIndex, startIndex + limit);
+    return {
+      reels: reels.slice(startIndex, startIndex + limit),
+      totalPage: Math.ceil(reels.length / limit)
+    };
   }
 }
