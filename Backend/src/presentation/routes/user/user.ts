@@ -17,6 +17,7 @@ import AcceptRequestUserController from "../../../infrastructure/controllers/use
 import DeleteFriendRequestController from "../../../infrastructure/controllers/user/user/deleteFriendRequestController";
 import UnfollowUserController from "../../../infrastructure/controllers/user/user/unfollowUserController";
 import UserDataController from "../../../infrastructure/controllers/user/user/userDataController";
+import UserSuggestionController from "../../../infrastructure/controllers/user/user/userSuggestionController";
 
 const userRouter = Router();
 
@@ -36,6 +37,7 @@ const acceptRequestUserController = new AcceptRequestUserController();
 const deleteFriendRequestController = new DeleteFriendRequestController();
 const unfollowUserController = new UnfollowUserController();
 const userDataController = new UserDataController();
+const userSuggestionController = new UserSuggestionController();
 
 userRouter.get('/data/:_id', authMiddleware, userDataController.handle);
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
@@ -53,5 +55,6 @@ userRouter.get('/follow-detials/:username', authMiddleware, getFollowDetialsCont
 userRouter.get('/notification', authMiddleware, getNotificationDataController.handle);
 userRouter.delete('/friend-request/:username', authMiddleware, deleteFriendRequestController.handle);
 userRouter.delete('/unfollow/:_id', authMiddleware, unfollowUserController.handle);
+userRouter.get('/suggestion/:user', authMiddleware, userSuggestionController.handle);
 
 export default userRouter;

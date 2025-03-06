@@ -94,4 +94,32 @@ export default class FriendsRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findUsersWithFollowing(followingIds: string[], userId: string): Promise<IFriends[]> {
+    try {
+      return await FriendsModel.find({ followings: { $in: followingIds }, userId: { $ne: userId } });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already following this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findMostFollowedUsers(userId: string[], followingIds: string[], limit: number): Promise<IFriends[]> {
+    try {
+      return await FriendsModel.find(
+        { userId: { $nin: [...followingIds, ...userId] } },
+      ).sort({ followers: -1 })
+        .limit(limit)
+        .select("userId");
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already following this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
 }

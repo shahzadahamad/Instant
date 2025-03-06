@@ -26,9 +26,11 @@ const ReelsDetials = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [scrolling, setScrolling] = useState(false);
   const { reels, reelTotalPage } = useSelector((state: RootState) => state.post);
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const [page, setPage] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
   const [mainPost, setMainPost] = useState(false);
+  const [showFullCaption, setShowFullCaption] = useState(false);
 
   const fetchReels = async (load: boolean, page: number, status: boolean) => {
     try {
@@ -138,6 +140,7 @@ const ReelsDetials = () => {
   }, [reels, scrolling, currentVideoIndex, page, navigate, dispatch]);
 
   useEffect(() => {
+    setShowFullCaption(false);
     if (videoRefs.current[currentVideoIndex]) {
       setPlay(true);
       videoRefs.current[currentVideoIndex].play();
@@ -168,6 +171,11 @@ const ReelsDetials = () => {
     setMainPost(false);
     navigate(`/reels/${reels[currentVideoIndex]._id}`);
   }
+
+  const toggleCaption = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setShowFullCaption(!showFullCaption);
+  };
 
   return (
     <>
@@ -203,7 +211,7 @@ const ReelsDetials = () => {
                   playsInline
                   className={`${reel.post[0].filterClass} object-contain w-full h-full`}
                 />
-                <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
+                <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
                   {
                     muted ? <VolumeOff size={20} strokeWidth={3} /> : <Volume2 size={20} strokeWidth={3} />
                   }
@@ -219,8 +227,41 @@ const ReelsDetials = () => {
                     </button>
                   )
                 }
+
+                <div className="absolute bottom-5 left-5 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <div onClick={() => {
+                      if (currentUser?._id === reel.userId._id) {
+                        navigate('/profile')
+                      } else {
+                        navigate(`/user/${reel.userId.username}`)
+                      }
+                    }} className="w-8 h-8">
+                      <img
+                        src={reel.userId.profilePicture.toString()}
+                        className="w-full h-full rounded-full object-cover"
+                        alt=""
+                      />
+                    </div>
+                    <p onClick={() => {
+                      if (currentUser?._id === reel.userId._id) {
+                        navigate('/profile')
+                      } else {
+                        navigate(`/user/${reel.userId.username}`)
+                      }
+                    }} className="font-semibold text-sm text-white">{reel.userId.username}</p>
+                  </div>
+                  <p className="text-white text-sm w-[90%] font-normal">
+                    {showFullCaption ? reel.caption : reel.caption.length > 30 ? `${reel.caption.slice(0, 30)}... ` : ""}
+                    {reel.caption.length > 20 && (
+                      <button onClick={(e) => toggleCaption(e)} className="text-[#c8c2c2] font-semibold">
+                        {showFullCaption ? "less" : "more"}
+                      </button>
+                    )}
+                  </p>
+                </div>
               </div>
-              <div className="text-white flex flex-col gap-8 text-[28px] h-[95%] justify-end pb-10">
+              <div className="dark:text-white text-black flex flex-col gap-8 text-[28px] h-[95%] justify-end pb-10">
                 <div className="flex flex-col gap-1 items-center">
                   <FontAwesomeIcon
                     onClick={handleLikeAndUnlikePost}
@@ -248,7 +289,7 @@ const ReelsDetials = () => {
                   <FontAwesomeIcon className="hover:cursor-pointer" icon={faComment} />
                   <p className="text-sm font-semibold">{reel.commentCount}</p>
                 </div>
-                <div className="pt-2">
+                <div className="pt-1">
                   <FontAwesomeIcon
                     className="hover:cursor-pointer"
                     icon={faPaperPlane}

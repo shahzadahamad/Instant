@@ -326,5 +326,24 @@ export default class UserRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findUsersByIds(userIds: string[], limit: number): Promise<IUser[]> {
+    try {
+      return await UserModel.find({ _id: { $in: userIds } }, {
+        _id: 1,
+        username: 1,
+        fullname: 1,
+        profilePicture: 1,
+        isVerified: 1
+      }).limit(limit);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
+      throw new Error("Unknown error");
+    }
+  }
 }
 
