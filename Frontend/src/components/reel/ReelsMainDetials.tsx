@@ -1,5 +1,5 @@
 import { getReels } from "@/apis/api/userApi";
-import { setReels } from "@/redux/slice/postSlice";
+import { setReels, setReelTotalPage } from "@/redux/slice/postSlice";
 import { AxiosError } from "axios";
 import { useEffect } from "react"
 import toast from "react-hot-toast";
@@ -17,8 +17,9 @@ const ReelsMainDetials = () => {
 
       try {
         const reelData = await getReels("", 1, true);
-        dispatch(setReels(reelData));
-        navigate(`/reels/${reelData[0]._id}`)
+        dispatch(setReels(reelData.reels));
+        dispatch(setReelTotalPage(reelData.totalPage));
+        navigate(`/reels/${reelData.reels[0]._id}`)
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           console.error(error.response.data?.error || "An error occurred");

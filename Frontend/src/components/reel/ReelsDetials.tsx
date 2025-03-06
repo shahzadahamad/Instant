@@ -1,7 +1,8 @@
-import { getReels } from "@/apis/api/userApi";
-import { newReelsPush, setReels } from "@/redux/slice/postSlice";
+import { checkHasUserLikedThePost, getReels, likeAndDisLikePost } from "@/apis/api/userApi";
+import { newReelsPush, setReels, setReelTotalPage, updateLikeCount } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";
 import { faComment, faHeart, faPaperPlane } from "@fortawesome/free-regular-svg-icons"
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons"
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { AxiosError } from "axios";
@@ -11,6 +12,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import PostModal from "../common/PostViewModal/PostModal";
 
 const ReelsDetials = () => {
 
@@ -23,16 +25,19 @@ const ReelsDetials = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [scrolling, setScrolling] = useState(false);
-  const { reels } = useSelector((state: RootState) => state.post);
+  const { reels, reelTotalPage } = useSelector((state: RootState) => state.post);
   const [page, setPage] = useState(1);
+  const [isLiked, setIsLiked] = useState(false);
+  const [mainPost, setMainPost] = useState(false);
 
   const fetchReels = async (load: boolean, page: number, status: boolean) => {
     try {
       const reelData = await getReels(reelId as string, page, status);
       if (load) {
-        dispatch(setReels(reelData));
-        setPage(0);
-        navigate(`/reels/${reelData[0]._id}`);
+        dispatch(setReels(reelData.reels));
+        dispatch(setReelTotalPage(reelData.totalPage));
+        setPage(1);
+        navigate(`/reels/${reelData.reels[0]._id}`);
       } else {
         return reelData;
       }
@@ -52,6 +57,17 @@ const ReelsDetials = () => {
       fetchReels(true, page, false);
     }
   }, [reelId, page, dispatch, navigate]);
+
+  useEffect(() => {
+    const checkHasuserLikedCurrentPost = async (id: string) => {
+      const response = await checkHasUserLikedThePost(id);
+      setIsLiked(response);
+    };
+    if (reels.length > 0 && reels[currentVideoIndex]) {
+      checkHasuserLikedCurrentPost(reels[currentVideoIndex]._id);
+    }
+    return () => { };
+  }, [reels, currentVideoIndex]);
 
 
   const handleVideoClick = () => {
@@ -94,7 +110,7 @@ const ReelsDetials = () => {
       const newReelId = reels[newIndex]._id;
       navigate(`/reels/${newReelId}`);
 
-      if (newIndex === reels.length - 1) {
+      if (newIndex === reels.length - 1 && page < reelTotalPage) {
         setPage(prev => prev + 1);
         const newReels = await fetchReels(false, page + 1, true);
         if (newReels && newReels.length > 0) {
@@ -128,60 +144,122 @@ const ReelsDetials = () => {
     }
   }, [currentVideoIndex]);
 
+  const handleLikeAndUnlikePost = async () => {
+    const reelId = reels[currentVideoIndex]._id;
+    const action = isLiked ? "dislike" : "like";
+    await likeAndDisLikePost(reelId, action);
+    setIsLiked(!isLiked);
+    const index = reels.findIndex(reel => reel._id === reelId);
+    if (index !== -1) {
+      dispatch(updateLikeCount({ index, actionType: action }));
+    }
+  };
+
+  const closeModal = (status: boolean = false) => {
+    setMainPost(false);
+    if (status) {
+      navigate("/profile");
+    } else {
+      navigate(`/reels/${reels[currentVideoIndex]._id}`);
+    }
+  };
+
+  const closeWhileTouchOutsideModal = () => {
+    setMainPost(false);
+    navigate(`/reels/${reels[currentVideoIndex]._id}`);
+  }
+
   return (
-    <div ref={containerRef} className='w-full h-screen scrollbar-hidden'>
-      {reels.map((reel, index) => (
-        <div
-          className="w-full h-full flex flex-col transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateY(-${currentVideoIndex * 100}%)` }}
-        >
-          <div key={reel._id} className="w-full h-full flex items-center justify-center gap-4">
-            <div onClick={handleVideoClick} className="w-1/3 h-[95%] border rounded-lg relative cursor-pointer">
-              <video
-                ref={(el) => (videoRefs.current[index] = el)}
-                muted={muted}
-                src={reel.post[0].url}
-                autoPlay={index === currentVideoIndex}
-                playsInline
-                className={`object-contain w-full h-full`}
-              />
-              <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
-                {
-                  muted ? <VolumeOff size={20} strokeWidth={3} /> : <Volume2 size={20} strokeWidth={3} />
-                }
-              </button>
-              {
-                !play && (
-                  <button
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <div className="w-20 h-20 text-3xl rounded-full flex items-center justify-center bg-[#000000] bg-opacity-30 cursor-pointer">
-                      <FontAwesomeIcon className="hover:cursor-pointer" icon={faPlay} />
-                    </div>
-                  </button>
-                )
-              }
-            </div>
-            <div className="text-white flex flex-col gap-8 text-[28px] h-[95%] justify-end pb-10">
-              <div className="flex flex-col gap-1 items-center">
-                <FontAwesomeIcon className="hover:cursor-pointer" icon={faHeart} />
-                <p className="text-sm font-semibold">{reel.likeCount}</p>
-              </div>
-              <div className="flex flex-col gap-1 items-center">
-                <FontAwesomeIcon className="hover:cursor-pointer" icon={faComment} />
-                <p className="text-sm font-semibold">{reel.commentCount}</p>
-              </div>
-              <div className="pt-2">
-                <FontAwesomeIcon
-                  className="hover:cursor-pointer"
-                  icon={faPaperPlane}
+    <>
+      {(mainPost) && (
+        <PostModal
+          post={[reels[currentVideoIndex]]}
+          imageIndex={0}
+          close={closeModal}
+          closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
+        />
+      )}
+      <div ref={containerRef} className='w-full h-screen scrollbar-hidden'>
+        {reels.map((reel, index) => (
+          <div
+            className="w-full h-full flex flex-col transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateY(-${currentVideoIndex * 100}%)` }}
+          >
+            <div key={reel._id} className="w-full h-full flex items-center justify-center gap-4">
+              <div onClick={handleVideoClick} className="w-1/3 h-[95%] border rounded-lg relative cursor-pointer" style={{
+                filter: `
+                  contrast(${reel.post[0].customFilter.contrast}%)
+                  brightness(${reel.post[0].customFilter.brightness}%)
+                  saturate(${reel.post[0].customFilter.saturation}%)
+                  sepia(${reel.post[0].customFilter.sepia}%)
+                  grayscale(${reel.post[0].customFilter.grayScale}%)
+                `,
+              }}>
+                <video
+                  ref={(el) => (videoRefs.current[index] = el)}
+                  muted={muted}
+                  src={reel.post[0].url}
+                  autoPlay={index === currentVideoIndex}
+                  playsInline
+                  className={`${reel.post[0].filterClass} object-contain w-full h-full`}
                 />
+                <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
+                  {
+                    muted ? <VolumeOff size={20} strokeWidth={3} /> : <Volume2 size={20} strokeWidth={3} />
+                  }
+                </button>
+                {
+                  !play && (
+                    <button
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <div className="w-20 h-20 text-3xl rounded-full flex items-center justify-center bg-[#000000] bg-opacity-30 cursor-pointer">
+                        <FontAwesomeIcon className="hover:cursor-pointer" icon={faPlay} />
+                      </div>
+                    </button>
+                  )
+                }
+              </div>
+              <div className="text-white flex flex-col gap-8 text-[28px] h-[95%] justify-end pb-10">
+                <div className="flex flex-col gap-1 items-center">
+                  <FontAwesomeIcon
+                    onClick={handleLikeAndUnlikePost}
+                    className={`${isLiked ? "text-[#ff3040]" : "text-white hover:opacity-70"
+                      } hover:cursor-pointer transition-colors`}
+                    icon={isLiked ? faHeartSolid : faHeart}
+                  />
+                  {
+                    !reels[currentVideoIndex].hideLikeAndView && (
+                      <p className="text-sm font-semibold">{reel.likeCount}</p>
+                    )
+                  }
+                </div>
+                <div onClick={() => {
+                  setPlay(false);
+                  const video = videoRefs.current[currentVideoIndex];
+                  video?.pause();
+                  setMainPost(true);
+                  window.history.pushState(
+                    null,
+                    "",
+                    `/post/${reel._id}`
+                  );
+                }} className="flex flex-col gap-1 items-center">
+                  <FontAwesomeIcon className="hover:cursor-pointer" icon={faComment} />
+                  <p className="text-sm font-semibold">{reel.commentCount}</p>
+                </div>
+                <div className="pt-2">
+                  <FontAwesomeIcon
+                    className="hover:cursor-pointer"
+                    icon={faPaperPlane}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   )
 }
 

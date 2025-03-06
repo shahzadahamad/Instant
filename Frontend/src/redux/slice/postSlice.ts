@@ -9,6 +9,7 @@ const initialState: PostState = {
   postHoverFilterClass: "",
   postType: "",
   reels: [],
+  reelTotalPage: 1,
 };
 
 const postSlice = createSlice({
@@ -75,9 +76,22 @@ const postSlice = createSlice({
     setReels(state, action) {
       state.reels = action.payload;
     },
+    setReelTotalPage(state, action) {
+      state.reelTotalPage = action.payload;
+    },
     newReelsPush(state, action) {
       state.reels = [...state.reels, ...action.payload];
-    }    
+    },
+    updateLikeCount(state, action) {
+      const { index, actionType } = action.payload;
+      if (index >= 0 && index < state.reels.length) {
+        if (actionType === 'like') {
+          state.reels[index].likeCount++;
+        } else {
+          state.reels[index].likeCount--;
+        }
+      }
+    }
   },
 });
 
@@ -98,7 +112,9 @@ export const {
   pushPost,
   setStateDefualt,
   setReels,
-  newReelsPush
+  newReelsPush,
+  updateLikeCount,
+  setReelTotalPage
 } = postSlice.actions;
 
 export default postSlice.reducer;

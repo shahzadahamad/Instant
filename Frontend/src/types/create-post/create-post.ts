@@ -38,6 +38,7 @@ export interface IPostWithUserData {
   likeCount: number;
   commentCount: number;
   isArchive: boolean;
+  createdAt: Date;
 }
 
 export interface PostState {
@@ -47,7 +48,8 @@ export interface PostState {
   musicId: string;
   postHoverFilterClass: string;
   postType: string;
-  reels: IPostWithUserData[]
+  reels: IPostWithUserData[];
+  reelTotalPage: number;
 }
 
 export interface GetCreatePostMusicData {
