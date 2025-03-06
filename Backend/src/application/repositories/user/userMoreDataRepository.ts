@@ -84,4 +84,16 @@ export default class UserMoreDataRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async watchedPostAdd(userId: string, postId: string): Promise<void> {
+    try {
+      await UserMoreDataModel.updateOne({ userId }, { $addToSet: { watchedPost: postId } }, { upsert: true });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("You have already requested this user.");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
 }

@@ -300,7 +300,7 @@ export default class PostRepository {
       const filter: PostFilter = {
         isArchive: false,
         userId: { $in: userIds },
-        postId: { $nin: watchedPost },
+        _id: { $nin: watchedPost },
       };
 
       if (reel) {
@@ -327,7 +327,7 @@ export default class PostRepository {
       const filter: PostFilter = {
         isArchive: false,
         userId: { $nin: userIds },
-        postId: { $nin: watchedPost },
+        _id: { $nin: watchedPost },
       };
 
       if (reel) {
@@ -352,7 +352,7 @@ export default class PostRepository {
 
       const filter: PostFilter = {
         isArchive: false,
-        postId: { $in: watchedPost },
+        _id: { $in: watchedPost },
       };
 
       if (reel) {
