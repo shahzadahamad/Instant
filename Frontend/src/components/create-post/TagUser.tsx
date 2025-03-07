@@ -25,7 +25,7 @@ import {
 const TagUser = () => {
   const dispatch = useDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { post } = useSelector((state: RootState) => state.post);
+  const { post, isStory } = useSelector((state: RootState) => state.post);
   const [searchVal, setSearchVal] = useState("");
   const [searchUsers, setSearchUsers] = useState<
     GetCreatePostUserData[] | null
@@ -47,15 +47,13 @@ const TagUser = () => {
         console.error("Error fetching users:", error);
       }
     };
-    if (searchVal) {
-      fetchMusic();
-    }
-    return () => {};
+    fetchMusic();
+    return () => { };
   }, [searchVal, postIndex, post]);
 
   useEffect(() => {
     fetchTagUser();
-    return () => {};
+    return () => { };
   }, [post[postIndex].tagUsers]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,7 +127,7 @@ const TagUser = () => {
           value={searchVal}
           onChange={handleSearchChange}
           className="w-full p-3 border rounded-md outline-none bg-transparent resize-none text-sm"
-          placeholder="Tag users"
+          placeholder={`Search users`}
         />
         <PersonAddAltIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm cursor-pointer" />
         {searchVal && searchUsers && searchUsers.length > 0 && (
@@ -176,9 +174,8 @@ const TagUser = () => {
           <div className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
             <button
               onClick={handleNextImage}
-              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${
-                post && postIndex === post.length - 1 ? "hidden" : ""
-              }`}
+              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === post.length - 1 ? "hidden" : ""
+                }`}
             >
               <FontAwesomeIcon
                 icon={faArrowRight}
@@ -190,9 +187,8 @@ const TagUser = () => {
           <div className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10">
             <button
               onClick={handlePreviousImage}
-              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${
-                post && postIndex === 0 ? "hidden" : ""
-              }`}
+              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === 0 ? "hidden" : ""
+                }`}
             >
               <FontAwesomeIcon
                 icon={faArrowLeft}
@@ -220,7 +216,7 @@ const TagUser = () => {
         <ModalContent>
           <ModalHeader>
             <div className="w-full flex justify-between items-center">
-              <h1 className="text-lg font-semibold">Tagged Users</h1>
+              <h1 className="text-lg font-semibold">{isStory ? "Mentioned" : "Tagged"} Users</h1>
             </div>
           </ModalHeader>
           <ModalBody className="w-full h-[70vh] overflow-y-auto flex flex-col border-t relative">

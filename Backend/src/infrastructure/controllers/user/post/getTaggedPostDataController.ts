@@ -4,6 +4,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetTaggedPostData from "../../../../application/useCases/user/post/getTaggedPostData";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 
 export default class GetTaggedPostDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -12,7 +13,8 @@ export default class GetTaggedPostDataController {
 
     const getTaggedPostData = new GetTaggedPostData(
       new PostRepository(),
-      new UserRepository()
+      new UserRepository(),
+      new FriendsRepository()
     );
 
     try {

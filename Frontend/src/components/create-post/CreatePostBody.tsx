@@ -21,13 +21,13 @@ const CreatePostBody = () => {
   const dispatch = useDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
-  const { post, postIndex, musicId, postHoverFilterClass } = useSelector(
+  const { post, postIndex, musicId, postHoverFilterClass, isStory } = useSelector(
     (state: RootState) => state.post
   );
 
   useEffect(() => {
     dispatch(setStateDefualt());
-    return () => {};
+    return () => { };
   }, [dispatch]);
 
   const [music, setMusic] = useState<GetSelectMusicData | null>(null);
@@ -49,7 +49,7 @@ const CreatePostBody = () => {
       fetchMusic(musicId);
       setIsPlaying(true);
     }
-    return () => {};
+    return () => { };
   }, [musicId]);
 
   const handleNextImage = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,31 +70,26 @@ const CreatePostBody = () => {
 
   const filterStyles = {
     filter: `
-    contrast(${
-      post && post.length > 0 && post[postIndex]
+    contrast(${post && post.length > 0 && post[postIndex]
         ? post[postIndex].customFilter[0].value
         : 100
-    }%)
-    brightness(${
-      post && post.length > 0 && post[postIndex]
+      }%)
+    brightness(${post && post.length > 0 && post[postIndex]
         ? post[postIndex].customFilter[1].value
         : 100
-    }%)
-    saturate(${
-      post && post.length > 0 && post[postIndex]
+      }%)
+    saturate(${post && post.length > 0 && post[postIndex]
         ? post[postIndex].customFilter[2].value
         : 100
-    }%)
-    sepia(${
-      post && post.length > 0 && post[postIndex]
+      }%)
+    sepia(${post && post.length > 0 && post[postIndex]
         ? post[postIndex].customFilter[3].value
         : 0
-    }%)
-    grayscale(${
-      post && post.length > 0 && post[postIndex]
+      }%)
+    grayscale(${post && post.length > 0 && post[postIndex]
         ? post[postIndex].customFilter[4].value
         : 0
-    }%)
+      }%)
   `,
   };
 
@@ -114,11 +109,15 @@ const CreatePostBody = () => {
       <div className="col-span-12 md:col-span-7">
         <Tabs defaultValue="post" className="w-[400px]">
           <TabsList>
-            <TabsTrigger value="post">Post</TabsTrigger>
+            <TabsTrigger value="post">{isStory ? "Story" : "Post"}</TabsTrigger>
             {post.length > 0 && (
               <>
-                <TabsTrigger value="change">Add Post</TabsTrigger>
-                <TabsTrigger value="tag-user">Tag users</TabsTrigger>
+                {
+                  !isStory && (
+                    <TabsTrigger value="change">Add Post</TabsTrigger>
+                  )
+                }
+                <TabsTrigger value="tag-user">{isStory ? "Mention" : "Tag"} users</TabsTrigger>
               </>
             )}
           </TabsList>
@@ -132,9 +131,8 @@ const CreatePostBody = () => {
                       className="w-full h-full relative flex items-center justify-center"
                     >
                       <img
-                        className={`absolute w-full h-full rounded-md object-contain ${
-                          postHoverFilterClass || post[postIndex].filterClass
-                        }`}
+                        className={`absolute w-full h-full rounded-md object-contain ${postHoverFilterClass || post[postIndex].filterClass
+                          }`}
                         src={post[postIndex].url}
                         alt="Uploaded content"
                       />
@@ -146,9 +144,8 @@ const CreatePostBody = () => {
                         className="w-full h-full relative flex items-center justify-center"
                       >
                         <video
-                          className={`w-full rounded-md h-full object-contain ${
-                            postHoverFilterClass || post[postIndex].filterClass
-                          }`}
+                          className={`w-full rounded-md h-full object-contain ${postHoverFilterClass || post[postIndex].filterClass
+                            }`}
                           ref={videoRef}
                           controls
                           muted={musicId ? true : false}

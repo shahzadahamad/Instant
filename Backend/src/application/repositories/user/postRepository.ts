@@ -50,7 +50,7 @@ export default class PostRepository {
     }
   }
 
-  public async findUserTaggedPosts(userId: string): Promise<IPost[]> {
+  public async findUserTaggedPosts(userId: string): Promise<IpostWithUserData[]> {
     try {
       return await PostModal.find({
         post: {
@@ -61,7 +61,7 @@ export default class PostRepository {
         isArchive: false
       })
         .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 }) as IpostWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding post: ${error.message}`);
@@ -72,13 +72,13 @@ export default class PostRepository {
     }
   }
 
-  public async findLikedPostData(postIds: string[]): Promise<IPost[]> {
+  public async findLikedPostData(postIds: string[]): Promise<IPostWithUserData[]> {
     try {
       return await PostModal.find({
         _id: { $in: postIds }, isArchive: false
       })
         .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 }) as IpostWithUserData[] | []
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding post: ${error.message}`);
@@ -358,6 +358,28 @@ export default class PostRepository {
       if (reel) {
         filter["post.0.type"] = "reel";
       }
+
+      return await PostModal.find(filter)
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error finding reel: ${error.message}`);
+        throw new Error("Failed to find reel");
+      }
+      console.error("Unknown error finding reel");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findPostOfFollowedUserWached(watchedPost: string[], userIds: string[]): Promise<IPostWithUserData[]> {
+    try {
+
+      const filter: PostFilter = {
+        isArchive: false,
+        userId: { $in: userIds },
+        _id: { $in: watchedPost },
+      };
 
       return await PostModal.find(filter)
         .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')

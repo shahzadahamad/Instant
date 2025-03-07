@@ -2,6 +2,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   setAspectRatios,
+  setIsStory,
   setPost,
   setPostIndex,
 } from "@/redux/slice/postSlice";
@@ -117,24 +118,27 @@ const SelectAspectRatioAndUplaod = () => {
         return;
       }
 
-      if (fileType === "video" || fileType === 'reel') {
+      if ((postType === "video" || postType === 'reel') || (postType === 'story' && fileType === 'video')) {
         const video = document.createElement("video");
         video.src = URL.createObjectURL(file);
 
         video.onloadedmetadata = () => {
           const durationInMinutes = video.duration / 60;
 
-          if (fileType === 'video' && durationInMinutes > 5) {
+          if (postType === 'video' && durationInMinutes > 5) {
             toast.error("The video duration cannot exceed 5 minutes!");
             return;
-          } else if (fileType === 'reel' && durationInMinutes > 1) {
+          } else if (postType === 'reel' && durationInMinutes > 1) {
             toast.error("The reel duration cannot exceed 1 minutes!");
+            return;
+          } else if (postType === 'story' && durationInMinutes > 0.5) {
+            toast.error("The reel duration cannot exceed 30 seconds!");
             return;
           }
 
           const post = {
             url: URL.createObjectURL(file),
-            type: fileType,
+            type: postType,
             filterClass: "",
             customFilter: [
               { label: "Contrast", value: 100, field: "contrast" },
@@ -152,7 +156,13 @@ const SelectAspectRatioAndUplaod = () => {
       } else {
         const fileURL = URL.createObjectURL(file);
         setImage(fileURL);
-        setFileType(fileType);
+        setFileType(postType === 'story' ? "image" : postType);
+        if (postType === 'story') {
+          dispatch(setIsStory())
+        }
+        if (postType === 'story' && fileType === 'image') {
+          setAspectRatio(4 / 5)
+        }
         onOpen();
       }
     } else {
@@ -216,13 +226,13 @@ const SelectAspectRatioAndUplaod = () => {
         onClick={handleUplaodClick}
         className={`bg-transparent transition-colors p-2 border text-sm rounded-md dark:hover:bg-white dark:hover:text-black hover:bg-black hover:text-white`}
       >
-        Upload {postType === 'image' || postType === 'video' ? "Post" : postType === 'reel' ? 'Reel' : "Live"}
+        Upload {postType === 'image' || postType === 'video' ? "Post" : postType === 'reel' ? 'Reel' : postType === 'story' ? "Story" : ""}
       </button>
       <input
         onChange={handleInputChange}
         ref={uploadInputRef}
         type="file"
-        accept={`${postType === "image" ? "image/*" : "video/*"}`}
+        accept={`${postType === "image" ? "image/*" : postType === 'video' || postType === 'reel' ? "video/*" : 'image/* /video/*'}`}
         hidden
       />
       {image && (

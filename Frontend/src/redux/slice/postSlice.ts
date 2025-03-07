@@ -10,6 +10,7 @@ const initialState: PostState = {
   postType: "",
   reels: [],
   reelTotalPage: 1,
+  isStory: false,
 };
 
 const postSlice = createSlice({
@@ -91,7 +92,10 @@ const postSlice = createSlice({
           state.reels[index].likeCount--;
         }
       }
-    }
+    },
+    setIsStory(state) {
+      state.isStory = true;
+    },
   },
 });
 
@@ -114,7 +118,8 @@ export const {
   setReels,
   newReelsPush,
   updateLikeCount,
-  setReelTotalPage
+  setReelTotalPage,
+  setIsStory
 } = postSlice.actions;
 
 export default postSlice.reducer;

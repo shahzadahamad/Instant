@@ -1,27 +1,26 @@
 import { Request, Response } from "express";
 import PostRepository from "../../../../application/repositories/user/postRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import LikeRepository from "../../../../application/repositories/user/likeRepository";
-import GetLikedPostData from "../../../../application/useCases/user/post/getLikedPostData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import LoadingPagePost from "../../../../application/useCases/user/post/loadingPagePost";
 
-export default class GetLikedPostDataController {
+export default class LoadingPagePostController {
   public async handle(req: Request, res: Response): Promise<void> {
+    const { page = 0 } = req.query;
     const { userId } = req.user;
-    const { username = "" } = req.query;
+    const pageNumber = parseInt(page as string);
 
-    const getLikedPostData = new GetLikedPostData(
+    const loadingPagePost = new LoadingPagePost(
       new PostRepository(),
-      new UserRepository(),
-      new LikeRepository(),
       new FriendsRepository(),
+      new UserMoreDataRepository(),
     );
 
     try {
-      const data = await getLikedPostData.execute(userId, username as string);
-      res.status(HttpStatusCode.OK).json(data);
+      const postData = await loadingPagePost.execute(userId, pageNumber);
+      res.status(HttpStatusCode.OK).json(postData);
     } catch (error) {
       if (error instanceof Error) {
         res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });

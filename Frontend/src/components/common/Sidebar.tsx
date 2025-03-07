@@ -23,7 +23,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { Image, LogOut, Moon, Settings, Sun, Tv, VideoIcon } from "lucide-react";
+import { CircleFadingPlus, Image, LogOut, Moon, Settings, Sun, VideoIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -120,6 +120,11 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
   };
 
   const handlePostType = (type: string) => {
+    if (type === 'story') {
+      navigate(`/create-story/${type}`)
+      dispatch(setPostType(type));
+      return;
+    }
     navigate(`/create-post/${type}`);
     dispatch(setPostType(type));
   }
@@ -324,10 +329,11 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
                         <span className="text-base font-semibold mt-2">Reels</span>
                       </div>
                       <div
+                        onClick={() => handlePostType('story')}
                         className="border rounded-md p-5 flex flex-col items-center hover:bg-[#888484] cursor-pointer"
                       >
-                        <Tv className="w-10 h-10 mb-2" />
-                        <span className="text-base font-semibold">Go live</span>
+                        <CircleFadingPlus className="w-10 h-10 mb-2" />
+                        <span className="text-base font-semibold">Stories</span>
                       </div>
                     </div>
                   </ModalBody>

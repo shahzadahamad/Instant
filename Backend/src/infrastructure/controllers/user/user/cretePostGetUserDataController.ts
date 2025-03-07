@@ -3,17 +3,19 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetCreatePostUserData from "../../../../application/useCases/user/user/getCreatePostUserData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 
 export default class CretePostGetUserDataController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { search = '', users } = req.query;
+    const { userId } = req.user;
     const getCreatePostUserData = new GetCreatePostUserData(
-      new UserRepository()
+      new UserRepository(),
+      new FriendsRepository()
     );
 
     try {
-      const userData = await getCreatePostUserData.execute(search as string, users as string[]);
-
+      const userData = await getCreatePostUserData.execute(search as string, users as string[], userId);
       res.status(HttpStatusCode.OK).json(userData);
     } catch (error) {
       if (error instanceof Error) {

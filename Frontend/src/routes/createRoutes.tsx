@@ -66,6 +66,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? <CreatePost /> : <Navigate to="/sign-in" replace />,
   },
   {
+    path: "/create-story/:type",
+    element: currentUser ? <CreatePost /> : <Navigate to="/sign-in" replace />,
+  },
+  {
     path: "/chats",
     element: currentUser ? <ChatInbox /> : <Navigate to="/sign-in" replace />,
   },
