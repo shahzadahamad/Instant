@@ -2,9 +2,9 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   setAspectRatios,
-  setIsStory,
   setPost,
   setPostIndex,
+  setStory,
 } from "@/redux/slice/postSlice";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import CropPortraitIcon from "@mui/icons-material/CropPortrait";
@@ -100,7 +100,7 @@ const SelectAspectRatioAndUplaod = () => {
     const files = e.target.files;
     if (files && files.length === 1) {
       const file = files[0];
-      const fileType = postType === 'reel' ? "reel" : file.type.startsWith("video") ? "video" : "image";
+      const fileType = postType === 'reel' ? "reel" : postType === 'story' ? "story" : file.type.startsWith("video") ? "video" : "image";
 
       if (fileType == "video" && postType == "image") {
         toast.error("Upload Image");
@@ -118,27 +118,27 @@ const SelectAspectRatioAndUplaod = () => {
         return;
       }
 
-      if ((postType === "video" || postType === 'reel') || (postType === 'story' && fileType === 'video')) {
+      if ((postType === "video" || postType === 'reel') || (fileType === 'story' && file.type.startsWith('video'))) {
         const video = document.createElement("video");
         video.src = URL.createObjectURL(file);
 
         video.onloadedmetadata = () => {
           const durationInMinutes = video.duration / 60;
 
-          if (postType === 'video' && durationInMinutes > 5) {
+          if (fileType === 'video' && durationInMinutes > 5) {
             toast.error("The video duration cannot exceed 5 minutes!");
             return;
-          } else if (postType === 'reel' && durationInMinutes > 1) {
+          } else if (fileType === 'reel' && durationInMinutes > 1) {
             toast.error("The reel duration cannot exceed 1 minutes!");
             return;
-          } else if (postType === 'story' && durationInMinutes > 0.5) {
+          } else if (fileType === 'story' && durationInMinutes > 0.5) {
             toast.error("The reel duration cannot exceed 30 seconds!");
             return;
           }
 
           const post = {
             url: URL.createObjectURL(file),
-            type: postType,
+            type: fileType,
             filterClass: "",
             customFilter: [
               { label: "Contrast", value: 100, field: "contrast" },
@@ -156,12 +156,10 @@ const SelectAspectRatioAndUplaod = () => {
       } else {
         const fileURL = URL.createObjectURL(file);
         setImage(fileURL);
-        setFileType(postType === 'story' ? "image" : postType);
-        if (postType === 'story') {
-          dispatch(setIsStory())
-        }
-        if (postType === 'story' && fileType === 'image') {
-          setAspectRatio(4 / 5)
+        setFileType(fileType);
+        if (fileType === 'story') {
+          setAspectRatio(4 / 5);
+          dispatch(setStory());
         }
         onOpen();
       }

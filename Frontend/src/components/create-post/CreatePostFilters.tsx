@@ -35,7 +35,7 @@ const CreatePostFilters = () => {
             >
               Custom Filter
             </TabsTrigger>
-            {post && post[postIndex] && post[postIndex].type !== "video" && post[postIndex].type !== "reel" && (
+            {post && post[postIndex] && post[postIndex].type !== "video" && post[postIndex].type !== "reel" && post[postIndex].type !== 'story' && (
               <TabsTrigger value="music" onClick={() => setTabs("music")}>
                 Music
               </TabsTrigger>

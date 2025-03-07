@@ -14,7 +14,6 @@ const CustomFilter = () => {
   }, []);
 
   const handleSliderChange = (_event: Event, newValue: number | number[],index:number) => {
-    console.log('inin')
     if (typeof newValue === "number") {
       dispatch(
         setCustomFilters({

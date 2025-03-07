@@ -41,6 +41,7 @@ const postSlice = createSlice({
       state.musicId = "";
       state.aspectRatio = null;
       state.postHoverFilterClass = "";
+      state.isStory = false;
     },
     setPostMusic(state, action) {
       state.musicId = action.payload.music;
@@ -93,7 +94,7 @@ const postSlice = createSlice({
         }
       }
     },
-    setIsStory(state) {
+    setStory(state) {
       state.isStory = true;
     },
   },
@@ -119,7 +120,7 @@ export const {
   newReelsPush,
   updateLikeCount,
   setReelTotalPage,
-  setIsStory
+  setStory
 } = postSlice.actions;
 
 export default postSlice.reducer;

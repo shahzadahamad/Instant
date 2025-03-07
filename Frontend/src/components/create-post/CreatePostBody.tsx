@@ -109,15 +109,15 @@ const CreatePostBody = () => {
       <div className="col-span-12 md:col-span-7">
         <Tabs defaultValue="post" className="w-[400px]">
           <TabsList>
-            <TabsTrigger value="post">{isStory ? "Story" : "Post"}</TabsTrigger>
+            <TabsTrigger value="post">{post.length > 0 && post[postIndex].type === 'story' ? "Story" : "Post"}</TabsTrigger>
             {post.length > 0 && (
               <>
                 {
-                  !isStory && (
+                  post[postIndex].type !== 'story' && (
                     <TabsTrigger value="change">Add Post</TabsTrigger>
                   )
                 }
-                <TabsTrigger value="tag-user">{isStory ? "Mention" : "Tag"} users</TabsTrigger>
+                <TabsTrigger value="tag-user">{post[postIndex].type === 'story' ? "Mention" : "Tag"} users</TabsTrigger>
               </>
             )}
           </TabsList>
@@ -125,7 +125,7 @@ const CreatePostBody = () => {
             <div className="w-[30rem] h-[70vh] border flex justify-center items-center rounded-md overflow-hidden mt-4 relative">
               {post && post.length > 0 ? (
                 <>
-                  {post[postIndex].type === "image" ? (
+                  {post[postIndex].type === "image" || post[postIndex].type === 'story' && isStory ? (
                     <div
                       style={filterStyles}
                       className="w-full h-full relative flex items-center justify-center"
