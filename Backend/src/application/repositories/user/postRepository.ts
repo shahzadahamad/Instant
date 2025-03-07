@@ -1,7 +1,7 @@
 import PostModal, {
   IPost,
 } from "../../../infrastructure/database/models/postModel";
-import { IPostWithUserData, PostData, PostFilter } from "../../interface/post";
+import { IpostWithUserData, IPostWithUserData, PostData, PostFilter } from "../../interface/post";
 
 export default class PostRepository {
   public async createPost(
@@ -130,9 +130,9 @@ export default class PostRepository {
     }
   }
 
-  public async findPostByIdWithUserData(_id: string): Promise<IPost | null> {
+  public async findPostByIdWithUserData(_id: string): Promise<IpostWithUserData | null> {
     try {
-      return await PostModal.findOne({ _id: _id }).populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount');
+      return await PostModal.findOne({ _id: _id }).populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount') as IpostWithUserData | null;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Invalid Access!");

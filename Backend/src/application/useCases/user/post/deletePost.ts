@@ -1,6 +1,7 @@
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import CommentRepository from "../../../repositories/user/commentRepository";
 import LikeRepository from "../../../repositories/user/likeRepository";
+import MessageRepository from "../../../repositories/user/messageRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserRepository from "../../../repositories/user/userRepository";
@@ -12,6 +13,7 @@ export default class DeletePost {
   private userRepository: UserRepository;
   private commentRepository: CommentRepository;
   private notificationRepository: NotificationRepository;
+  private messageRepository: MessageRepository;
 
   constructor(
     postRepository: PostRepository,
@@ -19,7 +21,8 @@ export default class DeletePost {
     likeRepository: LikeRepository,
     userRepository: UserRepository,
     commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository
+    notificationRepository: NotificationRepository,
+    messageRepository: MessageRepository,
   ) {
     this.postRepository = postRepository;
     this.awsS3Storage = awsS3Storage;
@@ -27,6 +30,7 @@ export default class DeletePost {
     this.userRepository = userRepository;
     this.commentRepository = commentRepository;
     this.notificationRepository = notificationRepository;
+    this.messageRepository = messageRepository;
   }
 
   public async execute(id: string, userId: string): Promise<string> {
@@ -53,6 +57,7 @@ export default class DeletePost {
     await this.likeRepository.deletePostlikes(id);
     await this.commentRepository.deletePostComments(id);
     await this.notificationRepository.removePostNotificationByPostId(id);
+    await this.messageRepository.changeMessageType(id);
     return "Post deleted successfully.";
   }
 }

@@ -13,6 +13,7 @@ import { socket } from "@/socket/socket";
 import { useDispatch } from "react-redux";
 import { updatelastMessage } from "@/redux/slice/chatSlice";
 import { format, isToday, isYesterday } from "date-fns";
+import SharePostMessage from "./message-type/SharePostMessage";
 
 const ChatDetials = () => {
   const [sendMessage, setSendMessage] = useState("");
@@ -101,9 +102,9 @@ const ChatDetials = () => {
     };
   }, []);
 
-  const handleMessageSend = (chatId: string, message: string) => {
+  const handleMessageSend = (chatId: string, message: string, type: string) => {
     const data = {
-      chatId, message
+      chatId, message, type
     }
     socket.emit('send_message', data);
     setSendMessage("");
@@ -179,10 +180,12 @@ const ChatDetials = () => {
                                   message.senderId.username + " " + message.message.split(" ").slice(1).join(" ")
                             }
                           </p>
-                        ) : message.type === 'text' && (
+                        ) : message.type === 'text' ? (
                           <>
                             <TextMessage key={message._id} message={message} />
                           </>
+                        ) : message.type === 'sharePost' && (
+                          <SharePostMessage key={message._id} message={message} />
                         )
                       )}
                     </div>
@@ -198,7 +201,7 @@ const ChatDetials = () => {
                   onChange={(e) => setSendMessage(e.target.value)}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
-                      handleMessageSend(chatData._id, sendMessage)
+                      handleMessageSend(chatData._id, sendMessage, 'text')
                     }
                   }}
                   className="w-full p-3 rounded-md border bg-transparent outline-none pl-10 pr-10"
@@ -232,7 +235,7 @@ const ChatDetials = () => {
                 </div>
 
                 {sendMessage ? (
-                  <button onClick={() => handleMessageSend(chatData._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
+                  <button onClick={() => handleMessageSend(chatData._id, sendMessage, 'text')} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
                     Send
                   </button>
                 ) : (

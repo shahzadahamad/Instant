@@ -50,6 +50,7 @@ import {
 import PostModalActions from "./PostModalActions";
 import { AxiosError } from "axios";
 import VerificationIcon from "../svg/VerificationIcon";
+import SharePostModal from "../SharePostModal";
 
 const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhileTouchOutsideModal }) => {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
   const [checkIsCommentLiked, setCheckIsCommentLiked] = useState<{
     [key: string]: { liked: boolean; count: number };
   }>({});
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -430,6 +432,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
     setOpenActionModal(status);
   };
 
+  const handleShareModal = () => {
+    setShareModalOpen((prev) => !prev);
+  };
+
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -753,6 +759,16 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
           postArchived={post[currentIndex].isArchive}
         />
       )}
+
+      {
+        shareModalOpen && (
+          <SharePostModal
+            postId={post[currentIndex]._id}
+            shareModalOpen={shareModalOpen}
+            handleShareModal={handleShareModal}
+          />
+        )
+      }
 
       <Modal
         isOpen={openDeleteCommentModal.open}
@@ -1390,12 +1406,22 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
                 />
                 <FontAwesomeIcon
                   className="hover:cursor-pointer transition-colors hover:opacity-70"
+                  onClick={() => {
+                    if (commentInputRef && commentInputRef.current) {
+                      commentInputRef.current.focus()
+                    }
+                  }}
                   icon={faComment}
                 />
-                <FontAwesomeIcon
-                  className="hover:cursor-pointer transition-colors hover:opacity-70"
-                  icon={faPaperPlane}
-                />
+                {
+                  !post[currentIndex].userId.isPrivateAccount && (
+                    <FontAwesomeIcon
+                      onClick={() => setShareModalOpen(true)}
+                      className="hover:cursor-pointer transition-colors hover:opacity-70"
+                      icon={faPaperPlane}
+                    />
+                  )
+                }
               </div>
               {post[currentIndex].likeCount > 0 ? (
                 <div className="flex items-center transition-all">

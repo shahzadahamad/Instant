@@ -1,4 +1,4 @@
-import { isVerified, userData } from "../profile/profile";
+import { GetUserPostData, isVerified, userData } from "../profile/profile";
 
 export interface Member {
   _id: string,
@@ -51,6 +51,7 @@ export interface MessageData {
   chatId: string;
   type: string,
   message: string,
+  postId: GetUserPostData
   senderId: Partial<userData>;
   deletedFrom: string[];
   createdAt: Date;

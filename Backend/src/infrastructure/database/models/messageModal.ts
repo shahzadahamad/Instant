@@ -29,7 +29,11 @@ const messageSchema: Schema = new Schema(
     },
     message: {
       type: String,
-      required: true,
+      default: ""
+    },
+    postId: {
+      type: String,
+      ref: "Post",
     },
     senderId: {
       type: String,

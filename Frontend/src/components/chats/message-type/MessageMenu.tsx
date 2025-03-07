@@ -1,13 +1,12 @@
 import {
-  faCopy,
-  faPaperPlane,
   faTrashCan,
 } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsis, faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
-const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
+const MessageMenu: React.FC<{ data: { messageId: string, date: Date }, value: boolean }> = ({ data, value }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
@@ -106,20 +105,9 @@ const MessageMenu: React.FC<{ value: boolean }> = ({ value }) => {
           className="absolute p-1 top-full mt-2 right-0 w-36 bg-white dark:bg-[#191919] rounded-md shadow-lg z-10"
         >
           <ul className="text-sm">
-            <div className="flex justify-between items-center p-3 cursor-pointer rounded-md hover:bg-[#f0f0f0] dark:hover:bg-[#2c2c2c]">
-              <li>Forward</li>
-              <FontAwesomeIcon
-                className="hover:cursor-pointer transition-colors hover:opacity-70"
-                icon={faPaperPlane}
-              />
-            </div>
 
-            <div className="flex justify-between items-center p-3 cursor-pointer rounded-md hover:bg-[#f0f0f0] dark:hover:bg-[#2c2c2c]">
-              <li>Copy</li>
-              <FontAwesomeIcon
-                className="hover:cursor-pointer transition-colors hover:opacity-70"
-                icon={faCopy}
-              />
+            <div className="flex justify-between items-center p-3 cursor-pointer rounded-md border-b border-[#f0f0f0] dark:border-[#2c2c2c]">
+              <h1 className="text-xs">{format(data.date, "MMMM d, yyyy h:mm a")},</h1>
             </div>
 
             <div className="flex justify-between items-center p-3 cursor-pointer rounded-md hover:bg-[#f0f0f0] dark:hover:bg-[#2c2c2c]">

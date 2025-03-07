@@ -76,3 +76,17 @@ export interface IFriendsWithUserData {
   followings: string[];
   blockedUser: string[];
 }
+
+export interface IpostWithUserData {
+  _id: string;
+  userId: IUser;
+  post: PostData[];
+  caption: string;
+  musicId: string;
+  aspectRatio: string;
+  hideLikeAndView: boolean;
+  hideComment: boolean;
+  likeCount: number;
+  commentCount: number;
+  isArchive: boolean;
+}

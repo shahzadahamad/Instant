@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PostModal from "../common/PostViewModal/PostModal";
+import VerificationIcon from "../common/svg/VerificationIcon";
 
 const ReelsDetials = () => {
 
@@ -324,13 +325,20 @@ const ReelsDetials = () => {
                         alt=""
                       />
                     </div>
-                    <p onClick={() => {
-                      if (currentUser?._id === reel.userId._id) {
-                        navigate('/profile')
-                      } else {
-                        navigate(`/user/${reel.userId.username}`)
+                    <div className="flex items-center justify-center gap-1">
+                      <p onClick={() => {
+                        if (currentUser?._id === reel.userId._id) {
+                          navigate('/profile')
+                        } else {
+                          navigate(`/user/${reel.userId.username}`)
+                        }
+                      }} className="font-semibold text-sm text-white">{reel.userId.username}</p>
+                      {
+                        reel.userId.isVerified.status && (
+                          <VerificationIcon size={'16'} />
+                        )
                       }
-                    }} className="font-semibold text-sm text-white">{reel.userId.username}</p>
+                    </div>
                   </div>
                   <p className="text-white text-sm w-[90%] font-normal">
                     {showFullCaption ? reel.caption : reel.caption.length > 0 ? `${reel.caption.slice(0, 30)}` : ""}
@@ -370,12 +378,16 @@ const ReelsDetials = () => {
                   <FontAwesomeIcon className="hover:cursor-pointer" icon={faComment} />
                   <p className="text-sm font-semibold">{reel.commentCount}</p>
                 </div>
-                <div className="pt-1">
-                  <FontAwesomeIcon
-                    className="hover:cursor-pointer"
-                    icon={faPaperPlane}
-                  />
-                </div>
+                {
+                  !reels[currentVideoIndex].userId.isPrivateAccount && (
+                    <div className="pt-1">
+                      <FontAwesomeIcon
+                        className="hover:cursor-pointer"
+                        icon={faPaperPlane}
+                      />
+                    </div>
+                  )
+                }
               </div>
             </div>
           </div>

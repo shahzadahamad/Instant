@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import VerificationIcon from "./svg/VerificationIcon";
 
 const FriendSuggetion = () => {
 
@@ -90,7 +91,14 @@ const FriendSuggetion = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="flex justify-center flex-col">
-                  <span className="text-[14px] font-semibold">{user.user.username}</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[14px] font-semibold">{user.user.username}</span>
+                    {
+                      !user.user.isVerified.status && (
+                        <VerificationIcon size={'16'} />
+                      )
+                    }
+                  </div>
                   <span className="text-[12px] text-[#a9a6a4]">
                     {user.user.fullname}
                   </span>

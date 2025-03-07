@@ -8,6 +8,8 @@ import { IMessage } from "../database/models/messageModal";
 import UserRepository from "../../application/repositories/user/userRepository";
 import ChangeOnlineStatus from "../../application/useCases/user/user/changeOnlineStatus";
 import { IUser } from "../database/models/userModel";
+import SendShareMessaege from "../../application/useCases/user/chat/sendShareMessaege";
+import PostRepository from "../../application/repositories/user/postRepository";
 
 export default class SocketService {
   private static instance: SocketService | null = null;
@@ -40,10 +42,17 @@ export default class SocketService {
       this.io.emit("online", { userId: socket.data.user.userId });
 
       socket.on("send_message", async (data) => {
-        const { chatId, message } = data;
+        const { chatId, message, type } = data;
         const userId = socket.data.user.userId;
         const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
-        await sendMessaege.execute(chatId, userId, message, 'text');
+        await sendMessaege.execute(chatId, userId, message, type);
+      });
+
+      socket.on("send_share_message", async (data) => {
+        const { chatIds, postId } = data;
+        const userId = socket.data.user.userId;
+        const sendShareMessaege = new SendShareMessaege(new ChatRepository(), new MessageRepository(), new UserRepository(), new PostRepository());
+        await sendShareMessaege.execute(userId, chatIds, postId);
       });
 
       socket.emit("me", socket.id);

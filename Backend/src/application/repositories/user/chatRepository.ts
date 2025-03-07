@@ -82,6 +82,15 @@ export default class ChatRepository {
 
   public async findChatsList(userId: string, type: string): Promise<IChat[] | null> {
     try {
+      if (type === 'all') {
+        return await ChatModel.find({ members: userId }).populate('members', 'username profilePicture fullname isOnline isVerified').populate({
+          path: 'lastMessage',
+          populate: {
+            path: 'fromId',
+            select: 'username profilePicture fullname isOnline',
+          }
+        }).sort({ updatedAt: -1 });
+      }
       return await ChatModel.find({ members: userId, type: type }).populate('members', 'username profilePicture fullname isOnline isVerified').populate({
         path: 'lastMessage',
         populate: {
