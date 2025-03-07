@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { updatelastMessage } from "@/redux/slice/chatSlice";
 import { format, isToday, isYesterday } from "date-fns";
 import SharePostMessage from "./message-type/SharePostMessage";
+import Unavailable from "./message-type/Unavailable";
 
 const ChatDetials = () => {
   const [sendMessage, setSendMessage] = useState("");
@@ -181,11 +182,11 @@ const ChatDetials = () => {
                             }
                           </p>
                         ) : message.type === 'text' ? (
-                          <>
-                            <TextMessage key={message._id} message={message} />
-                          </>
-                        ) : message.type === 'sharePost' && (
+                          <TextMessage key={message._id} message={message} />
+                        ) : message.type === 'sharePost' ? (
                           <SharePostMessage key={message._id} message={message} />
+                        ) : message.type === 'unavailable' && (
+                          <Unavailable key={message._id} message={message} />
                         )
                       )}
                     </div>

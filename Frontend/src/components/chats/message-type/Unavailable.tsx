@@ -1,10 +1,10 @@
-import { MessageData } from "@/types/chat/chat";
-import MessageProfile from "../MessageProfile";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { MessageData } from "@/types/chat/chat"
+import { useSelector } from "react-redux";
 import MessageMenu from "./MessageMenu";
+import MessageProfile from "../MessageProfile";
 
-const TextMessage: React.FC<{ message: MessageData }> = ({ message }) => {
+const Unavailable: React.FC<{ message: MessageData }> = ({ message }) => {
 
   const { currentUser } = useSelector((state: RootState) => state.user);
 
@@ -20,10 +20,11 @@ const TextMessage: React.FC<{ message: MessageData }> = ({ message }) => {
           <MessageMenu data={{ messageId: message._id, date: message.createdAt }} value={message.senderId._id !== currentUser?._id} />
         )
       }
-      <div className={`max-w-[70%] ${message.senderId._id === currentUser?._id ? "bg-[#0084ff] text-white" : "dark:bg-[#262626] bg-[#efefef]"} break-words px-3 py-2 rounded-2xl`}>
-        <h1>
-          {message.message}
+      <div className={`max-w-[40%] dark:bg-[#262626] bg-[#efefef] break-words px-3 py-2 rounded-2xl`}>
+        <h1 className="text-sm">
+          Message unavailable
         </h1>
+        <p className="text-sm text-[#989898]">This content may have been deleted by its owner.</p>
       </div>
       {
         message.senderId._id !== currentUser?._id && (
@@ -31,7 +32,7 @@ const TextMessage: React.FC<{ message: MessageData }> = ({ message }) => {
         )
       }
     </div >
-  );
-};
+  )
+}
 
-export default TextMessage;
+export default Unavailable
