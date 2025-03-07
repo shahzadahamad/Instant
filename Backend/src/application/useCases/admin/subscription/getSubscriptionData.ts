@@ -9,9 +9,8 @@ export default class GetSubscriptionData {
     this.subscriptionRepository = subscriptionRepository;
   }
 
-  public async execute(pageVal: number, search: string): Promise<{ subscription: ISubscription[]; totalPages: number; totalSubscription: number }> {
+  public async execute(pageVal: number, search: string, limit: number): Promise<{ subscription: ISubscription[]; totalPages: number; totalSubscription: number }> {
     const page = pageVal || 1;
-    const limit = 10;
     const startIndex = (page - 1) * limit;
     let query: QueryTypeGetSubscriptionDataAdmin = {};
     if (search) {

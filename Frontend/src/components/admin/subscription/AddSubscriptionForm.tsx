@@ -12,7 +12,7 @@ import { createSubcriptionSchema } from "@/validations/authValidations";
 import { AxiosError } from "axios";
 import { createSubcription } from "@/apis/api/adminApi";
 
-const AddSubscriptionForm: React.FC<{ fetchSubscriptionPlans: (page: number) => void }> = ({
+const AddSubscriptionForm: React.FC<{ fetchSubscriptionPlans: (page: number, limit: number) => void }> = ({
   fetchSubscriptionPlans,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -52,7 +52,7 @@ const AddSubscriptionForm: React.FC<{ fetchSubscriptionPlans: (page: number) => 
       }
       console.log(formData)
       const response = await createSubcription(formData);
-      fetchSubscriptionPlans(1);
+      fetchSubscriptionPlans(1, 10);
       handleModalChange();
       toast.success(response.data.message);
       setLoading(false);

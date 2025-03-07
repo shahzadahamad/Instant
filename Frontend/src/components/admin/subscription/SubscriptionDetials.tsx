@@ -1,11 +1,20 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import AddSubscriptionForm from "./AddSubscriptionForm";
 import SubscriptionActions from "./SubscriptionActions";
 import { getSubscriptionPlans } from "@/apis/api/adminApi";
 import { SubscriptionData } from "@/types/admin/subscription";
+import { debounce } from 'lodash';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const SubscriptionDetials = () => {
   const [searchVal, setSearchVal] = useState("");
@@ -14,26 +23,50 @@ const SubscriptionDetials = () => {
   const [page, setPage] = useState(1);
   const [subscription, setSubscription] = useState<SubscriptionData[]>([]);
   const isDisabled = page === totalPages;
+  const [dataLimit, setDataLimit] = useState<number>(10);
+  const limit = [5, 10, 25, 50, 100];
+  const [sort, setSort] = useState('');
 
-  const fetchSubscriptionPlans = async (page: number) => {
-    try {
-      const response = await getSubscriptionPlans(page, searchVal);
-      setSubscription(response.data.subscription);
-      setTotalPages(response.data.totalPages);
-      setTotalSubscription(response.data.totalSubscription);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  const fetchSubscriptionPlans = useMemo(
+    () =>
+      debounce(async (page, limit) => {
+        try {
+          const response = await getSubscriptionPlans(page, searchVal, limit);
+          setSubscription(response.data.subscription);
+          setTotalPages(response.data.totalPages);
+          setTotalSubscription(response.data.totalSubscription);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }, 500),
+    [searchVal]
+  );
+
+  useEffect(() => {
+    if (!sort) return;
+
+    const sortedUsers = [...subscription].sort((a, b) => {
+      const field = sort.replace("-", "") as keyof SubscriptionData;;
+      const order = sort.startsWith("-") ? -1 : 1;
+
+      if (typeof a[field] === "boolean") {
+        return (a[field] === b[field] ? 0 : a[field] ? 1 : -1) * order;
+      }
+
+      return (a[field] > b[field] ? 1 : -1) * order;
+    });
+
+    setSubscription(sortedUsers);
+  }, [sort, subscription]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchSubscriptionPlans(page);
+      fetchSubscriptionPlans(page, dataLimit);
     }, 300);
     return () => {
       clearTimeout(timer);
     };
-  }, [page, searchVal]);
+  }, [page, searchVal, fetchSubscriptionPlans, dataLimit]);
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -48,26 +81,57 @@ const SubscriptionDetials = () => {
     setPage(1);
   };
 
+  const handleSort = (field: string) => {
+    setSort((prevSort) => (prevSort === field ? `-${field}` : field));
+  };
+
   return (
     <>
       <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
-        <div className="w-full p-10 pb-1 flex justify-between items-center">
-          <div className="w-full max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchVal}
-                onChange={handleSearchChange}
-                className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
-                name="search"
-                placeholder="Search"
-              />
-              <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </button>
+        <div className="flex flex-col gap-4">
+          <div className="w-full p-10 pb-1 flex justify-between items-center">
+            <div className="w-full max-w-md">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchVal}
+                  onChange={handleSearchChange}
+                  className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
+                  name="search"
+                  placeholder="Search"
+                />
+                <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </button>
+              </div>
             </div>
+            <h1 className="text-lg font-semibold">Total Music : {totalSubscription}</h1>
           </div>
-          <h1 className="text-lg font-semibold">Total Music : {totalSubscription}</h1>
+          <div className="px-10">
+            <Select
+              value={dataLimit.toString()}
+              onValueChange={(value) => {
+                setDataLimit(parseInt(value))
+                setPage(1);
+              }}
+            >
+              <SelectTrigger
+                value={'username'}
+                className="w-full max-w-[100px] no-outline py-6 shadow text-sm rounded-md"
+              >
+                <SelectValue placeholder="Select a gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {
+                    limit.map((limit) => (
+                      <SelectItem value={limit.toString()}>{limit}</SelectItem>
+                    ))
+                  }
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="overflow--auto p-10">
           <AddSubscriptionForm fetchSubscriptionPlans={fetchSubscriptionPlans} />
@@ -75,10 +139,10 @@ const SubscriptionDetials = () => {
             <table className="min-w-full">
               <thead className="border rounded-md">
                 <tr>
-                  <th className="py-3 px-4 text-left">Period</th>
+                  <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort('period')} >Period</th>
                   <th className="py-3 px-4 text-left">Price</th>
                   <th className="py-3 px-4 text-left">Offer</th>
-                  <th className="py-3 px-4 text-left">Status</th>
+                  <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort('isListed')}>Status</th>
                   <th className="py-3 px-4 text-left">Action</th>
                 </tr>
               </thead>

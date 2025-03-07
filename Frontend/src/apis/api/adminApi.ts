@@ -15,11 +15,12 @@ export const changePasswordApi = async (currentPassword: string, newPassword: st
   return response.data.message;
 };
 
-export const getSubscriptionPlans = async (page: number, search: string) => {
+export const getSubscriptionPlans = async (page: number, search: string, limit: number) => {
   return await adminApiClient.get(`/subscription`, {
     params: {
       page,
       search,
+      limit
     },
   });
 };

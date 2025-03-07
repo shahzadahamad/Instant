@@ -22,7 +22,7 @@ const SubscriptionActions: React.FC<{
   id: string;
   isListed: boolean;
   period: string;
-  fetchSubscriptionPlans: (page: number) => void;
+  fetchSubscriptionPlans: (page: number, limit: number) => void;
   page: number;
   price: number;
   offer: number
@@ -43,7 +43,7 @@ const SubscriptionActions: React.FC<{
     try {
       await toggleListing(id, status)
       toast.success(`Subscription has been ${status === "unlist" ? "unlisted" : "listed"}`);
-      fetchSubscriptionPlans(page);
+      fetchSubscriptionPlans(page, 10);
       return;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
@@ -83,7 +83,7 @@ const SubscriptionActions: React.FC<{
 
     try {
       const response = await editSubcription(formData, id);
-      fetchSubscriptionPlans(1);
+      fetchSubscriptionPlans(1, 10);
       toast.success(response.data.message);
       setLoading(false);
       onOpenChange();

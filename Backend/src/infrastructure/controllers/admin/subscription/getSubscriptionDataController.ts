@@ -6,13 +6,14 @@ import GetSubscriptionData from "../../../../application/useCases/admin/subscrip
 
 export default class GetSubscriptionDataController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { page, search = "" } = req.query;
+    const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
+    const parsedLimiit = parseInt(limit as string);
 
     const getSubscriptionData = new GetSubscriptionData(new SubscriptionRepository());
 
     try {
-      const subscriptionData = await getSubscriptionData.execute(pageNumber, search as string);
+      const subscriptionData = await getSubscriptionData.execute(pageNumber, search as string, parsedLimiit);
 
       res.status(HttpStatusCode.OK).json(subscriptionData);
       return;

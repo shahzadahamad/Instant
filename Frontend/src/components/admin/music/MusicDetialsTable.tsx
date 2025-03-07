@@ -39,7 +39,7 @@ const MusicDetialsTable = () => {
   );
   const [currentlyPlayingIndex, setCurrentlyPlayingIndex] =
     useState<string>("");
-  const limit = [1, 2, 5, 10, 25, 50, 100];
+  const limit = [5, 10, 25, 50, 100];
   const [sort, setSort] = useState('');
   const [dataLimit, setDataLimit] = useState<number>(10);
 
