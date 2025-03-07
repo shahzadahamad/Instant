@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PostModal from '../common/PostViewModal/PostModal'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { GetUserPostData } from '@/types/profile/profile';
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
@@ -8,8 +8,10 @@ import { getSinglePost } from '@/apis/api/userApi';
 
 const PostSingle = () => {
 
+  const [searchParams] = useSearchParams();
+  const path = searchParams.get('path');
   const navigate = useNavigate();
-  const { postId } = useParams()
+  const { postId } = useParams();
   const [post, setPost] = useState<GetUserPostData | null>(null);
 
   useEffect(() => {
@@ -40,14 +42,26 @@ const PostSingle = () => {
 
   const closeModal = (status: boolean = false) => {
     if (status) {
-      navigate("/profile");
+      if (path) {
+        navigate(-1)
+        return;
+      }
+      navigate('/profile');
     } else {
-      navigate(`/profile`);
+      if (path) {
+        navigate(-1)
+        return;
+      }
+      navigate('/profile');
     }
   };
 
   const closeWhileTouchOutsideModal = () => {
-    navigate(`/profile`);
+    if (path) {
+      navigate(-1)
+      return;
+    }
+    navigate('/profile');
   }
 
   return (

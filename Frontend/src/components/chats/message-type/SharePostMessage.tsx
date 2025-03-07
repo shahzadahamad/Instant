@@ -45,7 +45,9 @@ const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
         {
           message.postId.post[0].type === 'image' ? (
 
-            <div className="w-full relative">
+            <div onClick={() => {
+              navigate(`/post/${message.postId._id}?path=${location.pathname}`)
+            }} className="w-full relative">
               <img
                 src={message.postId.post[0].url}
                 className={`w-full cursor-pointer object-contain ${!message.postId.caption && 'rounded-b-2xl'}`}
@@ -71,7 +73,7 @@ const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
               }
             </div>
           ) :
-            <div className="w-full h-[20rem] relative">
+            <div onClick={() => navigate(`/post/${message.postId._id}?path=${location.pathname}`)} className="w-full h-[20rem] relative">
               <video
                 src={message.postId.post[0].url}
                 className={`w-full h-[20rem] cursor-pointer object-cover ${!message.postId.caption && 'rounded-b-2xl'}`}
