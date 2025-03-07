@@ -362,7 +362,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             </MenubarTrigger>
             <MenubarContent>
               <div
-                className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
+                className="cursor-pointer p-[6px] hover:bg-[#b7b7bd] dark:hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
                 onClick={() => navigate("/edit-profile")}
               >
                 <Settings className="mr-2 h-4 w-4" />
@@ -370,7 +370,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
               </div>
               <MenubarSeparator />
               <div
-                className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
+                className="cursor-pointer p-[6px] hover:bg-[#b7b7bd] dark:hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
                 {theme === "light" ? (
@@ -383,7 +383,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
               <MenubarSeparator />
               <AlertDialog>
                 <AlertDialogTrigger asChild className="w-full">
-                  <div className="cursor-pointer p-[6px] hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
+                  <div className="cursor-pointer p-[6px] hover:bg-[#b7b7bd] dark:hover:bg-[#27272a] hover rounded text-sm px-2 flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </div>

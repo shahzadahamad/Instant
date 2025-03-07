@@ -25,6 +25,8 @@ import Post from "@/pages/user/Post";
 import Error from "@/pages/user/Error";
 import Reels from "@/pages/user/Reels";
 import ReelsMain from "@/pages/user/ReelsMain";
+import Success from "@/pages/user/Success";
+import Failed from "@/pages/user/Failed";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -90,6 +92,14 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/verification",
     element: currentUser ? <Verification /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/verification-success",
+    element: currentUser ? <Success /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/verification-failed",
+    element: currentUser ? <Failed /> : <Navigate to='/sign-in' replace />
   },
   {
     path: "/post/:postId",
