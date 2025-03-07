@@ -15,6 +15,14 @@ import {
 import { Slider } from "@mui/material";
 import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import MusicAction from "./MusicAction";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const MusicDetialsTable = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -31,13 +39,34 @@ const MusicDetialsTable = () => {
   );
   const [currentlyPlayingIndex, setCurrentlyPlayingIndex] =
     useState<string>("");
+  const limit = [1, 2, 5, 10, 25, 50, 100];
+  const [sort, setSort] = useState('');
+  const [dataLimit, setDataLimit] = useState<number>(10);
 
-  const fetchMusic = async (page: number) => {
+  useEffect(() => {
+    if (!sort) return;
+
+    const sortedUsers = [...music].sort((a, b) => {
+      const field = sort.replace("-", "") as keyof GetMusicData;
+      const order = sort.startsWith("-") ? -1 : 1;
+
+      if (typeof a[field] === "boolean") {
+        return (a[field] === b[field] ? 0 : a[field] ? 1 : -1) * order;
+      }
+
+      return (a[field] > b[field] ? 1 : -1) * order;
+    });
+
+    setMusic(sortedUsers);
+  }, [sort, music]);
+
+  const fetchMusic = async (page: number, limit: number) => {
     try {
       const response = await adminApiClient.get(`/music/get-data`, {
         params: {
           page,
           search: searchVal,
+          limit,
         },
       });
       setMusic(response.data.music);
@@ -65,12 +94,12 @@ const MusicDetialsTable = () => {
       return newValues;
     });
     const timer = setTimeout(() => {
-      fetchMusic(page);
+      fetchMusic(page, dataLimit);
     }, 300);
     return () => {
       clearTimeout(timer);
     };
-  }, [page, searchVal]);
+  }, [page, searchVal, dataLimit]);
 
   useEffect(() => {
     const currentAudio = audioRefs.current[currentlyPlayingIndex];
@@ -173,6 +202,11 @@ const MusicDetialsTable = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  const handleSort = (field: string) => {
+    setSort((prevSort) => (prevSort === field ? `-${field}` : field));
+  };
+
+
   return (
     <>
       <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
@@ -200,23 +234,50 @@ const MusicDetialsTable = () => {
         </ModalContent>
       </Modal>
       <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
-        <div className="w-full p-10 pb-1 flex justify-between items-center">
-          <div className="w-full max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchVal}
-                onChange={handleSearchChange}
-                className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
-                name="search"
-                placeholder="Search"
-              />
-              <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </button>
+        <div className="flex flex-col gap-4">
+          <div className="w-full p-10 pb-1 flex justify-between items-center">
+            <div className="w-full max-w-md">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchVal}
+                  onChange={handleSearchChange}
+                  className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
+                  name="search"
+                  placeholder="Search"
+                />
+                <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </button>
+              </div>
             </div>
+            <h1 className="text-lg font-semibold">Total Music : {totalMusic}</h1>
           </div>
-          <h1 className="text-lg font-semibold">Total Music : {totalMusic}</h1>
+          <div className="px-10">
+            <Select
+              value={dataLimit.toString()}
+              onValueChange={(value) => {
+                setDataLimit(parseInt(value))
+                setPage(1);
+              }}
+            >
+              <SelectTrigger
+                value={'username'}
+                className="w-full max-w-[100px] no-outline py-6 shadow text-sm rounded-md"
+              >
+                <SelectValue placeholder="Select a gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {
+                    limit.map((limit) => (
+                      <SelectItem value={limit.toString()}>{limit}</SelectItem>
+                    ))
+                  }
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="overflow--auto p-10">
           <AddMusicForm fetchMusic={fetchMusic} />
@@ -225,9 +286,9 @@ const MusicDetialsTable = () => {
               <thead className="border rounded-md">
                 <tr>
                   <th className="py-3 px-4 text-left">Image</th>
-                  <th className="py-3 px-4 text-left">Title</th>
+                  <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort('title')}>Title</th>
                   <th className="py-3 px-4 text-left">Music</th>
-                  <th className="py-3 px-4 text-left">Status</th>
+                  <th className="py-3 px-4 text-left cursor-pointer" onClick={() => handleSort('isListed')}>Status</th>
                   <th className="py-3 px-4 text-left">Action</th>
                 </tr>
               </thead>

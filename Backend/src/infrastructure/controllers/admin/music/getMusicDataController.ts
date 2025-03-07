@@ -6,13 +6,14 @@ import { MESSAGES } from "../../../constants/messages";
 
 export default class GetMusicDataController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { page, search = "" } = req.query;
+    const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
+    const parsedLimit = parseInt(limit as string);
 
     const getMusicData = new GetMusicData(new MusicRepository());
 
     try {
-      const musicData = await getMusicData.execute(pageNumber, search as string);
+      const musicData = await getMusicData.execute(pageNumber, search as string, parsedLimit);
 
       res.status(HttpStatusCode.OK).json(musicData);
       return;

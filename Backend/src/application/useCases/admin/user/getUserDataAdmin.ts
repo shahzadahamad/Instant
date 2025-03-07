@@ -9,9 +9,8 @@ export default class GetUserDataAdmin {
     this.userRepository = userRepository;
   }
 
-  public async execute(pageVal: number, search: string): Promise<{ users: IUser[]; totalPages: number; totalUser: number }> {
+  public async execute(pageVal: number, search: string, limit: number): Promise<{ users: IUser[]; totalPages: number; totalUser: number }> {
     const page = pageVal || 1;
-    const limit = 10;
     const startIndex = (page - 1) * limit;
     let query: QueryTypeGetUserDataAdin = {};
     if (search) {
@@ -28,7 +27,7 @@ export default class GetUserDataAdmin {
     const user = await this.userRepository.getUserData(
       startIndex,
       limit,
-      query
+      query,
     );
     return user;
   }

@@ -20,6 +20,14 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 import { debounce } from 'lodash';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UserDetialsTable = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -31,13 +39,34 @@ const UserDetialsTable = () => {
   const [totalUser, setTotalUser] = useState(0);
   const [viewProfile, setViewProfile] = useState<string | File>("");
   const isDisabled = page === totalPages;
+  const [dataLimit, setDataLimit] = useState<number>(10);
+  const limit = [5, 10, 25, 50, 100];
+  const [sort, setSort] = useState('');
+
+  useEffect(() => {
+    if (!sort) return;
+
+    const sortedUsers = [...users].sort((a, b) => {
+      const field = sort.replace("-", "") as keyof GetUserDataForAdminDashboard;;
+      const order = sort.startsWith("-") ? -1 : 1;
+
+      if (typeof a[field] === "boolean") {
+        return (a[field] === b[field] ? 0 : a[field] ? 1 : -1) * order;
+      }
+
+      return (a[field] > b[field] ? 1 : -1) * order;
+    });
+
+    setUsers(sortedUsers);
+  }, [sort, users]);
+
 
   const debouncedFetchUsers = useMemo(
     () =>
-      debounce(async (page, search) => {
+      debounce(async (page, search, dataLimit) => {
         try {
           const response = await adminApiClient.get(`/users/get-data`, {
-            params: { page, search },
+            params: { page, search, limit: dataLimit },
           });
           setUsers(response.data.users);
           setTotalPages(response.data.totalPages);
@@ -50,9 +79,9 @@ const UserDetialsTable = () => {
   );
 
   useEffect(() => {
-    debouncedFetchUsers(page, searchVal);
+    debouncedFetchUsers(page, searchVal, dataLimit);
     return () => debouncedFetchUsers.cancel();
-  }, [page, searchVal, debouncedFetchUsers]);
+  }, [page, searchVal, debouncedFetchUsers, dataLimit]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(e.target.value);
@@ -103,6 +132,10 @@ const UserDetialsTable = () => {
     onOpen();
   };
 
+  const handleSort = (field: string) => {
+    setSort((prevSort) => (prevSort === field ? `-${field}` : field));
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} size="md" onOpenChange={onOpenChange}>
@@ -126,35 +159,62 @@ const UserDetialsTable = () => {
         </ModalContent>
       </Modal>
       <div className="h-[88vh] overflow-y-auto scrollbar-hidden">
-        <div className=" p-10 pb-1 flex justify-between items-center">
-          <div className="w-full max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchVal}
-                onChange={handleSearchChange}
-                className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
-                name="search"
-                placeholder="Search"
-              />
-              <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </button>
+        <div className="flex flex-col gap-4">
+          <div className="p-10 pb-1 flex justify-between items-center">
+            <div className="w-full max-w-md">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchVal}
+                  onChange={handleSearchChange}
+                  className="w-full bg-transparent p-3 pr-10 border rounded-md shadow-sm focus:outline-none"
+                  name="search"
+                  placeholder="Search"
+                />
+                <button className="absolute right-2 top-1 p-2 transition-colors hover:text-blue-500 focus:outline-none">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </button>
+              </div>
             </div>
+            <h1 className="text-lg font-semibold">Total Users: {totalUser}</h1>
           </div>
-          <h1 className="text-lg font-semibold">Total Users: {totalUser}</h1>
+          <div className="px-10">
+            <Select
+              value={dataLimit.toString()}
+              onValueChange={(value) => {
+                setDataLimit(parseInt(value))
+                setPage(1);
+              }}
+            >
+              <SelectTrigger
+                value={'username'}
+                className="w-full max-w-[100px] no-outline py-6 shadow text-sm rounded-md"
+              >
+                <SelectValue placeholder="Select a gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {
+                    limit.map((limit) => (
+                      <SelectItem value={limit.toString()}>{limit}</SelectItem>
+                    ))
+                  }
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="overflow-x-auto p-10">
+        <div className="overflow-x-auto p-10 py-5">
           {users.length > 0 ? (
             <table className="min-w-full">
               <thead className="border rounded-md">
                 <tr>
                   <th className="py-3 px-4 text-left">Profile</th>
-                  <th className="py-3 px-4 text-left">Fullname</th>
-                  <th className="py-3 px-4 text-left">Username</th>
-                  <th className="py-3 px-4 text-left">Email</th>
+                  <th onClick={() => handleSort('fullname')} className="py-3 px-4 text-left cursor-pointer">Fullname</th>
+                  <th onClick={() => handleSort('username')} className="py-3 px-4 text-left cursor-pointer">Username</th>
+                  <th onClick={() => handleSort('email')} className="py-3 px-4 text-left cursor-pointer">Email</th>
                   <th className="py-3 px-4 text-left">Number</th>
-                  <th className="py-3 px-4 text-left">Status</th>
+                  <th onClick={() => handleSort('isBlock')} className="py-3 px-4 text-left cursor-pointer">Status</th>
                   <th className="py-3 px-4 text-left">Actions</th>
                 </tr>
               </thead>

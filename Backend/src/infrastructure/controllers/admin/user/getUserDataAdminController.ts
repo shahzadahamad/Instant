@@ -6,13 +6,14 @@ import { MESSAGES } from "../../../constants/messages";
 
 export default class GetUserDataAdminController {
   public async handle(req: Request, res: Response): Promise<void> {
-    const { page, search = "" } = req.query;
+    const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
+    const parsedLimit = parseFloat(limit as string);
 
     const getUserData = new GetUserDataAdmin(new UserRepository());
 
     try {
-      const userData = await getUserData.execute(pageNumber, search as string);
+      const userData = await getUserData.execute(pageNumber, search as string, parsedLimit);
 
       res.status(HttpStatusCode.OK).json(userData);
       return;

@@ -22,7 +22,7 @@ const MusicAction: React.FC<{
   id: string;
   isListed: boolean;
   title: string;
-  fetchMusic: (page: number) => void;
+  fetchMusic: (page: number, limit: number) => void;
   page: number;
   image: string;
 }> = ({ id, isListed, title, fetchMusic, page, image }) => {
@@ -46,11 +46,10 @@ const MusicAction: React.FC<{
       );
       if (response.data === "action successfull") {
         toast.success(
-          `Music ${username} has been ${
-            status === "unlist" ? "unlisted" : "listed"
+          `Music ${username} has been ${status === "unlist" ? "unlisted" : "listed"
           }`
         );
-        fetchMusic(page);
+        fetchMusic(page, 10);
       } else {
         toast.success(response.data);
       }
@@ -95,7 +94,7 @@ const MusicAction: React.FC<{
         `/music/edit-music/${id}`,
         formData
       );
-      fetchMusic(1);
+      fetchMusic(1, 10);
       toast.success(response.data.message);
       setLoading(false);
       onOpenChange();
@@ -213,9 +212,8 @@ const MusicAction: React.FC<{
                     variant="ghost"
                     onClick={handleSubmit}
                     style={{ minWidth: "100px" }}
-                    className={`border ${
-                      loading && "opacity-60 cursor-not-allowed"
-                    }`}
+                    className={`border ${loading && "opacity-60 cursor-not-allowed"
+                      }`}
                   >
                     {loading ? <div className="spinner"></div> : "Submit"}
                   </Button>

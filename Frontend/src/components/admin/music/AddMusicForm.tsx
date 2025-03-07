@@ -16,7 +16,7 @@ import { Slider } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
-const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
+const AddMusicForm: React.FC<{ fetchMusic: (page: number, limit: number) => void }> = ({
   fetchMusic,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -230,7 +230,7 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
         `/music/create-music`,
         formData
       );
-      fetchMusic(1);
+      fetchMusic(1, 10);
       handleModalChange();
       toast.success(response.data.message);
       setLoading(false);
@@ -387,9 +387,8 @@ const AddMusicForm: React.FC<{ fetchMusic: (page: number) => void }> = ({
                     variant="ghost"
                     onClick={handleSubmit}
                     style={{ minWidth: "100px" }}
-                    className={`border ${
-                      loading && "opacity-60 cursor-not-allowed"
-                    }`}
+                    className={`border ${loading && "opacity-60 cursor-not-allowed"
+                      }`}
                   >
                     {loading ? <div className="spinner"></div> : "Submit"}
                   </Button>
