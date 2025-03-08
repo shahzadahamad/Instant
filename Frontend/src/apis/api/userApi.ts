@@ -254,3 +254,12 @@ export const watchedPostAdd = async (postId: string) => {
   const response = await apiClient.patch(`/user/watched-post/${postId}`);
   return response.data;
 }
+
+export const getLoadingPagePostData = async (page: number) => {
+  const response = await apiClient.get(`/user/post/loading`, {
+    params: {
+      page,
+    }
+  });
+  return response.data;
+}
