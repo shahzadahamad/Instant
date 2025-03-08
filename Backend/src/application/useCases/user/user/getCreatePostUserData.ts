@@ -30,7 +30,6 @@ export default class GetCreatePostUserData {
     };
 
     const user = await this.UserRepository.find10UserBySearch(query);
-    console.log(user);
     return user.filter((user) => {
       return !user.isPrivateAccount || [...userFollowings, userId].includes(user._id.toString());
     });

@@ -7,12 +7,31 @@ import VerificationIcon from "@/components/common/svg/VerificationIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import Reel from "@/components/common/svg/Reel";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { IPostWithUserData } from "@/types/create-post/create-post";
+import PostModal from "@/components/common/PostViewModal/PostModal";
 
 const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
 
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const { chatId } = useParams();
+  const [selectedPost, setSelectedPost] = useState<IPostWithUserData | null>(null);
+
+  const closeModal = (status: boolean = false) => {
+    setSelectedPost(null);
+    if (status) {
+      navigate(`/chats/${chatId}`);
+    } else {
+      navigate(`/chats/${chatId}`);
+    }
+  };
+
+  const closeWhileTouchOutsideModal = () => {
+    setSelectedPost(null);
+    navigate(`/chats/${chatId}`);
+  }
 
   return (
     <div className={`relative flex group items-center ${message.senderId._id === currentUser?._id ? "justify-end gap-3 px-3 pb-7" : "gap-2 px-3 pb-7"}`}>
@@ -26,6 +45,14 @@ const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
           <MessageMenu data={{ messageId: message._id, date: message.createdAt }} value={message.senderId._id !== currentUser?._id} />
         )
       }
+      {(selectedPost) && (
+        <PostModal
+          post={[selectedPost]}
+          imageIndex={0}
+          close={closeModal}
+          closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
+        />
+      )}
       <div className="w-72 flex flex-col">
         <div className="flex items-center gap-2 rounded-t-2xl p-3 bg-[#262626]">
           <div className="w-8 cursor-pointer" onClick={() => navigate(`/user/${message.postId.userId.username}`)}>
@@ -46,7 +73,12 @@ const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
           message.postId.post[0].type === 'image' ? (
 
             <div onClick={() => {
-              navigate(`/post/${message.postId._id}?path=${location.pathname}`)
+              setSelectedPost(message.postId)
+              window.history.pushState(
+                null,
+                "",
+                `/post/${message.postId._id}`
+              );
             }} className="w-full relative">
               <img
                 src={message.postId.post[0].url}
@@ -73,7 +105,14 @@ const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
               }
             </div>
           ) :
-            <div onClick={() => navigate(`/post/${message.postId._id}?path=${location.pathname}`)} className="w-full h-[20rem] relative">
+            <div onClick={() => {
+              setSelectedPost(message.postId)
+              window.history.pushState(
+                null,
+                "",
+                `/post/${message.postId._id}`
+              );
+            }} className="w-full h-[20rem] relative">
               <video
                 src={message.postId.post[0].url}
                 className={`w-full h-[20rem] cursor-pointer object-cover ${!message.postId.caption && 'rounded-b-2xl'}`}

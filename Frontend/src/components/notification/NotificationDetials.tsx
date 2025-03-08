@@ -17,6 +17,8 @@ import UnfollowModal from "../common/UnfollowModal";
 import FriendRequestModal from "./FriendRequestModal";
 import { GetUserDataForPost } from "@/types/profile/profile";
 import VerificationIcon from "../common/svg/VerificationIcon";
+import { IPostWithUserData } from "@/types/create-post/create-post";
+import PostModal from "../common/PostViewModal/PostModal";
 
 const NotificationDetials = () => {
   const [groupedNotifications, setGroupedNotifications] = useState({
@@ -30,6 +32,7 @@ const NotificationDetials = () => {
   const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
   const [openFriendRequestModal, setOpenFriendRequestModal] = useState(false);
   const [unfollowId, setUnFollowId] = useState<GetUserDataForPost | null>(null);
+  const [selectedPost, setSelectedPost] = useState<IPostWithUserData | null>(null);
 
   const fetchNotificationData = async () => {
     try {
@@ -131,6 +134,20 @@ const NotificationDetials = () => {
     }
   };
 
+  const closeModal = (status: boolean = false) => {
+    setSelectedPost(null);
+    if (status) {
+      navigate(`/notification`);
+    } else {
+      navigate(`/notification`);
+    }
+  };
+
+  const closeWhileTouchOutsideModal = () => {
+    setSelectedPost(null);
+    navigate(`/notification`);
+  }
+
   const renderNotifications = (
     category: string,
     notifications: NotificationType[]
@@ -141,6 +158,14 @@ const NotificationDetials = () => {
           <div className="w-full text-left font-semibold text-lg py-2">
             {category}
           </div>
+          {(selectedPost) && (
+            <PostModal
+              post={[selectedPost]}
+              imageIndex={0}
+              close={closeModal}
+              closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
+            />
+          )}
           {notifications.map((notification) => (
             <div
               key={notification._id}
@@ -252,12 +277,27 @@ const NotificationDetials = () => {
                 notification.postId.post[0].type === 'image' ?
                   <img
                     className="w-12 h-12 rounded-lg object-cover"
-                    onClick={() => navigate(`/post/${notification.postId._id}?path=notification`)}
+                    onClick={() => {
+                      setSelectedPost(notification.postId)
+                      window.history.pushState(
+                        null,
+                        "",
+                        `/post/${notification.postId._id}`
+                      );
+                    }}
                     src={notification.postId.post[0].url}
                     alt=""
                   /> : <video
                     className="w-12 h-12 rounded-lg object-cover"
-                    onClick={() => navigate(`/post/${notification.postId._id}?path=notification`)}
+                    muted={true}
+                    onClick={() => {
+                      setSelectedPost(notification.postId)
+                      window.history.pushState(
+                        null,
+                        "",
+                        `/post/${notification.postId._id}`
+                      );
+                    }}
                     src={notification.postId.post[0].url}
                   />
               )}

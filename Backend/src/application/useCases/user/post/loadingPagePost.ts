@@ -14,7 +14,7 @@ export default class LoadingPagePost {
     this.friendsRepository = friendsRepository;
   }
 
-  public async execute(userId: string, pageVal: number): Promise<{ reels: IPostWithUserData[], totalPage: number }> {
+  public async execute(userId: string, pageVal: number): Promise<{ post: IPostWithUserData[], totalPage: number }> {
 
     const followings = await this.friendsRepository.findUserDoc(userId);
     const userFollowings = followings?.followings ?? [];
@@ -28,11 +28,11 @@ export default class LoadingPagePost {
     const postOfFriendAndNonWatched = await this.postRepository.findPostsOfFriendAndNonWatched([...userFollowings, userId], userWatchedReels, false);
     const postOfFollowedAndWatched = await this.postRepository.findPostOfFollowedUserWached(userWatchedReels, [...userFollowings, userId]);
 
-    const reels: IPostWithUserData[] = [...postOfFriendAndNonWatched, ...postOfFollowedAndWatched];
+    const post: IPostWithUserData[] = [...postOfFriendAndNonWatched, ...postOfFollowedAndWatched];
 
     return {
-      reels: reels.slice(startIndex, startIndex + limit),
-      totalPage: Math.ceil(reels.length / limit)
+      post: post.slice(startIndex, startIndex + limit),
+      totalPage: Math.ceil(post.length / limit)
     };
   }
 }

@@ -308,7 +308,7 @@ export default class PostRepository {
       }
 
       return await PostModal.find(filter)
-        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount createdAt')
         .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
 
     } catch (error) {
@@ -382,7 +382,7 @@ export default class PostRepository {
       };
 
       return await PostModal.find(filter)
-        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount')
+        .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount createdAt')
         .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {

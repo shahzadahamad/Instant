@@ -1,13 +1,11 @@
-import { GetUserDataForPost, PostData } from "../profile/profile"
+import { IPostWithUserData } from "../create-post/create-post";
+import { GetUserDataForPost } from "../profile/profile"
 
 export interface NotificationType {
   _id: string
   userId: string,
   fromId: GetUserDataForPost,
-  postId: {
-    _id: string,
-    post: PostData[]
-  }
+  postId: IPostWithUserData
   type: string,
   message: string,
   relation: string,

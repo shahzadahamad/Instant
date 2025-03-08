@@ -29,6 +29,8 @@ const io = new SocketIOServer(server, {
     methods: ["GET", 'POST'],
     credentials: true,
   },
+  pingInterval: 25000,
+  pingTimeout: 60000,
 });
 
 SocketService.getInstance().setUpIO(io);

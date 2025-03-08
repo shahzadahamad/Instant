@@ -176,10 +176,11 @@ const ReelsDetials = () => {
         navigate(`/reels/${reels[newIndex]._id}`);
 
         if (newIndex === reels.length - 1 && page < reelTotalPage) {
-          setPage(prev => prev + 1);
           const newReels = await fetchReels(false, page + 1, true);
-          if (newReels && newReels.length > 0) {
-            dispatch(newReelsPush(newReels));
+          if (newReels.reels && newReels.reels.length > 0) {
+            dispatch(newReelsPush(newReels.reels));
+            dispatch(setReelTotalPage(newReels.totalPage));
+            setPage(prev => prev + 1);
           }
         }
       }
@@ -243,7 +244,7 @@ const ReelsDetials = () => {
   const closeModal = (status: boolean = false) => {
     setMainPost(false);
     if (status) {
-      navigate("/profile");
+      navigate(`/reels/${reels[currentVideoIndex]._id}`);
     } else {
       navigate(`/reels/${reels[currentVideoIndex]._id}`);
     }

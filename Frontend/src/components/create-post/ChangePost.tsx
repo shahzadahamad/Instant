@@ -26,7 +26,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const ChangePost = () => {
   const dispatch = useDispatch();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { post, postIndex } = useSelector((state: RootState) => state.post);
+  const { post, postIndex, isStory } = useSelector((state: RootState) => state.post);
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -125,11 +125,10 @@ const ChangePost = () => {
   return (
     <div className="relative flex items-center justify-center h-full w-full">
       <div
-        className={`flex h-full w-full items-center ${
-          post && post.length > 0 && post[postIndex].type === "video"
-            ? "justify-center"
-            : "justify-start"
-        } gap-2 overflow-x-scroll scrollbar-hidden`}
+        className={`flex h-full w-full items-center ${post && post.length > 0 && post[postIndex].type === "video" || post[postIndex].type === 'reel' || (post[postIndex].type === 'story' && !isStory)
+          ? "justify-center"
+          : "justify-start"
+          } gap-2 overflow-x-scroll scrollbar-hidden`}
       >
         {post && post.length > 0 ? (
           <>
@@ -150,7 +149,7 @@ const ChangePost = () => {
                     ref={provided.innerRef}
                   >
                     {post.map((postItem, index) =>
-                      postItem.type === "image" ? (
+                      postItem.type === "image" || (postItem.type === 'story' && isStory) ? (
                         <Draggable
                           key={index}
                           draggableId={`post-${index}`}
@@ -178,7 +177,7 @@ const ChangePost = () => {
                             </div>
                           )}
                         </Draggable>
-                      ) : postItem.type === "video" ? (
+                      ) : postItem.type === "video" || postItem.type === 'reel' || (postItem.type === 'story' && !isStory) ? (
                         <div
                           key={index}
                           className="relative w-72 h-72 border rounded-md"
@@ -243,7 +242,7 @@ const ChangePost = () => {
                 </ModalContent>
               </Modal>
             )}
-            {post[postIndex].type !== "video" && (
+            {post[postIndex].type !== "video" && post[postIndex].type !== 'reel' && post[postIndex].type !== 'story' && (
               <Button
                 variant="outline"
                 className="absolute top-4 right-4 rounded-md bg-transparent border"

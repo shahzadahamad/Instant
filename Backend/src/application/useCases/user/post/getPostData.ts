@@ -1,4 +1,5 @@
 import { IPost } from "../../../../infrastructure/database/models/postModel";
+import { IpostWithUserData } from "../../../interface/post";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -11,7 +12,7 @@ export default class GetPostData {
     this.userRepository = userRepository;
   }
 
-  public async execute(userId: string, postId: string): Promise<IPost | null> {
+  public async execute(userId: string, postId: string): Promise<IpostWithUserData | null> {
     const postData = await this.postRepository.findPostById(postId);
     const userData = await this.userRepository.findById(userId);
 

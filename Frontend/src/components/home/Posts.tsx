@@ -10,9 +10,16 @@ import { Dot, Volume2, VolumeOff } from "lucide-react";
 import { timeSince } from "@/helperFuntions/dateFormat";
 import PostModal from "../common/PostViewModal/PostModal";
 import { useNavigate } from "react-router-dom";
+import VerificationIcon from "../common/svg/VerificationIcon";
+import apiClient from "@/apis/apiClient";
+import { Button } from "@/components/ui/button";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const Posts = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [postData, setPostData] = useState<IPostWithUserData[]>([]);
   const [totalPage, setTotalPage] = useState(1);
   const navigate = useNavigate();
@@ -20,12 +27,22 @@ const Posts = () => {
   const [muted, setMuted] = useState(true);
   const [play, setPlay] = useState(true);
   const [selectedPost, setSelectedPost] = useState<IPostWithUserData | null>(null);
+  const loadingRef = useRef<HTMLDivElement | null>(null);
+  const [music, setMusic] = useState<string>("");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({});
 
-  const fetchNotificationData = async (page: number) => {
+  const fetchPostData = async (page: number, status: boolean) => {
     try {
       const postData = await getLoadingPagePostData(page);
-      setPostData(postData.post);
-      setTotalPage(postData.totalPage);
+      if (status) {
+        setPostData(postData.post);
+        setTotalPage(postData.totalPage);
+        setPage(1);
+      } else {
+        return postData
+      }
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.error(error.response.data?.error || "An error occurred");
@@ -38,8 +55,36 @@ const Posts = () => {
   };
 
   useEffect(() => {
+    if (music && audioRef.current) {
+      audioRef.current.src = music;
+      if (isPlaying) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [music, isPlaying]);
+
+  const handleMusicPlay = async (musicId: string | null) => {
+    if (!musicId) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setMusic("");
+      }
+      return;
+    }
+
+    try {
+      const response = await apiClient.get(`/user/music/get-selected-music-data/${musicId}`);
+      setMusic(response.data.music);
+    } catch (error) {
+      console.error("Error fetching music:", error);
+    }
+  };
+
+  useEffect(() => {
     if (postData.length <= 0) {
-      fetchNotificationData(page);
+      fetchPostData(page, true);
     }
   }, [page, postData.length]);
 
@@ -47,29 +92,81 @@ const Posts = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
+          const index = postData.findIndex((post) => post.post[0].url === entry.target.getAttribute("src"));
+          if (index === -1) return;
+
+          const post = postData[index];
+          const video = videoRefs.current[index];
           if (entry.isIntersecting) {
-            setPlay(true);
-            video.play();
+            if (post.post[0].type === "image" && post.musicId) {
+              handleMusicPlay(post.musicId);
+            } else {
+              handleMusicPlay(null);
+            }
+
+            if (post.post[0].type === "video" || post.post[0].type === "reel") {
+              setPlay(true);
+              if (video) video.play();
+            }
           } else {
-            video.pause();
+            handleMusicPlay(null);
+            if (video) video.pause();
           }
         });
       },
       { threshold: 0.5 }
     );
 
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
+    postData.forEach((post, index) => {
+      const element = videoRefs.current[index] || document.querySelector(`img[src="${post.post[0].url}"]`);
+      if (element) observer.observe(element);
     });
 
     return () => observer.disconnect();
   }, [postData]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (entries[0].isIntersecting && page < totalPage) {
+          const newPosts = await fetchPostData(page + 1, false);
+          if (newPosts.post && newPosts.post.length > 0) {
+            setPostData((prevData) => [...prevData, ...newPosts.post]);
+            setTotalPage(newPosts.totalPage);
+            setPage(prev => prev + 1);
+          }
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [page, totalPage]);
+
   const handleMuteToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setMuted((prev) => !prev);
   };
+
+
+  const handleNextImage = (postId: string, totalImages: number) => {
+    setCurrentImageIndex((prev) => ({
+      ...prev,
+      [postId]: (prev[postId] ?? 0) + 1 < totalImages ? (prev[postId] ?? 0) + 1 : prev[postId],
+    }));
+  };
+
+  const handlePreviousImage = (postId: string) => {
+    setCurrentImageIndex((prev) => ({
+      ...prev,
+      [postId]: (prev[postId] ?? 0) > 0 ? (prev[postId] ?? 0) - 1 : 0,
+    }));
+  };
+
 
   const handleVideoClick = (index: number) => {
     const video = videoRefs.current[index];
@@ -83,7 +180,6 @@ const Posts = () => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeModal = (status: boolean = false) => {
     setSelectedPost(null);
     if (status) {
@@ -107,6 +203,17 @@ const Posts = () => {
     setSelectedPost(item);
   }
 
+  const handleAudioControl = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <div className="w-full h-[80vh] scrollbar-hidden">
       <div className="flex flex-col items-center justify-start gap-4 p-4">
@@ -117,7 +224,7 @@ const Posts = () => {
               <div className="px-1 py-3 rounded flex gap-3 items-center">
                 <div className="relative flex justify-between w-full items-center">
                   <div className="flex gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <div onClick={() => navigate(`/user/${item.userId.username}`)} className="w-10 h-10 rounded-full overflow-hidden cursor-pointer">
                       <img
                         src={item.userId.profilePicture.toString()}
                         alt="avatar"
@@ -125,7 +232,14 @@ const Posts = () => {
                       />
                     </div>
                     <div className="flex items-center justify-center">
-                      <h2 className="font-bold text-medium">{item.userId.username}</h2>
+                      <div onClick={() => navigate(`/user/${item.userId.username}`)} className="flex cursor-pointer items-center gap-1">
+                        <h2 className="font-bold text-medium">{item.userId.username}</h2>
+                        {
+                          item.userId.isVerified.status && (
+                            <VerificationIcon size={'16'} />
+                          )
+                        }
+                      </div>
                       <Dot />
                       <p className="text-gray-500 text-sm">{timeSince(item.createdAt)}</p>
                     </div>
@@ -205,10 +319,47 @@ const Posts = () => {
                     }}
                   >
                     <img
-                      src={item.post[0].url}
+                      src={item.post[currentImageIndex[item._id] ?? 0].url}
                       alt="Post"
                       className={`${item.post[0].filterClass} object-contain rounded-md w-full h-full`}
                     />
+                    {
+                      item.musicId && (
+                        <Button
+                          onClick={handleAudioControl}
+                          variant="outline"
+                          className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+                        >
+                          {isPlaying ? (
+                            <VolumeUpIcon style={{ fontSize: "15px" }} />
+                          ) : (
+                            <VolumeOffIcon style={{ fontSize: "15px" }} />
+                          )}
+                        </Button>
+                      )
+                    }
+
+                    {item.post.length > 1 && (
+                      <>
+                        {(currentImageIndex[item._id] ?? 0) > 0 && (
+                          <button
+                            onClick={() => handlePreviousImage(item._id)}
+                            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                          >
+                            <ChevronLeftIcon fontSize="medium" color="action" />
+                          </button>
+                        )}
+
+                        {(currentImageIndex[item._id] ?? 0) < item.post.length - 1 && (
+                          <button
+                            onClick={() => handleNextImage(item._id, item.post.length)}
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                          >
+                            <ChevronRightIcon fontSize="medium" color="action" />
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -216,6 +367,12 @@ const Posts = () => {
             </div>
           </div>
         ))}
+        <audio ref={audioRef} src={music} autoPlay={isPlaying}></audio>
+        {page < totalPage && (
+          <div ref={loadingRef} className="text-center my-4">
+            <p className="spinner"></p>
+          </div>
+        )}
       </div>
     </div>
   );

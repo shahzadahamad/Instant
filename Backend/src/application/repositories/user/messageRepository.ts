@@ -9,10 +9,9 @@ export default class MessageRepository {
       await saveMessage.populate('senderId', 'username profilePicture fullname isOnline');
       await saveMessage.populate({
         path: 'postId',
-        select: 'post userId caption',
         populate: {
           path: 'userId',
-          select: 'username profilePicture fullname isOnline isVerified'
+          select: 'username profilePicture isPrivateAccount fullname isOnline isVerified'
         }
       });
       return saveMessage;
@@ -29,10 +28,9 @@ export default class MessageRepository {
     try {
       return await MessageModel.find({ chatId }).populate('senderId', 'username profilePicture fullname isOnline').populate({
         path: 'postId',
-        select: 'post userId caption',
         populate: {
           path: 'userId',
-          select: 'username profilePicture fullname isOnline isVerified'
+          select: 'username profilePicture isPrivateAccount fullname isOnline isVerified'
         }
       });
     } catch (error) {
