@@ -24,6 +24,7 @@ import ReelsController from "../../../infrastructure/controllers/user/post/reels
 import SinglePostController from "../../../infrastructure/controllers/user/post/singlePostController";
 import FilterReelsController from "../../../infrastructure/controllers/user/post/filterReelsController";
 import LoadingPagePostController from "../../../infrastructure/controllers/user/post/loadingPagePostController";
+import ExplorePostController from "../../../infrastructure/controllers/user/post/explorePostController";
 
 const userPostRouter = Router();
 
@@ -50,6 +51,7 @@ const reelsController = new ReelsController();
 const singlePostController = new SinglePostController();
 const filterReelsController = new FilterReelsController();
 const loadingPagePostController = new LoadingPagePostController();
+const explorePostController = new ExplorePostController();
 
 userPostRouter.post("/create-post", authMiddleware, upload.array("files", 10), createPostController.handle);
 userPostRouter.get("/get-user-post-data", authMiddleware, getUserPostData.handle);
@@ -74,5 +76,6 @@ userPostRouter.get('/reels', authMiddleware, reelsController.handle);
 userPostRouter.get('/single/:postId', authMiddleware, singlePostController.handle);
 userPostRouter.get('/reels-all', authMiddleware, filterReelsController.handle);
 userPostRouter.get('/loading', authMiddleware, loadingPagePostController.handle);
+userPostRouter.get('/explore', authMiddleware, explorePostController.handle);
 
 export default userPostRouter;
