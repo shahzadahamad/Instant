@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import PostModal from "../common/PostViewModal/PostModal";
 import VerificationIcon from "../common/svg/VerificationIcon";
+import SharePostModal from "../common/SharePostModal";
 
 const ReelsDetials = () => {
 
@@ -32,6 +33,7 @@ const ReelsDetials = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [mainPost, setMainPost] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
 
   const fetchReels = async (load: boolean, page: number, status: boolean) => {
     try {
@@ -260,6 +262,10 @@ const ReelsDetials = () => {
     setShowFullCaption(!showFullCaption);
   };
 
+  const handleShareModal = () => {
+    setShareModalOpen((prev) => !prev);
+  };
+
   return (
     <>
       {(mainPost) && (
@@ -270,6 +276,15 @@ const ReelsDetials = () => {
           closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
         />
       )}
+      {
+        shareModalOpen && (
+          <SharePostModal
+            postId={reels[currentVideoIndex]._id}
+            shareModalOpen={shareModalOpen}
+            handleShareModal={handleShareModal}
+          />
+        )
+      }
       <div ref={containerRef} className='w-full h-screen scrollbar-hidden'>
         {reels.map((reel, index) => (
           <div
@@ -360,7 +375,7 @@ const ReelsDetials = () => {
                     icon={isLiked ? faHeartSolid : faHeart}
                   />
                   {
-                    !reels[currentVideoIndex].hideLikeAndView && (
+                    (currentUser?._id.toString() === reels[currentVideoIndex].userId._id.toString() || !reels[currentVideoIndex].hideLikeAndView) && (
                       <p className="text-sm font-semibold">{reel.likeCount}</p>
                     )
                   }
@@ -383,6 +398,7 @@ const ReelsDetials = () => {
                   !reels[currentVideoIndex].userId.isPrivateAccount && (
                     <div className="pt-1">
                       <FontAwesomeIcon
+                        onClick={() => setShareModalOpen(true)}
                         className="hover:cursor-pointer"
                         icon={faPaperPlane}
                       />

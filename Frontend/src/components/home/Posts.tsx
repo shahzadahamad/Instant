@@ -94,7 +94,6 @@ const Posts = () => {
         entries.forEach((entry) => {
           const index = postData.findIndex((post) => post.post[0].url === entry.target.getAttribute("src"));
           if (index === -1) return;
-
           const post = postData[index];
           const video = videoRefs.current[index];
           if (entry.isIntersecting) {
@@ -344,7 +343,7 @@ const Posts = () => {
                         {(currentImageIndex[item._id] ?? 0) > 0 && (
                           <button
                             onClick={() => handlePreviousImage(item._id)}
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
                           >
                             <ChevronLeftIcon fontSize="medium" color="action" />
                           </button>
@@ -353,7 +352,7 @@ const Posts = () => {
                         {(currentImageIndex[item._id] ?? 0) < item.post.length - 1 && (
                           <button
                             onClick={() => handleNextImage(item._id, item.post.length)}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
                           >
                             <ChevronRightIcon fontSize="medium" color="action" />
                           </button>

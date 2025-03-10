@@ -155,7 +155,7 @@ const TagUser = () => {
         )}
       </div>
       <div className="relative w-72 h-72 flex items-center justify-center">
-        {post && post.length > 0 && post[postIndex].type === "image" ? (
+        {post && post.length > 0 && (post[postIndex].type === "image" || (post[postIndex].type === 'story' && isStory)) ? (
           <img
             className="absolute w-full h-full rounded-md object-contain"
             src={post[postIndex].url}
@@ -168,45 +168,42 @@ const TagUser = () => {
           />
         )}
       </div>
+      <>
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
+          <button
+            onClick={handleNextImage}
+            className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === post.length - 1 ? "hidden" : ""
+              }`}
+          >
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="text-white text-[15px]"
+            />
+          </button>
+        </div>
 
-      {searchUsers && searchUsers.length <= 0 && (
-        <>
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
-            <button
-              onClick={handleNextImage}
-              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === post.length - 1 ? "hidden" : ""
-                }`}
-            >
-              <FontAwesomeIcon
-                icon={faArrowRight}
-                className="text-white text-[15px]"
-              />
-            </button>
-          </div>
-
-          <div className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10">
-            <button
-              onClick={handlePreviousImage}
-              className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === 0 ? "hidden" : ""
-                }`}
-            >
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                className="text-white text-[14px]"
-              />
-            </button>
-          </div>
-          {post[postIndex].tagUsers.length > 0 && (
-            <Button
-              onClick={handleTagUserClick}
-              variant="outline"
-              className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
-            >
-              <FontAwesomeIcon icon={faUser} />
-            </Button>
-          )}
-        </>
-      )}
+        <div className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10">
+          <button
+            onClick={handlePreviousImage}
+            className={`w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 cursor-pointer transition-colors flex items-center justify-center ${post && postIndex === 0 ? "hidden" : ""
+              }`}
+          >
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className="text-white text-[14px]"
+            />
+          </button>
+        </div>
+        {post[postIndex].tagUsers.length > 0 && (
+          <Button
+            onClick={handleTagUserClick}
+            variant="outline"
+            className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+          >
+            <FontAwesomeIcon icon={faUser} />
+          </Button>
+        )}
+      </>
       <Modal
         isOpen={isOpen}
         size="lg"
