@@ -27,6 +27,7 @@ import Reels from "@/pages/user/Reels";
 import ReelsMain from "@/pages/user/ReelsMain";
 import Success from "@/pages/user/Success";
 import Failed from "@/pages/user/Failed";
+import Explore from "@/pages/user/Explore";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -116,6 +117,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/reels/:reelId",
     element: currentUser ? <Reels /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/explore",
+    element: currentUser ? <Explore /> : <Navigate to='/sign-in' replace />
   },
   {
     path: "/error",

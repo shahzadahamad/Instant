@@ -260,7 +260,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             Message
           </div>
         </div>
-        <div className="relative group flex items-center justify-center">
+        <div onClick={() => navigate('/explore')} className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={page === "explore" ? faCompas : faCompass}
             className={`${page === "explore" && "dark:text-white text-black"

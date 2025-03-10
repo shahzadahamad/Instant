@@ -215,157 +215,173 @@ const Posts = () => {
 
   return (
     <div className="w-full h-[80vh] scrollbar-hidden">
-      <div className="flex flex-col items-center justify-start gap-4 p-4">
-        {postData.map((item, index) => (
-          <div key={item._id} className={`w-[40%] flex items-center flex-col justify-center rounded-xl-lg ${index !== 0 && "border-t"}`}>
-            <div className="w-full">
-              {/* Post Header */}
-              <div className="px-1 py-3 rounded flex gap-3 items-center">
-                <div className="relative flex justify-between w-full items-center">
-                  <div className="flex gap-3">
-                    <div onClick={() => navigate(`/user/${item.userId.username}`)} className="w-10 h-10 rounded-full overflow-hidden cursor-pointer">
-                      <img
-                        src={item.userId.profilePicture.toString()}
-                        alt="avatar"
-                        className="object-cover w-full h-full"
-                      />
+      <div className={`flex ${postData.length <= 0 && "h-full"} flex-col items-center justify-center gap-4 p-4`}>
+        {
+          postData.length > 0 ? (
+            postData.map((item, index) => (
+              <div key={item._id} className={`w-[40%] flex items-center flex-col justify-center rounded-xl-lg ${index !== 0 && "border-t"}`}>
+                <div className="w-full">
+                  {/* Post Header */}
+                  <div className="px-1 py-3 rounded flex gap-3 items-center">
+                    <div className="relative flex justify-between w-full items-center">
+                      <div className="flex gap-3">
+                        <div onClick={() => navigate(`/user/${item.userId.username}`)} className="w-10 h-10 rounded-full overflow-hidden cursor-pointer">
+                          <img
+                            src={item.userId.profilePicture.toString()}
+                            alt="avatar"
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <div onClick={() => navigate(`/user/${item.userId.username}`)} className="flex cursor-pointer items-center gap-1">
+                            <h2 className="font-bold text-medium">{item.userId.username}</h2>
+                            {
+                              item.userId.isVerified.status && (
+                                <VerificationIcon size={'16'} />
+                              )
+                            }
+                          </div>
+                          <Dot />
+                          <p className="text-gray-500 text-sm">{timeSince(item.createdAt)}</p>
+                        </div>
+                      </div>
+                      <FontAwesomeIcon onClick={() => {
+                        handleSelectedPost(item, index)
+                        window.history.pushState(
+                          null,
+                          "",
+                          `/post/${item._id}`
+                        );
+                      }} icon={faEllipsis} className="text-2xl cursor-pointer" />
                     </div>
-                    <div className="flex items-center justify-center">
-                      <div onClick={() => navigate(`/user/${item.userId.username}`)} className="flex cursor-pointer items-center gap-1">
-                        <h2 className="font-bold text-medium">{item.userId.username}</h2>
+                  </div>
+
+                  {(selectedPost) && (
+                    <PostModal
+                      post={[selectedPost]}
+                      imageIndex={0}
+                      close={closeModal}
+                      closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
+                    />
+                  )}
+
+                  {/* Post Content */}
+                  <div className="w-full border rounded-md">
+                    {item.post[0].type === "video" || item.post[0].type === "reel" ? (
+                      <div
+                        onClick={() => handleVideoClick(index)}
+                        className={`relative w-full ${item.post[0].type === "reel" ? "h-[540px]" : "h-full"} border rounded-md`}
+                        style={{
+                          filter: `
+                            contrast(${item.post[0].customFilter.contrast}%)
+                            brightness(${item.post[0].customFilter.brightness}%)
+                            saturate(${item.post[0].customFilter.saturation}%)
+                            sepia(${item.post[0].customFilter.sepia}%)
+                            grayscale(${item.post[0].customFilter.grayScale}%)
+                          `,
+                        }}
+                      >
+                        <video
+                          ref={(el) => (videoRefs.current[index] = el)}
+                          muted={muted}
+                          src={item.post[0].url}
+                          className={`${item.post[0].filterClass} object-contain rounded-md w-full h-full`}
+                          loop
+                          playsInline
+                        />
+                        <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
+                          {
+                            muted ? <VolumeOff size={20} strokeWidth={3} /> : <Volume2 size={20} strokeWidth={3} />
+                          }
+                        </button>
                         {
-                          item.userId.isVerified.status && (
-                            <VerificationIcon size={'16'} />
+                          !play && (
+                            <button
+                              className="absolute inset-0 flex items-center justify-center"
+                            >
+                              <div className="w-20 h-20 text-3xl rounded-full flex items-center justify-center bg-[#000000] bg-opacity-30 cursor-pointer">
+                                <FontAwesomeIcon className="hover:cursor-pointer" icon={faPlay} />
+                              </div>
+                            </button>
                           )
                         }
                       </div>
-                      <Dot />
-                      <p className="text-gray-500 text-sm">{timeSince(item.createdAt)}</p>
-                    </div>
-                  </div>
-                  <FontAwesomeIcon onClick={() => {
-                    handleSelectedPost(item, index)
-                    window.history.pushState(
-                      null,
-                      "",
-                      `/post/${item._id}`
-                    );
-                  }} icon={faEllipsis} className="text-2xl cursor-pointer" />
-                </div>
-              </div>
+                    ) : (
+                      <div
+                        className="w-full h-full border-r rounded-md"
+                        style={{
+                          filter: `
+                            contrast(${item.post[0].customFilter.contrast}%)
+                            brightness(${item.post[0].customFilter.brightness}%)
+                            saturate(${item.post[0].customFilter.saturation}%)
+                            sepia(${item.post[0].customFilter.sepia}%)
+                            grayscale(${item.post[0].customFilter.grayScale}%)
+                          `,
+                        }}
+                      >
+                        <img
+                          src={item.post[currentImageIndex[item._id] ?? 0].url}
+                          alt="Post"
+                          className={`${item.post[0].filterClass} object-contain rounded-md w-full h-full`}
+                        />
+                        {
+                          item.musicId && (
+                            <Button
+                              onClick={handleAudioControl}
+                              variant="outline"
+                              className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
+                            >
+                              {isPlaying ? (
+                                <VolumeUpIcon style={{ fontSize: "15px" }} />
+                              ) : (
+                                <VolumeOffIcon style={{ fontSize: "15px" }} />
+                              )}
+                            </Button>
+                          )
+                        }
 
-              {(selectedPost) && (
-                <PostModal
-                  post={[selectedPost]}
-                  imageIndex={0}
-                  close={closeModal}
-                  closeWhileTouchOutsideModal={closeWhileTouchOutsideModal}
-                />
-              )}
+                        {item.post.length > 1 && (
+                          <>
+                            {(currentImageIndex[item._id] ?? 0) > 0 && (
+                              <button
+                                onClick={() => handlePreviousImage(item._id)}
+                                className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                              >
+                                <ChevronLeftIcon fontSize="medium" color="action" />
+                              </button>
+                            )}
 
-              {/* Post Content */}
-              <div className="w-full border rounded-md">
-                {item.post[0].type === "video" || item.post[0].type === "reel" ? (
-                  <div
-                    onClick={() => handleVideoClick(index)}
-                    className={`relative w-full ${item.post[0].type === "reel" ? "h-[540px]" : "h-full"} border rounded-md`}
-                    style={{
-                      filter: `
-                        contrast(${item.post[0].customFilter.contrast}%)
-                        brightness(${item.post[0].customFilter.brightness}%)
-                        saturate(${item.post[0].customFilter.saturation}%)
-                        sepia(${item.post[0].customFilter.sepia}%)
-                        grayscale(${item.post[0].customFilter.grayScale}%)
-                      `,
-                    }}
-                  >
-                    <video
-                      ref={(el) => (videoRefs.current[index] = el)}
-                      muted={muted}
-                      src={item.post[0].url}
-                      className={`${item.post[0].filterClass} object-contain rounded-md w-full h-full`}
-                      loop
-                      playsInline
-                    />
-                    <button onClick={handleMuteToggle} className="absolute right-2 top-2 w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#2c2c2c] bg-opacity-75 cursor-pointer z-10">
-                      {
-                        muted ? <VolumeOff size={20} strokeWidth={3} /> : <Volume2 size={20} strokeWidth={3} />
-                      }
-                    </button>
-                    {
-                      !play && (
-                        <button
-                          className="absolute inset-0 flex items-center justify-center"
-                        >
-                          <div className="w-20 h-20 text-3xl rounded-full flex items-center justify-center bg-[#000000] bg-opacity-30 cursor-pointer">
-                            <FontAwesomeIcon className="hover:cursor-pointer" icon={faPlay} />
-                          </div>
-                        </button>
-                      )
-                    }
-                  </div>
-                ) : (
-                  <div
-                    className="w-full h-full border-r rounded-md"
-                    style={{
-                      filter: `
-                        contrast(${item.post[0].customFilter.contrast}%)
-                        brightness(${item.post[0].customFilter.brightness}%)
-                        saturate(${item.post[0].customFilter.saturation}%)
-                        sepia(${item.post[0].customFilter.sepia}%)
-                        grayscale(${item.post[0].customFilter.grayScale}%)
-                      `,
-                    }}
-                  >
-                    <img
-                      src={item.post[currentImageIndex[item._id] ?? 0].url}
-                      alt="Post"
-                      className={`${item.post[0].filterClass} object-contain rounded-md w-full h-full`}
-                    />
-                    {
-                      item.musicId && (
-                        <Button
-                          onClick={handleAudioControl}
-                          variant="outline"
-                          className="absolute bottom-2 border-none text-white z-10 hover:text-white right-2 w-8 h-8 rounded-full bg-black bg-opacity-50 hover:bg-black hover:bg-opacity-20 transition-colors flex items-center cursor-pointer justify-center"
-                        >
-                          {isPlaying ? (
-                            <VolumeUpIcon style={{ fontSize: "15px" }} />
-                          ) : (
-                            <VolumeOffIcon style={{ fontSize: "15px" }} />
-                          )}
-                        </Button>
-                      )
-                    }
-
-                    {item.post.length > 1 && (
-                      <>
-                        {(currentImageIndex[item._id] ?? 0) > 0 && (
-                          <button
-                            onClick={() => handlePreviousImage(item._id)}
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
-                          >
-                            <ChevronLeftIcon fontSize="medium" color="action" />
-                          </button>
+                            {(currentImageIndex[item._id] ?? 0) < item.post.length - 1 && (
+                              <button
+                                onClick={() => handleNextImage(item._id, item.post.length)}
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
+                              >
+                                <ChevronRightIcon fontSize="medium" color="action" />
+                              </button>
+                            )}
+                          </>
                         )}
-
-                        {(currentImageIndex[item._id] ?? 0) < item.post.length - 1 && (
-                          <button
-                            onClick={() => handleNextImage(item._id, item.post.length)}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"
-                          >
-                            <ChevronRightIcon fontSize="medium" color="action" />
-                          </button>
-                        )}
-                      </>
+                      </div>
                     )}
                   </div>
-                )}
+                  <PostLowerSection postData={item} setSelectedPost={handleSelectedPost} index={index} />
+                </div>
               </div>
-              <PostLowerSection postData={item} setSelectedPost={handleSelectedPost} index={index} />
+            ))
+          ) : (
+            <div className="border p-3 rounded-lg flex flex-col items-center justify-center text-center space-y-4">
+              <p className="text-lg">Looks like your feed is empty! Start exploring amazing content and connect with people.</p>
+              <Button
+                variant="outline"
+                size={"lg"}
+                onClick={() => navigate('/explore')}
+              >
+                Explore Now
+              </Button>
             </div>
-          </div>
-        ))}
+
+          )
+        }
         <audio ref={audioRef} src={music} autoPlay={isPlaying}></audio>
         {page < totalPage && (
           <div ref={loadingRef} className="text-center my-4">
@@ -373,7 +389,7 @@ const Posts = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

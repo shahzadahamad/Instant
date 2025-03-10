@@ -263,3 +263,12 @@ export const getLoadingPagePostData = async (page: number) => {
   });
   return response.data;
 }
+
+export const getHomePagePostData = async (page: number) => {
+  const response = await apiClient.get(`/user/post/explore`, {
+    params: {
+      page,
+    }
+  });
+  return response.data;
+}
