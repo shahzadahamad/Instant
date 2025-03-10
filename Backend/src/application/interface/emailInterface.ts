@@ -10,3 +10,10 @@ export interface EmailOptionsResetPassword {
   userId: string;
   token: string;
 }
+
+export interface EmailOptionsAccountVerification {
+  to: string;
+  fullname: string;
+  price: string;
+  period: string;
+}

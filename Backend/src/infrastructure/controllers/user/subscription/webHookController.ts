@@ -5,12 +5,13 @@ import { MESSAGES } from "../../../constants/messages";
 import WebHook from "../../../../application/useCases/user/subscription/webHook";
 import { stripe } from "../../../configs/stripe";
 import PaymentRepository from "../../../../application/repositories/user/paymentRepository";
+import { EmailService } from "../../../../application/providers/nodeMailer";
 
 export default class WebHookController {
   public async handle(req: Request, res: Response): Promise<void> {
     const sig = req.headers['stripe-signature'] as string;
 
-    const webHook = new WebHook(new UserRepository(), new PaymentRepository());
+    const webHook = new WebHook(new UserRepository(), new PaymentRepository(), new EmailService());
 
     const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRECT_KEY!);
     try {

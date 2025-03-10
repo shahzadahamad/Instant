@@ -1,5 +1,6 @@
 import nodemailer, { Transporter } from "nodemailer";
 import {
+  EmailOptionsAccountVerification,
   EmailOptionsOtp,
   EmailOptionsResetPassword,
 } from "../interface/emailInterface";
@@ -79,4 +80,36 @@ export class EmailService {
       throw new Error("Failed to send mail");
     }
   }
+
+  async sendEmailAfterAccountVerification(
+    emailOptions: EmailOptionsAccountVerification
+  ): Promise<boolean> {
+    try {
+      const { to, fullname, price, period } = emailOptions;
+
+      await this.transporter.sendMail({
+        from: process.env.MAILER_EMAIL,
+        to,
+        subject: "Instant - Account Verification Successful",
+        text: `Hi ${fullname},\n\nCongratulations! Your account has been successfully verified.\n\nYou have purchased a plan for ${period} at a price of ${price}.\n\nEnjoy exclusive features and connect with more people on Instant!\n\nBest regards,\nThe Instant Team`,
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #333;">
+            <h2>Hello, ${fullname} 👋</h2>
+            <p>Congratulations! Your account has been successfully verified.</p>
+            <p>You have purchased a plan for <strong>${period}</strong> at a price of <strong>${price}</strong>.</p>
+            <p>Enjoy exclusive features and connect with more people on <strong>Instant</strong>!</p>
+            <br>
+            <p>Best regards,</p>
+            <p><strong>The Instant Team</strong></p>
+          </div>
+        `,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error sending email:", error);
+      throw new Error("Failed to send verification email");
+    }
+  }
+
 }

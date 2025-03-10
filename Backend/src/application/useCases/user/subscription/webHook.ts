@@ -1,3 +1,4 @@
+import { EmailService } from "../../../providers/nodeMailer";
 import PaymentRepository from "../../../repositories/user/paymentRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 import Stripe from "stripe";
@@ -5,10 +6,12 @@ import Stripe from "stripe";
 export default class WebHook {
   private userRepository: UserRepository;
   private paymentRepository: PaymentRepository;
+  private emailService: EmailService;
 
-  constructor(userRepository: UserRepository, paymentRepository: PaymentRepository) {
+  constructor(userRepository: UserRepository, paymentRepository: PaymentRepository, emailService: EmailService) {
     this.userRepository = userRepository;
     this.paymentRepository = paymentRepository;
+    this.emailService = emailService;
   }
 
   public async execute(event: Stripe.Event): Promise<void> {
@@ -30,6 +33,7 @@ export default class WebHook {
               };
               const newPayment = await this.paymentRepository.createPayment(paymentData);
               await this.userRepository.updateVerification(paymentData.userId, parsedPlan.period, true, newPayment._id.toString());
+              await this.emailService.sendEmailAfterAccountVerification({ to: user.email, fullname: user.fullname, price: String(paymentData.amount), period: parsedPlan.period });
             }
           }
           break;
