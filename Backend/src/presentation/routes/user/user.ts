@@ -19,6 +19,7 @@ import UnfollowUserController from "../../../infrastructure/controllers/user/use
 import UserDataController from "../../../infrastructure/controllers/user/user/userDataController";
 import UserSuggestionController from "../../../infrastructure/controllers/user/user/userSuggestionController";
 import UserWatchPostController from "../../../infrastructure/controllers/user/user/userWatchPostController";
+import FollowingAndFollowerController from "../../../infrastructure/controllers/user/user/followingAndFollowerController";
 
 const userRouter = Router();
 
@@ -40,6 +41,7 @@ const unfollowUserController = new UnfollowUserController();
 const userDataController = new UserDataController();
 const userSuggestionController = new UserSuggestionController();
 const userWatchPostController = new UserWatchPostController();
+const followingAndFollowerController = new FollowingAndFollowerController();
 
 userRouter.get('/data/:_id', authMiddleware, userDataController.handle);
 userRouter.get("/get-user-data", authMiddleware, getUserDataController.handle);
@@ -59,5 +61,6 @@ userRouter.delete('/friend-request/:username', authMiddleware, deleteFriendReque
 userRouter.delete('/unfollow/:_id', authMiddleware, unfollowUserController.handle);
 userRouter.get('/suggestion/:user', authMiddleware, userSuggestionController.handle);
 userRouter.patch('/watched-post/:postId', authMiddleware, userWatchPostController.handle);
+userRouter.get('/friend', authMiddleware, followingAndFollowerController.handle);
 
 export default userRouter;

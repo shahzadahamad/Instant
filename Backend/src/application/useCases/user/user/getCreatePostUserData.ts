@@ -4,12 +4,11 @@ import FriendsRepository from "../../../repositories/user/friendsRepository";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class GetCreatePostUserData {
-  private UserRepository: UserRepository;
+  private userRepository: UserRepository;
   private friendsRepository: FriendsRepository;
 
-  constructor(UserRepository: UserRepository, friendsRepository: FriendsRepository) {
-    this.UserRepository = UserRepository;
-    this.friendsRepository = friendsRepository;
+  constructor(userRepository: UserRepository, friendsRepository: FriendsRepository) {
+    this.userRepository = userRepository;
     this.friendsRepository = friendsRepository;
   }
 
@@ -29,7 +28,7 @@ export default class GetCreatePostUserData {
       ],
     };
 
-    const user = await this.UserRepository.find10UserBySearch(query);
+    const user = await this.userRepository.find10UserBySearch(query);
     return user.filter((user) => {
       return !user.isPrivateAccount || [...userFollowings, userId].includes(user._id.toString());
     });

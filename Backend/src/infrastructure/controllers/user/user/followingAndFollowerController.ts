@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
-import GetPostCount from "../../../../application/useCases/user/post/getPostCount";
+import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FollowingAndFollower from "../../../../application/useCases/user/user/followingAndFollower";
 
-export default class GetPostCountController {
+export default class FollowingAndFollowerController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
-    const getPostCount = new GetPostCount(new PostRepository(), new FriendsRepository());
+
+    const followingAndFollower = new FollowingAndFollower(new FriendsRepository());
+
     try {
-      const data = await getPostCount.execute(userId);
-      res.status(HttpStatusCode.OK).json(data);
+      const friendData = await followingAndFollower.execute(userId);
+
+      res.status(HttpStatusCode.OK).json(friendData);
     } catch (error) {
       if (error instanceof Error) {
         res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });

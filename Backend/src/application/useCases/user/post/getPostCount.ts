@@ -1,14 +1,18 @@
+import FriendsRepository from "../../../repositories/user/friendsRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 
 export default class GetPostCount {
   private postRepository: PostRepository;
+  private friendsRepository: FriendsRepository;
 
-  constructor(postRepository: PostRepository) {
+  constructor(postRepository: PostRepository, friendsRepository: FriendsRepository) {
     this.postRepository = postRepository;
+    this.friendsRepository = friendsRepository;
   }
 
-  public async execute(id: string): Promise<number> {
-    const postData = await this.postRepository.getUserPostCount(id);
-    return postData;
+  public async execute(id: string): Promise<{ postCount: number, followings: number, followers: number }> {
+    const postCount = await this.postRepository.getUserPostCount(id);
+    const friendCounts = await this.friendsRepository.findUserDoc(id);
+    return { postCount, followings: friendCounts ? friendCounts.followings.length : 0, followers: friendCounts ? friendCounts.followers.length : 0 };
   }
 }
