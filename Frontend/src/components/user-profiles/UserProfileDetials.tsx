@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import UnfollowModal from "../common/UnfollowModal";
 import VerificationIcon from "../common/svg/VerificationIcon";
+import FollowDetialsModal from "../common/FollowDetialsModal";
 
 const UserProfileDetials = () => {
   const { username } = useParams();
@@ -22,17 +23,21 @@ const UserProfileDetials = () => {
   const dispatch = useDispatch();
   const { followDetials } = useSelector((state: RootState) => state.user);
   const [openUnfollowModal, setOpenUnfollowModal] = useState(false);
+  const [openFollowDetialsModal, setOpenFollowDetialsModal] = useState(false);
+  const [followAction, setFollowAction] = useState("");
+  const [followDetial, setFollowDetial] = useState({ followings: 0, followers: 0 });
 
   const fetchUserData = async (username: string) => {
     try {
       const res = await getUserProfileDates(username);
       if (res.userData) {
         setUserData({ ...res.userData });
+        setFollowDetial({ followings: res.followings, followers: res.followers })
+        setCount(res.postCount);
       } else {
         setUserData(null);
         navigate('/profile');
       }
-      setCount(res.postCount);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.log(error);
@@ -84,7 +89,6 @@ const UserProfileDetials = () => {
     }
   }
 
-
   const handleUnfollowModal = (status: boolean) => {
     if (status) {
       setOpenUnfollowModal(!openUnfollowModal);
@@ -117,8 +121,17 @@ const UserProfileDetials = () => {
     }
   }
 
+  const handleCloseModal = () => {
+    setOpenFollowDetialsModal(false)
+  }
+
   return (
     <>
+      {
+        openFollowDetialsModal && (
+          <FollowDetialsModal action={followAction} handleCloseModal={handleCloseModal} userId={userData ? userData._id : ""} />
+        )
+      }
       {userData && (
         <>
           <div className="flex flex-col h-1/2 border-b border-[#363636]">
@@ -172,8 +185,14 @@ const UserProfileDetials = () => {
                 </div>
                 <div className="flex gap-5 cursor-pointer">
                   <p>{count} posts</p>
-                  <p>0 followers</p>
-                  <p>0 following</p>
+                  <p onClick={() => {
+                    setFollowAction('Followers');
+                    setOpenFollowDetialsModal(true)
+                  }}>{followDetial.followers} followers</p>
+                  <p onClick={() => {
+                    setFollowAction('Following');
+                    setOpenFollowDetialsModal(true)
+                  }}>{followDetial.followings} following</p>
                 </div>
               </div>
             </div>

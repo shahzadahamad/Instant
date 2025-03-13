@@ -18,11 +18,13 @@ const friendsSchema: Schema = new Schema(
     followers: {
       type: Array,
       required: true,
+      ref: 'User',
       default: [],
     },
     followings: {
       type: Array,
       required: true,
+      ref: 'User',
       default: [],
     },
     blockerUser: {

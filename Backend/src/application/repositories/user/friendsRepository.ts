@@ -1,5 +1,5 @@
 import FriendsModel, { IFriends } from "../../../infrastructure/database/models/friendsModal";
-import { IFriendsWithUserData } from "../../interface/post";
+import { IFriendsWithUserData, IFriendsWithUserFollowingData } from "../../interface/post";
 
 export default class FriendsRepository {
   public async followUser(followingUserId: string, followerUserId: string): Promise<void> {
@@ -89,7 +89,27 @@ export default class FriendsRepository {
       return await FriendsModel.findOne({ userId });
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error("You have already following this user.");
+        throw new Error("Error");
+      }
+      console.error("Unknown error following user");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async findUserDocWithPopulateUserData(userId: string): Promise<IFriendsWithUserFollowingData | null> {
+    try {
+      return await FriendsModel.findOne({ userId }).populate({
+        path: "followings",
+        select: "username profilePicture fullname isPrivateAccount isVerified",
+      })
+        .populate({
+          path: "followers",
+          select: "username profilePicture fullname isPrivateAccount isVerified",
+        }) as IFriendsWithUserFollowingData | null;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message)
+        throw new Error("Error");
       }
       console.error("Unknown error following user");
       throw new Error("Unknown error");
@@ -101,7 +121,7 @@ export default class FriendsRepository {
       return await FriendsModel.find({ userId: { $in: followingIds, $ne: userId } }).populate("userId", 'username') as IFriendsWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error("You have already following this user.");
+        throw new Error("Error");
       }
       console.error("Unknown error following user");
       throw new Error("Unknown error");
@@ -117,7 +137,7 @@ export default class FriendsRepository {
         .select("userId");
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error("You have already following this user.");
+        throw new Error("Error");
       }
       console.error("Unknown error following user");
       throw new Error("Unknown error");

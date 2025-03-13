@@ -4,24 +4,38 @@ import apiClient from "@/apis/apiClient";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import ProfilePostSection from "./ProfilePostSection";
 import VerificationIcon from "../common/svg/VerificationIcon";
+import FollowDetialsModal from "../common/FollowDetialsModal";
 
 const ProfileDetials = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<GetUserDataPostDetials | null>(null);
   const [count, setCount] = useState(0);
+  const [followDetials, setFollowDetials] = useState({ followings: 0, followers: 0 });
+  const [openFollowDetialsModal, setOpenFollowDetialsModal] = useState(false);
+  const [followAction, setFollowAction] = useState("");
 
   const fetchUserData = async () => {
     const res = await apiClient.get(`/user/get-user-data`);
     setUserData({ ...res.data });
     const res1 = await apiClient.get("/user/post/post-count");
-    setCount(res1.data);
+    setCount(res1.data.postCount);
+    setFollowDetials({ followings: res1.data.followings, followers: res1.data.followers })
   };
   useLayoutEffect(() => {
     fetchUserData();
   }, []);
 
+  const handleCloseModal = () => {
+    setOpenFollowDetialsModal(false)
+  }
+
   return (
     <>
+      {
+        openFollowDetialsModal && (
+          <FollowDetialsModal action={followAction} handleCloseModal={handleCloseModal} userId={""} />
+        )
+      }
       <div className="flex flex-col h-1/2 border-b border-[#363636]">
         <div className="flex items-center gap-8 pt-10 pb-8 px-28">
           <img
@@ -47,8 +61,14 @@ const ProfileDetials = () => {
             </div>
             <div className="flex gap-5 cursor-pointer">
               <p>{count} posts</p>
-              <p>0 followers</p>
-              <p>0 following</p>
+              <p onClick={() => {
+                setFollowAction('Followers');
+                setOpenFollowDetialsModal(true)
+              }}>{followDetials.followers} followers</p>
+              <p onClick={() => {
+                setFollowAction('Following');
+                setOpenFollowDetialsModal(true)
+              }}>{followDetials.followings} following</p>
             </div>
           </div>
         </div>

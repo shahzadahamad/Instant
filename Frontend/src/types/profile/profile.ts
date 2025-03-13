@@ -30,7 +30,9 @@ export interface GetUserDataForPost {
   isPrivateAccount: boolean;
   isVerified: isVerified;
   isFollowed?: boolean;
-  createdAt: Date
+  isRequest?: boolean;
+  createdAt?: Date;
+  isRemove?: boolean;
 }
 
 export interface UserSuggestionData {

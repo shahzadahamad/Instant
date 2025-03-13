@@ -95,7 +95,7 @@ const SharePostModal: React.FC<ShareMOdalProps> = ({ postId, shareModalOpen, han
                   type="search"
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search"
-                  className="w-full bg-[#121212] border text-white outline-none pl-10 py-2 rounded-lg"
+                  className="w-full dark:bg-[#121212] border outline-none pl-10 py-2 rounded-lg"
                 />
               </div>
               <div className="grid grid-cols-4 gap-4 min-w-96 max-h-64 overflow-y-auto">

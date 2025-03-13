@@ -3,15 +3,17 @@ import FriendsRepository from "../../../../application/repositories/user/friends
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FollowingAndFollower from "../../../../application/useCases/user/user/followingAndFollower";
+import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 
 export default class FollowingAndFollowerController {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
+    const { _id = "" } = req.query;
 
-    const followingAndFollower = new FollowingAndFollower(new FriendsRepository());
+    const followingAndFollower = new FollowingAndFollower(new FriendsRepository(), new UserMoreDataRepository());
 
     try {
-      const friendData = await followingAndFollower.execute(userId);
+      const friendData = await followingAndFollower.execute(userId, _id as string);
 
       res.status(HttpStatusCode.OK).json(friendData);
     } catch (error) {

@@ -4,6 +4,7 @@ import PostRepository from "../../../../application/repositories/user/postReposi
 import GetUserDataByUsername from "../../../../application/useCases/user/user/getUserDataByUsername";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 
 export default class GetUserDataByUsernameController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -12,7 +13,8 @@ export default class GetUserDataByUsernameController {
 
     const getUserDataByUsername = new GetUserDataByUsername(
       new UserRepository(),
-      new PostRepository()
+      new PostRepository(),
+      new FriendsRepository(),
     );
 
     try {
@@ -21,6 +23,8 @@ export default class GetUserDataByUsernameController {
       res.status(HttpStatusCode.OK).json({
         postCount: userData.postCount,
         userData: userData.userWithoutSensitiveInfo,
+        followings: userData.followings,
+        followers: userData.followers,
       });
     } catch (error) {
       if (error instanceof Error) {

@@ -57,7 +57,6 @@ const FriendSuggetion = () => {
           user.user._id === userId ? { ...user, isFollow: false } : user
         )
       );
-      console.log(suggestions)
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.error(error.response.data?.error || "An error occurred");

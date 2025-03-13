@@ -77,6 +77,13 @@ export interface IFriendsWithUserData {
   blockedUser: string[];
 }
 
+export interface IFriendsWithUserFollowingData {
+  userId: string,
+  followers: IUser[];
+  followings: IUser[];
+  blockedUser: string[];
+}
+
 export interface IpostWithUserData {
   _id: string;
   userId: IUser;

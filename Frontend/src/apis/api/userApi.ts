@@ -155,6 +155,11 @@ export const unfollowUser = async (userId: string) => {
   return response.data;
 };
 
+export const removeUser = async (userId: string) => {
+  const response = await apiClient.delete(`/user/remove/${userId}`);
+  return response.data;
+};
+
 export const deleteRequest = async (username: string) => {
   const response = await apiClient.delete(`/user/friend-request/${username}`);
   return response.data;
@@ -268,6 +273,15 @@ export const getHomePagePostData = async (page: number) => {
   const response = await apiClient.get(`/user/post/explore`, {
     params: {
       page,
+    }
+  });
+  return response.data;
+}
+
+export const getFollowDetials = async (_id: string) => {
+  const response = await apiClient.get(`/user/friends`, {
+    params: {
+      _id
     }
   });
   return response.data;
