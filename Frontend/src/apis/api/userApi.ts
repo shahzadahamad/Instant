@@ -286,3 +286,8 @@ export const getFollowDetials = async (_id: string) => {
   });
   return response.data;
 }
+
+export const sendFileMessage = async (formData: FormData) => {
+  const response = await apiClient.post(`/user/chats/file/message`, formData);
+  return response.data;
+}

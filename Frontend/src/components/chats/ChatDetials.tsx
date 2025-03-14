@@ -4,7 +4,7 @@ import TextMessage from "./message-type/TextMessage";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { getChatData } from "@/apis/api/userApi";
+import { getChatData, sendFileMessage } from "@/apis/api/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +15,11 @@ import { updatelastMessage } from "@/redux/slice/chatSlice";
 import { format, isToday, isYesterday } from "date-fns";
 import SharePostMessage from "./message-type/SharePostMessage";
 import Unavailable from "./message-type/Unavailable";
+import Image from "../common/svg/Image";
+import Audio from "../common/svg/Audio";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import FileMessage from "./message-type/FileMessage";
 
 const ChatDetials = () => {
   const [sendMessage, setSendMessage] = useState("");
@@ -27,6 +32,9 @@ const ChatDetials = () => {
   const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchChatData = useCallback(
     async (chatId: string) => {
@@ -69,8 +77,8 @@ const ChatDetials = () => {
 
   useEffect(() => {
     socket.on("send_message", (data) => {
-      if (data.messageData.chatId === chatId) {
-        setMessages((prevMessages) => (prevMessages ? [...prevMessages, data.messageData] : [data.messageData]));
+      if (data.messageData[0].chatId === chatId) {
+        setMessages((prevMessages) => (prevMessages ? [...prevMessages, ...data.messageData] : data.messageData));
         dispatch(updatelastMessage({ _id: data.messageData.chatId, lastMessage: data.lastMessage }));
       }
     });
@@ -103,12 +111,41 @@ const ChatDetials = () => {
     };
   }, []);
 
-  const handleMessageSend = (chatId: string, message: string, type: string) => {
-    const data = {
-      chatId, message, type
+  const handleMessageSend = async (chatId: string, message: string) => {
+    if (!message && selectedFiles.length === 0) return;
+    setIsLoading(true);
+    if (selectedFiles.length > 0) {
+      const formData = new FormData();
+      selectedFiles.forEach((fileItem) => {
+        formData.append("files", fileItem);
+      });
+      formData.append('chatId', chatId);
+      try {
+        await sendFileMessage(formData);
+        setSelectedFiles([]);
+        setIsLoading(false);
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          console.log(error);
+          const errorMsg = error.response.data?.error || "An error occurred";
+          toast.error(errorMsg);
+        } else {
+          console.error("Unexpected error:", error);
+          toast.error("An unexpected error occurred");
+        }
+        return;
+      } finally {
+        setIsLoading(false);
+      }
     }
-    socket.emit('send_message', data);
-    setSendMessage("");
+
+    if (message) {
+      const data = { chatId, message, type: 'text' }
+      socket.emit('send_message', data);
+      setSendMessage("");
+      setSelectedFiles([]);
+      setIsLoading(false);
+    }
   }
 
   const groupMessagesByDate = (messages: MessageData[]) => {
@@ -128,6 +165,84 @@ const ChatDetials = () => {
     }, {});
   };
 
+  const handleSvgClick = () => {
+    if (selectedFiles.length >= 5) {
+      toast.error("You can only upload up to 5 files.");
+      return;
+    }
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const files = event.target.files;
+    if (!files || files.length === 0) {
+      toast.error("Please select at least one file to upload.");
+      return;
+    }
+
+    if (selectedFiles.length + files.length > 5) {
+      toast.error("You can only upload up to 5 files. Extra files will be removed.");
+
+      const remainingSlots = 5 - selectedFiles.length;
+
+      const limitedFiles = Array.from(files).slice(0, remainingSlots);
+
+      const dataTransfer = new DataTransfer();
+      limitedFiles.forEach((file) => dataTransfer.items.add(file));
+
+      event.target.files = dataTransfer.files;
+    }
+
+    const maxSizeInMB = 50;
+    const maxDurationInSeconds = 60;
+
+    const newFiles: File[] = [];
+
+    const checkVideoDuration = (file: File): Promise<boolean> => {
+      return new Promise((resolve) => {
+        const video = document.createElement("video");
+        video.preload = "metadata";
+
+        video.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(video.src);
+          resolve(video.duration <= maxDurationInSeconds);
+        };
+
+        video.src = URL.createObjectURL(file);
+      });
+    };
+
+    const processFiles = async () => {
+      for (const file of files) {
+        if (file.size > maxSizeInMB * 1024 * 1024) {
+          toast.error(`"${file.name}" exceeds 50MB file size limit.`);
+          continue;
+        }
+
+        if (file.type.startsWith("video/")) {
+          const isValidDuration = await checkVideoDuration(file);
+          if (!isValidDuration) {
+            toast.error(`"${file.name}" exceeds 1-minute duration limit.`);
+            continue;
+          }
+        }
+
+        newFiles.push(file);
+      }
+
+      if (newFiles.length > 0) {
+        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles].slice(0, 5));
+      }
+    };
+
+    processFiles();
+  };
+
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <>
@@ -185,8 +300,10 @@ const ChatDetials = () => {
                           <TextMessage key={message._id} message={message} />
                         ) : message.type === 'sharePost' ? (
                           <SharePostMessage key={message._id} message={message} />
-                        ) : message.type === 'unavailable' && (
+                        ) : message.type === 'unavailable' ? (
                           <Unavailable key={message._id} message={message} />
+                        ) : (message.type === 'image' || message.type === 'video') && (
+                          <FileMessage key={message._id} message={message} />
                         )
                       )}
                     </div>
@@ -194,7 +311,43 @@ const ChatDetials = () => {
                 )}
               <div ref={messagesEndRef} />
             </div>
-            <div className="h-[5rem] p-3 content-center ">
+            <div className="px-3 py-4 content-center flex flex-col gap-3">
+              {selectedFiles.length > 0 && (
+                <div className="flex gap-2 ml-2">
+                  <div onClick={handleSvgClick} className="w-20 h-20 flex items-center justify-center dark:bg-[#212426] bg-[#e0e3e5] rounded-lg cursor-pointer">
+                    <Image />
+                  </div>
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="relative">
+                      {file.type.startsWith("image/") ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="Preview"
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <video
+                          src={URL.createObjectURL(file)}
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                      )}
+
+                      {file.type.startsWith("video/") && (
+                        <div className="absolute top-1/2 left-1/2 w-8 h-8 text-base rounded-full flex items-center justify-center bg-black bg-opacity-50 transform -translate-x-1/2 -translate-y-1/2">
+                          <FontAwesomeIcon className="hover:cursor-pointer text-white" icon={faPlay} />
+                        </div>
+                      )}
+
+                      <button
+                        className="absolute top-[-6px] right-[-6px] w-5 h-5 flex items-center justify-center bg-[#989898] text-white rounded-full text-xs"
+                        onClick={() => handleRemoveFile(index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="relative">
                 <input
                   type="text"
@@ -202,10 +355,10 @@ const ChatDetials = () => {
                   onChange={(e) => setSendMessage(e.target.value)}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
-                      handleMessageSend(chatData._id, sendMessage, 'text')
+                      handleMessageSend(chatData._id, sendMessage)
                     }
                   }}
-                  className="w-full p-3 rounded-md border bg-transparent outline-none pl-10 pr-10"
+                  className="w-full p-3 rounded-xl border bg-transparent outline-none pl-10 pr-10"
                   placeholder="Type here..."
                 />
 
@@ -235,95 +388,29 @@ const ChatDetials = () => {
                   </svg>
                 </div>
 
-                {sendMessage ? (
-                  <button onClick={() => handleMessageSend(chatData._id, sendMessage, 'text')} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
-                    Send
+                {sendMessage || selectedFiles.length > 0 ? (
+                  <button onClick={() => handleMessageSend(chatData._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
+                    {isLoading ? <div className="spinner"></div> : "Send"}
                   </button>
                 ) : (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-3">
-                    <svg
-                      aria-label="Add Photo or Video"
-                      className="x1lliihq x1n2onr6 x5n08af cursor-pointer"
-                      fill="currentColor"
-                      height="24"
-                      role="img"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <title>Add Photo or Video</title>
-                      <path
-                        d="M6.549 5.013A1.557 1.557 0 1 0 8.106 6.57a1.557 1.557 0 0 0-1.557-1.557Z"
-                        fill-rule="evenodd"
-                      ></path>
-                      <path
-                        d="m2 18.605 3.901-3.9a.908.908 0 0 1 1.284 0l2.807 2.806a.908.908 0 0 0 1.283 0l5.534-5.534a.908.908 0 0 1 1.283 0l3.905 3.905"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      ></path>
-                      <path
-                        d="M18.44 2.004A3.56 3.56 0 0 1 22 5.564h0v12.873a3.56 3.56 0 0 1-3.56 3.56H5.568a3.56 3.56 0 0 1-3.56-3.56V5.563a3.56 3.56 0 0 1 3.56-3.56Z"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      ></path>
-                    </svg>
-
-                    <svg
-                      aria-label="Voice clip"
-                      className="x1lliihq x1n2onr6 x5n08af cursor-pointer"
-                      fill="currentColor"
-                      height="24"
-                      role="img"
-                      viewBox="0 0 24 24"
-                      width="24"
-                    >
-                      <title>Voice clip</title>
-                      <path
-                        d="M19.5 10.671v.897a7.5 7.5 0 0 1-15 0v-.897"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      ></path>
-                      <line
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        x1="12"
-                        x2="12"
-                        y1="19.068"
-                        y2="22"
-                      ></line>
-                      <line
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        x1="8.706"
-                        x2="15.104"
-                        y1="22"
-                        y2="22"
-                      ></line>
-                      <path
-                        d="M12 15.745a4 4 0 0 1-4-4V6a4 4 0 0 1 8 0v5.745a4 4 0 0 1-4 4Z"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      ></path>
-                    </svg>
+                    <div onClick={handleSvgClick}>
+                      <Image />
+                    </div>
+                    <div>
+                      <Audio />
+                    </div>
                   </div>
                 )}
               </div>
             </div>
+            <input
+              type="file"
+              multiple
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </div>
         ) : (
           ""
