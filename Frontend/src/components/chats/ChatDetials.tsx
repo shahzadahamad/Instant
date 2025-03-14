@@ -20,6 +20,8 @@ import Audio from "../common/svg/Audio";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import FileMessage from "./message-type/FileMessage";
+import AudioRecoding from "./AudioRecoding";
+import AudioMessage from "./message-type/AudioMessage";
 
 const ChatDetials = () => {
   const [sendMessage, setSendMessage] = useState("");
@@ -35,6 +37,7 @@ const ChatDetials = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAudio, setIsAudio] = useState(false);
 
   const fetchChatData = useCallback(
     async (chatId: string) => {
@@ -73,7 +76,7 @@ const ChatDetials = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, chatId]);
 
   useEffect(() => {
     socket.on("send_message", (data) => {
@@ -111,12 +114,13 @@ const ChatDetials = () => {
     };
   }, []);
 
-  const handleMessageSend = async (chatId: string, message: string) => {
-    if (!message && selectedFiles.length === 0) return;
+  const handleMessageSend = async (chatId: string, message: string, audioFile: File | null) => {
+    if (!message && selectedFiles.length === 0 && !audioFile) return;
     setIsLoading(true);
-    if (selectedFiles.length > 0) {
+    const files = audioFile ? [audioFile] : selectedFiles;
+    if (files.length > 0) {
       const formData = new FormData();
-      selectedFiles.forEach((fileItem) => {
+      files.forEach((fileItem) => {
         formData.append("files", fileItem);
       });
       formData.append('chatId', chatId);
@@ -124,6 +128,7 @@ const ChatDetials = () => {
         await sendFileMessage(formData);
         setSelectedFiles([]);
         setIsLoading(false);
+        return true;
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           console.log(error);
@@ -133,7 +138,7 @@ const ChatDetials = () => {
           console.error("Unexpected error:", error);
           toast.error("An unexpected error occurred");
         }
-        return;
+        return false;
       } finally {
         setIsLoading(false);
       }
@@ -244,6 +249,20 @@ const ChatDetials = () => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleIsAudio = () => {
+    setIsAudio(false);
+  }
+
+  const handleAudioSend = async (audioFile: File, chatId: string): Promise<boolean> => {
+    const res = await handleMessageSend(chatId, sendMessage, audioFile);
+    if (res) {
+      setIsAudio(false);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return (
     <>
       {
@@ -302,8 +321,10 @@ const ChatDetials = () => {
                           <SharePostMessage key={message._id} message={message} />
                         ) : message.type === 'unavailable' ? (
                           <Unavailable key={message._id} message={message} />
-                        ) : (message.type === 'image' || message.type === 'video') && (
+                        ) : (message.type === 'image' || message.type === 'video') ? (
                           <FileMessage key={message._id} message={message} />
+                        ) : message.type === 'audio' && (
+                          <AudioMessage key={message._id} message={message} />
                         )
                       )}
                     </div>
@@ -311,99 +332,110 @@ const ChatDetials = () => {
                 )}
               <div ref={messagesEndRef} />
             </div>
-            <div className="px-3 py-4 content-center flex flex-col gap-3">
-              {selectedFiles.length > 0 && (
-                <div className="flex gap-2 ml-2">
-                  <div onClick={handleSvgClick} className="w-20 h-20 flex items-center justify-center dark:bg-[#212426] bg-[#e0e3e5] rounded-lg cursor-pointer">
-                    <Image />
-                  </div>
-                  {selectedFiles.map((file, index) => (
-                    <div key={index} className="relative">
-                      {file.type.startsWith("image/") ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt="Preview"
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                      ) : (
-                        <video
-                          src={URL.createObjectURL(file)}
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                      )}
+            {
+              isAudio && (
+                <div className="px-3 py-4 content-center flex flex-col gap-3">
+                  <AudioRecoding handleIsAudio={handleIsAudio} handleAudioSend={handleAudioSend} chatId={chatData._id} />
+                </div>
+              )
+            }
+            {
+              !isAudio && (
+                <div className="px-3 py-4 content-center flex flex-col gap-3">
+                  {selectedFiles.length > 0 && (
+                    <div className="flex gap-2 ml-2">
+                      <div onClick={handleSvgClick} className="w-20 h-20 flex items-center justify-center dark:bg-[#212426] bg-[#e0e3e5] rounded-lg cursor-pointer">
+                        <Image />
+                      </div>
+                      {selectedFiles.map((file, index) => (
+                        <div key={index} className="relative">
+                          {file.type.startsWith("image/") ? (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt="Preview"
+                              className="w-20 h-20 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <video
+                              src={URL.createObjectURL(file)}
+                              className="w-20 h-20 object-cover rounded-lg"
+                            />
+                          )}
 
-                      {file.type.startsWith("video/") && (
-                        <div className="absolute top-1/2 left-1/2 w-8 h-8 text-base rounded-full flex items-center justify-center bg-black bg-opacity-50 transform -translate-x-1/2 -translate-y-1/2">
-                          <FontAwesomeIcon className="hover:cursor-pointer text-white" icon={faPlay} />
+                          {file.type.startsWith("video/") && (
+                            <div className="absolute top-1/2 left-1/2 w-8 h-8 text-base rounded-full flex items-center justify-center bg-black bg-opacity-50 transform -translate-x-1/2 -translate-y-1/2">
+                              <FontAwesomeIcon className="hover:cursor-pointer text-white" icon={faPlay} />
+                            </div>
+                          )}
+
+                          <button
+                            className="absolute top-[-6px] right-[-6px] w-5 h-5 flex items-center justify-center bg-[#989898] text-white rounded-full text-xs"
+                            onClick={() => handleRemoveFile(index)}
+                          >
+                            ✕
+                          </button>
                         </div>
-                      )}
+                      ))}
+                    </div>
+                  )}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={sendMessage}
+                      onChange={(e) => setSendMessage(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleMessageSend(chatData._id, sendMessage, null)
+                        }
+                      }}
+                      className="w-full p-3 rounded-xl border bg-transparent outline-none pl-10 pr-10"
+                      placeholder="Type here..."
+                    />
 
-                      <button
-                        className="absolute top-[-6px] right-[-6px] w-5 h-5 flex items-center justify-center bg-[#989898] text-white rounded-full text-xs"
-                        onClick={() => handleRemoveFile(index)}
+                    <div ref={emojiPickerRef} className="absolute bottom-[50px]">
+                      <EmojiPicker
+                        open={open}
+                        autoFocusSearch={false}
+                        theme={Theme.DARK}
+                        emojiStyle={EmojiStyle.GOOGLE}
+                        onEmojiClick={(e) => handleEmojiClick(e.emoji)}
+                      />
+                    </div>
+
+                    <div className="absolute preventbutton cursor-pointer top-1/2 left-3 transform -translate-y-1/2 ">
+                      <svg
+                        onClick={() => setOpen(!open)}
+                        aria-label="Emoji"
+                        className="x1lliihq x1n2onr6 x5n08af"
+                        fill="currentColor"
+                        height="18"
+                        role="img"
+                        viewBox="0 0 24 24"
+                        width="18"
                       >
-                        ✕
+                        <title>Emoji</title>
+                        <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
+                      </svg>
+                    </div>
+
+                    {sendMessage || selectedFiles.length > 0 ? (
+                      <button onClick={() => handleMessageSend(chatData._id, sendMessage, null)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
+                        {isLoading ? <div className="spinner"></div> : "Send"}
                       </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="relative">
-                <input
-                  type="text"
-                  value={sendMessage}
-                  onChange={(e) => setSendMessage(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleMessageSend(chatData._id, sendMessage)
-                    }
-                  }}
-                  className="w-full p-3 rounded-xl border bg-transparent outline-none pl-10 pr-10"
-                  placeholder="Type here..."
-                />
-
-                <div ref={emojiPickerRef} className="absolute bottom-[50px]">
-                  <EmojiPicker
-                    open={open}
-                    autoFocusSearch={false}
-                    theme={Theme.DARK}
-                    emojiStyle={EmojiStyle.GOOGLE}
-                    onEmojiClick={(e) => handleEmojiClick(e.emoji)}
-                  />
-                </div>
-
-                <div className="absolute preventbutton cursor-pointer top-1/2 left-3 transform -translate-y-1/2 ">
-                  <svg
-                    onClick={() => setOpen(!open)}
-                    aria-label="Emoji"
-                    className="x1lliihq x1n2onr6 x5n08af"
-                    fill="currentColor"
-                    height="18"
-                    role="img"
-                    viewBox="0 0 24 24"
-                    width="18"
-                  >
-                    <title>Emoji</title>
-                    <path d="M15.83 10.997a1.167 1.167 0 1 0 1.167 1.167 1.167 1.167 0 0 0-1.167-1.167Zm-6.5 1.167a1.167 1.167 0 1 0-1.166 1.167 1.167 1.167 0 0 0 1.166-1.167Zm5.163 3.24a3.406 3.406 0 0 1-4.982.007 1 1 0 1 0-1.557 1.256 5.397 5.397 0 0 0 8.09 0 1 1 0 0 0-1.55-1.263ZM12 .503a11.5 11.5 0 1 0 11.5 11.5A11.513 11.513 0 0 0 12 .503Zm0 21a9.5 9.5 0 1 1 9.5-9.5 9.51 9.51 0 0 1-9.5 9.5Z"></path>
-                  </svg>
-                </div>
-
-                {sendMessage || selectedFiles.length > 0 ? (
-                  <button onClick={() => handleMessageSend(chatData._id, sendMessage)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-semibold">
-                    {isLoading ? <div className="spinner"></div> : "Send"}
-                  </button>
-                ) : (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-3">
-                    <div onClick={handleSvgClick}>
-                      <Image />
-                    </div>
-                    <div>
-                      <Audio />
-                    </div>
+                    ) : (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-3">
+                        <div onClick={handleSvgClick}>
+                          <Image />
+                        </div>
+                        <div onClick={() => setIsAudio(true)}>
+                          <Audio />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
+                </div>
+              )
+            }
             <input
               type="file"
               multiple

@@ -70,6 +70,16 @@
   margin: auto;
 }
 
+.spinner1 {
+  border: 2px solid rgba(10, 10, 182, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
