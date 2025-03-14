@@ -55,7 +55,7 @@ export default class SendShareMessaege {
       };
       const updateLastMessage = { fromId: data, message: lastMessage };
       chat.members.forEach((member) => {
-        SocketService.getInstance().sendMessage(member, newMessage, updateLastMessage);
+        SocketService.getInstance().sendMessage(member, [newMessage], updateLastMessage);
       });
 
     });

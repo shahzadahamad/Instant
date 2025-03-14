@@ -82,7 +82,7 @@ export default class sendMessage {
     };
     const updateLastMessage = { fromId: data, message: lastMessage };
     officalChat.members.forEach((member) => {
-      SocketService.getInstance().sendMessage(member, newMessage, updateLastMessage);
+      SocketService.getInstance().sendMessage(member, [newMessage], updateLastMessage);
     });
   }
 }

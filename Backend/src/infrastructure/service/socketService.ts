@@ -123,7 +123,7 @@ export default class SocketService {
     }
   }
 
-  public sendMessage(userId: string, messageData: IMessage, lastMessage: { fromId: Partial<IUser>, message: string }): void {
+  public sendMessage(userId: string, messageData: IMessage[], lastMessage: { fromId: Partial<IUser>, message: string }): void {
     const socketId = this.userSocketMap.get(userId);
     const data = {
       messageData,
