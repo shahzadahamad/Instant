@@ -50,20 +50,20 @@ app.use(
 );
 
 // User
-app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
-app.use('/api/user/music', userMusicRouter);
-app.use('/api/user/post', userPostRouter);
-app.use('/api/user/chats', chatRouter);
-app.use('/api/user/subscription', subscriptionRouter);
-app.use('/api/user/search-history', searchRoute);
+app.use(process.env.API_USER_AUTH!, authRouter);
+app.use(process.env.API_USER!, userRouter);
+app.use(process.env.API_USER_MUSIC!, userMusicRouter);
+app.use(process.env.API_USER_POST!, userPostRouter);
+app.use(process.env.API_USER_CHAT!, chatRouter);
+app.use(process.env.API_USER_SUBSCRIPITON!, subscriptionRouter);
+app.use(process.env.API_USER_SEARCH_HISTORY!, searchRoute);
 
 // Admin
-app.use("/api/admin", adminRouter);
-app.use("/api/admin/auth", adminAuthRouter);
-app.use('/api/admin/users', adminUsersRouter);
-app.use('/api/admin/music', musicRouter);
-app.use('/api/admin/subscription', adminSubscriptionRouter);
+app.use(process.env.API_ADMIN!, adminRouter);
+app.use(process.env.API_ADMIN_AUTH!, adminAuthRouter);
+app.use(process.env.API_ADMIN_USER!, adminUsersRouter);
+app.use(process.env.API_ADMIN_MUSIC!, musicRouter);
+app.use(process.env.API_ADMIN_SUBSCRIPITON!, adminSubscriptionRouter);
 
 const port: number | string = process.env.PORT || 3000;
 server.listen(port, () => {
