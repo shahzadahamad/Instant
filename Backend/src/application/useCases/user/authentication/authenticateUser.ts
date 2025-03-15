@@ -20,7 +20,7 @@ export default class AuthenticateUser {
   public async execute(
     usernameOrEmail: string,
     password: string
-  ): Promise<{ token: string; refreshToken: string; user: Object }> {
+  ): Promise<{ token: string; refreshToken: string; user: Partial<IUser> }> {
     const userExist = await this.userRepository.findByUsernameAndEmail(
       usernameOrEmail
     );
@@ -28,7 +28,7 @@ export default class AuthenticateUser {
       throw new Error("User not found!");
     }
 
-    if(userExist.isBlock) {
+    if (userExist.isBlock) {
       throw new Error("Your account has been blocked");
     }
 
