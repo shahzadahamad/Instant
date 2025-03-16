@@ -144,7 +144,7 @@ const CreatePostMusic = () => {
   };
 
   const handleSliderChange = (
-    event: Event,
+    _: Event,
     newValue: number | number[],
     musicId: string
   ) => {

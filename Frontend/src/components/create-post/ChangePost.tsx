@@ -40,7 +40,7 @@ const ChangePost = () => {
     toast.success("Post Removed");
   };
 
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+  const onCropComplete = (_: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 

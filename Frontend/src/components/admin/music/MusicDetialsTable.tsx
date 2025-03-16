@@ -181,7 +181,7 @@ const MusicDetialsTable = () => {
   };
 
   const handleSliderChange = (
-    event: Event,
+    _: Event,
     newValue: number | number[],
     musicId: string
   ) => {

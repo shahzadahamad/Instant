@@ -35,7 +35,7 @@ const SelectAspectRatioAndUplaod = () => {
   const [fileType, setFileType] = useState("");
   const { postType } = useSelector((state: RootState) => state.post);
 
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+  const onCropComplete = (_: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
@@ -44,7 +44,7 @@ const SelectAspectRatioAndUplaod = () => {
       toast.error("Select a aspect ratio.");
       return;
     }
-
+    
     if (uploadInputRef.current) {
       uploadInputRef.current.click();
     }
