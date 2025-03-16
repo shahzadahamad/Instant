@@ -9,15 +9,15 @@ import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import Reel from "@/components/common/svg/Reel";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import { IPostWithUserData } from "@/types/create-post/create-post";
 import PostModal from "@/components/common/PostViewModal/PostModal";
+import { GetUserPostData } from "@/types/profile/profile";
 
 const SharePostMessage: React.FC<{ message: MessageData }> = ({ message }) => {
 
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const { chatId } = useParams();
-  const [selectedPost, setSelectedPost] = useState<IPostWithUserData | null>(null);
+  const [selectedPost, setSelectedPost] = useState<GetUserPostData | null>(null);
 
   const closeModal = (status: boolean = false) => {
     setSelectedPost(null);
