@@ -124,7 +124,7 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     element: currentUser ? <Explore /> : <Navigate to='/sign-in' replace />
   },
   {
-    path: "/story",
+    path: "/stories",
     element: currentUser ? <Story /> : <Navigate to='/sign-in' replace />
   },
   {

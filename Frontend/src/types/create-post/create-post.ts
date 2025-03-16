@@ -42,6 +42,31 @@ export interface IPostWithUserData {
   isLiked: boolean;
 }
 
+interface CustomFilter {
+  label: string;
+  value: number;
+  field: string;
+}
+
+export interface UserStory {
+  _id: string;
+  userId: string;
+  story: {
+    url: string | object;
+    type: string;
+    filterClass: string;
+    customFilter: CustomFilter[];
+  };
+  musicId: string;
+  seenBy: string[];
+  createdAt: Date;
+}
+
+export interface StoriesWithUserData {
+  userData: GetUserDataForPost
+  userStory: UserStory[]
+}
+
 export interface PostState {
   post: PostItem[];
   postIndex: number;

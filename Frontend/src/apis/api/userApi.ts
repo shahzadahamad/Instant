@@ -291,3 +291,8 @@ export const sendFileMessage = async (formData: FormData) => {
   const response = await apiClient.post(`/user/chats/file/message`, formData);
   return response.data;
 }
+
+export const getStories = async () => {
+  const response = await apiClient.get(`/user/story/`);
+  return response.data;
+}

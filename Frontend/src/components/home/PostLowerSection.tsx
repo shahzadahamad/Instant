@@ -36,7 +36,7 @@ const PostLowerSection: React.FC<{ postData: IPostWithUserData, setSelectedPost:
             <div className="flex gap-3 text-2xl">
               <FontAwesomeIcon
                 onClick={() => handleLikeAndUnlikePost(postData._id)}
-                className={`${postData.isLiked ? "text-[#ff3040]" : "text-white hover:opacity-70"
+                className={`${postData.isLiked ? "text-[#ff3040]" : "hover:opacity-70"
                   } hover:cursor-pointer transition-colors`}
                 icon={postData.isLiked ? faHeartSolid : faHeart}
               />

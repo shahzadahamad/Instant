@@ -1,9 +1,9 @@
-import StoryDetials from '@/components/story/StoryDetials'
+import StorySingle from "@/components/story/StorySingle"
 
 const Story = () => {
   return (
     <div className='w-full h-screen scrollbar-hidden'>
-      <StoryDetials />
+      <StorySingle />
     </div>
   )
 }
