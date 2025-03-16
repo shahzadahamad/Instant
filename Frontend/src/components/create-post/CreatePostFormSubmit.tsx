@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreatePostFormSubmit = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const { post, musicId, aspectRatio, postIndex } = useSelector(
+  const { storyType, post, musicId, aspectRatio, postIndex } = useSelector(
     (state: RootState) => state.post
   );
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
@@ -54,6 +54,7 @@ const CreatePostFormSubmit = () => {
 
   const handleSharePost = async () => {
     setLoading(true);
+
     try {
       const files = await Promise.all(
         post.map(async (postItem, index) => {
@@ -86,30 +87,40 @@ const CreatePostFormSubmit = () => {
       );
 
       const formData = new FormData();
-      files.forEach((fileItem) => {
-        formData.append("files", fileItem.url);
-      });
 
-      formData.append("postData", JSON.stringify(files));
-      formData.append("caption", caption);
-      formData.append("music", musicId);
-      formData.append("hideLikesAndViewCount", String(hideLikeAndViewCount));
-      formData.append("turnOffCounting", String(turnOffCounting));
+      if (post[0].type === 'story') {
+        formData.append("file", files[0].url);
+        formData.append("storyData", JSON.stringify(files));
+        formData.append("music", musicId);
+        formData.append('type', storyType);
+        navigate("/profile");
+        toast.loading("We're processing your story. This will just take a moment...");
+        await apiClient.post(`/user/story/create`, formData)
+      } else {
+        files.forEach((fileItem) => {
+          formData.append("files", fileItem.url);
+        });
+        formData.append("postData", JSON.stringify(files));
+        formData.append("caption", caption);
+        formData.append("music", musicId);
+        formData.append("hideLikesAndViewCount", String(hideLikeAndViewCount));
+        formData.append("turnOffCounting", String(turnOffCounting));
 
-      const covertedAspectRatio =
-        aspectRatio === 1
-          ? "1/1"
-          : aspectRatio === 0.8
-            ? "4/5"
-            : aspectRatio === 1.7777777777777777
-              ? "16/9"
-              : aspectRatio;
-      formData.append("aspectRatio", String(covertedAspectRatio));
-      navigate("/profile");
-      toast.loading("We're processing your post. This will just take a moment...");
-      await apiClient.post(`/user/post/create-post`, formData)
+        const covertedAspectRatio =
+          aspectRatio === 1
+            ? "1/1"
+            : aspectRatio === 0.8
+              ? "4/5"
+              : aspectRatio === 1.7777777777777777
+                ? "16/9"
+                : aspectRatio;
+        formData.append("aspectRatio", String(covertedAspectRatio));
+        navigate("/profile");
+        toast.loading("We're processing your post. This will just take a moment...");
+        await apiClient.post(`/user/post/create-post`, formData)
+      }
     } catch (error) {
-      toast.error("Error creating post");
+      toast.error("Error creating post or story ");
       console.error("Error handling post share:", error);
     } finally {
       setLoading(false);

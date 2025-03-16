@@ -112,8 +112,12 @@ const CreatePostBody = () => {
             <TabsTrigger value="post">{post.length > 0 && post[postIndex].type === 'story' ? "Story" : "Post"}</TabsTrigger>
             {post.length > 0 && (
               <>
-                <TabsTrigger value="change">Add Post</TabsTrigger>
-                <TabsTrigger value="tag-user">{post[postIndex].type === 'story' ? "Mention" : "Tag"} users</TabsTrigger>
+                <TabsTrigger value="change">{post[postIndex].type === 'story' ? "Remove" : "Add Post"}</TabsTrigger>
+                {
+                  post[postIndex].type !== 'story' && (
+                    <TabsTrigger value="tag-user">Tag users</TabsTrigger>
+                  )
+                }
               </>
             )}
           </TabsList>

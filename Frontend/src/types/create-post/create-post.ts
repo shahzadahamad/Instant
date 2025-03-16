@@ -2,7 +2,7 @@ import { GetUserDataForPost, PostData } from "../profile/profile";
 
 interface PostItem {
   url: string;
-  type: "image" | "video" | "reel" | "story";
+  type: string;
   filterClass: string;
   customFilter: [
     {
@@ -52,6 +52,7 @@ export interface PostState {
   reels: IPostWithUserData[];
   reelTotalPage: number;
   isStory: boolean;
+  storyType: string
 }
 
 export interface GetCreatePostMusicData {

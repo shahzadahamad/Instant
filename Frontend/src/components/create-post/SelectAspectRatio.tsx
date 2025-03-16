@@ -5,6 +5,7 @@ import {
   setPost,
   setPostIndex,
   setStory,
+  setStoryType,
 } from "@/redux/slice/postSlice";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import CropPortraitIcon from "@mui/icons-material/CropPortrait";
@@ -44,7 +45,7 @@ const SelectAspectRatioAndUplaod = () => {
       toast.error("Select a aspect ratio.");
       return;
     }
-    
+
     if (uploadInputRef.current) {
       uploadInputRef.current.click();
     }
@@ -100,6 +101,10 @@ const SelectAspectRatioAndUplaod = () => {
     const files = e.target.files;
     if (files && files.length === 1) {
       const file = files[0];
+      if (postType === 'story') {
+        const type: 'image' | "video" = file.type.startsWith("video") ? "video" : "image"
+        dispatch(setStoryType({ type }))
+      }
       const fileType = postType === 'reel' ? "reel" : postType === 'story' ? "story" : file.type.startsWith("video") ? "video" : "image";
 
       if (fileType == "video" && postType == "image") {

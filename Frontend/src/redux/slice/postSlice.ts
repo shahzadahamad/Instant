@@ -11,6 +11,7 @@ const initialState: PostState = {
   reels: [],
   reelTotalPage: 1,
   isStory: false,
+  storyType: ""
 };
 
 const postSlice = createSlice({
@@ -97,6 +98,9 @@ const postSlice = createSlice({
     setStory(state) {
       state.isStory = true;
     },
+    setStoryType(state, action) {
+      state.storyType = action.payload.type;
+    },
   },
 });
 
@@ -120,7 +124,8 @@ export const {
   newReelsPush,
   updateLikeCount,
   setReelTotalPage,
-  setStory
+  setStory,
+  setStoryType,
 } = postSlice.actions;
 
 export default postSlice.reducer;
