@@ -1,5 +1,6 @@
 import { IPostWithUserData } from "../../../interface/post";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
+import LikeRepository from "../../../repositories/user/likeRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 
@@ -7,11 +8,13 @@ export default class LoadingPagePost {
   private postRepository: PostRepository;
   private userMoreDataRepository: UserMoreDataRepository;
   private friendsRepository: FriendsRepository;
+  private likeRepository: LikeRepository;
 
-  constructor(postRepository: PostRepository, friendsRepository: FriendsRepository, userMoreDataRepository: UserMoreDataRepository) {
+  constructor(postRepository: PostRepository, friendsRepository: FriendsRepository, userMoreDataRepository: UserMoreDataRepository, likeRepository: LikeRepository) {
     this.postRepository = postRepository;
     this.userMoreDataRepository = userMoreDataRepository;
     this.friendsRepository = friendsRepository;
+    this.likeRepository = likeRepository;
   }
 
   public async execute(userId: string, pageVal: number): Promise<{ post: IPostWithUserData[], totalPage: number }> {
@@ -30,8 +33,16 @@ export default class LoadingPagePost {
 
     const post: IPostWithUserData[] = [...postOfFriendAndNonWatched, ...postOfFollowedAndWatched];
 
+    const limitPost = post.slice(startIndex, startIndex + limit);
+    const liked = await this.likeRepository.hasUserLikedPostIds(userId, limitPost.map(post => post._id.toString()));
+    const updatedPosts = limitPost.map(post => ({
+      ...post,
+      isLiked: liked[post._id.toString()] || false,
+    }));
+
+    console.log(updatedPosts);
     return {
-      post: post.slice(startIndex, startIndex + limit),
+      post: updatedPosts,
       totalPage: Math.ceil(post.length / limit)
     };
   }

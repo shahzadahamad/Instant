@@ -36,7 +36,7 @@ const io = new SocketIOServer(server, {
 SocketService.getInstance().setUpIO(io);
 
 //webhook 
-app.use('/webhook', express.raw({ type: 'application/json' }), webhookRoute);
+app.use(process.env.API_WEBHOOK!, express.raw({ type: 'application/json' }), webhookRoute);
 
 app.use(express.json());
 app.use(cookieParser());

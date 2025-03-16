@@ -309,7 +309,7 @@ export default class PostRepository {
 
       return await PostModal.find(filter)
         .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount createdAt')
-        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+        .sort({ createdAt: -1 }).lean() as IPostWithUserData[] | [];
 
     } catch (error) {
       if (error instanceof Error) {
@@ -383,7 +383,7 @@ export default class PostRepository {
 
       return await PostModal.find(filter)
         .populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount createdAt')
-        .sort({ createdAt: -1 }) as IPostWithUserData[] | [];
+        .sort({ createdAt: -1 }).lean() as IPostWithUserData[] | [];
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error finding reel: ${error.message}`);

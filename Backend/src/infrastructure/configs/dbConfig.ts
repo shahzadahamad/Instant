@@ -9,7 +9,7 @@ const connectDb = async (): Promise<void> => {
     );
     console.log("Database connected....");
   } catch (error) {
-    console.log("Error connecting to mongodb...");
+    console.log("Error connecting to mongodb...  :" + error);
     process.exit(1);
   }
 };

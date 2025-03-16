@@ -5,6 +5,7 @@ import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import LoadingPagePost from "../../../../application/useCases/user/post/loadingPagePost";
+import LikeRepository from "../../../../application/repositories/user/likeRepository";
 
 export default class LoadingPagePostController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -16,6 +17,7 @@ export default class LoadingPagePostController {
       new PostRepository(),
       new FriendsRepository(),
       new UserMoreDataRepository(),
+      new LikeRepository(),
     );
 
     try {

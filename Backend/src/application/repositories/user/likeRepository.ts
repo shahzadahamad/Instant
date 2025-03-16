@@ -102,6 +102,35 @@ export default class LikeRepository {
     }
   }
 
+  public async hasUserLikedPostIds(
+    userId: string,
+    postIds: string[],
+  ): Promise<{ [key: string]: boolean }> {
+    try {
+      const likedPosts = await LikeModel.find({
+        postId: { $in: postIds },
+      });
+
+      const likedCommentMap = postIds.reduce((acc, postId) => {
+        const likedPost = likedPosts.find(
+          (post) => post.postId === postId
+        );
+        acc[postId] = likedPost ? likedPost.likedUsers.includes(userId) : false;
+
+        return acc;
+      }, {} as { [key: string]: boolean });
+
+      return likedCommentMap;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error hasUserLikedComments check: ${error.message}`);
+        throw new Error("Failed to check if user liked comments");
+      }
+      console.error("Unknown error hasUserLikedComments check");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async deletePostlikes(_id: string) {
     try {
       return await LikeModel.deleteMany({ postId: _id });
