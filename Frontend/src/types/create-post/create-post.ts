@@ -39,6 +39,7 @@ export interface IPostWithUserData {
   commentCount: number;
   isArchive: boolean;
   createdAt: Date;
+  isLiked: boolean;
 }
 
 export interface PostState {

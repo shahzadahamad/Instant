@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { GetComments, PostModalProps } from "@/types/profile/profile";
 import {
   faComment,
@@ -192,6 +193,7 @@ const PostModal: React.FC<PostModalProps> = ({ post, imageIndex, close, closeWhi
         post[currentIndex]._id,
         commentIdsQuery
       );
+      console.log(resForIsLiked)
       setCheckIsCommentLiked(resForIsLiked);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {

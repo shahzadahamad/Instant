@@ -4,7 +4,7 @@ import { faEllipsis, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
-import { getLoadingPagePostData } from "@/apis/api/userApi";
+import { getLoadingPagePostData, likeAndDisLikePost } from "@/apis/api/userApi";
 import { IPostWithUserData } from "@/types/create-post/create-post";
 import { Dot, Volume2, VolumeOff } from "lucide-react";
 import { timeSince } from "@/helperFuntions/dateFormat";
@@ -213,6 +213,22 @@ const Posts = () => {
     }
   };
 
+  const handleLikeAndUnlikePost = async (postId: string) => {
+
+    const post = postData.find((p) => p._id.toString() === postId.toString());
+    if (!post) return;
+
+    const action = post.isLiked ? "dislike" : "like";
+    await likeAndDisLikePost(postId, action);
+    setPostData((prevPosts) =>
+      prevPosts.map((p) =>
+        p._id.toString() === postId.toString()
+          ? { ...p, isLiked: !p.isLiked, likeCount: p.isLiked ? p.likeCount - 1 : p.likeCount + 1 }
+          : p
+      )
+    );
+  };
+
   return (
     <div className="w-full h-[80vh] scrollbar-hidden">
       <div className={`flex ${postData.length <= 0 && "h-full"} flex-col items-center justify-center gap-4 p-4`}>
@@ -364,7 +380,7 @@ const Posts = () => {
                       </div>
                     )}
                   </div>
-                  <PostLowerSection postData={item} setSelectedPost={handleSelectedPost} index={index} />
+                  <PostLowerSection postData={item} setSelectedPost={handleSelectedPost} index={index} handleLikeAndUnlikePost={handleLikeAndUnlikePost} />
                 </div>
               </div>
             ))

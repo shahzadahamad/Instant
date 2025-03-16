@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { faCircleXmark, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -83,7 +84,7 @@ const SearchDetials = () => {
       fetchSearchHistory();
     }
 
-  }, [search, cacheHistory])
+  }, [search])
 
   const handleClickSeach = async (id: string, username: string) => {
     try {
