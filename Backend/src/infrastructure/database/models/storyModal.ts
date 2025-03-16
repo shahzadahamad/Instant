@@ -26,7 +26,11 @@ const storySchema: Schema = new Schema(
     {
       url: {
         type: String,
-        require: true,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: true,
       },
       filterClass: {
         type: String,

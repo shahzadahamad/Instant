@@ -24,6 +24,13 @@ export interface StoryData {
   customFilter: CustomFilter[];
 }
 
+export interface StoryData {
+  url: string | object;
+  type: string;
+  filterClass: string;
+  customFilter: CustomFilter[];
+}
+
 export type QueryType = {
   $and: Array<
     | {

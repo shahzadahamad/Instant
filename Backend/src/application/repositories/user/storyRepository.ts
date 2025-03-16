@@ -1,0 +1,23 @@
+import StoryModal, { IStory } from "../../../infrastructure/database/models/storyModal";
+import { StoryData } from "../../interface/post";
+
+export default class StoryRepository {
+  public async createStory(userId: string, story: StoryData, musicId: string): Promise<IStory> {
+    try {
+      const newPost = await new StoryModal({
+        userId,
+        story,
+        musicId,
+        reportDetials: [],
+      });
+      return await newPost.save();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error creating post: ${error.message}`);
+        throw new Error("Failed to create post");
+      }
+      console.error("Unknown error creating post");
+      throw new Error("Unknown error");
+    }
+  }
+}

@@ -19,6 +19,7 @@ import adminSubscriptionRouter from "../routes/admin/subscription";
 import subscriptionRouter from "../routes/user/subscription";
 import webhookRoute from "../routes/user/webhook";
 import searchRoute from "../routes/user/search";
+import userStoryRouter from "../routes/user/story";
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use(process.env.API_USER_POST!, userPostRouter);
 app.use(process.env.API_USER_CHAT!, chatRouter);
 app.use(process.env.API_USER_SUBSCRIPITON!, subscriptionRouter);
 app.use(process.env.API_USER_SEARCH_HISTORY!, searchRoute);
+app.use(process.env.API_USER_STORY!, userStoryRouter);
 
 // Admin
 app.use(process.env.API_ADMIN!, adminRouter);

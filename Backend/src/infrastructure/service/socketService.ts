@@ -10,6 +10,7 @@ import ChangeOnlineStatus from "../../application/useCases/user/user/changeOnlin
 import { IUser } from "../database/models/userModel";
 import SendShareMessaege from "../../application/useCases/user/chat/sendShareMessaege";
 import PostRepository from "../../application/repositories/user/postRepository";
+import { IStory } from "../database/models/storyModal";
 
 export default class SocketService {
   private static instance: SocketService | null = null;
@@ -100,6 +101,15 @@ export default class SocketService {
     const socketId = this.userSocketMap.get(userId);
     if (socketId) {
       this.io.to(socketId).emit("newPost", { postData, message });
+    } else {
+      console.log(`User ${userId} not connected.`);
+    }
+  }
+
+  public sendNewStory(userId: string, storyData: IStory, message: string): void {
+    const socketId = this.userSocketMap.get(userId);
+    if (socketId) {
+      this.io.to(socketId).emit("newStory", { storyData, message });
     } else {
       console.log(`User ${userId} not connected.`);
     }
