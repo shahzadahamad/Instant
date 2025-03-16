@@ -95,7 +95,7 @@ const FriendSuggetion = () => {
                       <div className="flex items-center gap-1">
                         <span className="text-[14px] font-semibold">{user.user.username}</span>
                         {
-                          !user.user.isVerified.status && (
+                          user.user.isVerified.status && (
                             <VerificationIcon size={'16'} />
                           )
                         }
