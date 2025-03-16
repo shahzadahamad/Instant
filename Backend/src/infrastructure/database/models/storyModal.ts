@@ -4,15 +4,10 @@ import { StoryData } from "../../../application/interface/post";
 export interface IStory extends Document {
   _id: string;
   userId: string;
-  post: StoryData;
-  caption: string;
+  story: StoryData;
   musicId: string;
-  aspectRatio: string;
-  hideLikeAndView: boolean;
-  hideComment: boolean;
-  likeCount: number;
-  commentCount: number;
-  isArchive: boolean;
+  seenBy: string[];
+  createdAt: Date;
 }
 
 const storySchema: Schema = new Schema(
@@ -60,6 +55,10 @@ const storySchema: Schema = new Schema(
     },
     musicId: {
       type: String,
+    },
+    seenBy: {
+      type: [String],
+      default: []
     },
     reportDetials: [
       {

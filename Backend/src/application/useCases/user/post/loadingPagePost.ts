@@ -40,7 +40,6 @@ export default class LoadingPagePost {
       isLiked: liked[post._id.toString()] || false,
     }));
 
-    console.log(updatedPosts);
     return {
       post: updatedPosts,
       totalPage: Math.ceil(post.length / limit)

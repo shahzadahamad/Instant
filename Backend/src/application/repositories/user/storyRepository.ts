@@ -8,6 +8,7 @@ export default class StoryRepository {
         userId,
         story,
         musicId,
+        seenBy: [],
         reportDetials: [],
       });
       return await newPost.save();
@@ -20,4 +21,9 @@ export default class StoryRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async findStoriesByUsers(userIds: string[], afterDate: Date): Promise<IStory[]> {
+    return await StoryModal.find({ userId: { $in: userIds }, createdAt: { $gte: afterDate } });
+  }
+
 }

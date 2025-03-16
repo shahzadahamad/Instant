@@ -102,6 +102,17 @@ export default class UserRepository {
     }
   }
 
+  public async findUsersByUserIds(userIds: string[]): Promise<IUser[]> {
+    return await UserModel.find({ _id: { $in: userIds } }, {
+      _id: 1,
+      username: 1,
+      fullname: 1,
+      profilePicture: 1,
+      isVerified: 1,
+      isPrivateAccount: 1
+    });
+  }
+
   public async userPasswordChange(
     userId: string,
     password: string
