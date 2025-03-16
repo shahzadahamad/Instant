@@ -28,6 +28,7 @@ import ReelsMain from "@/pages/user/ReelsMain";
 import Success from "@/pages/user/Success";
 import Failed from "@/pages/user/Failed";
 import Explore from "@/pages/user/Explore";
+import Story from "@/pages/user/Story";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -121,6 +122,10 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
     path: "/explore",
     element: currentUser ? <Explore /> : <Navigate to='/sign-in' replace />
+  },
+  {
+    path: "/story",
+    element: currentUser ? <Story /> : <Navigate to='/sign-in' replace />
   },
   {
     path: "/error",
