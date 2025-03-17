@@ -32,11 +32,13 @@ const StoryModal: React.FC<{ story: StoriesWithUserData[], index: { userIndex: n
     if (currentStoryIndex > 0) {
       setCurrentStoryIndex(currentStoryIndex - 1);
     } else {
+      const prevUserIndex = currentUserIndex - 1;
       if (currentUserIndex > 0) {
-        const prevUserIndex = currentUserIndex - 1;
-        const prevUser = story[prevUserIndex];
-        setCurrentUserIndex(prevUserIndex);
-        setCurrentStoryIndex(prevUser.userStory.length - 1);
+        if (story[prevUserIndex].userStory.length > 0) {
+          const prevUser = story[prevUserIndex];
+          setCurrentUserIndex(prevUserIndex);
+          setCurrentStoryIndex(prevUser.userStory.length - 1);
+        }
       }
     }
   };
@@ -51,7 +53,7 @@ const StoryModal: React.FC<{ story: StoriesWithUserData[], index: { userIndex: n
         </div>
 
         <div className="flex items-center justify-center h-full">
-          {currentUserIndex > 0 || currentStoryIndex > 0 ? (
+          {(currentUserIndex > 0 || currentStoryIndex > 0) && story[currentUserIndex - 1].userStory.length > 0 ? (
             <button
               onClick={goToPrevStory}
               className="text-4xl mx-4 w-5 h-5 rounded-full bg-[#d9cdc2] hover:bg-opacity-60 cursor-pointer transition-colors flex items-center justify-center"

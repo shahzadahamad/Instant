@@ -62,6 +62,11 @@ export interface UserStory {
   createdAt: Date;
 }
 
+export interface StoriesWithCurrentUserAndFollowUsers {
+  userStories: StoriesWithUserData
+  followingsStories: StoriesWithUserData[]
+}
+
 export interface StoriesWithUserData {
   userData: GetUserDataForPost
   userStory: UserStory[]
