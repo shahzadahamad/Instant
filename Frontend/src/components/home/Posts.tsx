@@ -4,7 +4,7 @@ import { faEllipsis, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
-import { getLoadingPagePostData, likeAndDisLikePost } from "@/apis/api/userApi";
+import { getLoadingPagePostData, likeAndDisLikePost, watchedPostAdd } from "@/apis/api/userApi";
 import { IPostWithUserData } from "@/types/create-post/create-post";
 import { Dot, Volume2, VolumeOff } from "lucide-react";
 import { timeSince } from "@/helperFuntions/dateFormat";
@@ -88,10 +88,13 @@ const Posts = () => {
     }
   }, [page, postData.length]);
 
+  const watchTimersRef = useRef(new Map<string, NodeJS.Timeout>());
+
   useEffect(() => {
+    const watchTimers = watchTimersRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        entries.forEach(async (entry) => {
           const index = postData.findIndex((post) => post.post[0].url === entry.target.getAttribute("src"));
           if (index === -1) return;
           const post = postData[index];
@@ -102,14 +105,32 @@ const Posts = () => {
             } else {
               handleMusicPlay(null);
             }
-
             if (post.post[0].type === "video" || post.post[0].type === "reel") {
               setPlay(true);
               if (video) video.play();
+  
+              // Clear existing timer before setting a new one
+              if (watchTimers.has(post._id)) {
+                clearTimeout(watchTimers.get(post._id)!);
+              }
+  
+              // Set new timer
+              const timer = setTimeout(() => {
+                markPostAsWatched(post._id);
+                watchTimers.delete(post._id);
+              }, 3000);
+  
+              watchTimers.set(post._id, timer);
+            } else {
+              markPostAsWatched(post._id);
             }
           } else {
             handleMusicPlay(null);
             if (video) video.pause();
+            if (watchTimers.has(post._id)) {
+              clearTimeout(watchTimers.get(post._id)!);
+              watchTimers.delete(post._id);
+            }
           }
         });
       },
@@ -121,7 +142,11 @@ const Posts = () => {
       if (element) observer.observe(element);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      watchTimers.forEach((timer) => clearTimeout(timer));
+      watchTimers.clear();
+    }
   }, [postData]);
 
   useEffect(() => {
@@ -151,6 +176,18 @@ const Posts = () => {
     setMuted((prev) => !prev);
   };
 
+  const markPostAsWatched = async (reelId: string) => {
+    try {
+      await watchedPostAdd(reelId);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.error(error.response.data?.error || "An error occurred");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    }
+  };
 
   const handleNextImage = (postId: string, totalImages: number) => {
     setCurrentImageIndex((prev) => ({

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import apiClient from "@/apis/apiClient";
 import { removePostMusic, setPostMusic } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";

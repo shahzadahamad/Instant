@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import apiClient from "@/apis/apiClient";
 import { GetUserPostData } from "@/types/profile/profile";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";

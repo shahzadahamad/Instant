@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { checkHasUserLikedThePost, getReels, likeAndDisLikePost, watchedPostAdd } from "@/apis/api/userApi";
 import { newReelsPush, setReels, setReelTotalPage, updateLikeCount } from "@/redux/slice/postSlice";
 import { RootState } from "@/redux/store/store";

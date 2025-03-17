@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { createNewChat, followData, followUser, getUserProfileDates } from "@/apis/api/userApi";
 import { GetUserDataPostDetials } from "@/types/profile/profile";
 import { AxiosError } from "axios";

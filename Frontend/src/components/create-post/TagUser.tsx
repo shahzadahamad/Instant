@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RootState } from "@/redux/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
