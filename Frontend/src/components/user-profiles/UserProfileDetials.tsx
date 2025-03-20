@@ -187,12 +187,16 @@ const UserProfileDetials = () => {
                 <div className="flex gap-5 cursor-pointer">
                   <p>{count} posts</p>
                   <p onClick={() => {
-                    setFollowAction('Followers');
-                    setOpenFollowDetialsModal(true)
+                    if (followDetials?.follow || !userData.isPrivateAccount) {
+                      setFollowAction('Followers');
+                      setOpenFollowDetialsModal(true)
+                    }
                   }}>{followDetial.followers} followers</p>
                   <p onClick={() => {
-                    setFollowAction('Following');
-                    setOpenFollowDetialsModal(true)
+                    if (followDetials?.follow || !userData.isPrivateAccount) {
+                      setFollowAction('Following');
+                      setOpenFollowDetialsModal(true)
+                    }
                   }}>{followDetial.followings} following</p>
                 </div>
               </div>
