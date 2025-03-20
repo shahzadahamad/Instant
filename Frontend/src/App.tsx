@@ -6,6 +6,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import MainRoutes from "./routes/MainRoutes";
+import InactivityRefresh from "./InactivityRefresh";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <SocketProvider>
         <MainRoutes />
       </SocketProvider>
+      <InactivityRefresh />
     </Router>
   );
 }
