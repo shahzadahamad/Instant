@@ -4,6 +4,7 @@ import UserPostData from "../../../../application/useCases/user/post/userPostDat
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 
 export default class GetUserPostDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -12,7 +13,8 @@ export default class GetUserPostDataController {
 
     const userPostData = new UserPostData(
       new PostRepository(),
-      new UserRepository()
+      new UserRepository(),
+      new FriendsRepository(),
     );
 
     try {
