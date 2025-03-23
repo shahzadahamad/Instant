@@ -10,5 +10,11 @@ export interface ChatDatas {
     callerId: string;
     isVideo: boolean;
     isViewModal: boolean;
+  },
+  groupCall: {
+    receivingCall: boolean,
+    chatId: string,
+    isVideo: boolean,
+    isViewModal: boolean,
   }
 }

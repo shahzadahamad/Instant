@@ -11,6 +11,7 @@ import { IUser } from "../database/models/userModel";
 import SendShareMessaege from "../../application/useCases/user/chat/sendShareMessaege";
 import PostRepository from "../../application/repositories/user/postRepository";
 import { IStory } from "../database/models/storyModal";
+import ChatById from "../../application/useCases/user/chat/chatById";
 
 export default class SocketService {
   private static instance: SocketService | null = null;
@@ -78,11 +79,42 @@ export default class SocketService {
       socket.on('endCall', async (data) => {
         const socketId = this.userSocketMap.get(data.userId);
         const userId = socket.data.user.userId;
-        console.log(data.userId);
         const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
         await sendMessaege.execute(data.userId, userId, `${data.isVideo ? "Video chat ended" : "Audio call ended"}`, 'callText');
         if (socketId) {
           this.io.to(socketId).emit('endCall', { userId: userId });
+        }
+      });
+
+      socket.on('callGroup', async (data) => {
+        // const userId = socket.data.user.userId;
+        // const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
+        // await sendMessaege.execute(data.chatId, userId, `${userId} started a ${data.isVideo ? 'video' : "audio"} call`, 'callText');
+        const groupData = new ChatById(new ChatRepository());
+        const groupMember = await groupData.execute(data.chatId);
+        if (groupMember) {
+          groupMember.members.forEach((userId: string) => {
+            const socketId = this.userSocketMap.get(userId);
+            if (socketId && (userId.toString() !== socket.data.user.userId.toString())) {
+              this.io.to(socketId).emit('callGroup', { chatId: data.chatId, isVideo: data.isVideo });
+            }
+          });
+        }
+      });
+
+      socket.on('endCallGroup', async (data) => {
+        // const userId = socket.data.user.userId;
+        // const sendMessaege = new sendMessage(new ChatRepository(), new MessageRepository(), new UserRepository());
+        // await sendMessaege.execute(data.chatId, userId, `${data.isVideo ? "Video chat ended" : "Audio call ended"}`, 'callText');
+        const groupData = new ChatById(new ChatRepository());
+        const groupMember = await groupData.execute(data.chatId);
+        if (groupMember) {
+          groupMember.members.forEach((userId: string) => {
+            const socketId = this.userSocketMap.get(userId);
+            if (socketId && (userId.toString() !== socket.data.user.userId.toString())) {
+              this.io.to(socketId).emit('endCallGroup', { userId: userId });
+            }
+          });
         }
       });
 

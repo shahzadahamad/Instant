@@ -33,6 +33,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@stripe/stripe-js": "^5.6.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.1-beta",
     "axios": "^1.7.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

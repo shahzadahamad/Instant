@@ -13,27 +13,27 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
   };
 
   return (
-    <div className="w-full flex items-center justify-between p-4 group border-b">
+    <div className="flex border-b justify-between p-4 w-full group items-center">
       <div className="flex">
-        <div className="w-11 relative h-11 cursor-pointer">
+        <div className="h-11 w-11 cursor-pointer relative">
           <img
             src={userData.profilePicture}
             onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
-            className="w-full h-full rounded-full object-cover"
+            className="h-full rounded-full w-full object-cover"
             alt="Profile Picture"
           />
           {isMember(userData) && userData.isOnline.status &&
             <FontAwesomeIcon
               icon={faCircle}
-              className="text-[#1cd14f] rounded-full border-3 dark:border-[#09090b] border-white bg-white absolute bottom-0 -right-1 w-[14px] h-[14px]"
+              className="bg-white border-3 border-white h-[14px] rounded-full text-[#1cd14f] w-[14px] -right-1 absolute bottom-0 dark:border-[#09090b]"
             />
           }
         </div>
-        <div className="flex justify-between items-center flex-grow ml-3">
-          <div className="flex items-center justify-center gap-2">
+        <div className="flex flex-grow justify-between items-center ml-3">
+          <div className="flex justify-center gap-2 items-center">
             <h1
               onClick={() => isMember(userData) && navigate(`/user/${userData.username}`)}
-              className="text-base font-semibold cursor-pointer">
+              className="text-base cursor-pointer font-semibold">
               {isMember(userData) ? userData.username : userData.name}
             </h1>
             {
@@ -42,8 +42,14 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
           </div>
         </div>
       </div>
-      <div className="flex gap-4 text-xl">
-        <div onClick={() => navigate(`/calls?isVideo=false&userId=${userData._id}`)} className="cursor-pointer">
+      <div className="flex text-xl gap-4">
+        <div onClick={() => {
+          if (!isMember(userData)) {
+            navigate(`/group-calls?isVideo=false&chatId=${userData._id}`)
+          } else {
+            navigate(`/calls?isVideo=false&userId=${userData._id}`);
+          }
+        }} className="cursor-pointer">
           <svg
             aria-label="Audio Call"
             className="x1lliihq x1n2onr6 x5n08af"
@@ -58,7 +64,13 @@ const ChatMessageHeader: React.FC<{ userData: Member | ChatData }> = ({ userData
           </svg>
         </div>
 
-        <div onClick={() => navigate(`/calls?isVideo=true&userId=${userData._id}`)} className="cursor-pointer">
+        <div onClick={() => {
+          if (!isMember(userData)) {
+            navigate(`/group-calls?isVideo=true&chatId=${userData._id}`)
+          } else {
+            navigate(`/calls?isVideo=true&userId=${userData._id}`);
+          }
+        }} className="cursor-pointer">
           <svg
             aria-label="Video Call"
             className="x1lliihq x1n2onr6 x5n08af"

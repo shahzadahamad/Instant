@@ -9,6 +9,12 @@ const initialState: ChatDatas = {
     callerId: "",
     isVideo: false,
     isViewModal: false,
+  },
+  groupCall: {
+    receivingCall: false,
+    chatId: "",
+    isVideo: false,
+    isViewModal: false,
   }
 };
 
@@ -46,12 +52,18 @@ const chatSlice = createSlice({
     setCallerState(state, action) {
       state.callerDetials = action.payload;
     },
+    setGroupCall(state, action) {
+      state.groupCall = action.payload;
+    },
     changeViewModal(state) {
       state.callerDetials.isViewModal = false;
+    },
+    changeViewModalGroup(state) {
+      state.groupCall.isViewModal = false;
     }
   },
 });
 
-export const { setChatList, updatelastMessage, updateUserOnlineStatus, setCallerState, changeViewModal } = chatSlice.actions;
+export const { setChatList, updatelastMessage, updateUserOnlineStatus, setCallerState, changeViewModal, setGroupCall, changeViewModalGroup } = chatSlice.actions;
 
 export default chatSlice.reducer;

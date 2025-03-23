@@ -87,6 +87,13 @@ export const getUserDataById = async (userId: string) => {
   return response.data;
 };
 
+export const getSingleChatData = async (chatId: string) => {
+  const response = await apiClient.get(
+    `/user/chats/${chatId}`
+  );
+  return response.data;
+};
+
 export const commentPost = async (postId: string, comment: string) => {
   const response = await apiClient.post(`/user/post/comment/${postId}`, {
     comment,

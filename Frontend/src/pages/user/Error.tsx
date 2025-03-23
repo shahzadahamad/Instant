@@ -9,7 +9,7 @@ const Error = () => {
   const message = searchParams.get("message");
   const data = searchParams.get('data');
 
-  const messages = ['Post not found.', 'User not found.', 'This account is private. Follow the user to view their posts.']
+  const messages = ['Post not found.', 'User not found.', 'This account is private. Follow the user to view their posts.', "Unauthorized."]
 
   return (
     <div className="flex h-screen overflow-hidden">

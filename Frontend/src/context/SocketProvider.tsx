@@ -5,17 +5,17 @@ import { SocketContext } from './SocketContext';
 import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { setCallerState } from '@/redux/slice/chatSlice';
+import { setCallerState, setGroupCall } from '@/redux/slice/chatSlice';
 import CallModal from '@/components/calls/CallModal';
 import { SignalData } from 'simple-peer';
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socketInstance, setSocketInstance] = useState<Socket | null>(null);
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const { callerDetials } = useSelector((state: RootState) => state.chat);
+  const { callerDetials, groupCall } = useSelector((state: RootState) => state.chat);
   const dispatch = useDispatch();
 
-  const excludedRoutes = ["/login", "/signup", "/calls"];
+  const excludedRoutes = ["/login", "/signup", "/calls", "group-calls"];
 
   useEffect(() => {
     if (socket) {
@@ -53,25 +53,60 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }));
       };
 
+      const handleGroupCall = (data: { chatId: string, isVideo: boolean }) => {
+        dispatch(setGroupCall({
+          receivingCall: true,
+          chatId: data.chatId,
+          isVideo: data.isVideo,
+          isViewModal: true,
+        }))
+      };
+
       socket.on("callUser", handleCallUser);
+      socket.on("callGroup", handleGroupCall);
 
       return () => {
         socket.off("callUser", handleCallUser);
+        socket.off("callGroup", handleGroupCall);
         socket.disconnect();
       };
     }
   }, [currentUser, dispatch]);
 
   useEffect(() => {
-    socket.on("endCall", () => {
-      dispatch(setCallerState({ receivingCall: false, callerSocketId: "", callerSignal: null, callerId: "", isVideo: false, isViewModal: false }))
-    })
+    const handleEndCall = () => {
+      dispatch(setCallerState({
+        receivingCall: false,
+        callerSocketId: "",
+        callerSignal: null,
+        callerId: "",
+        isVideo: false,
+        isViewModal: false
+      }));
+    };
+
+    const handleEndGroupCall = () => {
+      dispatch(setGroupCall({
+        receivingCall: false,
+        chatId: "",
+        isVideo: false,
+        isViewModal: false
+      }));
+    };
+
+    socket.on("endCall", handleEndCall);
+    socket.on("endCallGroup", handleEndGroupCall);
+
+    return () => {
+      socket.off("endCall", handleEndCall);
+      socket.off("endCallGroup", handleEndGroupCall);
+    };
   }, [dispatch]);
 
   return <SocketContext.Provider value={socketInstance}>
     {children}
-    {callerDetials.isViewModal && !excludedRoutes.includes(location.pathname) && (
-      <CallModal />
+    {!excludedRoutes.includes(location.pathname) && (callerDetials.isViewModal || groupCall.isViewModal) && (
+      <CallModal isGroupCall={groupCall.isViewModal} />
     )}
   </SocketContext.Provider>;
 };
