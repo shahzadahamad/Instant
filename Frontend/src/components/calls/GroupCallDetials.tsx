@@ -58,7 +58,7 @@ const GroupCallDetials = () => {
 
       const roomID = chatId;
       const userID = currentUser?._id.toString();
-      const userName = currentUser?.username || "Guest";
+      const userName = currentUser?.username;
 
       setShowCall(true);
 
@@ -93,7 +93,6 @@ const GroupCallDetials = () => {
           },
 
           onUserLeave: (users) => {
-            console.log(users);
             if (users.length === 0) {
               socket.emit("endCallGroup", { chatId, isVideo });
             }
