@@ -5,6 +5,7 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 
 export default class GetUserPostDataController {
   public async handle(req: Request, res: Response): Promise<void> {
@@ -15,6 +16,7 @@ export default class GetUserPostDataController {
       new PostRepository(),
       new UserRepository(),
       new FriendsRepository(),
+      new AwsS3Storage(),
     );
 
     try {

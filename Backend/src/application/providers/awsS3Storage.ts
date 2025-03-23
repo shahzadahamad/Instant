@@ -15,6 +15,8 @@ import {
   ModerationLabel,
   StartContentModerationCommand,
 } from "@aws-sdk/client-rekognition";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export default class AwsS3Storage {
   public async uploadFile(
@@ -148,6 +150,25 @@ export default class AwsS3Storage {
     } catch (error) {
       console.error("Error getting video moderation results", error);
       throw new Error("Failed to retrieve video moderation results");
+    }
+  }
+
+  public async getSignedUrl(bucketUrl: string, expiresIn: number = 900): Promise<string> {
+    const fileKey = bucketUrl.split(".com/")[1];
+
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: fileKey,
+    };
+  
+    try {
+      const command = new GetObjectCommand(params);
+      const signedUrl = await getSignedUrl(s3Client, command, { expiresIn });
+  
+      return signedUrl;
+    } catch (error) {
+      console.error("Error generating signed URL", error);
+      throw new Error("Failed to generate signed URL");
     }
   }
 }
