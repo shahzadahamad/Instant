@@ -247,12 +247,12 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
             className={`${page === "chat" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
-          <div
+          {/* <div
             onClick={() => navigate("/chats")}
             className="cursor-pointer absolute top-0.5 right-0.5 transform translate-x-1/2 -translate-y-1/2 bg-[#ff3040] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full"
           >
             1
-          </div>
+          </div> */}
           <div
             onClick={() => navigate("/chats")}
             className="cursor-pointer absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-black text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"

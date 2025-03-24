@@ -1,33 +1,34 @@
+import { getDashboardData } from '@/apis/api/adminApi';
+import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const DashboardDetials = () => {
-  const monthlyData = [
-    { name: 'Jan', value: 3000 },
-    { name: 'Feb', value: 4500 },
-    { name: 'Mar', value: 2800 },
-    { name: 'Apr', value: 3200 },
-    { name: 'May', value: 2500 },
-    { name: 'Jun', value: 2200 },
-    { name: 'Jul', value: 1800 },
-    { name: 'Aug', value: 1500 },
-    { name: 'Sep', value: 4000 },
-    { name: 'Oct', value: 3000 },
-    { name: 'Nov', value: 3500 },
-    { name: 'Dec', value: 2000 },
-  ];
 
-  const recentSales = [
-    { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: 1999.00 },
-    { name: 'Jackson Lee', email: 'jackson.lee@email.com', amount: 39.00 },
-    { name: 'Isabella Nguyen', email: 'isabella.nguyen@email.com', amount: 299.00 },
-    { name: 'William Kim', email: 'will@email.com', amount: 99.00 },
-    { name: 'Sofia Davis', email: 'sofia.davis@email.com', amount: 39.00 },
-    { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: 1999.00 },
-    { name: 'Jackson Lee', email: 'jackson.lee@email.com', amount: 39.00 },
-    { name: 'Isabella Nguyen', email: 'isabella.nguyen@email.com', amount: 299.00 },
-    { name: 'William Kim', email: 'will@email.com', amount: 99.00 },
-    { name: 'Sofia Davis', email: 'sofia.davis@email.com', amount: 39.00 },
-  ];
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalRevenuePercentage, setTotalRevenuePercentage] = useState(0);
+  const [totalUser, setTotalUser] = useState(0);
+  const [totalPost, setTotalPost] = useState(0);
+  const [activeUsers, setActiveUser] = useState(0);
+  const [popularUser, setPopularUser] = useState<{ _id: string, profilePicture: string, username: string, email: string, followersCount: number }[]>([]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await getDashboardData();
+        setMonthlyData(response.monthlyRevenue);
+        setTotalRevenue(response.totalRevenue);
+        setTotalRevenuePercentage(response.percentageIncrease);
+        setTotalUser(response.totalUser);
+        setTotalPost(response.totalPost);
+        setActiveUser(response.totalActiveUsers);
+        setPopularUser(response.topFollowedUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    }
+    fetchDashboardData()
+  }, [])
 
   return (
     <div className="min-h-screen p-5">
@@ -39,36 +40,33 @@ const DashboardDetials = () => {
         <div className="border rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400">Total Revenue</span>
-            <span className="text-gray-400">$</span>
+            <span className="text-gray-400">₹</span>
           </div>
-          <div className="text-2xl font-bold mb-1">$45,231.89</div>
-          <div className="text-green-500 text-sm">+20.1% from last month</div>
+          <div className="text-2xl font-bold mb-1">₹{totalRevenue}</div>
+          <div className={`${totalRevenuePercentage > 0 ? "text-green-500" : "text-red-500"} text-sm`}>+{totalRevenuePercentage}% from last month</div>
         </div>
 
         <div className="border rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400">Subscriptions</span>
-            <span className="text-gray-400">%</span>
+            <span className="text-gray-400">Total Users</span>
           </div>
-          <div className="text-2xl font-bold mb-1">+2350</div>
-          <div className="text-green-500 text-sm">+180.1% from last month</div>
-        </div>
-
-        <div className="border rounded-lg p-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400">Sales</span>
-            <span className="text-gray-400">=</span>
-          </div>
-          <div className="text-2xl font-bold mb-1">+12,234</div>
+          <div className="text-2xl font-bold mb-1">{totalUser}</div>
           <div className="text-green-500 text-sm">+19% from last month</div>
         </div>
 
         <div className="border rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400">Active Now</span>
-            <span className="text-gray-400">%</span>
+            <span className="text-gray-400">Total Posts</span>
           </div>
-          <div className="text-2xl font-bold mb-1">+573</div>
+          <div className="text-2xl font-bold mb-1">{totalPost}</div>
+          <div className="text-green-500 text-sm">+180.1% from last month</div>
+        </div>
+
+        <div className="border rounded-lg p-4">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-gray-400">Active User Now</span>
+          </div>
+          <div className="text-2xl font-bold mb-1">{activeUsers}</div>
           <div className="text-green-500 text-sm">+201 since last hour</div>
         </div>
       </div>
@@ -93,19 +91,19 @@ const DashboardDetials = () => {
           <p className="text-gray-400 text-sm mb-4">You made 265 sales this month.</p>
 
           <div className="flex flex-col gap-4 max-h-72 overflow-y-auto scrollbar-hidden">
-            {recentSales.map((sale, index) => (
-              <div key={index} className="flex items-center justify-between">
+            {popularUser.map((user) => (
+              <div key={user._id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
-                    {sale.name.charAt(0)}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                    <img src={user.profilePicture} alt="" className='w-full h-full object-cover rounded-full' />
                   </div>
                   <div>
-                    <div className="font-medium">{sale.name}</div>
-                    <div className="text-gray-500 text-sm">{sale.email}</div>
+                    <div className="font-medium">{user.username}</div>
+                    <div className="text-gray-500 text-sm">{user.email}</div>
                   </div>
                 </div>
                 <div className="text-right font-medium">
-                  +${sale.amount.toFixed(2)}
+                  {user.followersCount}
                 </div>
               </div>
             ))}

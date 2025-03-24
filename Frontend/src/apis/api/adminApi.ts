@@ -37,3 +37,8 @@ export const editSubcription = async (formData: { period: string, price: number,
 export const toggleListing = async (id: string, status: string) => {
   return await adminApiClient.patch(`/subscription/toggle-list/${id}/${status}`);
 };
+
+export const getDashboardData = async () => {
+  const response = await adminApiClient.get(`/dashboard`);
+  return response.data;
+};
