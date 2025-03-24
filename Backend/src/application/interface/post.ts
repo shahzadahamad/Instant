@@ -55,6 +55,12 @@ export type QueryTypeGetUserDataAdin = {
   }>;
 };
 
+export type QueryTypeGetPostDataAdin = {
+  $or?: Array<{
+    caption?: { $regex: RegExp };
+  }>;
+};
+
 export type QueryTypeGetSubscriptionDataAdmin = {
   $or?: Array<{
     period?: { $regex: RegExp };

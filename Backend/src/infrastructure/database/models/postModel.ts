@@ -111,14 +111,6 @@ const postSchema: Schema = new Schema(
           type: String,
           required: true,
         },
-        username: {
-          type: String,
-          required: true,
-        },
-        profilePicture: {
-          type: String,
-          required: true,
-        },
         reportReason: {
           type: String,
           required: true,

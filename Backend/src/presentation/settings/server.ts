@@ -20,6 +20,7 @@ import subscriptionRouter from "../routes/user/subscription";
 import webhookRoute from "../routes/user/webhook";
 import searchRoute from "../routes/user/search";
 import userStoryRouter from "../routes/user/story";
+import adminPostRouter from "../routes/admin/post";
 
 const app = express();
 
@@ -66,6 +67,7 @@ app.use(process.env.API_ADMIN_AUTH!, adminAuthRouter);
 app.use(process.env.API_ADMIN_USER!, adminUsersRouter);
 app.use(process.env.API_ADMIN_MUSIC!, musicRouter);
 app.use(process.env.API_ADMIN_SUBSCRIPITON!, adminSubscriptionRouter);
+app.use(process.env.API_ADMIN_POST!, adminPostRouter);
 
 const port: number | string = process.env.PORT || 3000;
 server.listen(port, () => {

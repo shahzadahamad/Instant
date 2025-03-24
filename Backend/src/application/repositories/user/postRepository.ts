@@ -1,7 +1,7 @@
 import PostModal, {
   IPost,
 } from "../../../infrastructure/database/models/postModel";
-import { IpostWithUserData, IPostWithUserData, PostData, PostFilter } from "../../interface/post";
+import { IpostWithUserData, IPostWithUserData, PostData, PostFilter, QueryTypeGetPostDataAdin } from "../../interface/post";
 
 export default class PostRepository {
   public async createPost(
@@ -390,6 +390,32 @@ export default class PostRepository {
         throw new Error("Failed to find reel");
       }
       console.error("Unknown error finding reel");
+      throw new Error("Unknown error");
+    }
+  }
+
+  public async getPostData(
+    startIndex: number,
+    limit: number,
+    query: QueryTypeGetPostDataAdin
+  ): Promise<{ posts: IPostWithUserData[]; totalPages: number; totalPost: number }> {
+    try {
+      const totalPost = await PostModal.countDocuments();
+      const searchTotalPost = await PostModal.countDocuments(query);
+      const posts = await PostModal.find(query).populate("userId", '_id username profilePicture fullname isOnline isVerified isPrivateAccount createdAt')
+        .skip(startIndex)
+        .limit(limit).sort({ createdAt: -1 }) as IpostWithUserData[] | [];
+      return {
+        posts,
+        totalPages: Math.ceil(searchTotalPost / limit),
+        totalPost,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error find user: ${error.message}`);
+        throw new Error("Failed to find user");
+      }
+      console.error("Unknown error finding user");
       throw new Error("Unknown error");
     }
   }
