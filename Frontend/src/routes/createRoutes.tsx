@@ -30,6 +30,7 @@ import Failed from "@/pages/user/Failed";
 import Explore from "@/pages/user/Explore";
 import Story from "@/pages/user/Story";
 import GroupCall from "@/pages/user/GroupCall";
+import Posts from "@/pages/admin/Posts";
 
 const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
   {
@@ -156,6 +157,14 @@ const createRoutes = (currentUser: boolean, currentAdmin: boolean) => [
     path: "/admin/users",
     element: currentAdmin ? (
       <Users />
+    ) : (
+      <Navigate to="/admin/sign-in" replace />
+    ),
+  },
+  {
+    path: "/admin/post",
+    element: currentAdmin ? (
+      <Posts />
     ) : (
       <Navigate to="/admin/sign-in" replace />
     ),

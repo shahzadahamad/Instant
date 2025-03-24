@@ -40,6 +40,10 @@ export interface IPostWithUserData {
   isArchive: boolean;
   createdAt: Date;
   isLiked: boolean;
+  reportDetials: {
+    userId: string,
+    reportReason: string,
+  }[]
 }
 
 interface CustomFilter {

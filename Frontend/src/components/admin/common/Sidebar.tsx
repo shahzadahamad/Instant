@@ -103,6 +103,7 @@ const Sidebar: React.FC<{ page: string }> = ({ page }) => {
         <div className="relative group flex items-center justify-center">
           <FontAwesomeIcon
             icon={faImage}
+            onClick={() => navigate("/admin/post")}
             className={`${page === "post" && "dark:text-white text-black"
               } dark:hover:text-white hover:text-black cursor-pointer text-2xl`}
           />
