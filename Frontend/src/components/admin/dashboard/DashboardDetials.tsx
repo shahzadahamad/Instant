@@ -87,9 +87,7 @@ const DashboardDetials = () => {
         </div>
 
         <div className="col-span-2 border rounded-lg p-4">
-          <h2 className="text-lg font-bold mb-4">Recent Sales</h2>
-          <p className="text-gray-400 text-sm mb-4">You made 265 sales this month.</p>
-
+          <h2 className="text-lg font-bold mb-4">Top Followed Users</h2>
           <div className="flex flex-col gap-4 max-h-72 overflow-y-auto scrollbar-hidden">
             {popularUser.map((user) => (
               <div key={user._id} className="flex items-center justify-between">
