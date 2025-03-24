@@ -14,4 +14,17 @@ export default class PaymentRepository {
       throw new Error("Unknown error");
     }
   }
+
+  public async getAllPayments(): Promise<IPayment[]> {
+    try {
+      return await PaymentModel.find();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error creating payment: ${error.message}`);
+        throw new Error("Failed to create payment");
+      }
+      console.error("Unknown error creating payment");
+      throw new Error("Unknown error");
+    }
+  }
 }

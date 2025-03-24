@@ -35,6 +35,19 @@ export default class PostRepository {
     }
   }
 
+  public async getAllPostCount(): Promise<number> {
+    try {
+      return await PostModal.countDocuments();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error creating user: ${error.message}`);
+        throw new Error("Failed to create user");
+      }
+      console.error("Unknown error creating user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findUserPostData(userId: string): Promise<IPost[]> {
     try {
       return await PostModal.find({ userId, isArchive: false })

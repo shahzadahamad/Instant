@@ -116,6 +116,19 @@ export default class FriendsRepository {
     }
   }
 
+  public async getAllFriends(): Promise<IFriends[]> {
+    try {
+      return await FriendsModel.find();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error creating user: ${error.message}`);
+        throw new Error("Failed to create user");
+      }
+      console.error("Unknown error creating user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findUsersWithFollowing(followingIds: string[], userId: string): Promise<IFriendsWithUserData[] | []> {
     try {
       return await FriendsModel.find({ userId: { $in: followingIds, $ne: userId } }).populate("userId", 'username') as IFriendsWithUserData[] | [];

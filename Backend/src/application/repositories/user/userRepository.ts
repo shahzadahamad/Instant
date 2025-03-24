@@ -102,6 +102,19 @@ export default class UserRepository {
     }
   }
 
+  public async getAllUsers(): Promise<IUser[]> {
+    try {
+      return await UserModel.find();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error creating user: ${error.message}`);
+        throw new Error("Failed to create user");
+      }
+      console.error("Unknown error creating user");
+      throw new Error("Unknown error");
+    }
+  }
+
   public async findUsersByUserIds(userIds: string[]): Promise<IUser[]> {
     return await UserModel.find({ _id: { $in: userIds } }, {
       _id: 1,
