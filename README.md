@@ -54,14 +54,20 @@ cd Backend
 # Install backend dependencies
 npm install
 
+# Set up environment variables (Check out ENV_SETUP.md for details)
+# Ensure you create a .env file in the backend directory
+
 # Start the backend server
 npm run dev
 
-# Open a new terminal and navigate to the frontend directory
+# Open a new terminal window and navigate to the frontend directory
 cd ../Frontend
 
 # Install frontend dependencies
 npm install
+
+# Set up environment variables (Check out ENV_SETUP.md for details)
+# Ensure you create a .env file in the frontend directory
 
 # Start the frontend server
 npm run dev
