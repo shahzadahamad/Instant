@@ -43,6 +43,8 @@ Instant is a dynamic social media platform designed for real-time interaction, c
 ## Tech Stack
 - **Node, Express, React, TypeScript, MongoDB, Socket.IO, WebRTC, ZEGOCLOUD, Stripe, AWS S3, AWS EC2, AWS Rekognition**.
 
+## Installation
+```bash
 # Clone the repository
 git clone https://github.com/shahzadahamad/Instant.git
 
