@@ -32,6 +32,14 @@ Instant is a dynamic social media platform designed for real-time interaction, c
 ### **Story Management**
 - Users can **create and share stories** to enhance engagement.
 
+### **Admin Panel**
+- **Admin Dashboard** – Overview of platform activities.
+- **User Management** – View, verify, or restrict users.
+- **Post Management** – Moderate and remove posts.
+- **Music Management** – Admin can **add, list, and unlist** music on the platform.
+- **Subscription Management** – Admin can manage **subscription plans and user subscriptions**.
+- **Admin Profile** – Admins can update their own profiles.
+
 ## Tech Stack
 - **Node, Express, React, TypeScript, MongoDB, Socket.IO, WebRTC, ZEGOCLOUD, Stripe, AWS S3, AWS EC2, AWS Rekognition**.
 
