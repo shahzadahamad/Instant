@@ -42,3 +42,24 @@ Instant is a dynamic social media platform designed for real-time interaction, c
 
 ## Tech Stack
 - **Node, Express, React, TypeScript, MongoDB, Socket.IO, WebRTC, ZEGOCLOUD, Stripe, AWS S3, AWS EC2, AWS Rekognition**.
+
+# Clone the repository
+git clone https://github.com/shahzadahamad/Instant.git
+
+# Navigate to the backend directory
+cd Backend
+
+# Install backend dependencies
+npm install
+
+# Start the backend server
+npm run dev
+
+# Open a new terminal and navigate to the frontend directory
+cd ../Frontend
+
+# Install frontend dependencies
+npm install
+
+# Start the frontend server
+npm run dev
