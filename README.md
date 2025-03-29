@@ -42,6 +42,3 @@ Instant is a dynamic social media platform designed for real-time interaction, c
 
 ## Tech Stack
 - **Node, Express, React, TypeScript, MongoDB, Socket.IO, WebRTC, ZEGOCLOUD, Stripe, AWS S3, AWS EC2, AWS Rekognition**.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
