@@ -73,7 +73,6 @@ VITE_ZEGO_CLOUD_SERVER_SECRET=your_zegocloud_server_secret
 Replace `your_port` with your desired port number. Example:
 - If running the backend on **port 3000**, set:
   ```env
-  PORT=3000
   VITE_API_BASE_URL=http://localhost:3000/api
   VITE_ADMIN_BASE_URL=http://localhost:3000/api/admin
   VITE_SOCKET_URL=http://localhost:3000
