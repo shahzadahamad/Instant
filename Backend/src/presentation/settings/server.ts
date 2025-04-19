@@ -57,7 +57,7 @@ app.use(process.env.API_USER!, userRouter);
 app.use(process.env.API_USER_MUSIC!, userMusicRouter);
 app.use(process.env.API_USER_POST!, userPostRouter);
 app.use(process.env.API_USER_CHAT!, chatRouter);
-app.use(process.env.API_USER_SUBSCRIPITON!, subscriptionRouter);
+app.use(process.env.API_USER_SUBSCRIPTION!, subscriptionRouter);
 app.use(process.env.API_USER_SEARCH_HISTORY!, searchRoute);
 app.use(process.env.API_USER_STORY!, userStoryRouter);
 
@@ -66,7 +66,7 @@ app.use(process.env.API_ADMIN!, adminRouter);
 app.use(process.env.API_ADMIN_AUTH!, adminAuthRouter);
 app.use(process.env.API_ADMIN_USER!, adminUsersRouter);
 app.use(process.env.API_ADMIN_MUSIC!, musicRouter);
-app.use(process.env.API_ADMIN_SUBSCRIPITON!, adminSubscriptionRouter);
+app.use(process.env.API_ADMIN_SUBSCRIPTION!, adminSubscriptionRouter);
 app.use(process.env.API_ADMIN_POST!, adminPostRouter);
 
 const port: number | string = process.env.PORT || 3000;
