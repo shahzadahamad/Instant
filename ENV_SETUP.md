@@ -12,7 +12,7 @@ PORT=your_port  # Example: 3000
 MONGO_URL=your_mongodb_connection_string
 MAILER_EMAIL=your_email
 MAILER_PASSWORD=your_email_password
-CORS_ORIGIN=https://localhost:5173
+CORS_ORIGIN=http://localhost:5173
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 JWT_SECRET=your_jwt_secret
@@ -24,8 +24,8 @@ AWS_REGION=your_aws_region
 AWS_BUCKET_NAME=your_aws_bucket_name
 STRIPE_API_KEY=your_stripe_api_key
 STRIPE_WEBHOOK_SECRET_KEY=your_stripe_webhook_secret
-SUCCESS_URL=https://localhost:5173/verification-success
-CANCEL_URL=https://localhost:5173/verification-failed
+SUCCESS_URL=http://localhost:5173/verification-success
+CANCEL_URL=http://localhost:5173/verification-failed
 
 # API Routes
 API_USER_AUTH=/api/auth
