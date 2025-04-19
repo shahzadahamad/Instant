@@ -43,6 +43,8 @@ API_ADMIN_USER=/api/admin/users
 API_ADMIN_MUSIC=/api/admin/music
 API_ADMIN_SUBSCRIPTION=/api/admin/subscription
 API_ADMIN_POST=/api/admin/post
+
+API_WEBHOOK=/webhook
 ```
 
 ---
