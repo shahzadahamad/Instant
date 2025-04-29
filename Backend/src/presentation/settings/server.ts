@@ -44,8 +44,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
 
-console.log(process.env.CORS_ORIGIN);
-
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN!,
