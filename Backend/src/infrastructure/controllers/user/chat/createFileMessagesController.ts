@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
-import MessageRepository from "../../../../application/repositories/user/messageRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import ChatRepository from "../../../../application/repositories/user/implements/chatRepository";
+import MessageRepository from "../../../../application/repositories/user/implements/messageRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import FileMessage from "../../../../application/useCases/user/chat/fileMessage";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";

@@ -1,6 +1,6 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import { QueryTypeGetUserDataAdin } from "../../../interface/post";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetUserDataAdmin {
   private userRepository: UserRepository;

@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import TokenManager from "../../../providers/tokenManager";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class HandleRefreshToken {
   private userRepository: UserRepository;

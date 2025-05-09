@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import CreateUser from "../../../../application/useCases/user/authentication/createUser";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import OtpRepository from "../../../../application/repositories/user/otpRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import OtpRepository from "../../../../application/repositories/user/implements/otpRepository";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";

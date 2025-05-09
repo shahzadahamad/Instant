@@ -1,8 +1,8 @@
 import { INotification } from "../../../../infrastructure/database/models/notificationModal";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
-import NotificationRepository from "../../../repositories/user/notificationRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetNotificationData {
   private notificationRepository: NotificationRepository;

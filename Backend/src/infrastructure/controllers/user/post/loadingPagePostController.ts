@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import LoadingPagePost from "../../../../application/useCases/user/post/loadingPagePost";
-import LikeRepository from "../../../../application/repositories/user/likeRepository";
+import LikeRepository from "../../../../application/repositories/user/implements/likeRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class LoadingPagePostController implements IControllerHandler {

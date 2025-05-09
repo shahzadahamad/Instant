@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import OtpSend from "../../../../application/useCases/user/authentication/otpSend";
-import OtpRepository from "../../../../application/repositories/user/otpRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import OtpRepository from "../../../../application/repositories/user/implements/otpRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { GenerateOTP } from "../../../../application/providers/otpGenerate";
 import { EmailService } from "../../../../application/providers/nodeMailer";

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import EditPost from "../../../../application/useCases/user/post/editPost";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";

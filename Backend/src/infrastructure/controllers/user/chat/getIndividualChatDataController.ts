@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../../application/repositories/user/implements/chatRepository";
 import GetIndividualChatData from "../../../../application/useCases/user/chat/getIndividualChatData";
-import MessageRepository from "../../../../application/repositories/user/messageRepository";
+import MessageRepository from "../../../../application/repositories/user/implements/messageRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class GetIndividualChatDataController implements IControllerHandler {

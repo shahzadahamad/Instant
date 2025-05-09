@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
-import PaymentRepository from "../../../../application/repositories/user/paymentRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
+import PaymentRepository from "../../../../application/repositories/user/implements/paymentRepository";
 import GetDashboardData from "../../../../application/useCases/admin/admin/getDashboardData";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class GetDashboardDataController implements IControllerHandler {

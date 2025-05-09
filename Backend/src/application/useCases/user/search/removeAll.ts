@@ -1,5 +1,5 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import SearchHistoryRepository from "../../../repositories/user/searchHistoryRepository";
+import SearchHistoryRepository from "../../../repositories/user/implements/searchHistoryRepository";
 
 export default class RemoveAll {
   private searchHistoryRepository: SearchHistoryRepository;

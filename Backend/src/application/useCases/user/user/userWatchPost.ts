@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
 
 export default class UserWatchPost {
   private postRepository: PostRepository;

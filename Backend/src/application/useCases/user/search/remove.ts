@@ -1,4 +1,4 @@
-import SearchHistoryRepository from "../../../repositories/user/searchHistoryRepository";
+import SearchHistoryRepository from "../../../repositories/user/implements/searchHistoryRepository";
 
 export default class Remove {
   private searchHistoryRepository: SearchHistoryRepository;

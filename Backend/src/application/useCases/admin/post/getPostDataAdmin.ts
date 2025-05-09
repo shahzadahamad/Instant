@@ -1,5 +1,5 @@
 import { IPostWithUserData, QueryTypeGetPostDataAdin } from "../../../interface/post";
-import PostRepository from "../../../repositories/user/postRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class GetPostDataAdmin {
   private postRepository: PostRepository;

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
-import StoryRepository from "../../../../application/repositories/user/storyRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
+import StoryRepository from "../../../../application/repositories/user/implements/storyRepository";
 import GetStories from "../../../../application/useCases/user/story/getStories";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class GetStoriesController implements IControllerHandler {

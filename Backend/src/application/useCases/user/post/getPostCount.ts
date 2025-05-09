@@ -1,5 +1,5 @@
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import PostRepository from "../../../repositories/user/postRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class GetPostCount {
   private postRepository: PostRepository;

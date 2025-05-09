@@ -1,8 +1,8 @@
 import { IStory } from "../../../../infrastructure/database/models/storyModal";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import StoryRepository from "../../../repositories/user/storyRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import StoryRepository from "../../../repositories/user/implements/storyRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetStories {
   private friendsRepository: FriendsRepository;

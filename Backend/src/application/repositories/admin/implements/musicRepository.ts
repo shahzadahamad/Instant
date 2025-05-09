@@ -1,13 +1,10 @@
 import MusicModel, {
   IMusic,
-} from "../../../infrastructure/database/models/musicModal";
+} from "../../../../infrastructure/database/models/musicModal";
+import { IMusicRepository } from "../interfaces/IMusicRepository";
 
-export default class MusicRepository {
-  public async createMusic(
-    title: string,
-    image: string,
-    music: string
-  ): Promise<IMusic | null> {
+export default class MusicRepository implements IMusicRepository {
+  public async createMusic(title: string, image: string, music: string): Promise<IMusic | null> {
     try {
       const newMusic = await new MusicModel({
         title,
@@ -36,13 +33,7 @@ export default class MusicRepository {
       throw new Error("Unknown error");
     }
   }
-  public async getMusicData(
-    startIndex: number,
-    limit: number,
-    query: {
-      $or?: Array<{ title: { $regex: RegExp } }>;
-    }
-  ): Promise<{ music: IMusic[]; totalPages: number; totalMusic: number }> {
+  public async getMusicData(startIndex: number, limit: number, query: { $or?: Array<{ title: { $regex: RegExp } }>; }): Promise<{ music: IMusic[]; totalPages: number; totalMusic: number }> {
     try {
       const totalMusic = await MusicModel.countDocuments();
       const searchTotalMusic = await MusicModel.countDocuments(query);
@@ -62,10 +53,7 @@ export default class MusicRepository {
     }
   }
 
-  public async find10Music(query: { title?: { $regex: RegExp }, isListed: boolean }): Promise<{
-    musicData: IMusic[];
-    totalMusic: number;
-  }> {
+  public async find10Music(query: { title?: { $regex: RegExp }, isListed: boolean }): Promise<{ musicData: IMusic[]; totalMusic: number; }> {
     try {
       const totalMusic = await MusicModel.countDocuments();
       const musicData = await MusicModel.find(query).limit(10);

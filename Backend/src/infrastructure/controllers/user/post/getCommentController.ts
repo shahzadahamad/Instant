@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import GetComments from "../../../../application/useCases/user/post/getComments";
-import CommentRepository from "../../../../application/repositories/user/commentRepository";
+import CommentRepository from "../../../../application/repositories/user/implements/commentRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";

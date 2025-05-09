@@ -1,9 +1,9 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
-import CommentRepository from "../../../repositories/user/commentRepository";
-import NotificationRepository from "../../../repositories/user/notificationRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import CommentRepository from "../../../repositories/user/implements/commentRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class ReplyComment {
   private postRepository: PostRepository;

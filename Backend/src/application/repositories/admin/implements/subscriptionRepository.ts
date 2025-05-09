@@ -1,8 +1,9 @@
-import SubscriptionModel, { ISubscription } from "../../../infrastructure/database/models/subscription";
-import { QueryTypeGetSubscriptionDataAdmin } from "../../interface/post";
+import SubscriptionModel, { ISubscription } from "../../../../infrastructure/database/models/subscription";
+import { QueryTypeGetSubscriptionDataAdmin } from "../../../interface/post";
+import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
 
 
-export default class SubscriptionRepository {
+export default class SubscriptionRepository implements ISubscriptionRepository {
   public async create(period: string, price: number, offer: number): Promise<ISubscription> {
     const newSubscription = new SubscriptionModel({
       period,
@@ -50,11 +51,7 @@ export default class SubscriptionRepository {
     }
   }
 
-  public async findSubscriptionData(
-    startIndex: number,
-    limit: number,
-    query: QueryTypeGetSubscriptionDataAdmin
-  ): Promise<{ subscription: ISubscription[]; totalPages: number; totalSubscription: number }> {
+  public async findSubscriptionData(startIndex: number, limit: number, query: QueryTypeGetSubscriptionDataAdmin): Promise<{ subscription: ISubscription[]; totalPages: number; totalSubscription: number }> {
     try {
       const totalSubscription = await SubscriptionModel.countDocuments();
       const searchTotalSubscription = await SubscriptionModel.countDocuments(query);

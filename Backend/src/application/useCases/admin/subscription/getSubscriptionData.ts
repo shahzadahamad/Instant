@@ -1,6 +1,6 @@
 import { ISubscription } from "../../../../infrastructure/database/models/subscription";
 import { QueryTypeGetSubscriptionDataAdmin } from "../../../interface/post";
-import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import SubscriptionRepository from "../../../repositories/admin/implements/subscriptionRepository";
 
 export default class GetSubscriptionData {
   private subscriptionRepository: SubscriptionRepository;

@@ -2,7 +2,7 @@ import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IMusic } from "../../../../infrastructure/database/models/musicModal";
 import { FilesType } from "../../../interface/fileTypes";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import MusicRepository from "../../../repositories/admin/musicRepository";
+import MusicRepository from "../../../repositories/admin/implements/musicRepository";
 
 export default class CreateMusic {
   private musicRepository: MusicRepository;

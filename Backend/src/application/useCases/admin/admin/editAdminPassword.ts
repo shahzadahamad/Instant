@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import PasswordHasher from "../../../providers/passwordHasher";
-import AdminRepository from "../../../repositories/admin/adminRepository";
+import AdminRepository from "../../../repositories/admin/implements/adminRepository";
 
 export default class EditAdminPassword {
   private adminRepository: AdminRepository;

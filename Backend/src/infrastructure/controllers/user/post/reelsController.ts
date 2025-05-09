@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import Reels from "../../../../application/useCases/user/post/reels";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class ReelsController implements IControllerHandler {

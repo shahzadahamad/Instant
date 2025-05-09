@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import FilterReels from "../../../../application/useCases/user/post/filterReels";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class FilterReelsController implements IControllerHandler {

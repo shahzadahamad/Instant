@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../../application/repositories/user/implements/chatRepository";
 import GetChatList from "../../../../application/useCases/user/chat/getChatList";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

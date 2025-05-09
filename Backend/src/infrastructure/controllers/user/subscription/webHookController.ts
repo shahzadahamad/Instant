@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import WebHook from "../../../../application/useCases/user/subscription/webHook";
 import { stripe } from "../../../configs/stripe";
-import PaymentRepository from "../../../../application/repositories/user/paymentRepository";
+import PaymentRepository from "../../../../application/repositories/user/implements/paymentRepository";
 import { EmailService } from "../../../../application/providers/nodeMailer";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

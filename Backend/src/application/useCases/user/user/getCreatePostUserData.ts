@@ -1,7 +1,7 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import { QueryType } from "../../../interface/post";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetCreatePostUserData {
   private userRepository: UserRepository;

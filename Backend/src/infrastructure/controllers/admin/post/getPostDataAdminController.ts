@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import GetPostDataAdmin from "../../../../application/useCases/admin/post/getPostDataAdmin";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

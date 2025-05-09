@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetFollowDetials {
   private userRepository: UserRepository;

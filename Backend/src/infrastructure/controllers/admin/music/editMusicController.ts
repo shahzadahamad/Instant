@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
-import MusicRepository from "../../../../application/repositories/admin/musicRepository";
+import MusicRepository from "../../../../application/repositories/admin/implements/musicRepository";
 import EditMusic from "../../../../application/useCases/admin/music/editMusic";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";

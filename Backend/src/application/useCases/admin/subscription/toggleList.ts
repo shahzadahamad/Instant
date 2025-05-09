@@ -1,5 +1,5 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import SubscriptionRepository from "../../../repositories/admin/implements/subscriptionRepository";
 
 export default class ToggleList {
   private subscriptionRepository: SubscriptionRepository;

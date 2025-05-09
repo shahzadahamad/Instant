@@ -1,6 +1,6 @@
 import { SearchHisotry } from "../../../interface/search";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import SearchHistoryRepository from "../../../repositories/user/searchHistoryRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import SearchHistoryRepository from "../../../repositories/user/implements/searchHistoryRepository";
 
 export default class SearchHistory {
   private friendsRepository: FriendsRepository;

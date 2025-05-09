@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import UserData from "../../../../application/useCases/user/user/userData";

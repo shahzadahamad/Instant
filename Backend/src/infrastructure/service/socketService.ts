@@ -1,15 +1,15 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import socketAuthMiddleware from "../middlewares/socketAuthMiddleware";
 import { IPost } from "../database/models/postModel";
-import ChatRepository from "../../application/repositories/user/chatRepository";
-import MessageRepository from "../../application/repositories/user/messageRepository";
+import ChatRepository from "../../application/repositories/user/implements/chatRepository";
+import MessageRepository from "../../application/repositories/user/implements/messageRepository";
 import sendMessage from "../../application/useCases/user/chat/sendMessage";
 import { IMessage } from "../database/models/messageModal";
-import UserRepository from "../../application/repositories/user/userRepository";
+import UserRepository from "../../application/repositories/user/implements/userRepository";
 import ChangeOnlineStatus from "../../application/useCases/user/user/changeOnlineStatus";
 import { IUser } from "../database/models/userModel";
 import SendShareMessaege from "../../application/useCases/user/chat/sendShareMessaege";
-import PostRepository from "../../application/repositories/user/postRepository";
+import PostRepository from "../../application/repositories/user/implements/postRepository";
 import { IStory } from "../database/models/storyModal";
 import ChatById from "../../application/useCases/user/chat/chatById";
 

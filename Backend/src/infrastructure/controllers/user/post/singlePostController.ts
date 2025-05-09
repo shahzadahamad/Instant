@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import SinglePost from "../../../../application/useCases/user/post/singlePost";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

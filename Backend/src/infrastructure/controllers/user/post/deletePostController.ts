@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import DeletePost from "../../../../application/useCases/user/post/deletePost";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
-import LikeRepository from "../../../../application/repositories/user/likeRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import CommentRepository from "../../../../application/repositories/user/commentRepository";
+import LikeRepository from "../../../../application/repositories/user/implements/likeRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import CommentRepository from "../../../../application/repositories/user/implements/commentRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import MessageRepository from "../../../../application/repositories/user/messageRepository";
+import NotificationRepository from "../../../../application/repositories/user/implements/notificationRepository";
+import MessageRepository from "../../../../application/repositories/user/implements/messageRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class DeletePostController implements IControllerHandler {

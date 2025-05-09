@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import TokenManager from "../../../../application/providers/tokenManager";
-import AdminRepository from "../../../../application/repositories/admin/adminRepository";
+import AdminRepository from "../../../../application/repositories/admin/implements/adminRepository";
 import HandleAdminRefreshToken from "../../../../application/useCases/admin/authentication/handleAdminRefreshToken";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";

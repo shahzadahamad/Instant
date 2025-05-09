@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import TokenManager from "../../../providers/tokenManager";
-import AdminRepository from "../../../repositories/admin/adminRepository";
+import AdminRepository from "../../../repositories/admin/implements/adminRepository";
 
 export default class HandleAdminRefreshToken {
   private adminRepository: AdminRepository;

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import VerifyAndSendMail from "../../../../application/useCases/user/authentication/verifyAndSendMail";
 import TokenManager from "../../../../application/providers/tokenManager";
 import { EmailService } from "../../../../application/providers/nodeMailer";

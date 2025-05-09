@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import AuthenticateUser from "../../../../application/useCases/user/authentication/authenticateUser";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import TokenManager from "../../../../application/providers/tokenManager";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";

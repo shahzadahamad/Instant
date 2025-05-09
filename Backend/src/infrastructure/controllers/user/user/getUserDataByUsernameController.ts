@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import PostRepository from "../../../../application/repositories/user/postRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
 import GetUserDataByUsername from "../../../../application/useCases/user/user/getUserDataByUsername";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class GetUserDataByUsernameController implements IControllerHandler {

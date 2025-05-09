@@ -1,8 +1,8 @@
 import { IPostWithUserData } from "../../../interface/post";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import LikeRepository from "../../../repositories/user/likeRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import LikeRepository from "../../../repositories/user/implements/likeRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
 
 export default class LoadingPagePost {
   private postRepository: PostRepository;

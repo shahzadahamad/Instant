@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import MusicRepository from "../../../../application/repositories/admin/musicRepository";
+import MusicRepository from "../../../../application/repositories/admin/implements/musicRepository";
 import GetCreatePostSelectedMusicData from "../../../../application/useCases/user/music/getCreatePostSelectedMusicData";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";

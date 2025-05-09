@@ -1,7 +1,8 @@
-import FriendsModel, { IFriends } from "../../../infrastructure/database/models/friendsModal";
-import { IFriendsWithUserData, IFriendsWithUserFollowingData } from "../../interface/post";
+import FriendsModel, { IFriends } from "../../../../infrastructure/database/models/friendsModal";
+import { IFriendsWithUserData, IFriendsWithUserFollowingData } from "../../../interface/post";
+import { IFriendsRepository } from "../interfaces/IFriendsRepository";
 
-export default class FriendsRepository {
+export default class FriendsRepository implements IFriendsRepository {
   public async followUser(followingUserId: string, followerUserId: string): Promise<void> {
     try {
       await FriendsModel.updateOne(

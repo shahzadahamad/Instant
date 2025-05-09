@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IpostWithUserData } from "../../../interface/post";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetPostData {
   private postRepository: PostRepository;

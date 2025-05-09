@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import SearchHistoryRepository from "../../../../application/repositories/user/searchHistoryRepository";
+import SearchHistoryRepository from "../../../../application/repositories/user/implements/searchHistoryRepository";
 import Remove from "../../../../application/useCases/user/search/remove";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

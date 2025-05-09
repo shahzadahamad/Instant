@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
+import SubscriptionRepository from "../../../../application/repositories/admin/implements/subscriptionRepository";
 import ToggleList from "../../../../application/useCases/admin/subscription/toggleList";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

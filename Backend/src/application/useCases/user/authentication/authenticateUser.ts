@@ -2,7 +2,7 @@ import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import PasswordHasher from "../../../providers/passwordHasher";
 import TokenManager from "../../../providers/tokenManager";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class AuthenticateUser {
   private userRepository: UserRepository;

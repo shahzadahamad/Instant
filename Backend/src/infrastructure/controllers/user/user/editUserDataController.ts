@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import UpdateUserData from "../../../../application/useCases/user/user/updateUserData";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import Sharp from "../../../../application/providers/sharp";

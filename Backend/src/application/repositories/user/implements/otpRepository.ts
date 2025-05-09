@@ -1,8 +1,9 @@
 import OtpModel, {
   IOtp,
-} from "../../../infrastructure/database/models/otpVerificationModel";
+} from "../../../../infrastructure/database/models/otpVerificationModel";
+import { IOptRepository } from "../interfaces/IOtpRepository";
 
-export default class OtpRepository {
+export default class OtpRepository implements IOptRepository {
   public async createOtp(otp: string): Promise<IOtp> {
     try {
       const newOtp = new OtpModel({ otp });
@@ -17,7 +18,7 @@ export default class OtpRepository {
     }
   }
 
-  public async findByOptId(id: string[]) {
+  public async findByOptId(id: string[]): Promise<IOtp[]> {
     try {
       const otp = await OtpModel.find({ _id: { $in: id } });
       return await otp;

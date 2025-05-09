@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class EditPost {
   private postRepository: PostRepository;

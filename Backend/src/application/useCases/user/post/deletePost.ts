@@ -1,11 +1,11 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import CommentRepository from "../../../repositories/user/commentRepository";
-import LikeRepository from "../../../repositories/user/likeRepository";
-import MessageRepository from "../../../repositories/user/messageRepository";
-import NotificationRepository from "../../../repositories/user/notificationRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import CommentRepository from "../../../repositories/user/implements/commentRepository";
+import LikeRepository from "../../../repositories/user/implements/likeRepository";
+import MessageRepository from "../../../repositories/user/implements/messageRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class DeletePost {
   private postRepository: PostRepository;

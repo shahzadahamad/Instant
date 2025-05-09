@@ -1,7 +1,7 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import { IFriendsWithUserFollowingData } from "../../../interface/post";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
 
 export default class FollowingAndFollower {
   private friendsRepository: FriendsRepository;
@@ -41,7 +41,7 @@ export default class FollowingAndFollower {
         return {
           ...user.toObject(),
           isFollowed:
-          users?.followings.some((following) => following.toString() === user._id.toString()) ||
+            users?.followings.some((following) => following.toString() === user._id.toString()) ||
             user._id.toString() === userId ||
             false,
           isRequest: (isRequest ? true : false)

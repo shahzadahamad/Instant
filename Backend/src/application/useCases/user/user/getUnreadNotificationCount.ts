@@ -1,4 +1,4 @@
-import NotificationRepository from "../../../repositories/user/notificationRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
 
 export default class GetUnreadNotificationCount {
   private notificationRepository: NotificationRepository;

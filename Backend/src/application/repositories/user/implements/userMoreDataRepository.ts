@@ -1,7 +1,8 @@
-import UserMoreDataModel, { IUserMoreData } from "../../../infrastructure/database/models/userMoreDataModal";
+import UserMoreDataModel, { IUserMoreData } from "../../../../infrastructure/database/models/userMoreDataModal";
+import { IUserMoreDataRepository } from "../interfaces/IUserMoreDataRepository";
 
 
-export default class UserMoreDataRepository {
+export default class UserMoreDataRepository implements IUserMoreDataRepository {
   public async friendRequest(followingUserId: string, followerUserId: string): Promise<void> {
     try {
       await UserMoreDataModel.updateOne(

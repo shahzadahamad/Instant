@@ -1,7 +1,8 @@
-import NotificationModel, { INotification } from "../../../infrastructure/database/models/notificationModal";
+import NotificationModel, { INotification } from "../../../../infrastructure/database/models/notificationModal";
+import { INotificationRepository } from "../interfaces/INotificationRepository";
 
 
-export default class NotificationRepository {
+export default class NotificationRepository implements INotificationRepository {
   public async send(from: string, to: string, message: string, type: string, relation: string): Promise<INotification> {
     try {
       const newNotification = await new NotificationModel({

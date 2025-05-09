@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import PasswordHasher from "../../../providers/passwordHasher";
 import TokenManager from "../../../providers/tokenManager";
-import AdminRepository from "../../../repositories/admin/adminRepository";
+import AdminRepository from "../../../repositories/admin/implements/adminRepository";
 
 export default class AuthenticateAdmin {
   private adminRepository: AdminRepository;

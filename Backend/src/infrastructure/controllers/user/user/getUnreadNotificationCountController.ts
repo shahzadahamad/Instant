@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import NotificationRepository from "../../../../application/repositories/user/implements/notificationRepository";
 import GetUnreadNotificationCount from "../../../../application/useCases/user/user/getUnreadNotificationCount";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";

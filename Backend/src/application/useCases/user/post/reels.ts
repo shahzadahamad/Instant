@@ -1,6 +1,6 @@
 import { IPost } from "../../../../infrastructure/database/models/postModel";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class Reels {
   private postRepository: PostRepository;

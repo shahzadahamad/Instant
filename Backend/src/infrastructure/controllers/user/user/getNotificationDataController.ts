@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import NotificationRepository from "../../../../application/repositories/user/implements/notificationRepository";
 import GetNotificationData from "../../../../application/useCases/user/user/getNotificationData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class GetNotificationDataController implements IControllerHandler {

@@ -1,5 +1,5 @@
 import { IPost } from "../../../../infrastructure/database/models/postModel";
-import PostRepository from "../../../repositories/user/postRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class ArchivedPost {
   private postRepository: PostRepository;

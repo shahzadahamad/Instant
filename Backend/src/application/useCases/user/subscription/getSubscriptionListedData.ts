@@ -1,5 +1,5 @@
 import { ISubscription } from "../../../../infrastructure/database/models/subscription";
-import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import SubscriptionRepository from "../../../repositories/admin/implements/subscriptionRepository";
 
 export default class GetSubscriptionListedData {
   private subscriptionRepository: SubscriptionRepository;

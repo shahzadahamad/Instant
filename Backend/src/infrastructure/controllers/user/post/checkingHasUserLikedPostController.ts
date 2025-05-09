@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import PostRepository from "../../../../application/repositories/user/postRepository";
-import LikeRepository from "../../../../application/repositories/user/likeRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
+import LikeRepository from "../../../../application/repositories/user/implements/likeRepository";
 import CheckHasUserLikedPost from "../../../../application/useCases/user/post/checkHasUserLikedPost";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";

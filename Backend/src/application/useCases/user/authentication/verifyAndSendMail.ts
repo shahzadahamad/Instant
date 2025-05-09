@@ -2,7 +2,7 @@ import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { EmailOptionsResetPassword } from "../../../interface/emailInterface";
 import { EmailService } from "../../../providers/nodeMailer";
 import TokenManager from "../../../providers/tokenManager";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class VerifyAndSendMail {
   private userRepository: UserRepository;

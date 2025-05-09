@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { ISubscription } from "../../../../infrastructure/database/models/subscription";
-import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import SubscriptionRepository from "../../../repositories/admin/implements/subscriptionRepository";
 
 export default class EditSubscription {
   private subscriptionRepository: SubscriptionRepository;

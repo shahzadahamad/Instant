@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import AdminRepository from "../../../../application/repositories/admin/adminRepository";
+import AdminRepository from "../../../../application/repositories/admin/implements/adminRepository";
 import EditAdmin from "../../../../application/useCases/admin/admin/editAdmin";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import { HttpStatusCode } from "../../../enums/enums";

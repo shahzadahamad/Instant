@@ -1,4 +1,4 @@
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class CheckUserByUsername {
   private UserRepository: UserRepository;

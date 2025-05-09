@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import PostRepository from "../../../../application/repositories/user/postRepository";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import PostRepository from "../../../../application/repositories/user/implements/postRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import UserWatchPost from "../../../../application/useCases/user/user/userWatchPost";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

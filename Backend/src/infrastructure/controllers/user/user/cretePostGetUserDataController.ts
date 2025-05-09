@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import GetCreatePostUserData from "../../../../application/useCases/user/user/getCreatePostUserData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class CretePostGetUserDataController implements IControllerHandler {

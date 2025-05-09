@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import MusicRepository from "../../../repositories/admin/musicRepository";
+import MusicRepository from "../../../repositories/admin/implements/musicRepository";
 
 export default class EditMusic {
   private musicRepository: MusicRepository;

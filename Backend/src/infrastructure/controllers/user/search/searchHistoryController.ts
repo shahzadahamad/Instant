@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import SearchHistory from "../../../../application/useCases/user/search/searchHistory";
-import SearchHistoryRepository from "../../../../application/repositories/user/searchHistoryRepository";
+import SearchHistoryRepository from "../../../../application/repositories/user/implements/searchHistoryRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class SearchHistoryController implements IControllerHandler {

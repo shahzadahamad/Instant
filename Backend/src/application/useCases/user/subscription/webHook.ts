@@ -1,6 +1,6 @@
 import { EmailService } from "../../../providers/nodeMailer";
-import PaymentRepository from "../../../repositories/user/paymentRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import PaymentRepository from "../../../repositories/user/implements/paymentRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 import Stripe from "stripe";
 
 export default class WebHook {

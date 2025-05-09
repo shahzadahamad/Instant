@@ -1,10 +1,10 @@
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../repositories/user/implements/chatRepository";
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IMessage } from "../../../../infrastructure/database/models/messageModal";
 import SocketService from "../../../../infrastructure/service/socketService";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import MessageRepository from "../../../repositories/user/messageRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import MessageRepository from "../../../repositories/user/implements/messageRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class FileMessage {
   private chatRepository: ChatRepository;

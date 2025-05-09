@@ -2,9 +2,9 @@ import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import { PostData } from "../../../interface/post";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import NotificationRepository from "../../../repositories/user/notificationRepository";
-import StoryRepository from "../../../repositories/user/storyRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
+import StoryRepository from "../../../repositories/user/implements/storyRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class CreateStory {
   private awsS3Storage: AwsS3Storage;

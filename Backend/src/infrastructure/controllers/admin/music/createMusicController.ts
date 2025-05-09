@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import MusicRepository from "../../../../application/repositories/admin/musicRepository";
+import MusicRepository from "../../../../application/repositories/admin/implements/musicRepository";
 import CreateMusic from "../../../../application/useCases/admin/music/createMusic";
 import { FilesType } from "../../../../application/interface/fileTypes";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";

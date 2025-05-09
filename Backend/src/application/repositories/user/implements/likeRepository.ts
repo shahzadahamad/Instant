@@ -1,11 +1,9 @@
-import LikeModel from "../../../infrastructure/database/models/likeModel";
+import LikeModel from "../../../../infrastructure/database/models/likeModel";
+import { ILikeRepository } from "../interfaces/ILikeRepository";
 
-export default class LikeRepository {
-  public async likeAndDisLikePost(
-    postId: string,
-    userId: string,
-    status: boolean
-  ) {
+export default class LikeRepository implements ILikeRepository {
+
+  public async likeAndDisLikePost(postId: string, userId: string, status: boolean) {
     try {
       await LikeModel.updateOne(
         { postId, commentId: { $exists: false } },
@@ -24,12 +22,7 @@ export default class LikeRepository {
     }
   }
 
-  public async likeAndDisLikeComment(
-    postId: string,
-    commentId: string,
-    userId: string,
-    status: boolean
-  ) {
+  public async likeAndDisLikeComment(postId: string, commentId: string, userId: string, status: boolean) {
     try {
       await LikeModel.updateOne(
         { postId: postId, commentId: commentId },
@@ -67,11 +60,7 @@ export default class LikeRepository {
     }
   }
 
-  public async hasUserLikedComment(
-    postId: string,
-    userId: string,
-    commentIds: string[]
-  ): Promise<{ [key: string]: { liked: boolean; count: number } }> {
+  public async hasUserLikedComment(postId: string, userId: string, commentIds: string[]): Promise<{ [key: string]: { liked: boolean; count: number } }> {
     try {
       const likedComments = await LikeModel.find({
         postId: postId,
@@ -102,10 +91,7 @@ export default class LikeRepository {
     }
   }
 
-  public async hasUserLikedPostIds(
-    userId: string,
-    postIds: string[],
-  ): Promise<{ [key: string]: boolean }> {
+  public async hasUserLikedPostIds(userId: string, postIds: string[],): Promise<{ [key: string]: boolean }> {
     try {
       const likedPosts = await LikeModel.find({
         postId: { $in: postIds },

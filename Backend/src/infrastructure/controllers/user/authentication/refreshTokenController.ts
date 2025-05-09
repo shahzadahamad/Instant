@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import TokenManager from "../../../../application/providers/tokenManager";
 import HandleRefreshToken from "../../../../application/useCases/user/authentication/handleRefreshToken";
 import { HttpStatusCode } from "../../../enums/enums";

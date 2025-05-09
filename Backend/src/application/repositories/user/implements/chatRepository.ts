@@ -1,7 +1,8 @@
 import { UpdateWriteOpResult } from "mongoose";
-import ChatModel, { IChat } from "../../../infrastructure/database/models/chatModal";
+import ChatModel, { IChat } from "../../../../infrastructure/database/models/chatModal";
+import { IChatRepository } from "../interfaces/IChatRepository";
 
-export default class ChatRepository {
+export default class ChatRepository implements IChatRepository {
 
   public async findChatById(_id: string, populate: boolean): Promise<IChat | null> {
     try {

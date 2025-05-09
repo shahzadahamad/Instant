@@ -1,5 +1,5 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import PostRepository from "../../../repositories/user/postRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class Archive {
   private postRepository: PostRepository;

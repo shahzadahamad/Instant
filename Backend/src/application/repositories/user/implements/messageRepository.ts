@@ -1,6 +1,7 @@
-import MessageModel, { IMessage } from "../../../infrastructure/database/models/messageModal";
+import MessageModel, { IMessage } from "../../../../infrastructure/database/models/messageModal";
+import { IMessageRepository } from "../interfaces/IMessageRepository";
 
-export default class MessageRepository {
+export default class MessageRepository implements IMessageRepository {
 
   public async createMessage(messageData: Partial<IMessage>): Promise<IMessage> {
     try {

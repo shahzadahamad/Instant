@@ -1,7 +1,7 @@
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import PaymentRepository from "../../../repositories/user/paymentRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import PaymentRepository from "../../../repositories/user/implements/paymentRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetDashboardData {
   private postRepository: PostRepository;

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import StoryRepository from "../../../../application/repositories/user/storyRepository";
+import NotificationRepository from "../../../../application/repositories/user/implements/notificationRepository";
+import StoryRepository from "../../../../application/repositories/user/implements/storyRepository";
 import CreateStory from "../../../../application/useCases/user/story/createStory";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

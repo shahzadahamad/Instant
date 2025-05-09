@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import TokenManager from "../../../../application/providers/tokenManager";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import GoogleAuthenticateUser from "../../../../application/useCases/user/authentication/googleAuthenticateUser";
 import GeneratePassword from "../../../../application/providers/generatePassword";
 import GenerateUsername from "../../../../application/providers/generateUsername";

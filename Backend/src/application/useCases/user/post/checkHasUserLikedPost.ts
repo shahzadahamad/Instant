@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import LikeRepository from "../../../repositories/user/likeRepository";
-import PostRepository from "../../../repositories/user/postRepository";
+import LikeRepository from "../../../repositories/user/implements/likeRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class CheckHasUserLikedPost {
   private postRepository: PostRepository;

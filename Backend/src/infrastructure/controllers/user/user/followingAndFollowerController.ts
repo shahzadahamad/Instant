@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import FriendsRepository from "../../../../application/repositories/user/implements/friendsRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FollowingAndFollower from "../../../../application/useCases/user/user/followingAndFollower";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class FollowingAndFollowerController implements IControllerHandler {

@@ -1,7 +1,8 @@
-import SearchHistoryModel, { ISearchHistory } from "../../../infrastructure/database/models/searchHistoryModel";
-import { SearchHisotry } from "../../interface/search";
+import SearchHistoryModel, { ISearchHistory } from "../../../../infrastructure/database/models/searchHistoryModel";
+import { SearchHisotry } from "../../../interface/search";
+import { ISearchHistoryRepository } from "../interfaces/ISearchHistoryRepository";
 
-export default class SearchHistoryRepository {
+export default class SearchHistoryRepository implements ISearchHistoryRepository {
   public async findById(userId: string): Promise<{ history: SearchHisotry[]; userId: string; _id: string } | null> {
     try {
       return await SearchHistoryModel.findOne({ userId }).populate<{ history: SearchHisotry[] }>("history", "_id username profilePicture fullname isOnline isVerified").lean();

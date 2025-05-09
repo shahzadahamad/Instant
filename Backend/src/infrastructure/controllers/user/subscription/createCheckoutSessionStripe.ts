@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import CreateCheckoutSession from "../../../../application/useCases/user/subscription/createCheckoutSession";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import SubscriptionRepository from "../../../../application/repositories/admin/implements/subscriptionRepository";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 export default class CreateCheckoutSessionStripe implements IControllerHandler {

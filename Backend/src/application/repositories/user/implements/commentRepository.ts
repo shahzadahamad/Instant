@@ -1,14 +1,11 @@
 import CommentModel, {
   CommentReplyData,
   IComment,
-} from "../../../infrastructure/database/models/commentModel";
+} from "../../../../infrastructure/database/models/commentModel";
+import { ICommentRepository } from "../interfaces/ICommentRepository";
 
-export default class CommentRepository {
-  public async createComment(
-    id: string,
-    userId: string,
-    comment: string
-  ): Promise<IComment> {
+export default class CommentRepository implements ICommentRepository {
+  public async createComment(id: string, userId: string, comment: string): Promise<IComment> {
     try {
       const newComment = await new CommentModel({
         postId: id,
@@ -18,10 +15,7 @@ export default class CommentRepository {
       });
       const saveComment = await newComment.save();
       await saveComment.populate("userId", "username profilePicture isVerified");
-      await saveComment.populate({
-        path: "reply.userId",
-        select: "username profilePicture isVerified",
-      });
+      await saveComment.populate({ path: "reply.userId", select: "username profilePicture isVerified" });
       return saveComment;
     } catch (error) {
       if (error instanceof Error) {
@@ -77,14 +71,7 @@ export default class CommentRepository {
     }
   }
 
-  public async replytoComment(
-    id: string,
-    userId: string,
-    commentId: string,
-    comment: string,
-    username: string,
-    profilePicture: string
-  ): Promise<IComment | null> {
+  public async replytoComment(id: string, userId: string, commentId: string, comment: string, username: string, profilePicture: string): Promise<IComment | null> {
     try {
       return await CommentModel.findOneAndUpdate(
         { _id: commentId, postId: id },

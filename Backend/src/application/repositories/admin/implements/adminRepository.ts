@@ -1,11 +1,10 @@
 import AdminModel, {
   IAdmin,
-} from "../../../infrastructure/database/models/adminModel";
+} from "../../../../infrastructure/database/models/adminModel";
+import { IAdminRepository } from "../interfaces/IAdminRepository";
 
-export default class AdminRepository {
-  public async findByUsernameAndEmail(
-    usernameOrEmail: string
-  ): Promise<IAdmin | null> {
+export default class AdminRepository implements IAdminRepository {
+  public async findByUsernameAndEmail(usernameOrEmail: string): Promise<IAdmin | null> {
     try {
       return await AdminModel.findOne({
         $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
@@ -56,12 +55,7 @@ export default class AdminRepository {
     }
   }
 
-  public async updateAdmin(
-    adminId: string,
-    username: string,
-    email: string,
-    fileUrl?: string
-  ): Promise<IAdmin | null> {
+  public async updateAdmin(adminId: string, username: string, email: string, fileUrl?: string): Promise<IAdmin | null> {
     try {
       return await AdminModel.findByIdAndUpdate(
         { _id: adminId },

@@ -1,10 +1,9 @@
 import { UpdateWriteOpResult } from "mongoose";
-import UserModel, {
-  IUser,
-} from "../../../infrastructure/database/models/userModel";
-import { QueryType, QueryTypeGetUserDataAdin } from "../../interface/post";
+import UserModel, { IUser } from "../../../../infrastructure/database/models/userModel";
+import { QueryType, QueryTypeGetUserDataAdin } from "../../../interface/post";
+import { IUserRepository } from "../interfaces/IUserRepository";
 
-export default class UserRepository {
+export default class UserRepository implements IUserRepository {
   public async findById(_id: string): Promise<IUser | null> {
     try {
       return await UserModel.findOne({ _id: _id });
@@ -42,9 +41,7 @@ export default class UserRepository {
     }
   }
 
-  public async findByUsernameAndEmail(
-    usernameOrEmail: string
-  ): Promise<IUser | null> {
+  public async findByUsernameAndEmail(usernameOrEmail: string): Promise<IUser | null> {
     try {
       return await UserModel.findOne({
         $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
@@ -72,10 +69,7 @@ export default class UserRepository {
     }
   }
 
-  public async findByUsernameEdit(
-    username: string,
-    userId: string
-  ): Promise<IUser | null> {
+  public async findByUsernameEdit(username: string, userId: string): Promise<IUser | null> {
     try {
       return await UserModel.findOne({ username, _id: { $ne: userId } });
     } catch (error) {
@@ -126,10 +120,7 @@ export default class UserRepository {
     });
   }
 
-  public async userPasswordChange(
-    userId: string,
-    password: string
-  ): Promise<UpdateWriteOpResult> {
+  public async userPasswordChange(userId: string, password: string): Promise<UpdateWriteOpResult> {
     try {
       return await UserModel.updateOne(
         { _id: userId },
@@ -145,18 +136,7 @@ export default class UserRepository {
     }
   }
 
-  public async updateUser(
-    userId: string,
-    fullname: string,
-    username: string,
-    email: string,
-    phoneNumber: string,
-    gender: string,
-    dateOfBirth: string,
-    isPrivateAccount: boolean,
-    bio: string,
-    fileUrl?: string
-  ): Promise<IUser | null> {
+  public async updateUser(userId: string, fullname: string, username: string, email: string, phoneNumber: string, gender: string, dateOfBirth: string, isPrivateAccount: boolean, bio: string, fileUrl?: string): Promise<IUser | null> {
     try {
       return await UserModel.findByIdAndUpdate(
         { _id: userId },
@@ -187,11 +167,7 @@ export default class UserRepository {
     }
   }
 
-  public async getUserData(
-    startIndex: number,
-    limit: number,
-    query: QueryTypeGetUserDataAdin
-  ): Promise<{ users: IUser[]; totalPages: number; totalUser: number }> {
+  public async getUserData(startIndex: number, limit: number, query: QueryTypeGetUserDataAdin): Promise<{ users: IUser[]; totalPages: number; totalUser: number }> {
     try {
       const totalUser = await UserModel.countDocuments();
       const searchTotalUser = await UserModel.countDocuments(query);

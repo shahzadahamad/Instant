@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IAdmin } from "../../../../infrastructure/database/models/adminModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import AdminRepository from "../../../repositories/admin/adminRepository";
+import AdminRepository from "../../../repositories/admin/implements/adminRepository";
 
 export default class EditAdmin {
   private adminRepository: AdminRepository;

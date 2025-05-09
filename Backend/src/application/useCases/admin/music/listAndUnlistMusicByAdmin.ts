@@ -1,5 +1,5 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
-import MusicRepository from "../../../repositories/admin/musicRepository";
+import MusicRepository from "../../../repositories/admin/implements/musicRepository";
 
 export default class ListAndUnlistMusicByAdmin {
   private musicRepository: MusicRepository;

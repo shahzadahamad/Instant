@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IComment } from "../../../../infrastructure/database/models/commentModel";
-import CommentRepository from "../../../repositories/user/commentRepository";
-import PostRepository from "../../../repositories/user/postRepository";
+import CommentRepository from "../../../repositories/user/implements/commentRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class GetComments {
   private postRepository: PostRepository;

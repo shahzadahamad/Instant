@@ -1,8 +1,8 @@
 import { IPost } from "../../../../infrastructure/database/models/postModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class UserPostData {
   private postRepository: PostRepository;

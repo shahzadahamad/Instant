@@ -4,8 +4,8 @@ import { EmailOptionsOtp } from "../../../interface/emailInterface";
 import { EmailService } from "../../../providers/nodeMailer";
 import { GenerateOTP } from "../../../providers/otpGenerate";
 import PasswordHasher from "../../../providers/passwordHasher";
-import OtpRepository from "../../../repositories/user/otpRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import OtpRepository from "../../../repositories/user/implements/otpRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class OtpSend {
   private otpRepository: OtpRepository;

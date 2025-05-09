@@ -1,8 +1,8 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
-import LikeRepository from "../../../repositories/user/likeRepository";
-import NotificationRepository from "../../../repositories/user/notificationRepository";
-import PostRepository from "../../../repositories/user/postRepository";
+import LikeRepository from "../../../repositories/user/implements/likeRepository";
+import NotificationRepository from "../../../repositories/user/implements/notificationRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
 
 export default class LikeOrUnlikePost {
   private postRepository: PostRepository;

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
-import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
-import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
+import NotificationRepository from "../../../../application/repositories/user/implements/notificationRepository";
+import UserMoreDataRepository from "../../../../application/repositories/user/implements/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import DeleteFriendRequest from "../../../../application/useCases/user/user/deleteFriendRequest";

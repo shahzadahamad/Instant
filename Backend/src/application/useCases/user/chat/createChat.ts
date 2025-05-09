@@ -1,4 +1,4 @@
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../repositories/user/implements/chatRepository";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 
 export default class CreateChat {

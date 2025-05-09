@@ -1,6 +1,6 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IAdmin } from "../../../../infrastructure/database/models/adminModel";
-import AdminRepository from "../../../repositories/admin/adminRepository";
+import AdminRepository from "../../../repositories/admin/implements/adminRepository";
 
 export default class GetAdminData {
   private adminRepository: AdminRepository;

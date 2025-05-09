@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
-import SearchHistoryRepository from "../../../../application/repositories/user/searchHistoryRepository";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import SearchHistoryRepository from "../../../../application/repositories/user/implements/searchHistoryRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import SearchHistoryAdd from "../../../../application/useCases/user/search/searchHistoryAdd";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";
 

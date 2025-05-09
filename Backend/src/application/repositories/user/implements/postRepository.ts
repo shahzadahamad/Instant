@@ -1,18 +1,11 @@
 import PostModal, {
   IPost,
-} from "../../../infrastructure/database/models/postModel";
-import { IpostWithUserData, IPostWithUserData, PostData, PostFilter, QueryTypeGetPostDataAdin } from "../../interface/post";
+} from "../../../../infrastructure/database/models/postModel";
+import { IpostWithUserData, IPostWithUserData, PostData, PostFilter, QueryTypeGetPostDataAdin } from "../../../interface/post";
+import { IPostRepository } from "../interfaces/IPostRepository";
 
-export default class PostRepository {
-  public async createPost(
-    userId: string,
-    post: PostData[],
-    caption: string,
-    musicId: string,
-    hideLikeAndView: boolean,
-    hideComment: boolean,
-    aspectRatio: string
-  ): Promise<IPost> {
+export default class PostRepository implements IPostRepository {
+  public async createPost(userId: string, post: PostData[], caption: string, musicId: string, hideLikeAndView: boolean, hideComment: boolean, aspectRatio: string): Promise<IPost> {
     try {
       const newPost = await new PostModal({
         userId,
@@ -191,12 +184,7 @@ export default class PostRepository {
     }
   }
 
-  public async updatePost(
-    _id: string,
-    caption: string,
-    hideLikesAndViewCount: boolean,
-    turnOffCounting: boolean
-  ) {
+  public async updatePost(_id: string, caption: string, hideLikesAndViewCount: boolean, turnOffCounting: boolean) {
     try {
       return await PostModal.updateOne(
         { _id: _id },
@@ -217,13 +205,7 @@ export default class PostRepository {
     }
   }
 
-  public async reportPost(
-    _id: string,
-    userId: string,
-    username: string,
-    profilePicture: string,
-    reason: string
-  ) {
+  public async reportPost(_id: string, userId: string, username: string, profilePicture: string, reason: string) {
     try {
       return await PostModal.updateOne(
         { _id: _id },
@@ -407,11 +389,7 @@ export default class PostRepository {
     }
   }
 
-  public async getPostData(
-    startIndex: number,
-    limit: number,
-    query: QueryTypeGetPostDataAdin
-  ): Promise<{ posts: IPostWithUserData[]; totalPages: number; totalPost: number }> {
+  public async getPostData(startIndex: number, limit: number, query: QueryTypeGetPostDataAdin): Promise<{ posts: IPostWithUserData[]; totalPages: number; totalPost: number }> {
     try {
       const totalPost = await PostModal.countDocuments();
       const searchTotalPost = await PostModal.countDocuments(query);

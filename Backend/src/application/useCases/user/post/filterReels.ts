@@ -1,8 +1,8 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IPostWithUserData } from "../../../interface/post";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
 
 export default class FilterReels {
   private postRepository: PostRepository;

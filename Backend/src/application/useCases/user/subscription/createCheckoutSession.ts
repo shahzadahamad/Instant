@@ -1,6 +1,6 @@
 import { ISubscription } from "../../../../infrastructure/database/models/subscription";
-import UserRepository from "../../../repositories/user/userRepository";
-import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
+import SubscriptionRepository from "../../../repositories/admin/implements/subscriptionRepository";
 import { stripe } from "../../../../infrastructure/configs/stripe";
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 

@@ -1,5 +1,5 @@
 import { IMusic } from "../../../../infrastructure/database/models/musicModal";
-import MusicRepository from "../../../repositories/admin/musicRepository";
+import MusicRepository from "../../../repositories/admin/implements/musicRepository";
 
 export default class GetCreatePostSelectedMusicData {
   private musicRepository: MusicRepository;

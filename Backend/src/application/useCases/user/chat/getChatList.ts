@@ -1,4 +1,4 @@
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../repositories/user/implements/chatRepository";
 import { IChat } from "../../../../infrastructure/database/models/chatModal";
 
 export default class GetChatList {

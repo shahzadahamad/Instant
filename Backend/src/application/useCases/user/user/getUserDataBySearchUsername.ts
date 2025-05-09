@@ -1,6 +1,6 @@
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import { QueryType } from "../../../interface/post";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetUserDataBySearchUsername {
   private UserRepository: UserRepository;

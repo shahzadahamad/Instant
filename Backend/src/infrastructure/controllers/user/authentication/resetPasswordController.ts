@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import TokenManager from "../../../../application/providers/tokenManager";
 import ResetPassword from "../../../../application/useCases/user/authentication/resetPassword";
 import PasswordHasher from "../../../../application/providers/passwordHasher";

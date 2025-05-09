@@ -1,7 +1,7 @@
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { ISearchHistory } from "../../../../infrastructure/database/models/searchHistoryModel";
-import SearchHistoryRepository from "../../../repositories/user/searchHistoryRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import SearchHistoryRepository from "../../../repositories/user/implements/searchHistoryRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class SearchHistoryAdd {
   private userRepository: UserRepository;

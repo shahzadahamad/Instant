@@ -4,7 +4,7 @@ import GeneratePassword from "../../../providers/generatePassword";
 import GenerateUsername from "../../../providers/generateUsername";
 import PasswordHasher from "../../../providers/passwordHasher";
 import TokenManager from "../../../providers/tokenManager";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GoogleAuthenticateUser {
   private userRepository: UserRepository;

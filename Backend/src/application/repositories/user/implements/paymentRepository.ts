@@ -1,6 +1,7 @@
-import PaymentModel, { IPayment } from "../../../infrastructure/database/models/paymentModal";
+import PaymentModel, { IPayment } from "../../../../infrastructure/database/models/paymentModal";
+import { IPaymentRepository } from "../interfaces/IPaymentRepository";
 
-export default class PaymentRepository {
+export default class PaymentRepository implements IPaymentRepository {
   public async createPayment(paymentData: Partial<IPayment>): Promise<IPayment> {
     try {
       const newOtp = new PaymentModel(paymentData);

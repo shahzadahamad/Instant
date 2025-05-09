@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import TokenManager from "../../application/providers/tokenManager";
 import VerifyIngUser from "../../application/useCases/user/user/verifyIngUser";
-import UserRepository from "../../application/repositories/user/userRepository";
+import UserRepository from "../../application/repositories/user/implements/userRepository";
 import { HttpStatusCode, UserRole } from "../enums/enums";
 import { MESSAGES } from "../constants/messages";
 

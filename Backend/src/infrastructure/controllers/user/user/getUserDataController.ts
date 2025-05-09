@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserRepository from "../../../../application/repositories/user/userRepository";
+import UserRepository from "../../../../application/repositories/user/implements/userRepository";
 import GetUserData from "../../../../application/useCases/user/user/getUserData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { IControllerHandler } from "../../interfaces/IControllerHandler";

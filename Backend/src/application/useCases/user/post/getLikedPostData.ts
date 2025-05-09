@@ -1,8 +1,8 @@
 import { IPostWithUserData } from "../../../interface/post";
-import FriendsRepository from "../../../repositories/user/friendsRepository";
-import LikeRepository from "../../../repositories/user/likeRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import FriendsRepository from "../../../repositories/user/implements/friendsRepository";
+import LikeRepository from "../../../repositories/user/implements/likeRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class GetLikedPostData {
   private postRepository: PostRepository;

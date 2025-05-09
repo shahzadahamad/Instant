@@ -1,7 +1,8 @@
-import StoryModal, { IStory } from "../../../infrastructure/database/models/storyModal";
-import { StoryData } from "../../interface/post";
+import StoryModal, { IStory } from "../../../../infrastructure/database/models/storyModal";
+import { StoryData } from "../../../interface/post";
+import { IStoryRepository } from "../interfaces/IStoryRepository";
 
-export default class StoryRepository {
+export default class StoryRepository implements IStoryRepository {
   public async createStory(userId: string, story: StoryData, musicId: string): Promise<IStory> {
     try {
       const newPost = await new StoryModal({

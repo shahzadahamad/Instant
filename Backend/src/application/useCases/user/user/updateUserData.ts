@@ -2,8 +2,8 @@ import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import Sharp from "../../../providers/sharp";
-import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import UserMoreDataRepository from "../../../repositories/user/implements/userMoreDataRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class UpdateUserData {
   private userRepository: UserRepository;

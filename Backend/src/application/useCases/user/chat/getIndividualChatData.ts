@@ -1,8 +1,8 @@
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../repositories/user/implements/chatRepository";
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IChat } from "../../../../infrastructure/database/models/chatModal";
 import { IMessage } from "../../../../infrastructure/database/models/messageModal";
-import MessageRepository from "../../../repositories/user/messageRepository";
+import MessageRepository from "../../../repositories/user/implements/messageRepository";
 
 export default class GetIndividualChatData {
   private chatRepository: ChatRepository;

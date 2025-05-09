@@ -1,9 +1,9 @@
-import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import ChatRepository from "../../../repositories/user/implements/chatRepository";
 import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
-import MessageRepository from "../../../repositories/user/messageRepository";
-import PostRepository from "../../../repositories/user/postRepository";
-import UserRepository from "../../../repositories/user/userRepository";
+import MessageRepository from "../../../repositories/user/implements/messageRepository";
+import PostRepository from "../../../repositories/user/implements/postRepository";
+import UserRepository from "../../../repositories/user/implements/userRepository";
 
 export default class SendShareMessaege {
   private chatRepository: ChatRepository;
