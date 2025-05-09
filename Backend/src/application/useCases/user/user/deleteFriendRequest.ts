@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
 import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 import UserRepository from "../../../repositories/user/userRepository";
@@ -18,7 +19,7 @@ export default class DeleteFriendRequest {
     const requestUser = await this.userRepository.findByUsername(requestUserUsername);
 
     if (!requestUser) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     };
 
     await this.UserMoreDataRepository.removeRequest(currentUser, requestUser._id);

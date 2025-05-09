@@ -7,9 +7,7 @@ export default class CheckUserByUsername {
     this.UserRepository = UserRepository;
   }
 
-  public async execute(
-    userId: string
-  ): Promise<{ username: string; userId: string } | boolean> {
+  public async execute(userId: string): Promise<{ username: string; userId: string } | boolean> {
     const user = await this.UserRepository.findByUsername(userId);
 
     if (!user) {

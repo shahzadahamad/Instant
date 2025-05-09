@@ -9,20 +9,13 @@ export default class GetStories {
   private storyRepository: StoryRepository;
   private userRepository: UserRepository;
 
-  constructor(
-    friendsRepository: FriendsRepository,
-    storyRepository: StoryRepository,
-    userRepository: UserRepository
-  ) {
+  constructor(friendsRepository: FriendsRepository, storyRepository: StoryRepository, userRepository: UserRepository) {
     this.friendsRepository = friendsRepository;
     this.storyRepository = storyRepository;
     this.userRepository = userRepository;
   }
 
-  public async execute(userId: string): Promise<{
-    userStories: { userData: IUser; userStory: IStory[] } | null;
-    followingsStories: { userData: IUser; userStory: IStory[] }[];
-  }> {
+  public async execute(userId: string): Promise<{ userStories: { userData: IUser; userStory: IStory[] } | null; followingsStories: { userData: IUser; userStory: IStory[] }[]; }> {
     const followings = await this.friendsRepository.findUserDoc(userId);
     const userFollowings = followings?.followings ?? [];
 
@@ -50,7 +43,7 @@ export default class GetStories {
     const userData = userMap.get(userId);
 
     const followingsStories = Array.from(userStoriesMap.entries())
-      .filter(([storyUserId]) => storyUserId !== userId) 
+      .filter(([storyUserId]) => storyUserId !== userId)
       .map(([storyUserId, userStory]) => {
         const user = userMap.get(storyUserId);
         if (user) {

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import { PostData } from "../../../interface/post";
 import AwsS3Storage from "../../../providers/awsS3Storage";
@@ -11,35 +12,18 @@ export default class CreatePost {
   private postRepository: PostRepository;
   private notificationRepository: NotificationRepository;
 
-  constructor(
-    userRepository: UserRepository,
-    awsS3Storage: AwsS3Storage,
-    postRepository: PostRepository,
-    notificationRepository: NotificationRepository
-  ) {
+  constructor(userRepository: UserRepository, awsS3Storage: AwsS3Storage, postRepository: PostRepository, notificationRepository: NotificationRepository) {
     this.awsS3Storage = awsS3Storage;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
     this.notificationRepository = notificationRepository;
   }
 
-  public async execute(
-    id: string,
-    caption: string,
-    aspectRatio: string,
-    hideLikeAndView: boolean,
-    hideComment: boolean,
-    music: string,
-    postData: PostData[],
-    files?:
-      | Express.Multer.File[]
-      | { [fieldname: string]: Express.Multer.File[] }
-      | undefined
-  ): Promise<string> {
+  public async execute(id: string, caption: string, aspectRatio: string, hideLikeAndView: boolean, hideComment: boolean, music: string, postData: PostData[], files?: | Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] } | undefined): Promise<string> {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new Error("Invalied Access!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACCESS);
     }
 
     if (files) {
@@ -73,15 +57,7 @@ export default class CreatePost {
       }
     }
 
-    const newPost = await this.postRepository.createPost(
-      id,
-      postData,
-      caption,
-      music,
-      hideLikeAndView,
-      hideComment,
-      aspectRatio
-    );
+    const newPost = await this.postRepository.createPost(id, postData, caption, music, hideLikeAndView, hideComment, aspectRatio);
 
     const notifiedUsers = new Set();
     newPost.post.forEach((post) => {
@@ -94,7 +70,7 @@ export default class CreatePost {
       });
     });
 
-    SocketService.getInstance().sendNewPost(id, newPost, "Post created successfully");
-    return "Post created successfully";
+    SocketService.getInstance().sendNewPost(id, newPost, MESSAGES.SUCCESS.POST_CREATED);
+    return MESSAGES.SUCCESS.POST_CREATED;
   }
 }

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
 
 export default class ToggleList {
@@ -13,8 +14,8 @@ export default class ToggleList {
     } else if (status === "unlist") {
       await this.subscriptionRepository.listAndUnlist(id, false);
     } else {
-      throw new Error("Invalid action");
+      throw new Error(MESSAGES.ERROR.INVALID_ACTION);
     }
-    return "action successfull";
+    return MESSAGES.SUCCESS.ACTION_SUCCESS;
   }
 }

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import LikeRepository from "../../../repositories/user/likeRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 
@@ -10,22 +11,14 @@ export default class CheckHasUserLikedComment {
     this.likeRepository = likeRepository;
   }
 
-  public async execute(
-    postId: string,
-    userId: string,
-    commentIds: string[]
-  ): Promise<{ [key: string]: { liked: boolean; count: number } }> {
+  public async execute(postId: string, userId: string, commentIds: string[]): Promise<{ [key: string]: { liked: boolean; count: number } }> {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
-    const checking = await this.likeRepository.hasUserLikedComment(
-      postId,
-      userId,
-      commentIds
-    );
+    const checking = await this.likeRepository.hasUserLikedComment(postId, userId, commentIds);
     return checking;
   }
 }

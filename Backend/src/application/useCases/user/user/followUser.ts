@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
@@ -22,7 +23,7 @@ export default class FollowUser {
     const userToFollow = await this.userRepository.findByUsername(followerUserUsername);
 
     if (!userToFollow) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     };
 
     const isAlreadyFollowing = await this.friendsRepository.isAlreadyFollowing(followingUserId, userToFollow._id.toString());

@@ -23,11 +23,7 @@ export default class GetSubscriptionData {
         ],
       };
     }
-    const subscription = await this.subscriptionRepository.findSubscriptionData(
-      startIndex,
-      limit,
-      query
-    );
+    const subscription = await this.subscriptionRepository.findSubscriptionData(startIndex, limit, query);
     return subscription;
   }
 }

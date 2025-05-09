@@ -25,10 +25,10 @@ export default class FilterReels {
 
     if (!load) {
       if (!reelExist) {
-        throw new Error('Reel not found.');
+        throw new Error(MESSAGES.ERROR.REEL_NOT_FOUND);
       }
       if (reelExist.userId.isPrivateAccount && ![...userFollowings, userId].includes(reelExist.userId._id.toString())) {
-        throw new Error('Reel not found.');
+        throw new Error(MESSAGES.ERROR.REEL_NOT_FOUND);
       }
     }
 

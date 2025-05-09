@@ -2,6 +2,7 @@ import { ISubscription } from "../../../../infrastructure/database/models/subscr
 import UserRepository from "../../../repositories/user/userRepository";
 import SubscriptionRepository from "../../../repositories/admin/subscriptionRepository";
 import { stripe } from "../../../../infrastructure/configs/stripe";
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 
 export default class CreateCheckoutSession {
   private userRepository: UserRepository;
@@ -17,17 +18,17 @@ export default class CreateCheckoutSession {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
-      throw new Error("user not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (user.isVerified.status) {
-      throw new Error("user already verified");
+      throw new Error(MESSAGES.ERROR.USER_ALREADY_VERIFIED);
     }
 
     const subscription = await this.subscriptionRepository.findSubcriptionById(plan._id);
 
     if (!subscription) {
-      throw new Error("subscription not found!");
+      throw new Error(MESSAGES.ERROR.SUBSCIPTION_NOT_FOUND)
     }
 
     const subscriptionPlan = [{

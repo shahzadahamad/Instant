@@ -9,27 +9,14 @@ export default class GetDashboardData {
   private friendsRepository: FriendsRepository;
   private paymentRepository: PaymentRepository;
 
-  constructor(
-    postRepository: PostRepository,
-    userRepository: UserRepository,
-    friendsRepository: FriendsRepository,
-    paymentRepository: PaymentRepository
-  ) {
+  constructor(postRepository: PostRepository, userRepository: UserRepository, friendsRepository: FriendsRepository, paymentRepository: PaymentRepository) {
     this.postRepository = postRepository;
     this.userRepository = userRepository;
     this.friendsRepository = friendsRepository;
     this.paymentRepository = paymentRepository;
   }
 
-  public async execute(): Promise<{
-    totalRevenue: number;
-    monthlyRevenue: { name: string; value: number }[];
-    percentageIncrease: number;
-    totalUser: number,
-    totalPost: number,
-    totalActiveUsers: number,
-    topFollowedUsers: { followersCount: number }[],
-  }> {
+  public async execute(): Promise<{ totalRevenue: number; monthlyRevenue: { name: string; value: number }[]; percentageIncrease: number; totalUser: number, totalPost: number, totalActiveUsers: number, topFollowedUsers: { followersCount: number }[], }> {
 
     const payments = await this.paymentRepository.getAllPayments();
     const users = await this.userRepository.getAllUsers();
@@ -95,15 +82,7 @@ export default class GetDashboardData {
       followersCount: friends.find(friend => friend.userId === user.id)?.followers.length || 0
     })).sort((a, b) => b.followersCount - a.followersCount);
 
-    return {
-      totalRevenue,
-      percentageIncrease: parseFloat(percentageIncrease.toFixed(2)),
-      monthlyRevenue,
-      totalUser: users.length,
-      totalPost,
-      totalActiveUsers,
-      topFollowedUsers,
-    };
+    return { totalRevenue, percentageIncrease: parseFloat(percentageIncrease.toFixed(2)), monthlyRevenue, totalUser: users.length, totalPost, totalActiveUsers, topFollowedUsers, };
   }
 }
 

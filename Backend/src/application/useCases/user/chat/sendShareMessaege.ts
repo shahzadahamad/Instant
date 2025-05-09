@@ -1,4 +1,5 @@
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import MessageRepository from "../../../repositories/user/messageRepository";
 import PostRepository from "../../../repositories/user/postRepository";
@@ -22,17 +23,17 @@ export default class SendShareMessaege {
     const post = await this.postRepository.findPostByIdWithUserData(postId);
 
     if (!post || post.userId.isPrivateAccount) {
-      throw new Error('Post not found.');
+      throw new Error(MESSAGES.ERROR.CHAT_NOT_FOUND);
     }
 
     chatIds.forEach(async (chatId) => {
       const chat = await this.chatRepository.findChatById(chatId, false);
       if (!chat) {
-        throw new Error("Chat not found.");
+        throw new Error(MESSAGES.ERROR.CHAT_NOT_FOUND);
       }
 
       if (!chat.members.includes(userId)) {
-        throw new Error('You are not a member of this chat.');
+        throw new Error(MESSAGES.ERROR.NOT_MEMBER_IN_CHAT);
       }
 
       const messageData = {
@@ -46,13 +47,7 @@ export default class SendShareMessaege {
       const lastMessage = 'seat an attachment';
       await this.chatRepository.updateLastMessage(chatId, userId, lastMessage);
       const userData = await this.userRepository.findById(userId);
-      const data = {
-        _id: userData?._id,
-        fullname: userData?.fullname,
-        username: userData?.username,
-        profilePicture: userData?.profilePicture,
-        isOnline: userData?.isOnline
-      };
+      const data = { _id: userData?._id, fullname: userData?.fullname, username: userData?.username, profilePicture: userData?.profilePicture, isOnline: userData?.isOnline };
       const updateLastMessage = { fromId: data, message: lastMessage };
       chat.members.forEach((member) => {
         SocketService.getInstance().sendMessage(member, [newMessage], updateLastMessage);

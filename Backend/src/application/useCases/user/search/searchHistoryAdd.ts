@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { ISearchHistory } from "../../../../infrastructure/database/models/searchHistoryModel";
 import SearchHistoryRepository from "../../../repositories/user/searchHistoryRepository";
 import UserRepository from "../../../repositories/user/userRepository";
@@ -16,7 +17,7 @@ export default class SearchHistoryAdd {
     const user = await this.userRepository.findById(addId);
 
     if (!user) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     const newSearchHistory = await this.searchHistoryRepository.create(userId, addId);

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IPost } from "../../../../infrastructure/database/models/postModel";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import PostRepository from "../../../repositories/user/postRepository";
@@ -18,13 +19,13 @@ export default class SinglePost {
     const postData = await this.postRepository.findPostByIdWithUserData1(postId);
 
     if (!postData) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     const user = await this.userRepository.findById(postData.userId);
 
     if (!user) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (user._id.toString() === userId.toString() || !user.isPrivateAccount) {

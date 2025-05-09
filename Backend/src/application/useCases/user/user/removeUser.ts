@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
@@ -22,7 +23,7 @@ export default class RemoveUser {
     const unfollowingUser = await this.userRepository.findById(unfollowUserId);
 
     if (!unfollowingUser) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     };
 
     await this.notificationRepository.removeAllNotificationOfSingleUser(currentUserId, unfollowingUser._id.toString(), 'follow');

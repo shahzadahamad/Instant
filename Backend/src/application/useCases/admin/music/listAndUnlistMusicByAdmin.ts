@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import MusicRepository from "../../../repositories/admin/musicRepository";
 
 export default class ListAndUnlistMusicByAdmin {
@@ -9,12 +10,12 @@ export default class ListAndUnlistMusicByAdmin {
 
   public async execute(id: string, status: string): Promise<string> {
     if (status === "list") {
-      await this.musicRepository.listAndUnlistMusic(id, true)
+      await this.musicRepository.listAndUnlistMusic(id, true);
     } else if (status === "unlist") {
-      await this.musicRepository.listAndUnlistMusic(id, false)
+      await this.musicRepository.listAndUnlistMusic(id, false);
     } else {
-      throw new Error("Invalid action");
+      throw new Error(MESSAGES.ERROR.INVALID_ACCESS);
     }
-    return "action successfull"
+    return MESSAGES.SUCCESS.ACTION_SUCCESS;
   }
 }

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import MusicRepository from "../../../repositories/admin/musicRepository";
 
@@ -10,15 +11,11 @@ export default class EditMusic {
     this.awsS3Storage = awsS3Storage;
   }
 
-  public async execute(
-    id: string,
-    title: string,
-    file?: Express.Multer.File
-  ): Promise<void> {
+  public async execute(id: string, title: string, file?: Express.Multer.File): Promise<void> {
     const music = await this.musicRepository.findMusicById(id);
 
     if (!music) {
-      throw new Error("Invalied Access!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACCESS);
     }
 
     let fileUrl;
@@ -28,10 +25,6 @@ export default class EditMusic {
       fileUrl = await this.awsS3Storage.uploadFile(file, "music-image");
     }
 
-    await this.musicRepository.updateMusic(
-      id,
-      title,
-      fileUrl
-    );
+    await this.musicRepository.updateMusic(id, title, fileUrl);
   }
 }

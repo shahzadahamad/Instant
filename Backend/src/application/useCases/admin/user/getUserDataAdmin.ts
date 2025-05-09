@@ -24,11 +24,7 @@ export default class GetUserDataAdmin {
         ],
       };
     }
-    const user = await this.userRepository.getUserData(
-      startIndex,
-      limit,
-      query,
-    );
+    const user = await this.userRepository.getUserData(startIndex, limit, query);
     return user;
   }
 }

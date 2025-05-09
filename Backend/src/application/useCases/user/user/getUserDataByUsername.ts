@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import FriendsRepository from "../../../repositories/user/friendsRepository";
 import PostRepository from "../../../repositories/user/postRepository";
@@ -15,10 +16,7 @@ export default class GetUserDataByUsername {
     this.friendsRepository = friendsRepository;
   }
 
-  public async execute(
-    username: string,
-    userId: string
-  ): Promise<{
+  public async execute(username: string, userId: string): Promise<{
     postCount: number;
     userWithoutSensitiveInfo: Partial<IUser> | null;
     followings: number, followers: number
@@ -27,11 +25,11 @@ export default class GetUserDataByUsername {
     const currentUser = await this.userRepository.findById(userId);
 
     if (!currentUser) {
-      throw new Error("User not found.");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (!user) {
-      throw new Error("User not found.");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (currentUser._id.toString() === user._id.toString()) {

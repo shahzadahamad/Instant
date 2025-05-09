@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IMusic } from "../../../../infrastructure/database/models/musicModal";
 import { FilesType } from "../../../interface/fileTypes";
 import AwsS3Storage from "../../../providers/awsS3Storage";
@@ -17,33 +18,26 @@ export default class CreateMusic {
     const audioFile = files && files.audio ? files.audio[0] : null;
 
     if (!title) {
-      throw new Error("Title is required.");
+      throw new Error(MESSAGES.ERROR.TITLE_REQUIRED);
     }
 
     if (!imageFile || !audioFile) {
-      throw new Error("Image and audio files are required.");
+      throw new Error(MESSAGES.ERROR.IMAGE_AND_AUDIO_REQUIRED);
     }
 
     const existMusic = await this.musicRepository.findMusic(title);
 
     if (existMusic) {
-      throw new Error("Music title already exist.");
+      throw new Error(MESSAGES.ERROR.MUSIC_TITLE_ALREADY_EXIST);
     }
 
-    const imageFileUrl = await this.awsS3Storage.uploadFile(
-      imageFile,
-      "music-image"
-    );
+    const imageFileUrl = await this.awsS3Storage.uploadFile(imageFile, "music-image");
     const audioFileUrl = await this.awsS3Storage.uploadFile(audioFile, "music");
 
-    const newMusic = await this.musicRepository.createMusic(
-      title,
-      imageFileUrl,
-      audioFileUrl
-    );
+    const newMusic = await this.musicRepository.createMusic(title, imageFileUrl, audioFileUrl);
 
     if (!newMusic) {
-      throw new Error("Cannot add music.");
+      throw new Error(MESSAGES.ERROR.CANNOT_ADD_MUSIC);
     }
 
     return newMusic;

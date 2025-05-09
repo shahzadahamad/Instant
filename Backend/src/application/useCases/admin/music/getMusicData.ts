@@ -20,11 +20,7 @@ export default class GetMusicData {
         $or: [{ title: { $regex: searchRegex } }],
       };
     }
-    const user = await this.musicRepository.getMusicData(
-      startIndex,
-      limit,
-      query
-    );
+    const user = await this.musicRepository.getMusicData(startIndex, limit, query);
     return user;
   }
 }

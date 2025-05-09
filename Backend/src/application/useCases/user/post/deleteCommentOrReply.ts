@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import CommentRepository from "../../../repositories/user/commentRepository";
 import LikeRepository from "../../../repositories/user/likeRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
@@ -11,12 +12,7 @@ export default class DeleteCommentOrReply {
   private notificationRepository: NotificationRepository;
   private postRepository: PostRepository;
 
-  constructor(
-    likeRepository: LikeRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-    postRepository: PostRepository
-  ) {
+  constructor(likeRepository: LikeRepository, commentRepository: CommentRepository, notificationRepository: NotificationRepository, postRepository: PostRepository) {
     this.likeRepository = likeRepository;
     this.commentRepository = commentRepository;
     this.notificationRepository = notificationRepository;
@@ -28,7 +24,7 @@ export default class DeleteCommentOrReply {
     const commentOrReplyExist = await this.commentRepository.findcommentOrReplyIdById(commentOrReplyId);
 
     if (!commentOrReplyExist) {
-      throw new Error("Comment not found!");
+      throw new Error(MESSAGES.ERROR.COMMENT_NOT_FOUND);
     }
 
     if ('reply' in commentOrReplyExist) {
@@ -41,6 +37,6 @@ export default class DeleteCommentOrReply {
     await this.notificationRepository.removeCommentNotificationByCommentId(commentOrReplyExist._id);
     await this.postRepository.updateCommentCount(commentOrReplyExist.postId, false);
 
-    return { commentId: commentOrReplyExist._id, message: "Comment deleted." };
+    return { commentId: commentOrReplyExist._id, message: MESSAGES.SUCCESS.COMMENT_DELECTED };
   }
 }

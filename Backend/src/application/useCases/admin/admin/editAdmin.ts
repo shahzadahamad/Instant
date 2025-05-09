@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IAdmin } from "../../../../infrastructure/database/models/adminModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import AdminRepository from "../../../repositories/admin/adminRepository";
@@ -17,7 +18,7 @@ export default class EditAdmin {
     const admin = await this.adminRepository.findById(adminId);
 
     if (!admin) {
-      throw new Error('Admin not found!');
+      throw new Error(MESSAGES.ERROR.ADMIN_NOT_FOUND);
     }
 
     let fileUrl;
@@ -28,15 +29,10 @@ export default class EditAdmin {
       fileUrl = admin.profilePicture;
     }
 
-    const updateAdmin = await this.adminRepository.updateAdmin(
-      adminId,
-      username,
-      email,
-      fileUrl
-    );
-    
+    const updateAdmin = await this.adminRepository.updateAdmin(adminId, username, email, fileUrl);
+
     if (!updateAdmin) {
-      throw new Error("cannot update admin!");
+      throw new Error(MESSAGES.ERROR.CANNOT_UPDATE_ADMIN);
     }
 
     return updateAdmin;

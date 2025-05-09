@@ -12,7 +12,7 @@ export default class Archive {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     const archive = await this.postRepository.archiveToggle(postId);

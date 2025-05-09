@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import GeneratePassword from "../../../providers/generatePassword";
 import GenerateUsername from "../../../providers/generateUsername";
@@ -12,48 +13,25 @@ export default class GoogleAuthenticateUser {
   private generatePassword: GeneratePassword;
   private generateUsername: GenerateUsername;
 
-  constructor(
-    userRepository: UserRepository,
-    passwordHasher: PasswordHasher,
-    tokenManager: TokenManager,
-    generatePassword: GeneratePassword,
-    generateUsername: GenerateUsername
-  ) {
+  constructor(userRepository: UserRepository, passwordHasher: PasswordHasher, tokenManager: TokenManager, generatePassword: GeneratePassword, generateUsername: GenerateUsername) {
     this.userRepository = userRepository;
     this.passwordHasher = passwordHasher;
     this.tokenManager = tokenManager;
     this.generatePassword = generatePassword;
     this.generateUsername = generateUsername;
   }
-  public async execute(
-    fullname: string,
-    email: string
-  ): Promise<{ token: string; refreshToken: string; user: Partial<IUser> }> {
+
+  public async execute(fullname: string, email: string): Promise<{ token: string; refreshToken: string; user: Partial<IUser> }> {
     const userExist = await this.userRepository.findByEmail(email);
 
     if (userExist) {
       if (userExist.isBlock) {
-        throw new Error("Your account has been blocked");
+        throw new Error(MESSAGES.ERROR.USER_BLOCKED);
       }
-      const token = await this.tokenManager.generateAccessToken({
-        userId: userExist._id,
-        role: "user",
-      });
-      const refreshToken = await this.tokenManager.generateRefreshToken(
-        userExist._id
-      );
+      const token = await this.tokenManager.generateAccessToken({ userId: userExist._id, role: "user" });
+      const refreshToken = await this.tokenManager.generateRefreshToken(userExist._id);
       const { _id, fullname, username, email, profilePicture } = userExist;
-      return {
-        token,
-        refreshToken,
-        user: {
-          _id,
-          fullname,
-          username,
-          email,
-          profilePicture,
-        },
-      };
+      return { token, refreshToken, user: { _id, fullname, username, email, profilePicture, } };
     }
 
     const generatedPassword = this.generatePassword.generate();
@@ -65,37 +43,17 @@ export default class GoogleAuthenticateUser {
 
     const hashedPassword = await this.passwordHasher.hash(generatedPassword);
 
-    const newUser = await this.userRepository.createUser({
-      fullname,
-      username: generatedUsername,
-      email,
-      password: hashedPassword,
-    } as IUser);
+    const newUser = await this.userRepository.createUser({ fullname, username: generatedUsername, email, password: hashedPassword } as IUser);
 
     if (!newUser) {
-      throw new Error("Failed to create new user. Please try again.");
+      throw new Error(MESSAGES.ERROR.USER_CREATION_FAILED);
     }
 
-    const token = await this.tokenManager.generateAccessToken({
-      userId: newUser._id,
-      role: "user",
-    });
-    const refreshToken = await this.tokenManager.generateRefreshToken(
-      newUser._id
-    );
+    const token = await this.tokenManager.generateAccessToken({ userId: newUser._id, role: "user" });
+    const refreshToken = await this.tokenManager.generateRefreshToken(newUser._id);
 
     const { _id, username, profilePicture } = newUser;
 
-    return {
-      token,
-      refreshToken,
-      user: {
-        _id,
-        fullname: newUser.fullname,
-        username,
-        email: newUser.email,
-        profilePicture,
-      },
-    };
+    return { token, refreshToken, user: { _id, fullname: newUser.fullname, username, email: newUser.email, profilePicture, } };
   }
 }

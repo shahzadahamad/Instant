@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import Sharp from "../../../providers/sharp";
@@ -17,44 +18,26 @@ export default class UpdateUserData {
     this.sharp = sharp;
   }
 
-  public async execute(
-    userId: string,
-    fullname: string,
-    username: string,
-    email: string,
-    phoneNumber: string,
-    gender: string,
-    dateOfBirth: string,
-    profilePicture: string,
-    isPrivateAccount: boolean,
-    bio: string,
-    file?: Express.Multer.File
-  ): Promise<Partial<IUser>> {
+  public async execute(userId: string, fullname: string, username: string, email: string, phoneNumber: string, gender: string, dateOfBirth: string, profilePicture: string, isPrivateAccount: boolean, bio: string, file?: Express.Multer.File): Promise<Partial<IUser>> {
     const user = await this.userRepository.findById(userId);
-    const isUsernameExist = await this.userRepository.findByUsernameEdit(
-      username,
-      userId
-    );
+    const isUsernameExist = await this.userRepository.findByUsernameEdit(username, userId);
 
     if (isUsernameExist) {
-      throw new Error("Username already exists");
+      throw new Error(MESSAGES.ERROR.USERNAME_EXIST);
     }
 
     if (!user) {
-      throw new Error("Invalied Access!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACCESS);
     }
 
     if (email && email !== user.email) {
-      throw new Error("connot change email!");
+      throw new Error(MESSAGES.ERROR.CANNOT_CHANGE_EMAIL);
     }
 
     let fileUrl;
     if (file) {
       const processedBuffer = await this.sharp.makeCircularImage(file.buffer);
-      const updatedFile = {
-        ...file,
-        buffer: processedBuffer,
-      };
+      const updatedFile = { ...file, buffer: processedBuffer, };
       await this.awsS3Storage.deleteFile(user.profilePicture);
       fileUrl = await this.awsS3Storage.uploadFile(updatedFile, "profile");
     } else {
@@ -67,33 +50,16 @@ export default class UpdateUserData {
       fileUrl = profilePicture;
     }
 
-    const updatedUser = await this.userRepository.updateUser(
-      userId,
-      fullname,
-      username,
-      email,
-      phoneNumber,
-      gender,
-      dateOfBirth,
-      isPrivateAccount,
-      bio,
-      fileUrl
-    );
+    const updatedUser = await this.userRepository.updateUser(userId, fullname, username, email, phoneNumber, gender, dateOfBirth, isPrivateAccount, bio, fileUrl);
 
     if (!updatedUser?.isPrivateAccount) {
       await this.UserMoreDataRepository.updateFriendRequest(userId);
     }
 
     if (!updatedUser) {
-      throw new Error("cannot update user!");
+      throw new Error(MESSAGES.ERROR.CANNOT_UPDATE_USER);
     }
 
-    return {
-      _id: updatedUser._id,
-      fullname: updatedUser.fullname,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      profilePicture: updatedUser.profilePicture,
-    };
+    return { _id: updatedUser._id, fullname: updatedUser.fullname, username: updatedUser.username, email: updatedUser.email, profilePicture: updatedUser.profilePicture, };
   }
 }

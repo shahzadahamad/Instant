@@ -16,15 +16,11 @@ export default class GetPostDataAdmin {
       const searchRegex = new RegExp(search, "i");
       query = {
         $or: [
-          { caption : { $regex: searchRegex } },
+          { caption: { $regex: searchRegex } },
         ],
       };
     }
-    const posts = await this.postRepository.getPostData(
-      startIndex,
-      limit,
-      query,
-    );
+    const posts = await this.postRepository.getPostData(startIndex, limit, query,);
     return posts;
   }
 }

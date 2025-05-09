@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import LikeRepository from "../../../repositories/user/likeRepository";
 import PostRepository from "../../../repositories/user/postRepository";
 
@@ -14,7 +15,7 @@ export default class CheckHasUserLikedPost {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     const checking = await this.likeRepository.hasUserLikedPost(postId, userId);

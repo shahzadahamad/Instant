@@ -1,4 +1,4 @@
-import { IPost } from "../../../../infrastructure/database/models/postModel";
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IpostWithUserData } from "../../../interface/post";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserRepository from "../../../repositories/user/userRepository";
@@ -17,15 +17,15 @@ export default class GetPostData {
     const userData = await this.userRepository.findById(userId);
 
     if (!postData) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     if (!userData) {
-      throw new Error("User now found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (userData?._id.toString() !== postData?.userId.toString()) {
-      throw new Error("Invalid Action!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACTION);
     }
 
     const data = await this.postRepository.findPostByIdWithUserData(postId);

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import PostRepository from "../../../repositories/user/postRepository";
 import UserMoreDataRepository from "../../../repositories/user/userMoreDataRepository";
 
@@ -15,7 +16,7 @@ export default class UserWatchPost {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error('Post not found!');
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     await this.userMoreDataRepository.watchedPostAdd(userId, postId);

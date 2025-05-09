@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import CommentRepository from "../../../repositories/user/commentRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
@@ -10,48 +11,31 @@ export default class ReplyComment {
   private commentRepository: CommentRepository;
   private notificationRepository: NotificationRepository;
 
-  constructor(
-    postRepository: PostRepository,
-    userRepository: UserRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-  ) {
+  constructor(postRepository: PostRepository, userRepository: UserRepository, commentRepository: CommentRepository, notificationRepository: NotificationRepository,) {
     this.postRepository = postRepository;
     this.userRepository = userRepository;
     this.commentRepository = commentRepository;
     this.notificationRepository = notificationRepository;
   }
 
-  public async execute(
-    id: string,
-    userId: string,
-    commentId: string,
-    comment: string
-  ) {
+  public async execute(id: string, userId: string, commentId: string, comment: string) {
     const commentData = await this.commentRepository.findCommentById(commentId);
     const postData = await this.postRepository.findPostById(id);
     const userData = await this.userRepository.findById(userId);
 
     if (!commentData) {
-      throw new Error("Comment not found!");
+      throw new Error(MESSAGES.ERROR.COMMENT_NOT_FOUND);
     }
 
     if (!userData) {
-      throw new Error("User not found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (!postData) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
-    const replyComment = await this.commentRepository.replytoComment(
-      id,
-      userId,
-      commentId,
-      comment,
-      userData.username,
-      userData.profilePicture
-    );
+    const replyComment = await this.commentRepository.replytoComment(id, userId, commentId, comment, userData.username, userData.profilePicture);
     await this.postRepository.updateCommentCount(id, true);
     if (postData.userId !== userId && replyComment) {
       await this.notificationRepository.sendPostCommentNotification(userId, postData.userId, postData._id.toString(), replyComment._id.toString(), `commented on your post: ${comment}`, 'commented', 'post');

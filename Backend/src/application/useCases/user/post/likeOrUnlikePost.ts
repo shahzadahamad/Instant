@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import SocketService from "../../../../infrastructure/service/socketService";
 import LikeRepository from "../../../repositories/user/likeRepository";
 import NotificationRepository from "../../../repositories/user/notificationRepository";
@@ -22,7 +23,7 @@ export default class LikeOrUnlikePost {
     const post = await this.postRepository.findPostById(postId);
 
     if (!post) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     if (status === "like") {
@@ -40,8 +41,8 @@ export default class LikeOrUnlikePost {
         SocketService.getInstance().clearNotification(post.userId.toString());
       }
     } else {
-      throw new Error("Invalid action");
+      throw new Error(MESSAGES.ERROR.INVALID_ACTION);
     }
-    return "action successfull";
+    return MESSAGES.SUCCESS.ACTION_SUCCESS;
   }
 }

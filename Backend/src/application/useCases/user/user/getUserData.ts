@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IUser } from "../../../../infrastructure/database/models/userModel";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -12,9 +13,10 @@ export default class GetUserData {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
-      throw new Error("Invalid Access!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACCESS);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, isBlock, ...userWithoutSensitiveInfo } = user.toObject();
 
     return userWithoutSensitiveInfo;

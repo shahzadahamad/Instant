@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IAdmin } from "../../../../infrastructure/database/models/adminModel";
 import AdminRepository from "../../../repositories/admin/adminRepository";
 
@@ -13,7 +14,7 @@ export default class GetAdminData {
     const adminData = await this.adminRepository.findById(adminId);
 
     if (!adminData) {
-      throw new Error("Admin not found!");
+      throw new Error(MESSAGES.ERROR.ADMIN_NOT_FOUND);
     }
 
     return adminData;

@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import TokenManager from "../../../providers/tokenManager";
 import AdminRepository from "../../../repositories/admin/adminRepository";
 
@@ -13,7 +14,7 @@ export default class HandleAdminRefreshToken {
     adminRefreshToken: string
   ): Promise<{ adminToken?: string; clearCookie?: boolean }> {
     if (!adminRefreshToken) {
-      throw new Error("No refresh token");
+      throw new Error(MESSAGES.ERROR.NO_REFRESH_TOKEN);
     }
     try {
       const decoded = (await this.tokenManager.verifyRefreshToken(
@@ -21,14 +22,12 @@ export default class HandleAdminRefreshToken {
       )) as { userId: string };
       const admin = await this.adminRepository.findById(decoded.userId);
       if (!admin) {
-        throw new Error("admin not found");
+        throw new Error(MESSAGES.ERROR.ADMIN_NOT_FOUND);
       }
-      const newAdminAccessToken = await this.tokenManager.generateAccessToken({
-        userId: admin._id,
-        role: "admin",
-      });
+      const newAdminAccessToken = await this.tokenManager.generateAccessToken({ userId: admin._id, role: "admin", });
 
       return { adminToken: newAdminAccessToken };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return { clearCookie: true };
     }

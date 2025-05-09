@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IComment } from "../../../../infrastructure/database/models/commentModel";
 import SocketService from "../../../../infrastructure/service/socketService";
 import CommentRepository from "../../../repositories/user/commentRepository";
@@ -11,41 +12,28 @@ export default class CommentPost {
   private commentRepository: CommentRepository;
   private notificationRepository: NotificationRepository;
 
-  constructor(
-    postRepository: PostRepository,
-    userRepository: UserRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository
-  ) {
+  constructor(postRepository: PostRepository, userRepository: UserRepository, commentRepository: CommentRepository, notificationRepository: NotificationRepository) {
     this.postRepository = postRepository;
     this.userRepository = userRepository;
     this.commentRepository = commentRepository;
     this.notificationRepository = notificationRepository;
   }
 
-  public async execute(
-    id: string,
-    userId: string,
-    comment: string
-  ): Promise<IComment> {
+  public async execute(id: string, userId: string, comment: string): Promise<IComment> {
     const postData = await this.postRepository.findPostById(id);
     const userData = await this.userRepository.findById(userId);
 
     if (!userData) {
-      throw new Error("User now found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (!postData) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
-    const newComment = await this.commentRepository.createComment(
-      id,
-      userId,
-      comment
-    );
+    const newComment = await this.commentRepository.createComment(id, userId, comment);
 
-    await this.postRepository.updateCommentCount(id,true);
+    await this.postRepository.updateCommentCount(id, true);
     if (postData.userId !== userId) {
       await this.notificationRepository.sendPostCommentNotification(userId, postData.userId, postData._id, newComment._id, `commented on your post: ${newComment.comment}`, 'commented', 'post');
       SocketService.getInstance().sendNotification(postData.userId.toString());

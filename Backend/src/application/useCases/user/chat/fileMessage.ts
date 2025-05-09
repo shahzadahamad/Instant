@@ -1,4 +1,5 @@
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import { IMessage } from "../../../../infrastructure/database/models/messageModal";
 import SocketService from "../../../../infrastructure/service/socketService";
 import AwsS3Storage from "../../../providers/awsS3Storage";
@@ -27,22 +28,22 @@ export default class FileMessage {
     const userChat = await this.chatRepository.findChatsOfUser(chatId, userId);
 
     if (!chat && !userChat) {
-      throw new Error("Chat not found.");
+      throw new Error(MESSAGES.ERROR.CHAT_NOT_FOUND);
     }
 
     const officalChat = chat ? chat : userChat;
 
     if (!officalChat) {
-      throw new Error("Chat not found.");
+      throw new Error(MESSAGES.ERROR.CHAT_NOT_FOUND);
     }
 
     if (chat) {
       if (!chat?.members.includes(userId)) {
-        throw new Error('You are not a member of this chat.');
+        throw new Error(MESSAGES.ERROR.NOT_MEMBER_IN_CHAT);
       }
     } else {
       if (!userChat?.members.includes(userId) && !userChat?.members.includes(chatId)) {
-        throw new Error('You are not a member of this chat.');
+        throw new Error(MESSAGES.ERROR.NOT_MEMBER_IN_CHAT);
       }
     }
     const lastMessage = 'seat an attachment';
@@ -63,12 +64,7 @@ export default class FileMessage {
             } else {
               fileCategory = "unknown";
             }
-            const messageData = {
-              chatId: officalChat._id,
-              type: fileCategory,
-              message: fileUrl,
-              senderId: userId,
-            };
+            const messageData = { chatId: officalChat._id, type: fileCategory, message: fileUrl, senderId: userId };
             const newMessage = await this.messageRepository.createMessage(messageData);
             newMessages.push(newMessage);
           })
@@ -78,13 +74,7 @@ export default class FileMessage {
 
     await this.chatRepository.updateLastMessage(officalChat._id, userId, lastMessage);
     const userData = await this.userRepository.findById(userId);
-    const data = {
-      _id: userData?._id,
-      fullname: userData?.fullname,
-      username: userData?.username,
-      profilePicture: userData?.profilePicture,
-      isOnline: userData?.isOnline
-    };
+    const data = { _id: userData?._id, fullname: userData?.fullname, username: userData?.username, profilePicture: userData?.profilePicture, isOnline: userData?.isOnline };
     const updateLastMessage = { fromId: data, message: lastMessage };
     officalChat.members.forEach((member) => {
       SocketService.getInstance().sendMessage(member, newMessages, updateLastMessage);

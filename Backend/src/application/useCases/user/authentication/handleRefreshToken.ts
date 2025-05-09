@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import TokenManager from "../../../providers/tokenManager";
 import UserRepository from "../../../repositories/user/userRepository";
 
@@ -13,26 +14,21 @@ export default class HandleRefreshToken {
     refreshToken: string
   ): Promise<{ token?: string; clearCookie?: boolean }> {
     if (!refreshToken) {
-      throw new Error("No refresh token");
+      throw new Error(MESSAGES.ERROR.NO_REFRESH_TOKEN);
     }
 
-
     try {
-      const decoded = (await this.tokenManager.verifyRefreshToken(
-        refreshToken
-      )) as { userId: string };
+      const decoded = (await this.tokenManager.verifyRefreshToken(refreshToken)) as { userId: string };
       const user = await this.userRepository.findById(decoded.userId);
 
       if (!user) {
-        throw new Error("user not found");
+        throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
       }
 
-      const newAccessToken = await this.tokenManager.generateAccessToken({
-        userId: user._id,
-        role: "user",
-      });
+      const newAccessToken = await this.tokenManager.generateAccessToken({ userId: user._id, role: "user" });
 
       return { token: newAccessToken };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return { clearCookie: true };
     }

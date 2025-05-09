@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import AwsS3Storage from "../../../providers/awsS3Storage";
 import CommentRepository from "../../../repositories/user/commentRepository";
 import LikeRepository from "../../../repositories/user/likeRepository";
@@ -15,15 +16,7 @@ export default class DeletePost {
   private notificationRepository: NotificationRepository;
   private messageRepository: MessageRepository;
 
-  constructor(
-    postRepository: PostRepository,
-    awsS3Storage: AwsS3Storage,
-    likeRepository: LikeRepository,
-    userRepository: UserRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-    messageRepository: MessageRepository,
-  ) {
+  constructor(postRepository: PostRepository, awsS3Storage: AwsS3Storage, likeRepository: LikeRepository, userRepository: UserRepository, commentRepository: CommentRepository, notificationRepository: NotificationRepository, messageRepository: MessageRepository,) {
     this.postRepository = postRepository;
     this.awsS3Storage = awsS3Storage;
     this.likeRepository = likeRepository;
@@ -38,15 +31,15 @@ export default class DeletePost {
     const userData = await this.userRepository.findById(userId);
 
     if (!userData) {
-      throw new Error("User now found!");
+      throw new Error(MESSAGES.ERROR.USER_NOT_FOUND);
     }
 
     if (!postData) {
-      throw new Error("Post not found!");
+      throw new Error(MESSAGES.ERROR.POST_NOT_FOUND);
     }
 
     if (userData?._id.toString() !== postData?.userId.toString()) {
-      throw new Error("Invalid Action!");
+      throw new Error(MESSAGES.ERROR.INVALID_ACTION);
     }
 
     postData.post.forEach(async (item) => {
@@ -58,6 +51,6 @@ export default class DeletePost {
     await this.commentRepository.deletePostComments(id);
     await this.notificationRepository.removePostNotificationByPostId(id);
     await this.messageRepository.changeMessageType(id);
-    return "Post deleted successfully.";
+    return MESSAGES.SUCCESS.POST_DELECTED;
   }
 }

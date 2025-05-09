@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../../../infrastructure/constants/messages";
 import UserRepository from "../../../repositories/user/userRepository";
 
 export default class BlockOrUnblockUserByAdmin {
@@ -13,8 +14,8 @@ export default class BlockOrUnblockUserByAdmin {
     } else if (status === "unblock") {
       await this.userRepository.blockAndUnBlockUser(id, false);
     } else {
-      throw new Error("Invalid action");
+      throw new Error(MESSAGES.ERROR.INVALID_ACTION);
     }
-    return "action successfull";
+    return MESSAGES.SUCCESS.ACTION_SUCCESS;
   }
 }
