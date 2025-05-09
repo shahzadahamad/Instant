@@ -4,8 +4,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
 import CreateChat from "../../../../application/useCases/user/chat/createChat";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CreateChatController {
+export default class CreateChatController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userIds, groupName } = req.body;
     const { userId } = req.user;
@@ -13,18 +14,10 @@ export default class CreateChatController {
 
     const parsedUserIds = JSON.parse(userIds);
 
-    const createChat = new CreateChat(
-      new ChatRepository(),
-      new AwsS3Storage()
-    );
+    const createChat = new CreateChat(new ChatRepository(), new AwsS3Storage());
 
     try {
-      const chatId = await createChat.execute(
-        parsedUserIds,
-        userId,
-        groupName,
-        file
-      );
+      const chatId = await createChat.execute(parsedUserIds, userId, groupName, file);
       res.status(HttpStatusCode.OK).json(chatId);
     } catch (error) {
       if (error instanceof Error) {

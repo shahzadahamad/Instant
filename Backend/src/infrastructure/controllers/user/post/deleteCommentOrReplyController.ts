@@ -6,18 +6,14 @@ import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 import PostRepository from "../../../../application/repositories/user/postRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class DeleteCommentOrReplyController {
+export default class DeleteCommentOrReplyController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { commentOrReplyId, actionFor } = req.params;
     const { userId } = req.user;
 
-    const deleteCommentOrReply = new DeleteCommentOrReply(
-      new LikeRepository(),
-      new CommentRepository(),
-      new NotificationRepository(),
-      new PostRepository()
-    );
+    const deleteCommentOrReply = new DeleteCommentOrReply(new LikeRepository(), new CommentRepository(), new NotificationRepository(), new PostRepository());
 
     try {
       const data = await deleteCommentOrReply.execute(commentOrReplyId, actionFor, userId);

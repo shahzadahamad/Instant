@@ -4,8 +4,9 @@ import { MESSAGES } from "../../../constants/messages";
 import PostRepository from "../../../../application/repositories/user/postRepository";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import UserWatchPost from "../../../../application/useCases/user/user/userWatchPost";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class UserWatchPostController {
+export default class UserWatchPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { postId } = req.params;

@@ -5,16 +5,13 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import { EmailService } from "../../../../application/providers/nodeMailer";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ForgotPasswordController {
+export default class ForgotPasswordController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { emailOrUsername } = req.body;
 
-    const verifyAndSendMail = new VerifyAndSendMail(
-      new UserRepository(),
-      new TokenManager(),
-      new EmailService()
-    );
+    const verifyAndSendMail = new VerifyAndSendMail(new UserRepository(), new TokenManager(), new EmailService());
 
     try {
       const status = await verifyAndSendMail.execute(emailOrUsername);

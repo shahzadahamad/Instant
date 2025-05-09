@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
 import ToggleList from "../../../../application/useCases/admin/subscription/toggleList";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ToggleListController {
+export default class ToggleListController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { id, status } = req.params;
     const toggleList = new ToggleList(new SubscriptionRepository());

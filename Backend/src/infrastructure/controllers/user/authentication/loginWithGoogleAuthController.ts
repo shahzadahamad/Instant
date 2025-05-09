@@ -7,22 +7,16 @@ import GeneratePassword from "../../../../application/providers/generatePassword
 import GenerateUsername from "../../../../application/providers/generateUsername";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LoginWithGoogleAuth {
+export default class LoginWithGoogleAuth implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { fullname, email } = req.body;
 
-    const googleAuthenticateUser = new GoogleAuthenticateUser(
-      new UserRepository(),
-      new PasswordHasher(),
-      new TokenManager(),
-      new GeneratePassword(),
-      new GenerateUsername()
-    );
+    const googleAuthenticateUser = new GoogleAuthenticateUser(new UserRepository(), new PasswordHasher(), new TokenManager(), new GeneratePassword(), new GenerateUsername());
 
     try {
-      const { token, refreshToken, user } =
-        await googleAuthenticateUser.execute(fullname, email);
+      const { token, refreshToken, user } = await googleAuthenticateUser.execute(fullname, email);
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,

@@ -23,6 +23,7 @@ export const MESSAGES = {
     INVALID_TOKEN: 'Invalid token',
     TOKEN_ERROR: 'Token error',
     NO_TOKEN_PROVIDED: 'No token provided',
+    MUSIC_NOT_FOUND: "Music not available",
   },
   INFO: {
     USER_BLOCKED: 'You have been blocked.',

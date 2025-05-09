@@ -6,8 +6,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import RemoveUser from "../../../../application/useCases/user/user/removeUser";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class RemoveUserController {
+export default class RemoveUserController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
     const { userId } = req.user;
@@ -16,7 +17,6 @@ export default class RemoveUserController {
 
     try {
       const actionStatus = await removeUser.execute(userId, _id);
-
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {

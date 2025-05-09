@@ -6,15 +6,15 @@ import FriendsRepository from "../../../../application/repositories/user/friends
 import PaymentRepository from "../../../../application/repositories/user/paymentRepository";
 import GetDashboardData from "../../../../application/useCases/admin/admin/getDashboardData";
 import PostRepository from "../../../../application/repositories/user/postRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetDashboardDataController {
+export default class GetDashboardDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
 
     const getDashboardData = new GetDashboardData(new PostRepository(), new UserRepository(), new FriendsRepository(), new PaymentRepository());
 
     try {
       const adminData = await getDashboardData.execute();
-
       res.status(HttpStatusCode.OK).json(adminData);
       return;
     } catch (error) {

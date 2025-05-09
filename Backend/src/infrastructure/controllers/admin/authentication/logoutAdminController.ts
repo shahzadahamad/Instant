@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LogoutAdminController {
+export default class LogoutAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     try {
       res.clearCookie("adminRefreshToken", {

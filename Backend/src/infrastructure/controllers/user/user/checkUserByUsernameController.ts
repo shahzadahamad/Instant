@@ -3,13 +3,13 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import CheckUserByUsername from "../../../../application/useCases/user/user/checkUserByUsername";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CheckUserByUsernameController {
+export default class CheckUserByUsernameController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username } = req.params;
 
     const checkUserByUsername = new CheckUserByUsername(new UserRepository());
-
     const data = await checkUserByUsername.execute(username);
 
     try {

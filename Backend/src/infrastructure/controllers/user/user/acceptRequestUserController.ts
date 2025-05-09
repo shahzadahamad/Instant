@@ -6,8 +6,9 @@ import UserMoreDataRepository from "../../../../application/repositories/user/us
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import RequestAcceptUser from "../../../../application/useCases/user/user/requestAcceptUser";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class AcceptRequestUserController {
+export default class AcceptRequestUserController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username } = req.params;
     const { userId } = req.user;
@@ -16,7 +17,6 @@ export default class AcceptRequestUserController {
 
     try {
       const actionStatus = await requestAcceptUser.execute(userId, username);
-
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {

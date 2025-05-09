@@ -5,16 +5,13 @@ import LikeOrUnlikePost from "../../../../application/useCases/user/post/likeOrU
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LikeOrUnlikePostController {
+export default class LikeOrUnlikePostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId, status } = req.params;
     const { userId } = req.user;
-    const likeOrUnlikePost = new LikeOrUnlikePost(
-      new PostRepository(),
-      new LikeRepository(),
-      new NotificationRepository(),
-    );
+    const likeOrUnlikePost = new LikeOrUnlikePost(new PostRepository(), new LikeRepository(), new NotificationRepository());
 
     try {
       const actionStatus = await likeOrUnlikePost.execute(postId, userId, status);

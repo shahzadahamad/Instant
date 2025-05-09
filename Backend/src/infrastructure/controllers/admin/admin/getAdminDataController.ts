@@ -3,8 +3,9 @@ import AdminRepository from "../../../../application/repositories/admin/adminRep
 import GetAdminData from "../../../../application/useCases/admin/admin/getAdminData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetAdminDataController {
+export default class GetAdminDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
@@ -12,9 +13,8 @@ export default class GetAdminDataController {
 
     try {
       const adminData = await getAdminData.execute(userId);
-
-       res.status(HttpStatusCode.OK).json(adminData);
-       return;
+      res.status(HttpStatusCode.OK).json(adminData);
+      return;
     } catch (error) {
       if (error instanceof Error) {
         res.status(HttpStatusCode.BAD_REQUEST).json({ error: error.message });

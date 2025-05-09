@@ -5,8 +5,9 @@ import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import FilterReels from "../../../../application/useCases/user/post/filterReels";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class FilterReelsController {
+export default class FilterReelsController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { reelId = "", page = 0, load = false } = req.query;
     const { userId } = req.user;
@@ -14,11 +15,7 @@ export default class FilterReelsController {
     const boolLoad = (load === 'true');
     const pageNumber = parseInt(page as string);
 
-    const filterReels = new FilterReels(
-      new PostRepository(),
-      new FriendsRepository(),
-      new UserMoreDataRepository(),
-    );
+    const filterReels = new FilterReels(new PostRepository(), new FriendsRepository(), new UserMoreDataRepository());
 
     try {
       const postData = await filterReels.execute(reelId as string, userId, pageNumber, boolLoad);

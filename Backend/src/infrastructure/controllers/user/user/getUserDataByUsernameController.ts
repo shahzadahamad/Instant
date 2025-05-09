@@ -5,21 +5,16 @@ import GetUserDataByUsername from "../../../../application/useCases/user/user/ge
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetUserDataByUsernameController {
+export default class GetUserDataByUsernameController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username } = req.params;
     const { userId } = req.user;
 
-    const getUserDataByUsername = new GetUserDataByUsername(
-      new UserRepository(),
-      new PostRepository(),
-      new FriendsRepository(),
-    );
-
+    const getUserDataByUsername = new GetUserDataByUsername(new UserRepository(), new PostRepository(), new FriendsRepository());
     try {
       const userData = await getUserDataByUsername.execute(username, userId);
-
       res.status(HttpStatusCode.OK).json({
         postCount: userData.postCount,
         userData: userData.userWithoutSensitiveInfo,

@@ -5,8 +5,9 @@ import FriendsRepository from "../../../../application/repositories/user/friends
 import StoryRepository from "../../../../application/repositories/user/storyRepository";
 import GetStories from "../../../../application/useCases/user/story/getStories";
 import UserRepository from "../../../../application/repositories/user/userRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetStoriesController {
+export default class GetStoriesController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const getStories = new GetStories(new FriendsRepository(), new StoryRepository(), new UserRepository());

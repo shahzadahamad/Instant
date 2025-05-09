@@ -4,8 +4,9 @@ import { MESSAGES } from "../../../constants/messages";
 import CreateCheckoutSession from "../../../../application/useCases/user/subscription/createCheckoutSession";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CreateCheckoutSessionStripe {
+export default class CreateCheckoutSessionStripe implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const plan = req.body;
     const { userId } = req.user;

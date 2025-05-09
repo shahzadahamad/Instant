@@ -3,8 +3,9 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetUserDataBySearchUsername from "../../../../application/useCases/user/user/getUserDataBySearchUsername";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetUserDataBySearchingUsernameController {
+export default class GetUserDataBySearchingUsernameController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { search = '' } = req.params;
 
@@ -12,7 +13,6 @@ export default class GetUserDataBySearchingUsernameController {
 
     try {
       const userData = await getUserDataBySearchUsername.execute(search as string);
-
       res.status(HttpStatusCode.OK).json(userData);
     } catch (error) {
       if (error instanceof Error) {

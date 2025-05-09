@@ -5,18 +5,15 @@ import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import ExplorePost from "../../../../application/useCases/user/post/explorePost";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ExplorePostController {
+export default class ExplorePostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page = 0 } = req.query;
     const { userId } = req.user;
     const pageNumber = parseInt(page as string);
 
-    const explorePost = new ExplorePost(
-      new PostRepository(),
-      new FriendsRepository(),
-      new UserMoreDataRepository(),
-    );
+    const explorePost = new ExplorePost(new PostRepository(), new FriendsRepository(), new UserMoreDataRepository());
 
     try {
       const postData = await explorePost.execute(userId, pageNumber);

@@ -5,8 +5,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import UserRepository from "../../../../application/repositories/user/userRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetNotificationDataController {
+export default class GetNotificationDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
@@ -14,7 +15,6 @@ export default class GetNotificationDataController {
 
     try {
       const notificationData = await getNotificationData.execute(userId);
-
       res.status(HttpStatusCode.OK).json(notificationData);
     } catch (error) {
       if (error instanceof Error) {

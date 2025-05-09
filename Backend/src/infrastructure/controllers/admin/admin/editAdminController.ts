@@ -4,8 +4,9 @@ import EditAdmin from "../../../../application/useCases/admin/admin/editAdmin";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditAdminController {
+export default class EditAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username, email } = req.body;
     const { userId } = req.user;
@@ -15,7 +16,6 @@ export default class EditAdminController {
 
     try {
       const adminData = await editAdmin.execute(userId, username, email, file);
-
       res.status(HttpStatusCode.OK).json(adminData);
       return;
     } catch (error) {

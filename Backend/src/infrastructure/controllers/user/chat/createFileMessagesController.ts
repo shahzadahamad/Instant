@@ -6,8 +6,9 @@ import MessageRepository from "../../../../application/repositories/user/message
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import FileMessage from "../../../../application/useCases/user/chat/fileMessage";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CreateFileMessagesController {
+export default class CreateFileMessagesController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { chatId } = req.body;

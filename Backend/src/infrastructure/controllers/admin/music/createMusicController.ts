@@ -5,16 +5,14 @@ import { FilesType } from "../../../../application/interface/fileTypes";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CreateMusicController {
+export default class CreateMusicController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { title } = req.body;
     const files = req.files as FilesType | Express.Multer.File[];
 
-    const createMusic = new CreateMusic(
-      new MusicRepository(),
-      new AwsS3Storage()
-    );
+    const createMusic = new CreateMusic(new MusicRepository(), new AwsS3Storage());
 
     try {
       await createMusic.execute(title, files as FilesType);

@@ -4,8 +4,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import Search from "../../../../application/useCases/user/search/search";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class SearchController {
+export default class SearchController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { search = '' } = req.params;
@@ -14,7 +15,6 @@ export default class SearchController {
 
     try {
       const data = await searchData.execute(userId, search);
-
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {

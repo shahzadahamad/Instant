@@ -4,15 +4,13 @@ import GetCreatePostUserData from "../../../../application/useCases/user/user/ge
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CretePostGetUserDataController {
+export default class CretePostGetUserDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { search = '', users } = req.query;
     const { userId } = req.user;
-    const getCreatePostUserData = new GetCreatePostUserData(
-      new UserRepository(),
-      new FriendsRepository()
-    );
+    const getCreatePostUserData = new GetCreatePostUserData(new UserRepository(), new FriendsRepository());
 
     try {
       const userData = await getCreatePostUserData.execute(search as string, users as string[], userId);

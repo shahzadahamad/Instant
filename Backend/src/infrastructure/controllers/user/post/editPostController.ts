@@ -4,8 +4,9 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import EditPost from "../../../../application/useCases/user/post/editPost";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditPostController {
+export default class EditPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { postId } = req.params;
@@ -14,13 +15,7 @@ export default class EditPostController {
     const editPost = new EditPost(new PostRepository(), new UserRepository());
 
     try {
-      const postData = await editPost.execute(
-        userId,
-        postId,
-        caption,
-        hideLikeAndViewCount,
-        turnOffCounting
-      );
+      const postData = await editPost.execute(userId, postId, caption, hideLikeAndViewCount, turnOffCounting);
       res.status(HttpStatusCode.OK).json(postData);
     } catch (error) {
       if (error instanceof Error) {

@@ -5,22 +5,16 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LoginUserController {
+export default class LoginUserController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { usernameOrEmail, password } = req.body;
 
-    const authenticateUser = new AuthenticateUser(
-      new UserRepository(),
-      new PasswordHasher(),
-      new TokenManager()
-    );
+    const authenticateUser = new AuthenticateUser(new UserRepository(), new PasswordHasher(), new TokenManager());
 
     try {
-      const { token, refreshToken, user } = await authenticateUser.execute(
-        usernameOrEmail,
-        password
-      );
+      const { token, refreshToken, user } = await authenticateUser.execute(usernameOrEmail, password);
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,

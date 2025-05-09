@@ -4,13 +4,11 @@ import TokenManager from "../../../../application/providers/tokenManager";
 import HandleRefreshToken from "../../../../application/useCases/user/authentication/handleRefreshToken";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class RefreshTokenController {
+export default class RefreshTokenController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
-    const handleRefreshToken = new HandleRefreshToken(
-      new UserRepository(),
-      new TokenManager()
-    );
+    const handleRefreshToken = new HandleRefreshToken(new UserRepository(), new TokenManager());
 
     const refreshToken = req.cookies?.refreshToken;
     try {

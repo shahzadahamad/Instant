@@ -6,18 +6,14 @@ import GetLikedPostData from "../../../../application/useCases/user/post/getLike
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetLikedPostDataController {
+export default class GetLikedPostDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { username = "" } = req.query;
 
-    const getLikedPostData = new GetLikedPostData(
-      new PostRepository(),
-      new UserRepository(),
-      new LikeRepository(),
-      new FriendsRepository(),
-    );
+    const getLikedPostData = new GetLikedPostData(new PostRepository(), new UserRepository(), new LikeRepository(), new FriendsRepository());
 
     try {
       const data = await getLikedPostData.execute(userId, username as string);

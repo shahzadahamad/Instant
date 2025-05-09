@@ -6,19 +6,15 @@ import FriendsRepository from "../../../../application/repositories/user/friends
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import LoadingPagePost from "../../../../application/useCases/user/post/loadingPagePost";
 import LikeRepository from "../../../../application/repositories/user/likeRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LoadingPagePostController {
+export default class LoadingPagePostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page = 0 } = req.query;
     const { userId } = req.user;
     const pageNumber = parseInt(page as string);
 
-    const loadingPagePost = new LoadingPagePost(
-      new PostRepository(),
-      new FriendsRepository(),
-      new UserMoreDataRepository(),
-      new LikeRepository(),
-    );
+    const loadingPagePost = new LoadingPagePost(new PostRepository(), new FriendsRepository(), new UserMoreDataRepository(), new LikeRepository());
 
     try {
       const postData = await loadingPagePost.execute(userId, pageNumber);

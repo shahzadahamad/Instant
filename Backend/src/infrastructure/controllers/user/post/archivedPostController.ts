@@ -3,8 +3,9 @@ import PostRepository from "../../../../application/repositories/user/postReposi
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import ArchivedPost from "../../../../application/useCases/user/post/archivedPosts";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ArchivedPostController {
+export default class ArchivedPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 

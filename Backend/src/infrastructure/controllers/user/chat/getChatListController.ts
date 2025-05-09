@@ -3,16 +3,14 @@ import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
 import GetChatList from "../../../../application/useCases/user/chat/getChatList";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetChatListController {
+export default class GetChatListController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { type } = req.params;
 
-    const getChatList = new GetChatList(
-      new ChatRepository(),
-    );
-
+    const getChatList = new GetChatList(new ChatRepository());
 
     try {
       const chatList = await getChatList.execute(userId, type);

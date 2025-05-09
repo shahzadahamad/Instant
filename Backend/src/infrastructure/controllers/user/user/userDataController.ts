@@ -3,8 +3,9 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import UserData from "../../../../application/useCases/user/user/userData";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class UserDataController {
+export default class UserDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
 
@@ -12,7 +13,6 @@ export default class UserDataController {
 
     try {
       const data = await userData.execute(_id);
-
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {

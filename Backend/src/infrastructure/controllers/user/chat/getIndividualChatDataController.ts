@@ -4,16 +4,13 @@ import { HttpStatusCode } from "../../../enums/enums";
 import ChatRepository from "../../../../application/repositories/user/chatRepository";
 import GetIndividualChatData from "../../../../application/useCases/user/chat/getIndividualChatData";
 import MessageRepository from "../../../../application/repositories/user/messageRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetIndividualChatDataController {
+export default class GetIndividualChatDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
-    const getIndividualChatData = new GetIndividualChatData(
-      new ChatRepository(),
-      new MessageRepository(),
-    );
-
+    const getIndividualChatData = new GetIndividualChatData(new ChatRepository(), new MessageRepository());
 
     try {
       const chatData = await getIndividualChatData.execute(id);

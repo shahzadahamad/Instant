@@ -4,16 +4,13 @@ import LikeRepository from "../../../../application/repositories/user/likeReposi
 import CheckHasUserLikedPost from "../../../../application/useCases/user/post/checkHasUserLikedPost";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CheckingHasUserLikedPostController {
+export default class CheckingHasUserLikedPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
-    const checkHasUserLikedPost = new CheckHasUserLikedPost(
-      new PostRepository(),
-      new LikeRepository()
-    );
-
+    const checkHasUserLikedPost = new CheckHasUserLikedPost(new PostRepository(), new LikeRepository());
     try {
       const checkDetials = await checkHasUserLikedPost.execute(postId, userId);
       res.status(HttpStatusCode.OK).json(checkDetials);

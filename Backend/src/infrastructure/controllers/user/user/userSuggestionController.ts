@@ -4,8 +4,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import UserSuggestion from "../../../../application/useCases/user/user/userSuggestion";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class UserSuggestionController {
+export default class UserSuggestionController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { _id = '' } = req.query;

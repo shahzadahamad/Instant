@@ -6,27 +6,19 @@ import ReplyComment from "../../../../application/useCases/user/post/replyCommen
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ReplyCommentController {
+export default class ReplyCommentController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId, commentId } = req.params;
     const { userId } = req.user;
     const { comment } = req.body;
 
-    const replyComment = new ReplyComment(
-      new PostRepository(),
-      new UserRepository(),
-      new CommentRepository(),
-      new NotificationRepository()
+    const replyComment = new ReplyComment(new PostRepository(), new UserRepository(), new CommentRepository(), new NotificationRepository()
     );
 
     try {
-      const data = await replyComment.execute(
-        postId,
-        userId,
-        commentId,
-        comment
-      );
+      const data = await replyComment.execute(postId, userId, commentId, comment);
       res.status(HttpStatusCode.OK).json({ data: data });
     } catch (error) {
       if (error instanceof Error) {

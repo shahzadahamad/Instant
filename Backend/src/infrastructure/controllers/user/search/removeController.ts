@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import SearchHistoryRepository from "../../../../application/repositories/user/searchHistoryRepository";
 import Remove from "../../../../application/useCases/user/search/remove";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class RemoveController {
+export default class RemoveController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
     const { userId } = req.user;
@@ -13,7 +14,6 @@ export default class RemoveController {
 
     try {
       const removeId = await remove.execute(userId, _id);
-
       res.status(HttpStatusCode.OK).json(removeId);
     } catch (error) {
       if (error instanceof Error) {

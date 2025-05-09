@@ -3,8 +3,9 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import BlockOrUnblockUserByAdmin from "../../../../application/useCases/admin/user/blockOrUnblockUserByAdmin";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class BlockOrUnblockUserAdminController {
+export default class BlockOrUnblockUserAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { id, status } = req.params;
     const blockOrUnblockUserByAdmin = new BlockOrUnblockUserByAdmin(new UserRepository());

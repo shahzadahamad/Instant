@@ -3,8 +3,9 @@ import GetUserDataAdmin from "../../../../application/useCases/admin/user/getUse
 import UserRepository from "../../../../application/repositories/user/userRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetUserDataAdminController {
+export default class GetUserDataAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
@@ -14,7 +15,6 @@ export default class GetUserDataAdminController {
 
     try {
       const userData = await getUserData.execute(pageNumber, search as string, parsedLimit);
-
       res.status(HttpStatusCode.OK).json(userData);
       return;
     } catch (error) {

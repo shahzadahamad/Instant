@@ -6,8 +6,9 @@ import FollowUser from "../../../../application/useCases/user/user/followUser";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class FollowUserController {
+export default class FollowUserController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username } = req.params;
     const { userId } = req.user;
@@ -16,7 +17,6 @@ export default class FollowUserController {
 
     try {
       const actionStatus = await followUser.execute(userId, username);
-
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {

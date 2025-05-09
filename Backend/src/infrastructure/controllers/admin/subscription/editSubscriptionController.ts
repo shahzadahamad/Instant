@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
 import EditSubscription from "../../../../application/useCases/admin/subscription/editSubscription";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditSubscriptionController {
+export default class EditSubscriptionController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
     const { period, price, offer } = req.body;

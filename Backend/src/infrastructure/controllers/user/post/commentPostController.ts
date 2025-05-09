@@ -6,19 +6,15 @@ import CommentPost from "../../../../application/useCases/user/post/commentPost"
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CommentPostController {
+export default class CommentPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
     const { comment } = req.body;
 
-    const commentPost = new CommentPost(
-      new PostRepository(),
-      new UserRepository(),
-      new CommentRepository(),
-      new NotificationRepository()
-    );
+    const commentPost = new CommentPost(new PostRepository(), new UserRepository(), new CommentRepository(), new NotificationRepository());
 
     try {
       const data = await commentPost.execute(postId, userId, comment);

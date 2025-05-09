@@ -4,8 +4,9 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import EditMusic from "../../../../application/useCases/admin/music/editMusic";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditMusicController {
+export default class EditMusicController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { _id } = req.params;
     const { title } = req.body;

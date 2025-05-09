@@ -6,18 +6,14 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import AwsS3Storage from "../../../../application/providers/awsS3Storage";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetUserPostDataController {
+export default class GetUserPostDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { username = "" } = req.query;
 
-    const userPostData = new UserPostData(
-      new PostRepository(),
-      new UserRepository(),
-      new FriendsRepository(),
-      new AwsS3Storage(),
-    );
+    const userPostData = new UserPostData(new PostRepository(), new UserRepository(), new FriendsRepository(), new AwsS3Storage());
 
     try {
       const data = await userPostData.execute(userId, username as string);

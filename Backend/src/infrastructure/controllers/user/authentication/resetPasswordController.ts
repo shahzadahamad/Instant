@@ -5,17 +5,14 @@ import ResetPassword from "../../../../application/useCases/user/authentication/
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ResetPasswordController {
+export default class ResetPasswordController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { password } = req.body;
     const { _id, token } = req.params;
 
-    const resetPassword = new ResetPassword(
-      new UserRepository(),
-      new TokenManager(),
-      new PasswordHasher(),
-    );
+    const resetPassword = new ResetPassword(new UserRepository(), new TokenManager(), new PasswordHasher(),);
 
     try {
       const status = await resetPassword.execute(_id, token, password);

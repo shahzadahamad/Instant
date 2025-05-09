@@ -4,8 +4,9 @@ import EditAdminPassword from "../../../../application/useCases/admin/admin/edit
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditAdminPasswordController {
+export default class EditAdminPasswordController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { currentPassword, newPassword } = req.body;
     const { userId } = req.user;
@@ -14,7 +15,6 @@ export default class EditAdminPasswordController {
 
     try {
       const actionStatus = await editAdminPassword.execute(userId, currentPassword, newPassword);
-
       res.status(HttpStatusCode.OK).json({ message: actionStatus });
       return;
     } catch (error) {

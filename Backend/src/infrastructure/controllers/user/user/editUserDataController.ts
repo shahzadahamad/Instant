@@ -6,45 +6,18 @@ import UserMoreDataRepository from "../../../../application/repositories/user/us
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import Sharp from "../../../../application/providers/sharp";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class EditUserDataController {
+export default class EditUserDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
-    const {
-      fullname,
-      username,
-      email,
-      phoneNumber,
-      gender,
-      dateOfBirth,
-      profilePicture,
-      bio,
-      isPrivateAccount,
-    } = req.body;
+    const { fullname, username, email, phoneNumber, gender, dateOfBirth, profilePicture, bio, isPrivateAccount } = req.body;
     const file = req.file;
 
-    const updateUserData = new UpdateUserData(
-      new UserRepository(),
-      new AwsS3Storage(),
-      new UserMoreDataRepository(),
-      new Sharp(),
-    );
+    const updateUserData = new UpdateUserData(new UserRepository(), new AwsS3Storage(), new UserMoreDataRepository(), new Sharp());
 
     try {
-      const userData = await updateUserData.execute(
-        userId,
-        fullname,
-        username,
-        email,
-        phoneNumber,
-        gender,
-        dateOfBirth,
-        profilePicture,
-        isPrivateAccount,
-        bio,
-        file
-      );
-
+      const userData = await updateUserData.execute(userId, fullname, username, email, phoneNumber, gender, dateOfBirth, profilePicture, isPrivateAccount, bio, file);
       res
         .status(HttpStatusCode.OK)
         .json({ message: MESSAGES.SUCCESS.PROFILE_UPDATED, user: userData });

@@ -4,15 +4,13 @@ import GetComments from "../../../../application/useCases/user/post/getComments"
 import CommentRepository from "../../../../application/repositories/user/commentRepository";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetCommentController {
+export default class GetCommentController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
 
-    const getComments = new GetComments(
-      new PostRepository(),
-      new CommentRepository()
-    );
+    const getComments = new GetComments(new PostRepository(), new CommentRepository());
 
     try {
       const commentData = await getComments.execute(postId);

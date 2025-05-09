@@ -4,8 +4,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import Reels from "../../../../application/useCases/user/post/reels";
 import UserRepository from "../../../../application/repositories/user/userRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ReelsController {
+export default class ReelsController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { username = "" } = req.query;

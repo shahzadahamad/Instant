@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
 import GetSubscriptionData from "../../../../application/useCases/admin/subscription/getSubscriptionData";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetSubscriptionDataController {
+export default class GetSubscriptionDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
@@ -14,7 +15,6 @@ export default class GetSubscriptionDataController {
 
     try {
       const subscriptionData = await getSubscriptionData.execute(pageNumber, search as string, parsedLimiit);
-
       res.status(HttpStatusCode.OK).json(subscriptionData);
       return;
     } catch (error) {

@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import SubscriptionRepository from "../../../../application/repositories/admin/subscriptionRepository";
 import GetSubscriptionListedData from "../../../../application/useCases/user/subscription/getSubscriptionListedData";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetSubscriptionListedDataController {
+export default class GetSubscriptionListedDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const getSubscriptionListedData = new GetSubscriptionListedData(new SubscriptionRepository());
     try {

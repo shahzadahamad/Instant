@@ -5,17 +5,14 @@ import GetTaggedPostData from "../../../../application/useCases/user/post/getTag
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetTaggedPostDataController {
+export default class GetTaggedPostDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { username = "" } = req.query;
 
-    const getTaggedPostData = new GetTaggedPostData(
-      new PostRepository(),
-      new UserRepository(),
-      new FriendsRepository()
-    );
+    const getTaggedPostData = new GetTaggedPostData(new PostRepository(), new UserRepository(), new FriendsRepository());
 
     try {
       const data = await getTaggedPostData.execute(userId, username as string);

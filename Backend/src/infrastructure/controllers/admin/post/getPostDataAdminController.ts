@@ -3,8 +3,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import PostRepository from "../../../../application/repositories/user/postRepository";
 import GetPostDataAdmin from "../../../../application/useCases/admin/post/getPostDataAdmin";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetPostDataAdminController {
+export default class GetPostDataAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
@@ -14,7 +15,6 @@ export default class GetPostDataAdminController {
 
     try {
       const userData = await getPostDataAdmin.execute(pageNumber, search as string, parsedLimit);
-
       res.status(HttpStatusCode.OK).json(userData);
       return;
     } catch (error) {

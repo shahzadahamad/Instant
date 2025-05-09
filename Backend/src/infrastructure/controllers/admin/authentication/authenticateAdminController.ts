@@ -5,22 +5,16 @@ import AuthenticateAdmin from "../../../../application/useCases/admin/authentica
 import AdminRepository from "../../../../application/repositories/admin/adminRepository";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class AuthenticateAdminController {
+export default class AuthenticateAdminController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { usernameOrEmail, password } = req.body;
 
-    const authenticateAdmin = new AuthenticateAdmin(
-      new AdminRepository(),
-      new PasswordHasher(),
-      new TokenManager()
-    );
+    const authenticateAdmin = new AuthenticateAdmin(new AdminRepository(), new PasswordHasher(), new TokenManager());
 
     try {
-      const { token, refreshToken, admin } = await authenticateAdmin.execute(
-        usernameOrEmail,
-        password
-      );
+      const { token, refreshToken, admin } = await authenticateAdmin.execute(usernameOrEmail, password);
       res.cookie("adminRefreshToken", refreshToken, {
         httpOnly: true,
         secure: false,

@@ -5,17 +5,14 @@ import OtpRepository from "../../../../application/repositories/user/otpReposito
 import PasswordHasher from "../../../../application/providers/passwordHasher";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 
-export default class CreateUserController {
+export default class CreateUserController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { fullname, username, email, password, id, otp } = req.body;
 
-    const createUser = new CreateUser(
-      new UserRepository(),
-      new OtpRepository(),
-      new PasswordHasher()
-    );
+    const createUser = new CreateUser(new UserRepository(), new OtpRepository(), new PasswordHasher());
 
     try {
       await createUser.execute(fullname, username, email, password, id, otp);

@@ -3,17 +3,15 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import GetCreatePostMusicData from "../../../../application/useCases/user/music/getCreatePostMusicData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetCreatePostMusicDataController {
+export default class GetCreatePostMusicDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { searchVal = "" } = req.query;
-    const getCreatePostMusicData = new GetCreatePostMusicData(
-      new MusicRepository()
-    );
+    const getCreatePostMusicData = new GetCreatePostMusicData(new MusicRepository());
 
     try {
       const musicData = await getCreatePostMusicData.execute(searchVal as string);
-
       res.status(HttpStatusCode.OK).json(musicData);
     } catch (error) {
       if (error instanceof Error) {

@@ -6,39 +6,19 @@ import PostRepository from "../../../../application/repositories/user/postReposi
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class CreatePostController {
+export default class CreatePostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const files = req.files;
-    const {
-      postData,
-      music,
-      caption,
-      hideLikesAndViewCount,
-      turnOffCounting,
-      aspectRatio,
-    } = req.body;
+    const { postData, music, caption, hideLikesAndViewCount, turnOffCounting, aspectRatio, } = req.body;
     const parsedPostData = JSON.parse(postData);
 
-    const createPost = new CreatePost(
-      new UserRepository(),
-      new AwsS3Storage(),
-      new PostRepository(),
-      new NotificationRepository()
-    );
+    const createPost = new CreatePost(new UserRepository(), new AwsS3Storage(), new PostRepository(), new NotificationRepository());
 
     try {
-      const data = await createPost.execute(
-        userId,
-        caption,
-        aspectRatio,
-        hideLikesAndViewCount,
-        turnOffCounting,
-        music,
-        parsedPostData,
-        files
-      );
+      const data = await createPost.execute(userId, caption, aspectRatio, hideLikesAndViewCount, turnOffCounting, music, parsedPostData, files);
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {

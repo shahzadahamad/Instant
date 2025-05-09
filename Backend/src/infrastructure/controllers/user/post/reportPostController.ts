@@ -4,17 +4,15 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import ReportPost from "../../../../application/useCases/user/post/reportPost";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class ReportPostController {
+export default class ReportPostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { reason } = req.query;
     const { userId } = req.user;
 
-    const reportPost = new ReportPost(
-      new PostRepository(),
-      new UserRepository()
-    );
+    const reportPost = new ReportPost(new PostRepository(), new UserRepository());
 
     try {
       const actionStatus = await reportPost.execute(userId, postId, reason as string);

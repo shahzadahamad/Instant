@@ -4,16 +4,14 @@ import UserRepository from "../../../../application/repositories/user/userReposi
 import GetPostData from "../../../../application/useCases/user/post/getPostData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetPostDataController {
+export default class GetPostDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { postId } = req.params;
 
-    const getPostData = new GetPostData(
-      new PostRepository(),
-      new UserRepository()
-    );
+    const getPostData = new GetPostData(new PostRepository(), new UserRepository());
 
     try {
       const postData = await getPostData.execute(userId, postId);

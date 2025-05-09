@@ -4,8 +4,9 @@ import GetPostCount from "../../../../application/useCases/user/post/getPostCoun
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetPostCountController {
+export default class GetPostCountController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const getPostCount = new GetPostCount(new PostRepository(), new FriendsRepository());

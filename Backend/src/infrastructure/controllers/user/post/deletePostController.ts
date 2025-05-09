@@ -9,21 +9,14 @@ import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
 import MessageRepository from "../../../../application/repositories/user/messageRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class DeletePostController {
+export default class DeletePostController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId } = req.params;
     const { userId } = req.user;
 
-    const deletePost = new DeletePost(
-      new PostRepository(),
-      new AwsS3Storage(),
-      new LikeRepository(),
-      new UserRepository(),
-      new CommentRepository(),
-      new NotificationRepository(),
-      new MessageRepository()
-    );
+    const deletePost = new DeletePost(new PostRepository(), new AwsS3Storage(), new LikeRepository(), new UserRepository(), new CommentRepository(), new NotificationRepository(), new MessageRepository());
 
     try {
       const data = await deletePost.execute(postId, userId);

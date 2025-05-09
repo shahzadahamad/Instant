@@ -6,8 +6,9 @@ import WebHook from "../../../../application/useCases/user/subscription/webHook"
 import { stripe } from "../../../configs/stripe";
 import PaymentRepository from "../../../../application/repositories/user/paymentRepository";
 import { EmailService } from "../../../../application/providers/nodeMailer";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class WebHookController {
+export default class WebHookController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const sig = req.headers['stripe-signature'] as string;
 

@@ -6,25 +6,16 @@ import LikeOrUnlikeComment from "../../../../application/useCases/user/post/like
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import NotificationRepository from "../../../../application/repositories/user/notificationRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class LikeOrUnlikeCommentController {
+export default class LikeOrUnlikeCommentController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { postId, commentId, status } = req.params;
     const { userId } = req.user;
-    const likeOrUnlikeComment = new LikeOrUnlikeComment(
-      new PostRepository(),
-      new LikeRepository(),
-      new CommentRepository(),
-      new NotificationRepository()
-    );
+    const likeOrUnlikeComment = new LikeOrUnlikeComment(new PostRepository(), new LikeRepository(), new CommentRepository(), new NotificationRepository());
 
     try {
-      const actionStatus = await likeOrUnlikeComment.execute(
-        postId,
-        commentId,
-        userId,
-        status
-      );
+      const actionStatus = await likeOrUnlikeComment.execute(postId, commentId, userId, status);
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {

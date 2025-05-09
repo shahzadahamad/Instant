@@ -7,19 +7,14 @@ import { GenerateOTP } from "../../../../application/providers/otpGenerate";
 import { EmailService } from "../../../../application/providers/nodeMailer";
 import { MESSAGES } from "../../../constants/messages";
 import { HttpStatusCode } from "../../../enums/enums";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
 
-export default class UserOtpVerificationController {
+export default class UserOtpVerificationController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { email, fullname, username } = req.body;
 
-    const otpSend = new OtpSend(
-      new OtpRepository(),
-      new UserRepository(),
-      new PasswordHasher(),
-      new GenerateOTP(),
-      new EmailService()
-    );
+    const otpSend = new OtpSend(new OtpRepository(), new UserRepository(), new PasswordHasher(), new GenerateOTP(), new EmailService());
 
     try {
       const otp = await otpSend.execute(email, fullname, username);

@@ -3,8 +3,9 @@ import MusicRepository from "../../../../application/repositories/admin/musicRep
 import GetMusicData from "../../../../application/useCases/admin/music/getMusicData";
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class GetMusicDataController {
+export default class GetMusicDataController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { page, search = "", limit } = req.query;
     const pageNumber = parseInt(page as string);
@@ -14,7 +15,6 @@ export default class GetMusicDataController {
 
     try {
       const musicData = await getMusicData.execute(pageNumber, search as string, parsedLimit);
-
       res.status(HttpStatusCode.OK).json(musicData);
       return;
     } catch (error) {

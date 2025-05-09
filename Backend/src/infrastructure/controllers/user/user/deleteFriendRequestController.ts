@@ -5,8 +5,9 @@ import UserMoreDataRepository from "../../../../application/repositories/user/us
 import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import DeleteFriendRequest from "../../../../application/useCases/user/user/deleteFriendRequest";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class DeleteFriendRequestController {
+export default class DeleteFriendRequestController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { username } = req.params;
     const { userId } = req.user;
@@ -15,7 +16,6 @@ export default class DeleteFriendRequestController {
 
     try {
       const actionStatus = await deleteFriendRequest.execute(userId, username);
-
       res.status(HttpStatusCode.OK).json(actionStatus);
     } catch (error) {
       if (error instanceof Error) {

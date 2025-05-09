@@ -4,8 +4,9 @@ import { MESSAGES } from "../../../constants/messages";
 import FriendsRepository from "../../../../application/repositories/user/friendsRepository";
 import SearchHistory from "../../../../application/useCases/user/search/searchHistory";
 import SearchHistoryRepository from "../../../../application/repositories/user/searchHistoryRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class SearchHistoryController {
+export default class SearchHistoryController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
 
@@ -13,7 +14,6 @@ export default class SearchHistoryController {
 
     try {
       const data = await searchHistory.execute(userId);
-
       res.status(HttpStatusCode.OK).json(data);
     } catch (error) {
       if (error instanceof Error) {

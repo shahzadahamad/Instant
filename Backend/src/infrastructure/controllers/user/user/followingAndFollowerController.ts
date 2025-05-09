@@ -4,8 +4,9 @@ import { HttpStatusCode } from "../../../enums/enums";
 import { MESSAGES } from "../../../constants/messages";
 import FollowingAndFollower from "../../../../application/useCases/user/user/followingAndFollower";
 import UserMoreDataRepository from "../../../../application/repositories/user/userMoreDataRepository";
+import { IControllerHandler } from "../../interfaces/IControllerHandler";
 
-export default class FollowingAndFollowerController {
+export default class FollowingAndFollowerController implements IControllerHandler {
   public async handle(req: Request, res: Response): Promise<void> {
     const { userId } = req.user;
     const { _id = "" } = req.query;
@@ -14,7 +15,6 @@ export default class FollowingAndFollowerController {
 
     try {
       const friendData = await followingAndFollower.execute(userId, _id as string);
-
       res.status(HttpStatusCode.OK).json(friendData);
     } catch (error) {
       if (error instanceof Error) {
